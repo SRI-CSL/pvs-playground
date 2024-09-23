@@ -1,0 +1,112 @@
+boogie 	: THEORY
+
+  BEGIN
+
+%Introduce fieldname and classname as nonempty, uninterpreted types
+    fieldname : TYPE+
+    classname: TYPE+
+
+%The integer class int is a special (uninterpreted) classname
+    int: classname
+
+%oclassname is a subtype of the non-int classnames.
+    oclassname: TYPE = {cn : classname | cn /= int}    
+
+%A value is either an inter or a reference
+    value: DATATYPE
+            BEGIN
+            num(numval : int): num?
+            ref(refval: nat): ref?
+           END value
+
+%null is label for 0
+    null: MACRO nat = 0
+
+%A referent (the target of a reference) is an (infinite) array or object
+    referent: DATATYPE
+              BEGIN
+               arr(arrval: [nat -> value]): arr?
+               object(objval: [fieldname -> value]): obj?
+             END referent
+
+%A heap entry has a flag indicating that it has been alloc'ed, a classname, and the referent
+    heap_entry: TYPE = [# allocated? : bool, 
+                          class: oclassname, 
+                          entry : referent #]
+
+%A heap maps positive nats to heap_entries, with 0 being null. 
+    heap: TYPE = [posnat -> heap_entry]
+
+%An objtype is either arrtype (over a class) or a classtype with fields.
+%lift is the option type with up as some.  
+    objtype: DATATYPE
+     BEGIN
+       arrtype(arrvaltype: classname): arrtype?
+       classtype(classvaltype: [fieldname -> lift[classname]]): classtype?
+     END objtype
+
+%A class table maps classnames to types
+    class_table: TYPE = [classname -> objtype]
+
+%A good_class_table? relative to a subtype partial order is defined so that
+%if cn1 is a subtype of cn2, then the element types are also in a subtype relation.
+    good_class_table?(<= : (partial_order?[classname]))(C: class_table): bool = 
+      (FORALL (cn1, cn2: classname): 
+         cn1 <= cn2 IMPLIES 
+         ((arrtype?(C(cn1)) AND arrtype?(C(cn2)) AND 
+           arrvaltype(C(cn1)) <= arrvaltype(C(cn2)))
+         OR (classtype?(C(cn1)) AND classtype?(C(cn2)) AND 
+             (FORALL (fn: fieldname):
+               IF bottom?(classvaltype(C(cn1))(fn))
+                THEN bottom?(classvaltype(C(cn2))(fn))
+                ELSE up?(classvaltype(C(cn2))(fn)) AND 
+                     down(classvaltype(C(cn1))(fn)) = %could be <= but usually =
+                     down(classvaltype(C(cn2))(fn))
+               ENDIF))))
+
+%checktype checks if a value val in heap H has type expected.  
+    checktype(H: heap, <= : (partial_order?[classname]), 
+              val: value, expected: classname): bool
+     =  (IF expected = int
+         THEN num?(val)
+         ELSE ref?(val) AND
+              (refval(val) = null 
+              OR 
+               (H(refval(val))`allocated? AND 
+                H(refval(val))`class <= expected))
+         ENDIF)
+
+%A good_heap? is one where the allocated heap values have the expected type
+%as given by the class table and the partial order. 
+     good_heap?(<= : (partial_order?[classname]), 
+                C: (good_class_table?(<=)))  
+               (H: heap)
+      : bool = 
+      (FORALL (i: posnat): 
+         H(i)`allocated? IMPLIES 
+             ((arrtype?(C(H(i)`class)) AND
+               arr?(H(i)`entry) AND
+               (FORALL (j: nat): 
+                 LET arrtype = arrvaltype(C(H(i)`class))
+                  IN checktype(H, <=, arrval(H(i)`entry)(j), 
+                               arrvaltype(C(H(i)`class)))))
+              OR
+              (classtype?(C(H(i)`class)) AND
+               obj?(H(i)`entry) AND 
+               (FORALL (fn: fieldname):
+                 CASES classvaltype(C(H(i)`class))(fn) OF
+                   bottom: TRUE,
+                   up(cn): checktype(H, <=, objval(H(i)`entry)(fn), 
+                                     cn)
+                 ENDCASES))))
+
+     good_heap(<= : (partial_order?[classname]), 
+               C: (good_class_table?(<=))) : TYPE
+        = (good_heap?(<=, C))
+
+    
+                          
+                          
+  
+
+  End boogie
