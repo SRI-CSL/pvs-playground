@@ -1,0 +1,12 @@
+jsondata  : DATATYPE
+%This datatype is used to construct json data as strings, key/value pairs,
+%dictionaries, numerals (uint and int), and arrays.  
+  BEGIN
+  IMPORTING jsonnumber
+   jstr(strval: string): jstr?
+   jpair(key : string, value : jsondata): jpair?
+   jdict(contents : finseq[(jpair?)]): jdict?
+   jnumeral(numval: jsonnumber): jnumeral?
+   jarray(arrval : finseq[jsondata]): jarray?
+  END jsondata
+  

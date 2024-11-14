@@ -1,0 +1,50 @@
+transforms [data: TYPE] : THEORY
+
+  BEGIN
+
+   graph : TYPE =
+        [# numnodes: nat, 
+         nodetype : [below(numnodes) -> (nonempty?[data])],  %the node type indicates the subtype of data
+	 giventransforms: [source : below(numnodes), target : below(numnodes) 
+	               -> lift[[(nodetype(source)) -> (nodetype(target))]]],
+	 transforms: [source : below(numnodes), target : below(numnodes) %maps each source/target to a 
+	               -> lift[[(nodetype(source)) -> (nodetype(target))]]] %possible transform. 
+        #]  %transforms are transitively closed
+
+   n : VAR nat;
+
+   compose[A, B, C : TYPE](f : [A -> B], g : [B -> C]): [A -> C]
+    = (g o f)
+
+   lcompose[A, B, C : TYPE](f : lift[[A -> B]], g : lift[[B -> C]]): lift[[A -> C]]
+    = CASES f OF
+       up(ff): CASES g OF 
+                  up(gg) : up(gg o ff)
+		  ELSE bottom
+		  ENDCASES
+       ELSE bottom
+       ENDCASES
+
+   % goodtransforms(G : graph): bool = 
+   %   (FORALL (i, j, k: below(G`numnodes)):
+   %       G`transforms(i, k) = lcompose[(G`nodetype(i)), (G`nodetype(j)), (G`nodetype(k))](G`transforms(i, j), G`transforms(j, k)))
+
+   addnode(G : graph, p : (nonempty?[data])): graph
+   = G WITH [`numnodes := G`numnodes + 1,
+             `nodetype(G`numnodes) |-> p]
+
+   addtransform(G : graph,
+                source, target : below(G`numnodes),
+		f : [(G`nodetype(source)) -> (G`nodetype(target))]):
+		graph
+    = (CASES G`giventransforms(source, target) OF
+       up(g) : G % do nothing if transform already exists
+       ELSE CASES G`transforms(source, target) OF
+              up(h): IF f = h
+	        THEN G WITH [`giventransforms(source, target) := up(f)]
+                 ELSE G ENDIF
+	       ELSE G WITH [`giventransforms(source, target) := up(f)]
+	       ENDCASES
+        ENDCASES)	       
+
+  END transforms

@@ -1,0 +1,417 @@
+%%% ADT file generated from jsondata.pvs
+
+jsondata_adt: THEORY
+ BEGIN
+
+  jsondata: TYPE
+
+  IMPORTING jsonnumber
+
+  jstr?, jpair?, jdict?, jnumeral?, jarray?: [jsondata -> boolean]
+
+  strval: [(jstr?) -> string]
+
+  key: [(jpair?) -> string]
+
+  value: [(jpair?) -> jsondata]
+
+  contents: [(jdict?) -> finseq[(jpair?)]]
+
+  numval: [(jnumeral?) -> jsonnumber]
+
+  arrval: [(jarray?) -> finseq[jsondata]]
+
+  jstr: [string -> (jstr?)]
+
+  jpair: [[string, jsondata] -> (jpair?)]
+
+  jdict: [finseq[(jpair?)] -> (jdict?)]
+
+  jnumeral: [jsonnumber -> (jnumeral?)]
+
+  jarray: [finseq[jsondata] -> (jarray?)]
+
+  jsondata_ord: [jsondata -> upto(4)]
+
+  jsondata_ord_defaxiom: AXIOM
+         (FORALL (strval: string): jsondata_ord(jstr(strval)) = 0)
+     AND (FORALL (key: string, value: jsondata):
+            jsondata_ord(jpair(key, value)) = 1)
+     AND (FORALL (contents: finseq[(jpair?)]):
+            jsondata_ord(jdict(contents)) = 2)
+     AND (FORALL (numval: jsonnumber): jsondata_ord(jnumeral(numval)) = 3)
+     AND FORALL (arrval: finseq[jsondata]):
+           jsondata_ord(jarray(arrval)) = 4;
+
+  ord(x: jsondata): upto(4) =
+      CASES x
+        OF jstr(jstr1_var): 0,
+           jpair(jpair1_var, jpair2_var): 1,
+           jdict(jdict1_var): 2,
+           jnumeral(jnumeral1_var): 3,
+           jarray(jarray1_var): 4
+        ENDCASES
+
+  jsondata_jstr_extensionality: AXIOM
+    FORALL (jstr?_var: (jstr?), jstr?_var2: (jstr?)):
+      strval(jstr?_var) = strval(jstr?_var2) IMPLIES jstr?_var = jstr?_var2;
+
+  jsondata_jstr_eta: AXIOM
+    FORALL (jstr?_var: (jstr?)): jstr(strval(jstr?_var)) = jstr?_var;
+
+  jsondata_jpair_extensionality: AXIOM
+    FORALL (jpair?_var: (jpair?), jpair?_var2: (jpair?)):
+      key(jpair?_var) = key(jpair?_var2) AND
+       value(jpair?_var) = value(jpair?_var2)
+       IMPLIES jpair?_var = jpair?_var2;
+
+  jsondata_jpair_eta: AXIOM
+    FORALL (jpair?_var: (jpair?)):
+      jpair(key(jpair?_var), value(jpair?_var)) = jpair?_var;
+
+  jsondata_jdict_extensionality: AXIOM
+    FORALL (jdict?_var: (jdict?), jdict?_var2: (jdict?)):
+      contents(jdict?_var) = contents(jdict?_var2) IMPLIES
+       jdict?_var = jdict?_var2;
+
+  jsondata_jdict_eta: AXIOM
+    FORALL (jdict?_var: (jdict?)): jdict(contents(jdict?_var)) = jdict?_var;
+
+  jsondata_jnumeral_extensionality: AXIOM
+    FORALL (jnumeral?_var: (jnumeral?), jnumeral?_var2: (jnumeral?)):
+      numval(jnumeral?_var) = numval(jnumeral?_var2) IMPLIES
+       jnumeral?_var = jnumeral?_var2;
+
+  jsondata_jnumeral_eta: AXIOM
+    FORALL (jnumeral?_var: (jnumeral?)):
+      jnumeral(numval(jnumeral?_var)) = jnumeral?_var;
+
+  jsondata_jarray_extensionality: AXIOM
+    FORALL (jarray?_var: (jarray?), jarray?_var2: (jarray?)):
+      arrval(jarray?_var) = arrval(jarray?_var2) IMPLIES
+       jarray?_var = jarray?_var2;
+
+  jsondata_jarray_eta: AXIOM
+    FORALL (jarray?_var: (jarray?)):
+      jarray(arrval(jarray?_var)) = jarray?_var;
+
+  jsondata_strval_jstr: AXIOM
+    FORALL (jstr1_var: string): strval(jstr(jstr1_var)) = jstr1_var;
+
+  jsondata_key_jpair: AXIOM
+    FORALL (jpair1_var: string, jpair2_var: jsondata):
+      key(jpair(jpair1_var, jpair2_var)) = jpair1_var;
+
+  jsondata_value_jpair: AXIOM
+    FORALL (jpair1_var: string, jpair2_var: jsondata):
+      value(jpair(jpair1_var, jpair2_var)) = jpair2_var;
+
+  jsondata_contents_jdict: AXIOM
+    FORALL (jdict1_var: finseq[(jpair?)]):
+      contents(jdict(jdict1_var)) = jdict1_var;
+
+  jsondata_numval_jnumeral: AXIOM
+    FORALL (jnumeral1_var: jsonnumber):
+      numval(jnumeral(jnumeral1_var)) = jnumeral1_var;
+
+  jsondata_arrval_jarray: AXIOM
+    FORALL (jarray1_var: finseq[jsondata]):
+      arrval(jarray(jarray1_var)) = jarray1_var;
+
+  jsondata_inclusive: AXIOM
+    FORALL (jsondata_var: jsondata):
+           jstr?(jsondata_var) OR jpair?(jsondata_var)
+       OR jdict?(jsondata_var) OR jnumeral?(jsondata_var)
+       OR jarray?(jsondata_var);
+
+  jsondata_induction: AXIOM
+    FORALL (p: [jsondata -> boolean]):
+      (     (FORALL (jstr1_var: string): p(jstr(jstr1_var)))
+        AND (FORALL (jpair1_var: string, jpair2_var: jsondata):
+               p(jpair2_var) IMPLIES p(jpair(jpair1_var, jpair2_var)))
+        AND (FORALL (jdict1_var: finseq[(jpair?)]):
+               (FORALL (x: below[jdict1_var`length]): p(jdict1_var`seq(x)))
+                IMPLIES p(jdict(jdict1_var)))
+        AND (FORALL (jnumeral1_var: jsonnumber): p(jnumeral(jnumeral1_var)))
+        AND FORALL (jarray1_var: finseq[jsondata]):
+              (FORALL (x: below[jarray1_var`length]):
+                 p(jarray1_var`seq(x)))
+               IMPLIES p(jarray(jarray1_var)))
+       IMPLIES FORALL (jsondata_var: jsondata): p(jsondata_var);
+
+  subterm(x: jsondata, y: jsondata):  boolean =
+      x = y OR
+       CASES y
+         OF jstr(jstr1_var): FALSE,
+            jpair(jpair1_var, jpair2_var): subterm(x, jpair2_var),
+            jdict(jdict1_var):
+              EXISTS (z: below[jdict1_var`length]):
+                subterm(x, seq(jdict1_var)(z)),
+            jnumeral(jnumeral1_var): FALSE,
+            jarray(jarray1_var):
+              EXISTS (z: below[jarray1_var`length]):
+                subterm(x, seq(jarray1_var)(z))
+         ENDCASES;
+
+  <<:  (strict_well_founded?[jsondata]) =
+      LAMBDA (x: jsondata, y: jsondata):
+        CASES y
+          OF jstr(jstr1_var): FALSE,
+             jpair(jpair1_var, jpair2_var):
+               (x = jpair2_var OR x << jpair2_var),
+             jdict(jdict1_var):
+               EXISTS (z: below[jdict1_var`length]):
+                 subterm(x, seq(jdict1_var)(z)),
+             jnumeral(jnumeral1_var): FALSE,
+             jarray(jarray1_var):
+               EXISTS (z: below[jarray1_var`length]):
+                 subterm(x, seq(jarray1_var)(z))
+          ENDCASES;
+
+  jsondata_well_founded: AXIOM strict_well_founded?[jsondata](<<);
+
+  reduce_nat(jstr?_fun: [string -> nat],
+             jpair?_fun: [[string, nat] -> nat],
+             jdict?_fun: [finseq[(jpair?)] -> nat],
+             jnumeral?_fun: [jsonnumber -> nat],
+             jarray?_fun: [finseq[nat] -> nat]):
+        [jsondata -> nat] =
+      LAMBDA (jsondata_adtvar: jsondata):
+        LET red: [jsondata -> nat] =
+              reduce_nat(jstr?_fun, jpair?_fun, jdict?_fun, jnumeral?_fun,
+                         jarray?_fun)
+          IN
+          CASES jsondata_adtvar
+            OF jstr(jstr1_var): jstr?_fun(jstr1_var),
+               jpair(jpair1_var, jpair2_var):
+                 jpair?_fun(jpair1_var, red(jpair2_var)),
+               jdict(jdict1_var):
+                 jdict?_fun((# length := length(jdict1_var),
+                               seq
+                                 := (LAMBDA (a:
+                                               [below[jdict1_var`length] ->
+                                                  (jpair?)]):
+                                       LAMBDA (x:
+                                                 below[jdict1_var`length]):
+                                         red(a(x)))
+                                        (seq(jdict1_var)) #)),
+               jnumeral(jnumeral1_var): jnumeral?_fun(jnumeral1_var),
+               jarray(jarray1_var):
+                 jarray?_fun((# length := length(jarray1_var),
+                                seq
+                                  := (LAMBDA (a:
+                                                [below[jarray1_var`length] ->
+                                                   jsondata]):
+                                        LAMBDA (x:
+                                                  below[jarray1_var`length]):
+                                          red(a(x)))
+                                         (seq(jarray1_var)) #))
+            ENDCASES;
+
+  REDUCE_nat(jstr?_fun: [[string, jsondata] -> nat],
+             jpair?_fun: [[string, nat, jsondata] -> nat],
+             jdict?_fun: [[finseq[(jpair?)], jsondata] -> nat],
+             jnumeral?_fun: [[jsonnumber, jsondata] -> nat],
+             jarray?_fun: [[finseq[nat], jsondata] -> nat]):
+        [jsondata -> nat] =
+      LAMBDA (jsondata_adtvar: jsondata):
+        LET red: [jsondata -> nat] =
+              REDUCE_nat(jstr?_fun, jpair?_fun, jdict?_fun, jnumeral?_fun,
+                         jarray?_fun)
+          IN
+          CASES jsondata_adtvar
+            OF jstr(jstr1_var): jstr?_fun(jstr1_var, jsondata_adtvar),
+               jpair(jpair1_var, jpair2_var):
+                 jpair?_fun(jpair1_var, red(jpair2_var), jsondata_adtvar),
+               jdict(jdict1_var):
+                 jdict?_fun((# length := length(jdict1_var),
+                               seq
+                                 := (LAMBDA (a:
+                                               [below[jdict1_var`length] ->
+                                                  (jpair?)]):
+                                       LAMBDA (x:
+                                                 below[jdict1_var`length]):
+                                         red(a(x)))
+                                        (seq(jdict1_var)) #),
+                            jsondata_adtvar),
+               jnumeral(jnumeral1_var):
+                 jnumeral?_fun(jnumeral1_var, jsondata_adtvar),
+               jarray(jarray1_var):
+                 jarray?_fun((# length := length(jarray1_var),
+                                seq
+                                  := (LAMBDA (a:
+                                                [below[jarray1_var`length] ->
+                                                   jsondata]):
+                                        LAMBDA (x:
+                                                  below[jarray1_var`length]):
+                                          red(a(x)))
+                                         (seq(jarray1_var)) #),
+                             jsondata_adtvar)
+            ENDCASES;
+
+  reduce_ordinal(jstr?_fun: [string -> ordinal],
+                 jpair?_fun: [[string, ordinal] -> ordinal],
+                 jdict?_fun: [finseq[(jpair?)] -> ordinal],
+                 jnumeral?_fun: [jsonnumber -> ordinal],
+                 jarray?_fun: [finseq[ordinal] -> ordinal]):
+        [jsondata -> ordinal] =
+      LAMBDA (jsondata_adtvar: jsondata):
+        LET red: [jsondata -> ordinal] =
+              reduce_ordinal(jstr?_fun, jpair?_fun, jdict?_fun,
+                             jnumeral?_fun, jarray?_fun)
+          IN
+          CASES jsondata_adtvar
+            OF jstr(jstr1_var): jstr?_fun(jstr1_var),
+               jpair(jpair1_var, jpair2_var):
+                 jpair?_fun(jpair1_var, red(jpair2_var)),
+               jdict(jdict1_var):
+                 jdict?_fun((# length := length(jdict1_var),
+                               seq
+                                 := (LAMBDA (a:
+                                               [below[jdict1_var`length] ->
+                                                  (jpair?)]):
+                                       LAMBDA (x:
+                                                 below[jdict1_var`length]):
+                                         red(a(x)))
+                                        (seq(jdict1_var)) #)),
+               jnumeral(jnumeral1_var): jnumeral?_fun(jnumeral1_var),
+               jarray(jarray1_var):
+                 jarray?_fun((# length := length(jarray1_var),
+                                seq
+                                  := (LAMBDA (a:
+                                                [below[jarray1_var`length] ->
+                                                   jsondata]):
+                                        LAMBDA (x:
+                                                  below[jarray1_var`length]):
+                                          red(a(x)))
+                                         (seq(jarray1_var)) #))
+            ENDCASES;
+
+  REDUCE_ordinal(jstr?_fun: [[string, jsondata] -> ordinal],
+                 jpair?_fun: [[string, ordinal, jsondata] -> ordinal],
+                 jdict?_fun: [[finseq[(jpair?)], jsondata] -> ordinal],
+                 jnumeral?_fun: [[jsonnumber, jsondata] -> ordinal],
+                 jarray?_fun: [[finseq[ordinal], jsondata] -> ordinal]):
+        [jsondata -> ordinal] =
+      LAMBDA (jsondata_adtvar: jsondata):
+        LET red: [jsondata -> ordinal] =
+              REDUCE_ordinal(jstr?_fun, jpair?_fun, jdict?_fun,
+                             jnumeral?_fun, jarray?_fun)
+          IN
+          CASES jsondata_adtvar
+            OF jstr(jstr1_var): jstr?_fun(jstr1_var, jsondata_adtvar),
+               jpair(jpair1_var, jpair2_var):
+                 jpair?_fun(jpair1_var, red(jpair2_var), jsondata_adtvar),
+               jdict(jdict1_var):
+                 jdict?_fun((# length := length(jdict1_var),
+                               seq
+                                 := (LAMBDA (a:
+                                               [below[jdict1_var`length] ->
+                                                  (jpair?)]):
+                                       LAMBDA (x:
+                                                 below[jdict1_var`length]):
+                                         red(a(x)))
+                                        (seq(jdict1_var)) #),
+                            jsondata_adtvar),
+               jnumeral(jnumeral1_var):
+                 jnumeral?_fun(jnumeral1_var, jsondata_adtvar),
+               jarray(jarray1_var):
+                 jarray?_fun((# length := length(jarray1_var),
+                                seq
+                                  := (LAMBDA (a:
+                                                [below[jarray1_var`length] ->
+                                                   jsondata]):
+                                        LAMBDA (x:
+                                                  below[jarray1_var`length]):
+                                          red(a(x)))
+                                         (seq(jarray1_var)) #),
+                             jsondata_adtvar)
+            ENDCASES;
+ END jsondata_adt
+
+jsondata_adt_reduce[range: TYPE]: THEORY
+ BEGIN
+
+  IMPORTING jsondata_adt
+
+  IMPORTING jsonnumber
+
+  reduce(jstr?_fun: [string -> range],
+         jpair?_fun: [[string, range] -> range],
+         jdict?_fun: [finseq[(jpair?)] -> range],
+         jnumeral?_fun: [jsonnumber -> range],
+         jarray?_fun: [finseq[range] -> range]):
+        [jsondata -> range] =
+      LAMBDA (jsondata_adtvar: jsondata):
+        LET red: [jsondata -> range] =
+              reduce(jstr?_fun, jpair?_fun, jdict?_fun, jnumeral?_fun,
+                     jarray?_fun)
+          IN
+          CASES jsondata_adtvar
+            OF jstr(jstr1_var): jstr?_fun(jstr1_var),
+               jpair(jpair1_var, jpair2_var):
+                 jpair?_fun(jpair1_var, red(jpair2_var)),
+               jdict(jdict1_var):
+                 jdict?_fun((# length := length(jdict1_var),
+                               seq
+                                 := (LAMBDA (a:
+                                               [below[jdict1_var`length] ->
+                                                  (jpair?)]):
+                                       LAMBDA (x:
+                                                 below[jdict1_var`length]):
+                                         red(a(x)))
+                                        (seq(jdict1_var)) #)),
+               jnumeral(jnumeral1_var): jnumeral?_fun(jnumeral1_var),
+               jarray(jarray1_var):
+                 jarray?_fun((# length := length(jarray1_var),
+                                seq
+                                  := (LAMBDA (a:
+                                                [below[jarray1_var`length] ->
+                                                   jsondata]):
+                                        LAMBDA (x:
+                                                  below[jarray1_var`length]):
+                                          red(a(x)))
+                                         (seq(jarray1_var)) #))
+            ENDCASES;
+
+  REDUCE(jstr?_fun: [[string, jsondata] -> range],
+         jpair?_fun: [[string, range, jsondata] -> range],
+         jdict?_fun: [[finseq[(jpair?)], jsondata] -> range],
+         jnumeral?_fun: [[jsonnumber, jsondata] -> range],
+         jarray?_fun: [[finseq[range], jsondata] -> range]):
+        [jsondata -> range] =
+      LAMBDA (jsondata_adtvar: jsondata):
+        LET red: [jsondata -> range] =
+              REDUCE(jstr?_fun, jpair?_fun, jdict?_fun, jnumeral?_fun,
+                     jarray?_fun)
+          IN
+          CASES jsondata_adtvar
+            OF jstr(jstr1_var): jstr?_fun(jstr1_var, jsondata_adtvar),
+               jpair(jpair1_var, jpair2_var):
+                 jpair?_fun(jpair1_var, red(jpair2_var), jsondata_adtvar),
+               jdict(jdict1_var):
+                 jdict?_fun((# length := length(jdict1_var),
+                               seq
+                                 := (LAMBDA (a:
+                                               [below[jdict1_var`length] ->
+                                                  (jpair?)]):
+                                       LAMBDA (x:
+                                                 below[jdict1_var`length]):
+                                         red(a(x)))
+                                        (seq(jdict1_var)) #),
+                            jsondata_adtvar),
+               jnumeral(jnumeral1_var):
+                 jnumeral?_fun(jnumeral1_var, jsondata_adtvar),
+               jarray(jarray1_var):
+                 jarray?_fun((# length := length(jarray1_var),
+                                seq
+                                  := (LAMBDA (a:
+                                                [below[jarray1_var`length] ->
+                                                   jsondata]):
+                                        LAMBDA (x:
+                                                  below[jarray1_var`length]):
+                                          red(a(x)))
+                                         (seq(jarray1_var)) #),
+                             jsondata_adtvar)
+            ENDCASES;
+ END jsondata_adt_reduce

@@ -1,0 +1,68 @@
+jsonschema : THEORY
+%json schemas describe the type or grammar of a JSON object.  An data object might be
+%a dictionary with required and optional fields, each with its type,
+%a numeral that is uint8/16/32/64 or int8/16/32/64,
+%an array of min/max length and element type,
+  BEGIN
+
+  intwidth: TYPE = {u : uint8 | u = 8 OR u = 16 OR u = 32 OR u = 32}
+  
+  IMPORTING finite_map
+  
+  jsonschematype: DATATYPE
+   BEGIN
+   jstrtype: jstrtype?
+   jinttype(signed: bool, width : intwidth): juinttype?
+   jdicttype(required : fmap[string, jsonschematype],
+             optional : fmap[string, jsonschematype]): jdicttype?
+   jarraytype(min : uint32, max : uint32,  elemtype : jsonschematype): jarraytype?	     
+  END jsonschematype
+
+  IMPORTING jsondata
+
+  R, S, T: var jsconschematype
+  x, y, z  : jsondata
+
+  checknum(signed : bool, width: intwidth, number : int): bool = 
+    IF signed
+     THEN -exp2(width - 1) <= number AND number < exp2(width - 1)
+     ELSE 0 <= number AND number < exp2(width)
+     ENDIF
+
+  getkey_rec(key : string, kvseq : finseq[(jpair?)], n : upto(kvseq`length)): RECURSIVE lift[(jpair?)]
+  = IF n = 0 THEN bottom
+      ELSIF kvseq`seq(n-1)`key = key THEN kvseq`seq(n-1)
+      ELSE getkey_rec(key, kvseq, n-1)
+      ENDIF
+      MEASURE n
+
+  getkey(key : string, kvseq : finseq[(jpair?)]): lift[jsondata]
+   = getkey_rec(key, kvseq, kvseq`length)
+
+  check(R, x): RECURSIVE bool
+   = (CASES R OF
+       jstrtype: jstrtype?(x),
+       juinttype(signed, width):
+           jnumeral?(x) AND checknum(signed, width, numval(x)),
+       jdicttype(req, opt):
+          jdict?(x) AND %x must have the required keys with the right value type
+          (FORALL (r | r ∈ req`domain):
+	    LET jp = getkey(r, x`contents)
+	    IN up?(jp) AND check(req`map(r), down(jp)`value))
+          AND  %x can have the optional keys which must then have the right value type
+	  (FORALL (op | op ∈ opt`domain):
+	    LET jp = getkey(op, x`contents)
+	    IN bottom?(jp) OR check(opt`map(op), down(jp)`value)),
+       jarraytype(min, max, elemtype): %The length must be between min and max 
+         jarray?(x) AND                 %and each array element must have the elemtype
+	 min <= x`arrval`length  AND
+	 x`arrval`length <= max AND
+	 (FORALL (i : below(x`arrval`length)):
+	    check(elemtype, x`arrval`seq(i)))
+    ENDCASES)
+    MEASURE R BY <<
+	    
+
+          
+
+END jsonschema

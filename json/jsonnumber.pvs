@@ -1,0 +1,11 @@
+jsonnumber: DATATYPE
+  BEGIN
+   juint8(numval : uint8): juint8?
+   juint16(numval : uint16): juint16?
+   juint32(numval : uint32): juint32?
+   juint64(numval : uint64): juint64?
+   jint8(numval : int8): jint8?
+   jint16(numval : int16): jint16?
+   jint32(numval : int32): jint32?
+   jint64(numval : int64): jint64?
+  END jsonnumber

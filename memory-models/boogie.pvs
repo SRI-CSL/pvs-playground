@@ -58,7 +58,8 @@ boogie 	: THEORY
          OR (classtype?(C(cn1)) AND classtype?(C(cn2)) AND 
              (FORALL (fn: fieldname):
                IF bottom?(classvaltype(C(cn1))(fn))
-                THEN bottom?(classvaltype(C(cn2))(fn))
+
+THEN bottom?(classvaltype(C(cn2))(fn))
                 ELSE up?(classvaltype(C(cn2))(fn)) AND 
                      down(classvaltype(C(cn1))(fn)) = %could be <= but usually =
                      down(classvaltype(C(cn2))(fn))
@@ -110,3 +111,7 @@ boogie 	: THEORY
   
 
   End boogie
+
+
+
+

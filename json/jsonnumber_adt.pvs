@@ -1,0 +1,376 @@
+%%% ADT file generated from jsonnumber.pvs
+
+jsonnumber_adt: THEORY
+ BEGIN
+
+  jsonnumber: TYPE
+
+  juint8?, juint16?, juint32?, juint64?, jint8?, jint16?, jint32?, jint64?: [jsonnumber ->
+                                                                               boolean]
+
+  numval: [d: jsonnumber ->
+             {x: int |
+                IF juint8?(d) THEN x >= 0 AND x < exp2(8)
+                ELSE IF juint16?(d) THEN x >= 0 AND x <= exp2(16) - 1
+                     ELSE IF juint32?(d) THEN x >= 0 AND x <= exp2(32) - 1
+                          ELSE IF juint64?(d)
+                                 THEN x >= 0 AND x <= exp2(64) - 1
+                               ELSE IF jint8?(d)
+                                      THEN -exp2(7) <= x AND
+                                            x <= exp2(7) - 1
+                                    ELSE IF jint16?(d)
+                                           THEN -exp2(15) <= x AND
+                                                 x <= exp2(15) - 1
+                                         ELSE IF jint32?(d)
+                                                THEN -exp2(31) <= x AND
+                                                      x <= exp2(31) - 1
+                                              ELSE -exp2(63) <= x AND
+                                                    x <= exp2(63) - 1
+                                              ENDIF
+                                         ENDIF
+                                    ENDIF
+                               ENDIF
+                          ENDIF
+                     ENDIF
+                ENDIF}]
+
+  juint8: [uint8 -> (juint8?)]
+
+  juint16: [uint16 -> (juint16?)]
+
+  juint32: [uint32 -> (juint32?)]
+
+  juint64: [uint64 -> (juint64?)]
+
+  jint8: [int8 -> (jint8?)]
+
+  jint16: [int16 -> (jint16?)]
+
+  jint32: [int32 -> (jint32?)]
+
+  jint64: [int64 -> (jint64?)]
+
+  jsonnumber_ord: [jsonnumber -> upto(7)]
+
+  jsonnumber_ord_defaxiom: AXIOM
+         (FORALL (numval: uint8): jsonnumber_ord(juint8(numval)) = 0)
+     AND (FORALL (numval: uint16): jsonnumber_ord(juint16(numval)) = 1)
+     AND (FORALL (numval: uint32): jsonnumber_ord(juint32(numval)) = 2)
+     AND (FORALL (numval: uint64): jsonnumber_ord(juint64(numval)) = 3)
+     AND (FORALL (numval: int8): jsonnumber_ord(jint8(numval)) = 4)
+     AND (FORALL (numval: int16): jsonnumber_ord(jint16(numval)) = 5)
+     AND (FORALL (numval: int32): jsonnumber_ord(jint32(numval)) = 6)
+     AND FORALL (numval: int64): jsonnumber_ord(jint64(numval)) = 7;
+
+  ord(x: jsonnumber): upto(7) =
+      CASES x
+        OF juint8(juint81_var): 0,
+           juint16(juint161_var): 1,
+           juint32(juint321_var): 2,
+           juint64(juint641_var): 3,
+           jint8(jint81_var): 4,
+           jint16(jint161_var): 5,
+           jint32(jint321_var): 6,
+           jint64(jint641_var): 7
+        ENDCASES
+
+  jsonnumber_juint8_extensionality: AXIOM
+    FORALL (juint8?_var: (juint8?), juint8?_var2: (juint8?)):
+      numval(juint8?_var) = numval(juint8?_var2) IMPLIES
+       juint8?_var = juint8?_var2;
+
+  jsonnumber_juint8_eta: AXIOM
+    FORALL (juint8?_var: (juint8?)):
+      juint8(numval(juint8?_var)) = juint8?_var;
+
+  jsonnumber_juint16_extensionality: AXIOM
+    FORALL (juint16?_var: (juint16?), juint16?_var2: (juint16?)):
+      numval(juint16?_var) = numval(juint16?_var2) IMPLIES
+       juint16?_var = juint16?_var2;
+
+  jsonnumber_juint16_eta: AXIOM
+    FORALL (juint16?_var: (juint16?)):
+      juint16(numval(juint16?_var)) = juint16?_var;
+
+  jsonnumber_juint32_extensionality: AXIOM
+    FORALL (juint32?_var: (juint32?), juint32?_var2: (juint32?)):
+      numval(juint32?_var) = numval(juint32?_var2) IMPLIES
+       juint32?_var = juint32?_var2;
+
+  jsonnumber_juint32_eta: AXIOM
+    FORALL (juint32?_var: (juint32?)):
+      juint32(numval(juint32?_var)) = juint32?_var;
+
+  jsonnumber_juint64_extensionality: AXIOM
+    FORALL (juint64?_var: (juint64?), juint64?_var2: (juint64?)):
+      numval(juint64?_var) = numval(juint64?_var2) IMPLIES
+       juint64?_var = juint64?_var2;
+
+  jsonnumber_juint64_eta: AXIOM
+    FORALL (juint64?_var: (juint64?)):
+      juint64(numval(juint64?_var)) = juint64?_var;
+
+  jsonnumber_jint8_extensionality: AXIOM
+    FORALL (jint8?_var: (jint8?), jint8?_var2: (jint8?)):
+      numval(jint8?_var) = numval(jint8?_var2) IMPLIES
+       jint8?_var = jint8?_var2;
+
+  jsonnumber_jint8_eta: AXIOM
+    FORALL (jint8?_var: (jint8?)): jint8(numval(jint8?_var)) = jint8?_var;
+
+  jsonnumber_jint16_extensionality: AXIOM
+    FORALL (jint16?_var: (jint16?), jint16?_var2: (jint16?)):
+      numval(jint16?_var) = numval(jint16?_var2) IMPLIES
+       jint16?_var = jint16?_var2;
+
+  jsonnumber_jint16_eta: AXIOM
+    FORALL (jint16?_var: (jint16?)):
+      jint16(numval(jint16?_var)) = jint16?_var;
+
+  jsonnumber_jint32_extensionality: AXIOM
+    FORALL (jint32?_var: (jint32?), jint32?_var2: (jint32?)):
+      numval(jint32?_var) = numval(jint32?_var2) IMPLIES
+       jint32?_var = jint32?_var2;
+
+  jsonnumber_jint32_eta: AXIOM
+    FORALL (jint32?_var: (jint32?)):
+      jint32(numval(jint32?_var)) = jint32?_var;
+
+  jsonnumber_jint64_extensionality: AXIOM
+    FORALL (jint64?_var: (jint64?), jint64?_var2: (jint64?)):
+      numval(jint64?_var) = numval(jint64?_var2) IMPLIES
+       jint64?_var = jint64?_var2;
+
+  jsonnumber_jint64_eta: AXIOM
+    FORALL (jint64?_var: (jint64?)):
+      jint64(numval(jint64?_var)) = jint64?_var;
+
+  jsonnumber_numval_juint8: AXIOM
+    FORALL (juint81_var: uint8): numval(juint8(juint81_var)) = juint81_var;
+
+  jsonnumber_numval_juint16: AXIOM
+    FORALL (juint161_var: uint16):
+      numval(juint16(juint161_var)) = juint161_var;
+
+  jsonnumber_numval_juint32: AXIOM
+    FORALL (juint321_var: uint32):
+      numval(juint32(juint321_var)) = juint321_var;
+
+  jsonnumber_numval_juint64: AXIOM
+    FORALL (juint641_var: uint64):
+      numval(juint64(juint641_var)) = juint641_var;
+
+  jsonnumber_numval_jint8: AXIOM
+    FORALL (jint81_var: int8): numval(jint8(jint81_var)) = jint81_var;
+
+  jsonnumber_numval_jint16: AXIOM
+    FORALL (jint161_var: int16): numval(jint16(jint161_var)) = jint161_var;
+
+  jsonnumber_numval_jint32: AXIOM
+    FORALL (jint321_var: int32): numval(jint32(jint321_var)) = jint321_var;
+
+  jsonnumber_numval_jint64: AXIOM
+    FORALL (jint641_var: int64): numval(jint64(jint641_var)) = jint641_var;
+
+  jsonnumber_inclusive: AXIOM
+    FORALL (jsonnumber_var: jsonnumber):
+           juint8?(jsonnumber_var) OR juint16?(jsonnumber_var)
+       OR juint32?(jsonnumber_var) OR juint64?(jsonnumber_var)
+       OR jint8?(jsonnumber_var) OR jint16?(jsonnumber_var)
+       OR jint32?(jsonnumber_var) OR jint64?(jsonnumber_var);
+
+  jsonnumber_induction: AXIOM
+    FORALL (p: [jsonnumber -> boolean]):
+      (     (FORALL (juint81_var: uint8): p(juint8(juint81_var)))
+        AND (FORALL (juint161_var: uint16): p(juint16(juint161_var)))
+        AND (FORALL (juint321_var: uint32): p(juint32(juint321_var)))
+        AND (FORALL (juint641_var: uint64): p(juint64(juint641_var)))
+        AND (FORALL (jint81_var: int8): p(jint8(jint81_var)))
+        AND (FORALL (jint161_var: int16): p(jint16(jint161_var)))
+        AND (FORALL (jint321_var: int32): p(jint32(jint321_var)))
+        AND FORALL (jint641_var: int64): p(jint64(jint641_var)))
+       IMPLIES FORALL (jsonnumber_var: jsonnumber): p(jsonnumber_var);
+
+  subterm(x: jsonnumber, y: jsonnumber):  boolean = x = y;
+
+  <<:  (strict_well_founded?[jsonnumber]) =
+      LAMBDA (x: jsonnumber, y: jsonnumber): FALSE;
+
+  jsonnumber_well_founded: AXIOM strict_well_founded?[jsonnumber](<<);
+
+  reduce_nat(juint8?_fun: [uint8 -> nat], juint16?_fun: [uint16 -> nat],
+             juint32?_fun: [uint32 -> nat], juint64?_fun: [uint64 -> nat],
+             jint8?_fun: [int8 -> nat], jint16?_fun: [int16 -> nat],
+             jint32?_fun: [int32 -> nat], jint64?_fun: [int64 -> nat]):
+        [jsonnumber -> nat] =
+      LAMBDA (jsonnumber_adtvar: jsonnumber):
+        LET red: [jsonnumber -> nat] =
+              reduce_nat(juint8?_fun, juint16?_fun, juint32?_fun,
+                         juint64?_fun, jint8?_fun, jint16?_fun,
+                         jint32?_fun, jint64?_fun)
+          IN
+          CASES jsonnumber_adtvar
+            OF juint8(juint81_var): juint8?_fun(juint81_var),
+               juint16(juint161_var): juint16?_fun(juint161_var),
+               juint32(juint321_var): juint32?_fun(juint321_var),
+               juint64(juint641_var): juint64?_fun(juint641_var),
+               jint8(jint81_var): jint8?_fun(jint81_var),
+               jint16(jint161_var): jint16?_fun(jint161_var),
+               jint32(jint321_var): jint32?_fun(jint321_var),
+               jint64(jint641_var): jint64?_fun(jint641_var)
+            ENDCASES;
+
+  REDUCE_nat(juint8?_fun: [[uint8, jsonnumber] -> nat],
+             juint16?_fun: [[uint16, jsonnumber] -> nat],
+             juint32?_fun: [[uint32, jsonnumber] -> nat],
+             juint64?_fun: [[uint64, jsonnumber] -> nat],
+             jint8?_fun: [[int8, jsonnumber] -> nat],
+             jint16?_fun: [[int16, jsonnumber] -> nat],
+             jint32?_fun: [[int32, jsonnumber] -> nat],
+             jint64?_fun: [[int64, jsonnumber] -> nat]):
+        [jsonnumber -> nat] =
+      LAMBDA (jsonnumber_adtvar: jsonnumber):
+        LET red: [jsonnumber -> nat] =
+              REDUCE_nat(juint8?_fun, juint16?_fun, juint32?_fun,
+                         juint64?_fun, jint8?_fun, jint16?_fun,
+                         jint32?_fun, jint64?_fun)
+          IN
+          CASES jsonnumber_adtvar
+            OF juint8(juint81_var):
+                 juint8?_fun(juint81_var, jsonnumber_adtvar),
+               juint16(juint161_var):
+                 juint16?_fun(juint161_var, jsonnumber_adtvar),
+               juint32(juint321_var):
+                 juint32?_fun(juint321_var, jsonnumber_adtvar),
+               juint64(juint641_var):
+                 juint64?_fun(juint641_var, jsonnumber_adtvar),
+               jint8(jint81_var):
+                 jint8?_fun(jint81_var, jsonnumber_adtvar),
+               jint16(jint161_var):
+                 jint16?_fun(jint161_var, jsonnumber_adtvar),
+               jint32(jint321_var):
+                 jint32?_fun(jint321_var, jsonnumber_adtvar),
+               jint64(jint641_var):
+                 jint64?_fun(jint641_var, jsonnumber_adtvar)
+            ENDCASES;
+
+  reduce_ordinal(juint8?_fun: [uint8 -> ordinal],
+                 juint16?_fun: [uint16 -> ordinal],
+                 juint32?_fun: [uint32 -> ordinal],
+                 juint64?_fun: [uint64 -> ordinal],
+                 jint8?_fun: [int8 -> ordinal],
+                 jint16?_fun: [int16 -> ordinal],
+                 jint32?_fun: [int32 -> ordinal],
+                 jint64?_fun: [int64 -> ordinal]):
+        [jsonnumber -> ordinal] =
+      LAMBDA (jsonnumber_adtvar: jsonnumber):
+        LET red: [jsonnumber -> ordinal] =
+              reduce_ordinal(juint8?_fun, juint16?_fun, juint32?_fun,
+                             juint64?_fun, jint8?_fun, jint16?_fun,
+                             jint32?_fun, jint64?_fun)
+          IN
+          CASES jsonnumber_adtvar
+            OF juint8(juint81_var): juint8?_fun(juint81_var),
+               juint16(juint161_var): juint16?_fun(juint161_var),
+               juint32(juint321_var): juint32?_fun(juint321_var),
+               juint64(juint641_var): juint64?_fun(juint641_var),
+               jint8(jint81_var): jint8?_fun(jint81_var),
+               jint16(jint161_var): jint16?_fun(jint161_var),
+               jint32(jint321_var): jint32?_fun(jint321_var),
+               jint64(jint641_var): jint64?_fun(jint641_var)
+            ENDCASES;
+
+  REDUCE_ordinal(juint8?_fun: [[uint8, jsonnumber] -> ordinal],
+                 juint16?_fun: [[uint16, jsonnumber] -> ordinal],
+                 juint32?_fun: [[uint32, jsonnumber] -> ordinal],
+                 juint64?_fun: [[uint64, jsonnumber] -> ordinal],
+                 jint8?_fun: [[int8, jsonnumber] -> ordinal],
+                 jint16?_fun: [[int16, jsonnumber] -> ordinal],
+                 jint32?_fun: [[int32, jsonnumber] -> ordinal],
+                 jint64?_fun: [[int64, jsonnumber] -> ordinal]):
+        [jsonnumber -> ordinal] =
+      LAMBDA (jsonnumber_adtvar: jsonnumber):
+        LET red: [jsonnumber -> ordinal] =
+              REDUCE_ordinal(juint8?_fun, juint16?_fun, juint32?_fun,
+                             juint64?_fun, jint8?_fun, jint16?_fun,
+                             jint32?_fun, jint64?_fun)
+          IN
+          CASES jsonnumber_adtvar
+            OF juint8(juint81_var):
+                 juint8?_fun(juint81_var, jsonnumber_adtvar),
+               juint16(juint161_var):
+                 juint16?_fun(juint161_var, jsonnumber_adtvar),
+               juint32(juint321_var):
+                 juint32?_fun(juint321_var, jsonnumber_adtvar),
+               juint64(juint641_var):
+                 juint64?_fun(juint641_var, jsonnumber_adtvar),
+               jint8(jint81_var):
+                 jint8?_fun(jint81_var, jsonnumber_adtvar),
+               jint16(jint161_var):
+                 jint16?_fun(jint161_var, jsonnumber_adtvar),
+               jint32(jint321_var):
+                 jint32?_fun(jint321_var, jsonnumber_adtvar),
+               jint64(jint641_var):
+                 jint64?_fun(jint641_var, jsonnumber_adtvar)
+            ENDCASES;
+ END jsonnumber_adt
+
+jsonnumber_adt_reduce[range: TYPE]: THEORY
+ BEGIN
+
+  IMPORTING jsonnumber_adt
+
+  reduce(juint8?_fun: [uint8 -> range], juint16?_fun: [uint16 -> range],
+         juint32?_fun: [uint32 -> range], juint64?_fun: [uint64 -> range],
+         jint8?_fun: [int8 -> range], jint16?_fun: [int16 -> range],
+         jint32?_fun: [int32 -> range], jint64?_fun: [int64 -> range]):
+        [jsonnumber -> range] =
+      LAMBDA (jsonnumber_adtvar: jsonnumber):
+        LET red: [jsonnumber -> range] =
+              reduce(juint8?_fun, juint16?_fun, juint32?_fun, juint64?_fun,
+                     jint8?_fun, jint16?_fun, jint32?_fun, jint64?_fun)
+          IN
+          CASES jsonnumber_adtvar
+            OF juint8(juint81_var): juint8?_fun(juint81_var),
+               juint16(juint161_var): juint16?_fun(juint161_var),
+               juint32(juint321_var): juint32?_fun(juint321_var),
+               juint64(juint641_var): juint64?_fun(juint641_var),
+               jint8(jint81_var): jint8?_fun(jint81_var),
+               jint16(jint161_var): jint16?_fun(jint161_var),
+               jint32(jint321_var): jint32?_fun(jint321_var),
+               jint64(jint641_var): jint64?_fun(jint641_var)
+            ENDCASES;
+
+  REDUCE(juint8?_fun: [[uint8, jsonnumber] -> range],
+         juint16?_fun: [[uint16, jsonnumber] -> range],
+         juint32?_fun: [[uint32, jsonnumber] -> range],
+         juint64?_fun: [[uint64, jsonnumber] -> range],
+         jint8?_fun: [[int8, jsonnumber] -> range],
+         jint16?_fun: [[int16, jsonnumber] -> range],
+         jint32?_fun: [[int32, jsonnumber] -> range],
+         jint64?_fun: [[int64, jsonnumber] -> range]):
+        [jsonnumber -> range] =
+      LAMBDA (jsonnumber_adtvar: jsonnumber):
+        LET red: [jsonnumber -> range] =
+              REDUCE(juint8?_fun, juint16?_fun, juint32?_fun, juint64?_fun,
+                     jint8?_fun, jint16?_fun, jint32?_fun, jint64?_fun)
+          IN
+          CASES jsonnumber_adtvar
+            OF juint8(juint81_var):
+                 juint8?_fun(juint81_var, jsonnumber_adtvar),
+               juint16(juint161_var):
+                 juint16?_fun(juint161_var, jsonnumber_adtvar),
+               juint32(juint321_var):
+                 juint32?_fun(juint321_var, jsonnumber_adtvar),
+               juint64(juint641_var):
+                 juint64?_fun(juint641_var, jsonnumber_adtvar),
+               jint8(jint81_var):
+                 jint8?_fun(jint81_var, jsonnumber_adtvar),
+               jint16(jint161_var):
+                 jint16?_fun(jint161_var, jsonnumber_adtvar),
+               jint32(jint321_var):
+                 jint32?_fun(jint321_var, jsonnumber_adtvar),
+               jint64(jint641_var):
+                 jint64?_fun(jint641_var, jsonnumber_adtvar)
+            ENDCASES;
+ END jsonnumber_adt_reduce

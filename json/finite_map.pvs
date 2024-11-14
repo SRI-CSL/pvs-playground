@@ -1,0 +1,24 @@
+finite_map[A, B: TYPE]  : THEORY
+%finite maps map a finite subset of A to B.  
+  BEGIN
+   fmap: TYPE = [# domain : finite_set[A],
+                   map : [(domain) -> B]
+		   #]
+
+   emptymap: fmap = (# domain := emptyset[A], map := (LAMBDA (x: (emptyset[A])): choose(fullset[B])) #)
+
+   F, G : VAR fmap
+   x, y, z: VAR A
+   u, v, w: VAR B
+
+   defined?(F, x): bool = member(x, F`domain)
+
+   apply(F, x): lift[B] = IF defined?(F, x) THEN up(F`map(x)) ELSE bottom ENDIF
+     
+   add(x, u, (F | x ∉ F`domain)): fmap
+    = F WITH [`domain := add(x, F`domain),
+              `map(x) |-> u]
+   
+     
+
+  END finite_map
