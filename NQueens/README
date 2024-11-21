@@ -1,0 +1,42 @@
+Title: Formalizing N-Queens in PVS
+Author: Natarajan Shankar
+
+This directory contains three attempts at capturing an N-Queens solver.
+The first of these was triggered by a challenge from Rustan Leino based on
+a Verification Competition problem (that happened to be posed by Shankar).
+The problem is to check if there is a safe placement of N queens for any
+given N, and to return a solution if there is one.  The board is mapped
+as a map from below(N) to below(n) so that if board(i) = j, then there is
+a queen placed in the j'th row of the i'th column of the board.  The
+extends predicate checks that two boards agree on the entries for columns
+0 to i-1.  The option type lift[T] contains either bottom or up(x) for some
+x of type T.  The qlift?(p)(x) predicate ensures that x is bottom iff
+there is no y such that p(y), and if x is up(y), then p(y) holds.  This
+predicate thus captures the meaning of the returned option value.  One
+board B is a good extension of another board A for index i and board predicate p,
+if p(B) holds and B and A agree on columns 0..i-1.  The search procedure attempts
+to find suitable position j for the queen on column i to continue the search with
+operation f.  The index j indicates that all the indices j' below j did not lead
+to successful board placements.  The subtyping on the continuation f ensures
+that it completes the search from a given partial board to return bottom or
+a good extended board.  If j = N, then the search has failed and the result
+is bottom.  Otherwise, board B is obtained from A by placing the queen for column
+i at row j.  The continuation f is invoked on board B.  If it fails, the search
+is continued with index j+1.  If it succeeds, the successful result is returned.
+The scan procedure iterates over the columns to invoke search on each column
+with scan on column i+1 as the continuation.  Note that the search predicate is 
+just a parameter p.  The root operation findboard starts the scan at column 0, and
+the operation nqueen finally uses findboard with the goodqueen? predicate.
+The theory test_queens shows execution of nqueen with N = 10.  This procedure is
+slow because the search predicate is only tested after a full assignment where
+the failure might already be inevitable in a partial assignment.  Note that even
+though the goodqueen? predicate contains (bounded) quantifiers, it is executable.  
+
+
+The efficiency problem is fixed in the theory nqueenb where the search operation is
+modified so that the predicate p is checked on the partial assignment B before
+the search is continued.  The execution this time is considerably more efficient
+and this version can solve the problem for N = 20 in 18 seconds.  The nqueenb
+version has an inefficiency that prevents the update to A in search from being
+executed in place since the variable A is still "live".  This is fixed in nqueenbb.
+The solution for N = 20 is about 10% faster.  

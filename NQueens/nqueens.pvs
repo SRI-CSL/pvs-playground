@@ -1,0 +1,100 @@
+nqueens   [N: nat ]
+		: THEORY
+
+  BEGIN
+
+  %Boards are just N-element arrays on the subrange 0..N-1. 
+
+   board : TYPE = [below(N)->below(N)]
+   A, B, queen, new_queen: VAR board
+
+   i, j, k: VAR upto(N)
+
+   %Board queen extends A from point i onwards
+
+   extends(i, A, queen): bool =
+      (FORALL (j: below(i)): A(j) = queen(j))
+
+   p: VAR [board -> bool]
+
+   %A lifted element of type T is either bottom or up(y), and qlift?(p)
+   %ensures that bottom is returned only when there is no board satisfying p,
+   %and up(y) is returned only when y satisfies p.
+
+   qlift?(p)(x : lift[board]): bool =
+     CASES x OF
+      bottom: (FORALL queen: NOT p(queen)),
+      up(queen): p(queen)
+     ENDCASES
+
+   %A good extension is one that satisfies p
+
+   good_extension?(i, A, p)(B): bool =
+     (p(B) AND extends(i, A, B))
+
+   %search is a higher-order operation that iterates over the values of j
+   %assigned to position i of the board to check if f can be used to find
+   %a good extension
+
+   search((i: below(N)), A, p, 
+           (j | (FORALL (k: below(j), B): NOT good_extension?(i+1, A WITH [i:= k], p)(B))),
+           (f: [B: board -> (qlift?(good_extension?(i+1, B, p)))])): RECURSIVE
+     (qlift?(good_extension?(i, A, p))) =
+    (IF j = N THEN bottom
+      ELSE LET B = A WITH [i := j]
+	       IN CASES f(B) OF
+		         bottom: search(i, A, p, j+1, f),
+			 up(C): up(C)
+ 	          ENDCASES
+     ENDIF)
+     MEASURE N - j
+
+   %scan iterates over the positions until a good board extending the input
+   %is found
+
+   scan(i, p)(queen): RECURSIVE (qlift?(good_extension?(i, queen, p)))
+     =
+    (IF i = N THEN IF p(queen) THEN up(queen) ELSE bottom ENDIF
+      ELSE search(i, queen, p, 0, scan(i+1, p))
+      ENDIF)
+      MEASURE N - i
+
+   %findboard starts that scan at 0 to return a good board when one exists. 
+
+    findboard(p): (qlift?(p)) =
+      scan(0, p)(LAMBDA (i: below(N)): 0)
+
+   goodqueen?(queen): bool =
+     (FORALL (i, j: below(N)):  i /= j IMPLIES
+         (queen(i) /= queen(j) AND
+	  (i - j /= queen(i) - queen(j)) AND
+	  (j - i /= queen(i) - queen(j))))
+
+   nqueen: (qlift?(goodqueen?)) = findboard(goodqueen?)
+	  
+      
+
+  END nqueens
+
+test_queens: THEORY
+BEGIN
+  IMPORTING nqueens
+
+  findqueen(N: nat): (qlift?[N](goodqueen?)) = nqueen
+
+
+% <PVSio> findqueen(10);
+% Evaluation took:
+%   86.384 seconds of real time
+%   86.303014 seconds of total run time (86.188014 user, 0.115000 system)
+%   [ Real times consist of 0.757 seconds GC time, and 85.627 seconds non-GC time. ]
+%   [ Run times consist of 0.756 seconds GC time, and 85.548 seconds non-GC time. ]
+%   99.91% CPU
+%   2 forms interpreted
+%   207,325,940,006 processor cycles
+%   33,078,753,744 bytes consed
+  
+% ==>
+% up([: 0, 2, 5, 7, 9, 4, 8, 1, 3, 6 :])
+
+END test_queens

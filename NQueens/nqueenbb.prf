@@ -1,0 +1,412 @@
+(|nqueenbb|
+ (|eqbelow_TCC1| 0
+  (|eqbelow_TCC1-1| NIL 3941119946 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|eqbelow| SUBTYPE "nqueenbb.j" "below(nqueenbb.N)")))
+ (|eqbelow_TCC2| 0
+  (|eqbelow_TCC2-1| NIL 3941119946 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|eqbelow| SUBTYPE
+              "(LAMBDA A, B: FORALL (j: naturalnumbers.below(nqueenbb.i)): nqueenbb.A(j) = nqueenbb.B(j))"
+              "equivalence[board]")))
+ (|eqbelow_update_TCC1| 0
+  (|eqbelow_update_TCC1-1| NIL 3941119946 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|eqbelow_update| SUBTYPE "nqueenbb.i" "upto(nqueenbb.N)")))
+ (|eqbelow_update| 0
+  (|eqbelow_update-1| NIL 3941120464 ("" (GRIND) NIL NIL) NIL SHOSTAK))
+ (|eqbelow_good_ext| 0
+  (|eqbelow_good_ext-1| NIL 3941119948
+   ("" (SKEEP* :PREDS? T) (("" (LAZY-GRIND) NIL NIL)) NIL) NIL SHOSTAK))
+ (|search_TCC1| 0
+  (|search_TCC1-1| NIL 3927905598 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|search| SUBTYPE "nqueenbb.ii" "below(nqueenbb.N)")))
+ (|search_TCC2| 0
+  (|search_TCC1-1| |nil| 3504606239 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|search| SUBTYPE "(number_fields.+)(nqueenbb.i, 1)" "upto(nqueenbb.N)")))
+ (|search_TCC3| 0
+  (|search_TCC2-1| |nil| 3504606239 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|search| SUBTYPE "nqueenbb.k" "below(nqueenbb.N)")))
+ (|search_TCC4| 0
+  (|search_TCC4-1| NIL 3928056793 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|search| SUBTYPE "nqueenbb.ii" "below(nqueenbb.N)")))
+ (|search_TCC5| 0
+  (|search_TCC4-1| |nil| 3504606239 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|search| SUBTYPE "(number_fields.+)(nqueenbb.i, 1)" "upto(nqueenbb.N)")))
+ (|search_TCC6| 0
+  (|search_TCC6-1| NIL 3941121075 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|search| SUBTYPE "nqueenbb.i" "upto(nqueenbb.N)")))
+ (|search_TCC7| 0
+  (|search_TCC3-1| |nil| 3504606239 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|search| SUBTYPE "(number_fields.-)(nqueenbb.N, nqueenbb.j)"
+             "naturalnumber")))
+ (|search_TCC8| 0
+  (|search_TCC6-1| |nil| 3504606239
+   ("" (SKEEP :PREDS? T)
+    (("" (EXPAND "qlift?")
+      (("" (EXPAND "good_extension?")
+        (("" (EXPAND "extends")
+          (("" (SKEEP)
+            (("" (INST - "queen(i)" "queen")
+              (("1" (ASSERT) (("1" (LAZY-GRIND) NIL NIL)) NIL)
+               ("2" (ASSERT) NIL NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|search| SUBTYPE "lift_adt[board].bottom"
+             "(nqueenbb.qlift?(nqueenbb.good_extension?(nqueenbb.i, nqueenbb.A, nqueenbb.p)))")))
+ (|search_TCC9| 0
+  (|search_TCC9-1| NIL 3928056793
+   ("" (SKEEP* :PREDS? T)
+    (("" (INST - "B" "A" "i")
+      (("" (GROUND)
+        (("1" (INST - "ii") (("1" (GROUND) (("1" (INST?) NIL NIL)) NIL)) NIL)
+         ("2" (GRIND) NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|search| SUBTYPE "nqueenbb.B"
+             "{B: nqueenbb.board | FORALL (ii: naturalnumbers.below((number_fields.+)(nqueenbb.i, 1))): nqueenbb.p(B)(ii)}")))
+ (|search_TCC10| 0
+  (|search_TCC10-1| NIL 3941066977
+   ("" (SKEEP* :PREDS? T)
+    (("" (INST - "A" "B" "i")
+      (("" (GROUND)
+        (("1" (INST - "ii") (("1" (GROUND) (("1" (INST?) NIL NIL)) NIL)) NIL)
+         ("2" (USE "eqbelow_update") (("2" (ASSERT) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|search| SUBTYPE "nqueenbb.B"
+             "{A: board | FORALL (ii: naturalnumbers.below(nqueenbb.i)): nqueenbb.p(A)(ii)}")))
+ (|search_TCC11| 0
+  (|search_TCC7-1| |nil| 3504606239
+   ("" (SKEEP* :PREDS? T)
+    (("" (ASSERT)
+      (("" (SKEEP* :PREDS? T)
+        (("" (INST -6 "k" "B_1")
+          (("1" (GROUND) NIL NIL)
+           ("2" (TYPEPRED "f(B)")
+            (("2" (EXPAND "qlift?")
+              (("2" (INST - "B_1") (("2" (ASSERT) NIL NIL)) NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|search| SUBTYPE "(number_fields.+)(nqueenbb.j, 1)"
+             "{j: upto(nqueenbb.N) | FORALL (k: naturalnumbers.below(j), B_1: board): (booleans.NOT)(nqueenbb.good_extension?((number_fields.+)(1, nqueenbb.i), nqueenbb.B WITH [(nqueenbb.i) := k], nqueenbb.p)(B_1))}")))
+ (|search_TCC12| 0
+  (|search_TCC8-1| |nil| 3504610279 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|search| TERMINATION
+             "nqueenbb.search(nqueenbb.i, nqueenbb.p, nqueenbb.B, (number_fields.+)(nqueenbb.j, 1), nqueenbb.f)"
+             "NIL")))
+ (|search_TCC13| 0
+  (|search_TCC13-1| NIL 3941066977
+   ("" (SKEEP* :PREDS? T)
+    (("" (TYPEPRED "v(i, p, B, j + 1, f)")
+      (("1" (EXPAND "qlift?")
+        (("1" (LIFT-IF)
+          (("1" (GROUND)
+            (("1" (SKEEP)
+              (("1" (INST - "queen")
+                (("1" (LEMMA "eqbelow_good_ext")
+                  (("1" (INST - "A" "B" "queen" "i" "p")
+                    (("1" (GROUND)
+                      (("1" (USE "eqbelow_update") (("1" (ASSERT) NIL NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (LEMMA "eqbelow_good_ext")
+              (("2" (INST - "A" "B" "down(v(i, p, B, 1 + j, f))" "i" "p")
+                (("1" (GROUND)
+                  (("1" (USE "eqbelow_update") (("1" (ASSERT) NIL NIL)) NIL))
+                  NIL)
+                 ("2" (USE "search_TCC11")
+                  (("2" (GROUND) (("2" (INST?) (("2" (GROUND) NIL NIL)) NIL))
+                    NIL))
+                  NIL)
+                 ("3" (USE "search_TCC10")
+                  (("3" (GROUND) (("3" (INST?) (("3" (GROUND) NIL NIL)) NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (USE "search_TCC11")
+        (("2" (GROUND) (("2" (INST?) (("2" (GROUND) NIL NIL)) NIL)) NIL)) NIL)
+       ("3" (USE "search_TCC10")
+        (("3" (GROUND) (("3" (INST?) (("3" (GROUND) NIL NIL)) NIL)) NIL)) NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|search| SUBTYPE
+             "nqueenbb.search(nqueenbb.i, nqueenbb.p, nqueenbb.B, (number_fields.+)(nqueenbb.j, 1), nqueenbb.f)"
+             "(nqueenbb.qlift?(nqueenbb.good_extension?(nqueenbb.i, nqueenbb.A, nqueenbb.p)))")))
+ (|search_TCC14| 0
+  (|search_TCC9-1| |nil| 3758159714
+   ("" (SKEEP* :PREDS? T)
+    (("" (TYPEPRED "f(B)")
+      (("" (EXPAND "qlift?")
+        (("" (GROUND)
+          (("" (HIDE -6)
+            (("" (EXPAND "good_extension?")
+              (("" (GROUND)
+                (("1" (REPLACE -9) (("1" (ASSERT) NIL NIL)) NIL)
+                 ("2" (HIDE -1 -4 -5) (("2" (LAZY-GRIND) NIL NIL)) NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|search| SUBTYPE "lift_adt[board].up(nqueenbb.C)"
+             "(nqueenbb.qlift?(nqueenbb.good_extension?(nqueenbb.i, nqueenbb.A, nqueenbb.p)))")))
+ (|search_TCC15| 0
+  (|search_TCC15-1| NIL 3941066977
+   ("" (SKEEP* :PREDS? T)
+    (("" (INST? -4) (("" (INST - "A" "B" "i") (("" (LAZY-GRIND) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|search| SUBTYPE "nqueenbb.B"
+             "{A: board | FORALL (ii: naturalnumbers.below(nqueenbb.i)): nqueenbb.p(A)(ii)}")))
+ (|search_TCC16| 0
+  (|search_TCC10-1| NIL 3927734739
+   ("" (SKEEP* :PREDS? T)
+    (("" (GROUND)
+      (("" (SKEEP* :PREDS? T)
+        (("" (INST -7 "k" "B_1")
+          (("1" (LEMMA "eqbelow_good_ext")
+            (("1" (INST - "A" "B" "B_1" "i+1" "p") (("1" (GROUND) NIL NIL))
+              NIL))
+            NIL)
+           ("2" (EXPAND "good_extension?")
+            (("2" (GROUND)
+              (("2" (INST -5 "B_1" "B" "i+1")
+                (("2" (GROUND)
+                  (("1" (LAZY-GRIND) NIL NIL)
+                   ("2" (TYPEPRED "eqbelow(1 + i)")
+                    (("2" (EXPAND "equivalence?")
+                      (("2" (GROUND)
+                        (("2" (EXPAND "symmetric?")
+                          (("2" (INST?) (("2" (GROUND) NIL NIL)) NIL)) NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|search| SUBTYPE "(number_fields.+)(nqueenbb.j, 1)"
+             "{j: upto(nqueenbb.N) | FORALL (k: naturalnumbers.below(j), B_1: board): (booleans.NOT)(nqueenbb.good_extension?((number_fields.+)(1, nqueenbb.i), nqueenbb.B WITH [(nqueenbb.i) := k], nqueenbb.p)(B_1))}")))
+ (|search_TCC17| 0
+  (|search_TCC11-1| NIL 3927762617 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|search| TERMINATION
+             "nqueenbb.search(nqueenbb.i, nqueenbb.p, nqueenbb.B, (number_fields.+)(nqueenbb.j, 1), nqueenbb.f)"
+             "NIL")))
+ (|search_TCC18| 0
+  (|search_TCC18-1| NIL 3941066977
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(i, p, B, j + 1, f)")
+      (("1" (EXPAND "qlift?")
+        (("1" (LIFT-IF)
+          (("1" (GROUND)
+            (("1" (LAZY-GRIND) NIL NIL) ("2" (LAZY-GRIND) NIL NIL)) NIL))
+          NIL))
+        NIL)
+       ("2" (USE "search_TCC16")
+        (("2" (ASSERT) (("2" (INST?) (("2" (GROUND) NIL NIL)) NIL)) NIL)) NIL)
+       ("3" (USE "search_TCC15")
+        (("3" (GROUND) (("3" (INST?) (("3" (GROUND) NIL NIL)) NIL)) NIL)) NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|search| SUBTYPE
+             "nqueenbb.search(nqueenbb.i, nqueenbb.p, nqueenbb.B, (number_fields.+)(nqueenbb.j, 1), nqueenbb.f)"
+             "(nqueenbb.qlift?(nqueenbb.good_extension?(nqueenbb.i, nqueenbb.A, nqueenbb.p)))")))
+ (|search_TCC19| 0
+  (|search_TCC10-1| |nil| 3758159714 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|search| SUBTYPE "nqueenbb.j" "below(nqueenbb.N)")))
+ (|scan_TCC1| 0
+  (|scan_TCC1-1| |nil| 3504606239 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|scan| SUBTYPE "(number_fields.-)(nqueenbb.N, nqueenbb.i)"
+           "naturalnumber")))
+ (|scan_TCC2| 0
+  (|scan_TCC2-1| |nil| 3504606239 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|scan| SUBTYPE
+           "lift_adt[{queen | FORALL (ii: naturalnumbers.below(nqueenbb.i)): nqueenbb.p(nqueenbb.queen)(ii)}].up(nqueenbb.queen)"
+           "(nqueenbb.qlift?(nqueenbb.good_extension?(nqueenbb.i, nqueenbb.queen, nqueenbb.p)))")))
+ (|scan_TCC3| 0
+  (|scan_TCC3-1| NIL 3941120461 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|scan| SUBTYPE "nqueenbb.i" "below(nqueenbb.N)")))
+ (|scan_TCC4| 0
+  (|scan_TCC5-1| |nil| 3504606239 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|scan| SUBTYPE "0"
+           "{j: upto(nqueenbb.N) | FORALL (k: naturalnumbers.below(j), B: board): (booleans.NOT)(nqueenbb.good_extension?((number_fields.+)(1, nqueenbb.i), nqueenbb.queen WITH [(nqueenbb.i) := k], nqueenbb.p)(B))}")))
+ (|scan_TCC5| 0
+  (|scan_TCC6-1| |nil| 3504606239 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|scan| SUBTYPE "(number_fields.+)(nqueenbb.i, 1)" "upto(nqueenbb.N)")))
+ (|scan_TCC6| 0
+  (|scan_TCC7-1| |nil| 3504606239 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|scan| TERMINATION
+           "nqueenbb.scan((number_fields.+)(nqueenbb.i, 1), nqueenbb.p)"
+           "NIL")))
+ (|findboard_TCC1| 0
+  (|findboard_TCC1-1| |nil| 3504642677 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|findboard| SUBTYPE "0" "below(nqueenbb.N)")))
+ (|findboard_TCC2| 0
+  (|findboard_TCC2-1| NIL 3927734739 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|findboard| SUBTYPE "LAMBDA (i: naturalnumbers.below(nqueenbb.N)): 0"
+                "{queen: board | FORALL (ii: naturalnumbers.below(0)): nqueenbb.p(queen)(ii)}")))
+ (|findboard_TCC3| 0
+  (|findboard_TCC2-1| |nil| 3504642677 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|findboard| SUBTYPE "0" "upto(nqueenbb.N)")))
+ (|findboard_TCC4| 0
+  (|findboard_TCC3-1| |nil| 3504642677
+   ("" (SKEEP* :PREDS? T)
+    (("" (EXPAND "qlift?")
+      (("" (LIFT-IF)
+        (("" (GROUND)
+          (("1" (TYPEPRED "scan(0, p)(LAMBDA (i: below(N)): 0)")
+            (("1" (EXPAND "qlift?")
+              (("1" (SKEEP* :PREDS? T)
+                (("1" (EXPAND "allP")
+                  (("1" (INST - "queen")
+                    (("1" (EXPAND "good_extension?")
+                      (("1" (GROUND)
+                        (("1" (EXPAND "extends" +) (("1" (GRIND) NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (GRIND) NIL NIL))
+            NIL)
+           ("2" (TYPEPRED "scan(0, p)(LAMBDA (i: below(N)): 0)")
+            (("1" (EXPAND "qlift?")
+              (("1" (EXPAND "allP")
+                (("1" (SKEEP)
+                  (("1" (EXPAND "good_extension?")
+                    (("1" (GROUND) (("1" (INST?) NIL NIL)) NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (GRIND) NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|findboard| SUBTYPE
+                "nqueenbb.scan(0, nqueenbb.p)(LAMBDA (i: naturalnumbers.below(nqueenbb.N)): 0)"
+                "(nqueenbb.qlift?(nqueenbb.allP(nqueenbb.p)))")))
+ (|nqueenbb_TCC1| 0
+  (|nqueenbb_TCC1-1| NIL 3937215184
+   ("" (SKEEP*)
+    (("" (GROUND)
+      (("1" (EXPAND "goodqueen?")
+        (("1" (SKEEP)
+          (("1" (INST - "j_1") (("1" (LAZY-GRIND :IF-MATCH ALL) NIL NIL)) NIL))
+          NIL))
+        NIL)
+       ("2" (EXPAND "goodqueen?")
+        (("2" (SKEEP)
+          (("2" (INST - "j_1") (("2" (LAZY-GRIND :IF-MATCH ALL) NIL NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|nqueenbb| SUBTYPE "nqueenbb.goodqueen?"
+               "{q: [nqueenbb.board -> [naturalnumbers.below(nqueenbb.N) -> booleans.bool]] | FORALL (A: board), (B: board), (i: upto(N)): booleans.=>(nqueenbb.eqbelow(i)(A, B), FORALL (j: naturalnumbers.below(i)): booleans.<=>(q(A)(j), q(B)(j)))}")))
+ (|nqueenbb_TCC2| 0
+  (|nqueenbb_TCC2-1| NIL 3937215184
+   ("" (TYPEPRED "findboard(goodqueen?)") (("" (GRIND) NIL NIL)) NIL) NIL NIL
+   (|nqueenbb| SUBTYPE "nqueenbb.findboard(nqueenbb.goodqueen?)"
+               "(nqueenbb.qlift?(nqueenbb.goodboard?))"))))
+(|test_queenbb|
+ (|findqueen_TCC1| 0
+  (|findqueen_TCC1-1| NIL 3941141272
+   ("" (SKEEP* :PREDS? T)
+    (("" (EXPAND "goodqueen?")
+      (("" (GROUND)
+        (("1" (SKEEP*)
+          (("1" (INST - "j_1") (("1" (LAZY-GRIND :IF-MATCH ALL) NIL NIL)) NIL))
+          NIL)
+         ("2" (LAZY-GRIND :IF-MATCH ALL) NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|goodqueen?| CONST-DECL "bool" |nqueenbb| NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (* CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|j!1| SKOLEM-CONST-DECL "below(j)" |test_queenbb| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|eqbelow| CONST-DECL "equivalence[board]" |nqueenbb| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (B SKOLEM-CONST-DECL "board[N]" |test_queenbb| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|j_1| SKOLEM-CONST-DECL "below(j)" |test_queenbb| NIL)
+    (N SKOLEM-CONST-DECL "nat" |test_queenbb| NIL)
+    (|board| TYPE-EQ-DECL NIL |nqueenbb| NIL)
+    (A SKOLEM-CONST-DECL "board[N]" |test_queenbb| NIL)
+    (|i| SKOLEM-CONST-DECL "upto(N)" |test_queenbb| NIL)
+    (|j| SKOLEM-CONST-DECL "below(i)" |test_queenbb| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL) (< CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|findqueen| SUBTYPE "nqueenbb[test_queenbb.N].goodqueen?"
+                "{q: [nqueenbb[test_queenbb.N].board -> [naturalnumbers.below(test_queenbb.N) -> booleans.bool]] | FORALL (A: board[test_queenbb.N]), (B: board[test_queenbb.N]), (i: upto(test_queenbb.N)): booleans.=>(nqueenbb[test_queenbb.N].eqbelow(i)(A, B), FORALL (j: naturalnumbers.below(i)): booleans.<=>(q(A)(j), q(B)(j)))}")))
+ (|findqueen_TCC2| 0
+  (|findqueen_TCC2-1| NIL 3941141272 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|findqueen| SUBTYPE
+                "nqueenbb[test_queenbb.N].findboard(nqueenbb[test_queenbb.N].goodqueen?)"
+                "(nqueenbb[test_queenbb.N].qlift?(nqueenbb[test_queenbb.N].goodboard?))"))))
+

@@ -1,0 +1,126 @@
+nqueenbb   [N: nat ]
+		: THEORY
+
+  BEGIN
+
+  %Boards are just N-element arrays on the subrange 0..N-1. 
+
+   board : TYPE = [below(N)->below(N)]
+   A, B, C, queen, new_queen: VAR board
+
+   i, j, k: VAR upto(N)
+
+   %Board queen extends A from point i onwards
+
+   eqbelow(i): equivalence[board] = 
+    (LAMBDA A, B:  FORALL (j: below(i)): A(j) = B(j))
+
+   eqbelow_update: LEMMA
+    (FORALL (i, k : below(N)): eqbelow(i)(A, A WITH [i := k]))
+
+   p: VAR {q : [board -> [below(N) -> bool]]
+           | FORALL A, B, i: eqbelow(i)(A, B) => (FORALL (j : below(i)): q(A)(j) <=> q(B)(j))}
+
+   %A lifted element of type T is either bottom or up(y), and qlift?(p)
+   %ensures that bottom is returned only when there is no board satisfying p,
+   %and up(y) is returned only when y satisfies p.
+
+   Q : VAR [board -> bool]
+
+   qlift?(Q)(x : lift[board]): bool =
+     CASES x OF
+      bottom: (FORALL queen: NOT Q(queen)),
+      up(queen): Q(queen)
+     ENDCASES
+
+   %A good extension is one that satisfies p
+
+   good_extension?(i, A, p)(B): bool =
+     ((FORALL (j: below(N)): p(B)(j)) AND eqbelow(i)(A, B))
+
+   eqbelow_good_ext: LEMMA
+     eqbelow(i)(A, B) IMPLIES good_extension?(i, A, p)(C) = good_extension?(i, B, p)(C)
+
+   %search is a higher-order operation that iterates over the values of j
+   %assigned to position i of the board to check if f can be used to find
+   %a good extension
+
+      
+
+   search((i: below(N)), p, (A | (FORALL (ii : below(i)): p(A)(ii))),
+           (j | (FORALL (k: below(j), B): NOT good_extension?(i+1, A WITH [i:= k], p)(B))),
+	   (f: [queen : {B: board | FORALL (ii : below(i+1)): p(B)(ii)}
+	         -> (qlift?(good_extension?(i+1, queen, p)))])): RECURSIVE
+     (qlift?(good_extension?(i, A, p))) =
+    (IF j = N THEN bottom
+      ELSE LET B = A WITH [i := j]
+            IN 
+             IF p(B)(i)
+	      THEN CASES f(B) OF
+		         bottom: search(i, p, B, j+1, f),
+			 up(C): up(C)
+ 	           ENDCASES
+	      ELSE search(i, p, B, j+1, f)
+	      ENDIF
+     ENDIF)
+     MEASURE N - j
+
+   %scan iterates over the positions until a good board extending the input
+   %is found
+
+   scan(i : upto(N), p)(queen | FORALL (ii: below(i)): p(queen)(ii)):
+     RECURSIVE (qlift?(good_extension?(i, queen, p)))
+     =
+    (IF i = N THEN up(queen) 
+      ELSE search(i, p, queen, 0, scan(i+1, p))
+      ENDIF)
+      MEASURE N - i
+
+   %findboard starts that scan at 0 to return a good board when one exists.
+   %allP checks whether p holds for the queen positions on a completed board 
+   allP(p)(queen): bool = (FORALL (i : below(N)): p(queen)(i))
+
+   findboard(p): (qlift?(allP(p))) = 
+      scan(0, p)(LAMBDA (i: below(N)): 0)
+      
+   %goodqueen? checks whether the positions are safe for indices below i. 
+   goodqueen?(queen)(i : below(N)): bool
+   = (FORALL (j : below(i)):
+         queen(i) /= queen(j) AND
+	 i - j /= queen(i) - queen(j) AND
+	 j - i /= queen(i) - queen(j))
+
+   %goodqueen? checks whether the positions are safe for indices below i. 
+   goodboard?(queen): bool =
+    (FORALL (i : below(N)): goodqueen?(queen)(i))
+
+   %nqueenb applies findboard to the goodqueen? predicate to yield a qlifted goodboard?
+   nqueenbb: (qlift?(goodboard?)) = findboard(goodqueen?)
+
+
+  END nqueenbb
+
+test_queenbb: THEORY
+BEGIN
+  IMPORTING nqueenbb
+
+  findqueen(N: nat): (qlift?[N](goodboard?)) =
+  nqueenbb
+
+
+% <PVSio> findqueen(20);
+% Evaluation took:
+%   16.695 seconds of real time
+%   16.682907 seconds of total run time (16.668877 user, 0.014030 system)
+%   [ Real times consist of 0.019 seconds GC time, and 16.676 seconds non-GC time. ]
+%   [ Run times consist of 0.019 seconds GC time, and 16.664 seconds non-GC time. ]
+%   99.93% CPU
+%   2 forms interpreted
+%   40,069,890,596 processor cycles
+%   1,015,572,480 bytes consed
+  
+% ==>
+% up([: 0, 2, 4, 1, 3, 12, 14, 11, 17, 19, 16, 8, 15, 18, 7, 9, 6, 13, 5, 10 :])
+
+
+END test_queenbb
