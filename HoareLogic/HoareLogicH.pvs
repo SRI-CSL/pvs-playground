@@ -1,0 +1,252 @@
+HoareLogicP[ghostvalue, parameter: TYPE]: THEORY
+%This theory is a variant of HoareLogic with parameters in assertions
+%that are held fixed from precondition to post-condition.  
+  BEGIN
+
+   fixint: DATATYPE
+  BEGIN
+   uint8(numval : uint8): uint8?
+   uint16(numval : uint16): uint16?
+   uint32(numval : uint32): uint32?
+   uint64(numval : uint64): uint64?
+   int8(numval : int8): int8?
+   int16(numval : int16): int16?
+   int32(numval : int32): int32?
+   int64(numval : int64): int64?
+  END fixint
+
+  IMPORTING finite_map
+  intwidth: TYPE = {u : uint8 | u = 8 OR u = 16 OR u = 32 OR u = 64}
+
+  valtype: DATATYPE %specifies the type of each data value
+   BEGIN
+    arraytype(size: uint32): arraytype?
+    structtype(fieldtypes : fmap[strings, valtype]):  structtype?
+    fptrtype(argtypes : finseq[valtype], rettype : valtype): fptrtype?
+    booltype: booltype?
+    inttype(signed: bool, width : intwidth): inttype?
+   END valtype
+
+   refs: TYPE = nat
+   variable : TYPE = [# vname : string, vtype : valtype #]
+
+   value: DATATYPE %All values are pointers and nothing is stack allocated.  
+  BEGIN
+    avalue(aseq[refs]: avalue?
+    structvalue(fmap[strings, refs]) : structvalue?
+    funvalue(args : fseq[variable], body: program): funvalue?
+    bvalue(bval : bool): bvalue?
+    nvalue(nval : fixint): nvalue?
+  END value
+
+   binding : TYPE = [# var : variable, ref : nat #]
+   stack: TYPE = finseq[binding]
+   ghost: TYPE = fmap[string, ghostvalue]
+   heapentry : TYPE = [# valentry : value, ghostentry : ghost #]
+   nullref: ref = 0
+   nonnull: TYPE = {r : ref | r /= 0}
+   heap: TYPE = [nonnull -> heapentry]
+   state : TYPE = [# stack : stack, heap : heap #]
+   test: TYPE = pred[state]
+   
+   
+   assignment: TYPE = [s : state -> {t : state | t`stack`length = s`stack`length}]
+   
+   program : DATATYPE
+    BEGIN
+      skip: skip?
+      block(var : variable, bcode : program): block?
+      call(fptr : (fptrtype?), args : finseq[variable]): call?
+      assign(update : assignment): assign?
+      ift(ifcond: test, thenprog: program, elseprog: program): ift?
+      while(wcond: test, body : program): while?
+      seq(left, right: program): seq?
+   END program
+
+   S, S1, S2: VAR program
+   C : VAR test
+   A : VAR assignment
+   s, r, t: VAR state
+   
+   trace : TYPE = {x : finseq[state] | x`length > 1}
+   % double(s): trace = add(s, add(s, empty_seq))
+   % pair(r, s): trace = add(s, add(r, empty_seq))
+   % singleton(s): finseq[state] = add(s, empty_seq)
+
+   X, Y, Z: VAR trace
+
+   first(X): state = X`seq(0)
+   last(X): state = X`seq(X`length - 1)
+
+   splice(X, (Y | first(Y) = last(X))): trace = X o Y
+
+   programSize(S): RECURSIVE nat =
+   CASES S OF
+    ift(C, S1, S2): 1 + programSize(S1) + programSize(S2),
+    while(C, S1): 1 + programSize(S1),
+    seq(S1, S2): programSize(S1) + programSize(S2)
+    ELSE 1
+   ENDCASES
+    MEASURE S BY <<
+
+   meaning(S)(X): RECURSIVE bool =
+   CASES S OF
+    skip: (X`length = 2 AND last(X) = first(X)),
+    block(var, body): X`length > 3 AND
+                      X`seq[1] = X`seq(0) WITH [`stack := add((# var := var, ref : 0 #), X`seq[0]`stack)] AND
+		      (EXISTS Y : meaning(body)(Y) AND X`seq(X`length - 1) = Y`seq[Y`length - 1]`stack^(0, X`seq[0)`stack`length) AND
+		              Y = X^(1, X`length - 1)),
+    assign(A): (X`length = 2 AND last(X) = A(first(X))),
+    ift(C, S1, S2): (IF C(first(X)) THEN meaning(S1)(X) ELSE meaning(S2)(X) ENDIF),
+    while(C, S1): (IF C(first(X))
+                    THEN (EXISTS Y, Z: first(Z) = last(Y)
+		         AND X = splice(Y, Z)
+		         AND meaning(S1)(Y) 
+                         AND meaning(S)(Z))
+		    ELSE (X`length = 2 AND last(X) = first(X))
+		    ENDIF),
+    seq(S1, S2): (EXISTS Y, Z: first(Z) = last(Y)
+                            AND X = splice(Y, Z)
+			    AND meaning(S1)(Y)
+			    AND meaning(S2)(Z))
+   ENDCASES
+   MEASURE lex2(X`length, programSize(S))
+
+   assertion: TYPE = [state, parameter -> bool]
+
+   P, Q, R, pre, post: VAR assertion
+   a, b, c: VAR parameter
+
+   triple_holds(pre, S, post)(X): bool =
+    (∀ a: pre(first(X), a) AND meaning(S)(X) => post(last(X), a))
+
+   triple_valid(pre, S, post): bool =
+     (FORALL X: triple_holds(pre, S, post)(X))
+
+   skip_rule: LEMMA
+     triple_valid(P, skip, P);
+
+   o(P, A): assertion = (λ s, a: P(A(s), a))
+
+   assignment_rule: LEMMA
+     triple_valid(P o A, assign(A), P);
+
+   ⊓(P, Q)(s, a): bool = P(s, a) ∧ Q(s, a);
+   ⊓(P, C)(s, a): bool = P(s, a) ∧ C(s)
+
+   neg(C)(s): bool  = ¬C(s)
+
+   conditional_rule: LEMMA
+     triple_valid(pre ⊓ C, S1, post)
+     AND triple_valid(pre ⊓ neg(C), S2, post)
+     => triple_valid(pre, ift(C, S1, S2), post)
+
+   while_rule:  LEMMA
+     triple_valid(P ⊓ C, S, P)
+     => triple_valid(P, while(C, S), P ⊓ neg(C))
+
+   composition_rule: LEMMA
+     triple_valid(P, S1, Q) AND triple_valid(Q, S2, R)
+     => triple_valid(P, seq(S1, S2), R)
+
+   conseq(P, Q): bool =
+    (FORALL s, a: P(s, a) => Q(s, a))
+
+   P1, Q1: VAR assertion
+
+   conseq_rule: LEMMA
+     conseq(P, P1) AND conseq(Q1, Q)
+     AND triple_valid(P1, S, Q1)
+     => triple_valid(P, S, Q)
+
+   triple: TYPE = [# prog: program, pre, post: assertion #]
+   H, G: VAR triple
+   skipTriple?(H): bool = skip?(H`prog)
+   assignTriple?(H): bool = assign?(H`prog)
+   iftTriple?(H): bool = ift?(H`prog)
+   whileTriple?(H): bool = while?(H`prog)
+   seqTriple?(H): bool = seq?(H`prog)
+
+   mkTriple(pre, S, post): triple
+   = (# pre := pre, prog := S, post := post #)
+
+   preProof: DATATYPE
+   BEGIN
+     skip_step(conclusion: triple): skip_step?
+     assign_step(conclusion: triple): assign_step?
+     ift_step(conclusion: triple, thenProof, elseProof: preProof): ift_step?
+     while_step(conclusion: triple,  bodyProof: preProof): while_step?
+     seq_step(conclusion: triple, left, right: preProof): seq_step?
+     conseq_step(conclusion: triple, subProof: preProof): conseq_step?
+   END preProof
+
+   M, M1, M2: VAR preProof
+
+   tripleConseq?(H, G): bool =
+     (H`prog = G`prog
+     AND conseq(G`pre, H`pre)
+     AND conseq(H`post, G`post))
+
+   Proof?(M): RECURSIVE bool =
+    CASES M OF
+      skip_step(H): skip?(H`prog) AND H`pre = H`post,
+      assign_step(H): assign?(H`prog)
+                      AND H`pre = H`post o update(H`prog),
+      ift_step(H, M1, M2): ift?(H`prog)
+                           AND conclusion(M1)`pre = (H`pre ⊓ ifcond(H`prog))
+			   AND conclusion(M2)`pre = (H`pre ⊓ neg(ifcond(H`prog)))
+			   AND conclusion(M1)`post = H`post
+			   AND conclusion(M2)`post = H`post
+			   AND conclusion(M1)`prog = thenprog(H`prog)
+			   AND conclusion(M2)`prog = elseprog(H`prog)
+                           AND Proof?(M1)
+			   AND Proof?(M2),
+      while_step(H, M1): while?(H`prog)%H`pre is loop invariant
+                           AND conclusion(M1)`pre = (H`pre ⊓ wcond(H`prog))
+			   AND conclusion(M1)`post = H`pre
+			   AND conclusion(M1)`prog = body(H`prog)
+			   AND H`post = (H`pre ⊓ neg(wcond(H`prog)))
+			   AND Proof?(M1),
+      seq_step(H, M1, M2): seq?(H`prog)
+                           AND conclusion(M1)`pre = H`pre
+                           AND conclusion(M2)`pre = conclusion(M1)`post
+			   AND conclusion(M2)`post = H`post
+			   AND conclusion(M1)`prog = left(H`prog)
+			   AND conclusion(M2)`prog = right(H`prog)
+                           AND Proof?(M1)
+			   AND Proof?(M2),
+      conseq_step(H, M1): conseq(H`pre, conclusion(M1)`pre)
+                          AND conseq(conclusion(M1)`post, H`post)
+			  AND conclusion(M1)`prog = H`prog
+			  AND Proof?(M1)
+    ENDCASES
+    MEASURE M BY <<
+
+   valid(H): bool = triple_valid(H`pre, H`prog, H`post)
+
+   soundness: LEMMA
+     Proof?(M) => valid(conclusion(M))
+     
+   wlp(S)(Q)(s, a) : bool =
+     (FORALL X: meaning(S)(X) AND s = first(X) =>  Q(last(X), a))
+
+   wlp_valid: LEMMA
+     triple_valid(wlp(S)(Q), S, Q)
+
+   Proves(M, H): bool =
+     Proof?(M) AND conclusion(M) = H
+
+   wlp_weak: LEMMA
+     conseq(P, wlp(S)(Q))
+     => triple_valid(P, S, Q)
+
+   wlp_proof: LEMMA
+     EXISTS M: Proves(M, mkTriple(wlp(S)(Q), S, Q))
+
+   completeness: LEMMA
+     valid(H) => EXISTS M: Proves(M, H)
+      
+
+
+
+  END HoareLogicP

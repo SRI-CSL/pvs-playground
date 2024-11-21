@@ -1,0 +1,63 @@
+HoareVC  [ value : TYPE+ ]
+		: THEORY
+
+  BEGIN
+   IMPORTING HoareLogic[value]
+
+   P, Q, C, I: VAR assertion
+   s: VAR state
+   S, S1, S2: VAR program
+   A: VAR assignment
+
+   ⊏(P, Q): bool = (∀ s: P(s) => Q(s));
+   ⊔(P, Q)(s): bool =  P(s) ∨ Q(s);
+
+   annotatedProgram : DATATYPE
+    BEGIN
+      skip: skip?
+      assign(update : assignment): assign?
+      ift(ifcond: test, thenprog: annotatedProgram, elseprog: annotatedProgram): ift?
+      while(wcond: test, body : annotatedProgram, invariant: assertion): while?
+      seq(left, right: annotatedProgram): seq?
+   END annotatedProgram
+
+
+   SS, SS1, SS2: VAR annotatedProgram
+
+   pre(SS)(Q) : RECURSIVE assertion =
+    CASES SS OF
+     skip: Q,
+     assign(A): Q o A,
+     ift(C, SS1, SS2): (C ⊓ pre(SS1)(Q)) ⊔ (neg(C) ⊓ pre(SS2)(Q)),
+     while(C, SS1, I): I,
+     seq(SS1, SS2): pre(SS1)(pre(SS2)(Q))
+     ENDCASES
+     MEASURE SS BY <<
+
+   vc(SS)(Q): RECURSIVE bool =
+    CASES SS OF
+     skip: TRUE,
+     assign(A): TRUE,
+     ift(C, SS1, SS2): vc(SS1)(Q) AND vc(SS2)(Q),
+     while(C, SS1, I): vc(SS1)(I)
+                       AND (C ⊓ I ⊏ pre(SS1)(I))
+		       AND (neg(C) ⊓ I ⊏  Q),
+     seq(SS1, SS2): vc(SS2)(Q) AND vc(SS1)(pre(SS2)(Q))
+     ENDCASES
+     MEASURE SS BY <<
+
+    extract(SS): RECURSIVE program =
+     CASES SS OF
+     skip: skip, 
+     assign(A): assign(A),
+     ift(C, SS1, SS2): ift(C, extract(SS1), extract(SS2)), 
+     while(C, SS1, I): while(C, extract(SS1)),
+     seq(SS1, SS2): seq(extract(SS1), extract(SS2))
+     ENDCASES
+     MEASURE SS BY <<
+
+    vc_pre: LEMMA
+      vc(SS)(Q) => triple_valid(pre(SS)(Q), extract(SS), Q)
+    
+
+  END HoareVC

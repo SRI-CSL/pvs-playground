@@ -1,0 +1,19 @@
+HoareTotal[value: TYPE+] : THEORY
+  BEGIN
+
+   IMPORTING HoareLogic[value]
+
+   P, Q, C, I: VAR assertion
+   s: VAR state
+   S, S1, S2: VAR program
+   A: VAR assignment
+   f: VAR [state -> nat]
+   i, j, k: VAR nat
+
+   total_valid(f, P, S, Q): bool =
+     (∀ i: triple_value(P ⊓ (λ s: i = f(s)), S, Q ⊓ (λ s: f(s) < i)))
+
+   
+
+
+  END HoareTotal
