@@ -1,0 +1,215 @@
+ifexpr  : THEORY
+%This theory builds on the IF-normalization example in Boyer and Moore's A Computational Logic (1979).
+%It defines precise measure depth(A) for proving the termination of the normalization operation norm(A).
+%Normalization is shown deliver a normalized IF-expression that is equivalent to the given expression.
+%A simplifier simplify(L)(A) for normalized expressions is defined and shown to construct a simplified
+%representation equivalent to the input.  The simplifier composed with the normalizer yields a tautology
+%checker, i.e., it returns the Boolean constant bfalse iff the given expression is unsatisfiable.
+  BEGIN
+%The ifexpr datatype has constructors for ift, variables, and the two Boolean constants btrue and bfalse.  
+    ifexpr: DATATYPE
+    BEGIN
+     ift(condpart, thenpart, elsepart: ifexpr): ift?
+     btrue: btrue?
+     bfalse: bfalse?
+     variable(index: nat): variable?
+    END ifexpr
+
+   A, B, C, D, E, F, G, H: VAR ifexpr
+   i, j, k: VAR nat
+   a, b, c: VAR bool
+%The size of an ifexpr is the number of ift nodes in it. 
+   size(A): RECURSIVE nat =
+    CASES A OF
+     ift(D, B, C): 1 + size(D) + size(B) + size(C)
+     ELSE 1
+     ENDCASES
+     MEASURE A BY <<
+    
+%The depth of an ift is the size of the condition plus the maximum of the
+%depths of the then and else branches.
+   depth(A): RECURSIVE nat =
+    CASES A OF
+     ift(D, B, C): size(D) + max(depth(B), depth(C))
+     ELSE 0
+     ENDCASES
+     MEASURE size(A)
+
+%Expression A is normalized if the condition of any ift node is a variable. 
+    norm?(A): RECURSIVE boolean =
+      CASES A OF
+        ift(D, B, C):  variable?(D) AND norm?(B) AND norm?(C)
+	     ELSE TRUE
+      ENDCASES
+    MEASURE size(A)
+
+%An assignment maps variable indices to logical truth values. 
+    Assignment: TYPE = [nat -> bool]
+    R, S: VAR Assignment
+%The everywhere false assignment is a good initialization. 
+    AllFalse(i: nat): bool = FALSE
+%The meaning of A in assignment R computes the truth value of A given the bindings in R. 
+    meaning(R)(A): RECURSIVE bool =
+      CASES A OF
+        ift(D, B, C): IF meaning(R)(D) THEN meaning(R)(B) ELSE meaning(R)(C) ENDIF,
+	      variable(i): R(i),
+	      btrue: TRUE,
+	      bfalse: FALSE
+	    ENDCASES
+	MEASURE size(A)
+
+%The normalization operation norm is typed to return an expression B that is normalized
+%and has the same meaning as input A under any assignment.  
+    norm(A): RECURSIVE {B | norm?(B) AND FORALL R: meaning(R)(B) = meaning(R)(A)} = 
+    (CASES A OF
+      ift(D, B, C):
+       CASES D OF
+        ift(F, G, H):  norm(ift(F, ift(G, B, C), ift(H, B, C))),
+	variable(i): ift(D, norm(B), norm(C)),
+	btrue: norm(B),
+	bfalse: norm(C)
+      ENDCASES
+      ELSE A
+      ENDCASES)
+    MEASURE depth(A)
+
+%meaning_norm proves that the meaning is preserved under normalization,
+%a trivial consequence of the type of norm. 
+    meaning_norm: LEMMA
+       meaning(R)(norm(A)) = meaning(R)(A)
+%vars(A) is the set of indices of free variables in A.  
+    vars(A)(i): RECURSIVE bool =
+     CASES A OF
+       variable(j): i = j,
+       ift(D, B, C): vars(D)(i) OR vars(B)(i) OR vars(C)(i)
+       ELSE FALSE
+     ENDCASES
+    MEASURE size(A)
+%The meaning of A under R is unaffected by a change of assignment to a variable not free in A.
+   meaning_var: LEMMA
+     NOT vars(A)(i) IMPLIES meaning(R WITH [(i) := b])(A) = meaning(R)(A)
+%A stack of variable assignments to use in the simplifier. 
+   bstack: DATATYPE
+    BEGIN
+      push(vrbl: nat, value: bool, rest : bstack): push?
+      emptystack: emptystack?
+    END bstack
+
+   L, J, K: VAR bstack
+%The length of an assignment stack
+   length(L): RECURSIVE nat =
+     CASES L OF
+      push(i, b, J): 1 + length(J),
+      emptystack: 0
+      ENDCASES
+      MEASURE L BY <<
+%stackassign(R)(L) checks that assignment R agrees with the assignments in L.
+   stackassign(R)(L): RECURSIVE bool =
+    CASES L OF
+      push(i, b, J): R(i) = b AND stackassign(R)(J),
+      emptystack: TRUE
+      ENDCASES
+      MEASURE length(L)
+%find(i, L) retrieves the tail of L whose head is the topmost assignment for i.
+%Note the range type which checks that tail is either empty or contains an assignment for i. 
+   find(i, L): RECURSIVE {K | emptystack?(K) OR (vrbl(K) = i AND FORALL R: stackassign(R)(L) => R(i) = value(K))} = 
+    CASES L OF
+       push(j, b, J): IF i = j THEN L ELSE find(i, J) ENDIF,
+       emptystack: emptystack
+    ENDCASES
+    MEASURE length(L)
+%Expression A is simple w.r.t. stack L representing the context, if it does not contain
+%a variable assigned in L and for any ift-expression, the test is a variable and the
+%then and else expressions are distinct. 
+   simple?(L)(A): RECURSIVE bool =
+    CASES A OF
+      ift(D, B, C): variable?(D) AND emptystack?(find(index(D), L))
+ 	                  AND B /= C AND simple?(push(index(D), TRUE, L))(B)
+		                AND simple?(push(index(D), FALSE, L))(C), 
+ 	    variable(i): emptystack?(find(i, L))
+ 	   ELSE TRUE
+ 	  ENDCASES
+ 	MEASURE size(A)
+%If A is simple relative to L then no variable in L occurs free in A.
+   simple_vars: LEMMA
+     simple?(L)(A) AND vars(A)(i) => emptystack?(find(i, L))
+     
+%simple_assignment(L)(A) recovers a satisfying assignment for any non-false simple expression A.
+   simple_assignment(L)(A | simple?(L)(A)): RECURSIVE {R | A = bfalse OR meaning(R)(A)} = 
+     CASES A OF
+       ift(D, B, C): IF bfalse?(B)
+                       THEN simple_assignment(push(index(D), FALSE, L))(C) WITH [(index(D)) := FALSE]
+                       ELSE simple_assignment(push(index(D), TRUE, L))(B) WITH [(index(D)) := TRUE]
+		     ENDIF,
+       variable(i): AllFalse WITH [(i) := TRUE]
+       ELSE AllFalse
+       ENDCASES
+       MEASURE size(A)
+%A is simple under a stack with with head assignment <i, b> and tail L iff i is not free in A
+%and A is simple relative to L. 
+   simple_push: LEMMA
+      simple?(push(i, b, L))(A) = (NOT vars(A)(i) AND simple?(L)(A))
+
+%The simplifier takes as input a normalized expression and returns a simplified equivalent.
+%For an ift-expression, if the variable is unassigned, then the THEN/ELSE branches are
+%both simplified by adding the assignment TRUE/FALSE to the stack. 
+   simplify(L)(A | norm?(A)): RECURSIVE
+      {B | simple?(L)(B) AND FORALL R: stackassign(R)(L) => meaning(R)(B) = meaning(R)(A)}
+      = 
+      CASES A OF
+        ift(D, B, C): 
+             LET i = index(D),
+	         K = find(i, L)
+		 IN
+		  IF emptystack?(K) 
+		  THEN  LET E = simplify(push(i, TRUE, L))(B),
+		            F = simplify(push(i, FALSE, L))(C)
+		         IN IF E = F THEN E ELSE ift(D, E, F) ENDIF
+ 		             ELSIF value(K)
+			     THEN simplify(L)(B)
+			     ELSE simplify(L)(C)
+			    ENDIF,
+        variable(i): LET K = find(i, L)
+                     IN IF emptystack?(K) THEN A ELSIF value(K) THEN btrue ELSE bfalse ENDIF 
+        ELSE A
+       ENDCASES
+       MEASURE size(A)
+
+   nontaut?(A): {B | simple?(emptystack)(B) AND
+                     (bfalse?(B) OR  meaning(simple_assignment(emptystack)(B))(B)) AND
+                     FORALL R: meaning(R)(B) = meaning(R)(A)}
+		     =
+		     simplify(emptystack)(norm(A))
+
+   % test1: TEST
+   %   nontaut?(ift(ift(variable(0), bfalse, btrue), variable(0), variable(0)))
+  
+   % test2: TEST
+   %   nontaut?(ift(ift(variable(0), bfalse, btrue), variable(0), ift(variable(0), bfalse, btrue)))
+
+% <PVSio> nontaut?(ift(ift(variable(0), bfalse, btrue), variable(0), variable(0)));
+% Evaluation took:
+%   0.000 seconds of real time
+%   0.000009 seconds of total run time (0.000008 user, 0.000001 system)
+%   100.00% CPU
+%   11 forms interpreted
+%   17,550 processor cycles
+%   0 bytes consed
+  
+% ==>
+% ift(variable(0), btrue, bfalse)
+
+% <PVSio> nontaut?(ift(ift(variable(0), bfalse, btrue), variable(0), ift(variable(0), bfalse, btrue)));
+% Evaluation took:
+%   0.000 seconds of real time
+%   0.000016 seconds of total run time (0.000015 user, 0.000001 system)
+%   100.00% CPU
+%   14 forms interpreted
+%   33,376 processor cycles
+%   0 bytes consed
+  
+% ==>
+% bfalse
+
+
+  END ifexpr

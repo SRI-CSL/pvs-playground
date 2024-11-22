@@ -1,0 +1,6 @@
+This theory builds on the IF-normalization example in Boyer and Moore's A Computational Logic (1979).
+It defines precise measure depth(A) for proving the termination of the normalization operation norm(A).
+Normalization is shown deliver a normalized IF-expression that is equivalent to the given expression.
+A simplifier simplify(L)(A) for normalized expressions is defined and shown to construct a simplified
+representation equivalent to the input.  The simplifier composed with the normalizer yields a tautology
+checker, i.e., it returns the Boolean constant bfalse iff the given expression is unsatisfiable.

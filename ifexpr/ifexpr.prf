@@ -1,0 +1,644 @@
+(|ifexpr|
+ (|size_TCC1| 0
+  (|size_TCC1-0| "" 3927292787 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|size| TERMINATION "ifexpr.size(ifexpr.D)" "NIL"))
+  (|size_TCC1-1| |nil| 3763607463 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|size| TERMINATION "ifexpr.size(ifexpr.D)" "NIL")))
+ (|size_TCC2| 0
+  (|size_TCC2-0| "" 3927292787 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|size| TERMINATION "ifexpr.size(ifexpr.B)" "NIL"))
+  (|size_TCC2-1| |nil| 3763607463 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|size| TERMINATION "ifexpr.size(ifexpr.B)" "NIL")))
+ (|size_TCC3| 0
+  (|size_TCC3-0| "" 3927292788 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|size| TERMINATION "ifexpr.size(ifexpr.C)" "NIL"))
+  (|size_TCC3-1| |nil| 3763607463 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|size| TERMINATION "ifexpr.size(ifexpr.C)" "NIL")))
+ (|depth_TCC1| 0
+  (|depth_TCC1-0| "" 3927292789 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|depth| TERMINATION "ifexpr.depth(ifexpr.B)" "NIL"))
+  (|depth_TCC2-1| |nil| 3763587466 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|depth| TERMINATION "ifexpr.depth(ifexpr.B)" "NIL")))
+ (|depth_TCC2| 0
+  (|depth_TCC2-0| "" 3927292789 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|depth| TERMINATION "ifexpr.depth(ifexpr.C)" "NIL"))
+  (|depth_TCC3-1| |nil| 3763587466 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|depth| TERMINATION "ifexpr.depth(ifexpr.C)" "NIL")))
+ (|meaning_TCC1| 0
+  (|meaning_TCC1-0| "" 3927292790 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|meaning| TERMINATION "ifexpr.meaning(ifexpr.R)(ifexpr.D)" "NIL"))
+  (|meaning_TCC1-1| |nil| 3763607463 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|meaning| TERMINATION "ifexpr.meaning(ifexpr.R)(ifexpr.D)" "NIL")))
+ (|norm_TCC1| 0
+  (|norm_TCC1-0| "" 3927292791 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|norm| TERMINATION
+    "ifexpr.norm(ifexpr.ift(ifexpr.F, ifexpr.ift(ifexpr.G, ifexpr.B, ifexpr.C), ifexpr.ift(ifexpr.H, ifexpr.B, ifexpr.C)))"
+    "NIL"))
+  (|norm_TCC2-1| |nil| 3763587466 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|norm| TERMINATION
+    "ifexpr.norm(ifexpr.ift(ifexpr.F, ifexpr.ift(ifexpr.G, ifexpr.B, ifexpr.C), ifexpr.ift(ifexpr.H, ifexpr.B, ifexpr.C)))"
+    "NIL")))
+ (|norm_TCC2| 0
+  (|norm_TCC2-0| "" 3927292792
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(ift(F, ift(G, B, C), ift(H, B, C)))")
+      (("1" (ASSERT)
+        (("1" (SKEEP)
+          (("1" (REWRITE -2) (("1" (HIDE -1 -2) (("1" (GRIND) NIL NIL)) NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (HIDE 2) (("2" (GRIND) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK
+   (|norm| SUBTYPE
+    "ifexpr.norm(ifexpr.ift(ifexpr.F, ifexpr.ift(ifexpr.G, ifexpr.B, ifexpr.C), ifexpr.ift(ifexpr.H, ifexpr.B, ifexpr.C)))"
+    "{B | booleans.AND(ifexpr.norm?(ifexpr.B), FORALL R: ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A))}"))
+  (|norm_TCC3-1| |nil| 3763607757
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(ift(F, ift(G, B, C), ift(H, B, C)))")
+      (("1" (ASSERT)
+        (("1" (SKEEP)
+          (("1" (REWRITE -2) (("1" (HIDE -1 -2) (("1" (GRIND) NIL NIL)) NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (HIDE 2) (("2" (GRIND) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|norm| SUBTYPE
+    "ifexpr.norm(ifexpr.ift(ifexpr.F, ifexpr.ift(ifexpr.G, ifexpr.B, ifexpr.C), ifexpr.ift(ifexpr.H, ifexpr.B, ifexpr.C)))"
+    "{B | booleans.AND(ifexpr.norm?(ifexpr.B), FORALL R: ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A))}")))
+ (|norm_TCC3| 0
+  (|norm_TCC3-0| "" 3927292793 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|norm| TERMINATION "ifexpr.norm(ifexpr.B)" "NIL"))
+  (|norm_TCC3-1| |nil| 3763587466 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|norm| TERMINATION "ifexpr.norm(ifexpr.B)" "NIL")))
+ (|norm_TCC4| 0
+  (|norm_TCC4-0| "" 3927292793 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|norm| TERMINATION "ifexpr.norm(ifexpr.C)" "NIL"))
+  (|norm_TCC4-1| |nil| 3763587466 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|norm| TERMINATION "ifexpr.norm(ifexpr.C)" "NIL")))
+ (|norm_TCC5| 0
+  (|norm_TCC5-0| "" 3927292795
+   ("" (SKEEP*)
+    (("" (EXPAND "norm?")
+      (("" (ASSERT)
+        (("" (TYPEPRED "v(B)")
+          (("1" (TYPEPRED "v(C)")
+            (("1" (GRIND) NIL NIL)
+             ("2" (HIDE -2 3) (("2" (GRIND) NIL NIL)) NIL))
+            NIL)
+           ("2" (GRIND) NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK
+   (|norm| SUBTYPE
+    "ifexpr.ift(ifexpr.D, ifexpr.norm(ifexpr.B), ifexpr.norm(ifexpr.C))"
+    "{B | booleans.AND(ifexpr.norm?(ifexpr.B), FORALL R: ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A))}"))
+  (|norm_TCC5-1| |nil| 3763587466
+   ("" (SKEEP*)
+    (("" (EXPAND "norm?")
+      (("" (ASSERT)
+        (("" (TYPEPRED "v(B)")
+          (("1" (TYPEPRED "v(C)")
+            (("1" (GRIND) NIL NIL)
+             ("2" (HIDE -2 3) (("2" (GRIND) NIL NIL)) NIL))
+            NIL)
+           ("2" (GRIND) NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|norm| SUBTYPE
+    "ifexpr.ift(ifexpr.D, ifexpr.norm(ifexpr.B), ifexpr.norm(ifexpr.C))"
+    "{B | booleans.AND(ifexpr.norm?(ifexpr.B), FORALL R: ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A))}")))
+ (|norm_TCC6| 0
+  (|norm_TCC6-0| "" 3927292795 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|norm| TERMINATION "ifexpr.norm(ifexpr.B)" "NIL"))
+  (|norm_TCC7-1| |nil| 3763697001 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|norm| TERMINATION "ifexpr.norm(ifexpr.B)" "NIL")))
+ (|norm_TCC7| 0
+  (|norm_TCC7-0| "" 3927292796
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(B)") (("1" (GRIND) NIL NIL) ("2" (GRIND) NIL NIL)) NIL))
+    NIL)
+   NIL SHOSTAK
+   (|norm| SUBTYPE "ifexpr.norm(ifexpr.B)"
+    "{B | booleans.AND(ifexpr.norm?(ifexpr.B), FORALL R: ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A))}"))
+  (|norm_TCC8-1| |nil| 3763697001
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(B)") (("1" (GRIND) NIL NIL) ("2" (GRIND) NIL NIL)) NIL))
+    NIL)
+   NIL NIL
+   (|norm| SUBTYPE "ifexpr.norm(ifexpr.B)"
+    "{B | booleans.AND(ifexpr.norm?(ifexpr.B), FORALL R: ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A))}")))
+ (|norm_TCC8| 0
+  (|norm_TCC8-0| "" 3927292797 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|norm| TERMINATION "ifexpr.norm(ifexpr.C)" "NIL"))
+  (|norm_TCC9-1| |nil| 3763697001 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|norm| TERMINATION "ifexpr.norm(ifexpr.C)" "NIL")))
+ (|norm_TCC9| 0
+  (|norm_TCC9-0| "" 3927292797
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(C)") (("1" (GRIND) NIL NIL) ("2" (GRIND) NIL NIL)) NIL))
+    NIL)
+   NIL SHOSTAK
+   (|norm| SUBTYPE "ifexpr.norm(ifexpr.C)"
+    "{B | booleans.AND(ifexpr.norm?(ifexpr.B), FORALL R: ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A))}"))
+  (|norm_TCC10-1| |nil| 3763697001
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(C)") (("1" (GRIND) NIL NIL) ("2" (GRIND) NIL NIL)) NIL))
+    NIL)
+   NIL NIL
+   (|norm| SUBTYPE "ifexpr.norm(ifexpr.C)"
+    "{B | booleans.AND(ifexpr.norm?(ifexpr.B), FORALL R: ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A))}")))
+ (|norm_TCC10| 0
+  (|norm_TCC10-0| "" 3927292798 ("" (GRIND) NIL NIL) NIL SHOSTAK
+   (|norm| SUBTYPE "ifexpr.A"
+    "{B | booleans.AND(ifexpr.norm?(ifexpr.B), FORALL R: ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A))}"))
+  (|norm_TCC1-1| |nil| 3763587466 ("" (GRIND) NIL NIL) NIL NIL
+   (|norm| SUBTYPE "ifexpr.A"
+    "{B | booleans.AND(ifexpr.norm?(ifexpr.B), FORALL R: ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A))}")))
+ (|meaning_norm| 1
+  (|meaning_norm-2| "" 3927292785
+   ("" (SKEEP) (("" (TYPEPRED "norm(A)") (("" (INST?) NIL NIL)) NIL)) NIL) NIL
+   SHOSTAK)
+  (|meaning_norm-0| "" 3927241662
+   ("" (SKEEP) (("" (TYPEPRED "norm(A)") (("" (INST?) NIL NIL)) NIL)) NIL) NIL
+   SHOSTAK)
+  (|meaning_norm-1| |nil| 3763607500
+   ("" (SKEEP) (("" (TYPEPRED "norm(A)") (("" (INST?) NIL NIL)) NIL)) NIL) NIL
+   SHOSTAK))
+ (|meaning_var| 0
+  (|meaning_var-0| "" 3927292786 ("" (INDUCT-AND-SIMPLIFY "A") NIL NIL) NIL
+   SHOSTAK)
+  (|meaning_var-1| |nil| 3763694476 ("" (INDUCT-AND-SIMPLIFY "A") NIL NIL) NIL
+   SHOSTAK))
+ (|length_TCC1| 0
+  (|length_TCC1-0| "" 3927292798 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|length| TERMINATION "ifexpr.length(ifexpr.J)" "NIL"))
+  (|length_TCC1-1| |nil| 3763671455 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|length| TERMINATION "ifexpr.length(ifexpr.J)" "NIL")))
+ (|stackassign_TCC1| 0
+  (|stackassign_TCC1-0| "" 3927292799 ("" (TERMINATION-TCC) NIL NIL) NIL
+   SHOSTAK
+   (|stackassign| TERMINATION "ifexpr.stackassign(ifexpr.R)(ifexpr.J)" "NIL"))
+  (|stackassign_TCC1-1| |nil| 3763671455 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|stackassign| TERMINATION "ifexpr.stackassign(ifexpr.R)(ifexpr.J)" "NIL")))
+ (|find_TCC1| 0
+  (|find_TCC1-0| "" 3927292799 ("" (SUBTYPE-TCC) NIL NIL) NIL SHOSTAK
+   (|find| SUBTYPE "ifexpr.K" "(ifexpr.push?)"))
+  (|find_TCC2-1| |nil| 3763671455 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|find| SUBTYPE "ifexpr.K" "(ifexpr.push?)")))
+ (|find_TCC2| 0
+  (|find_TCC2-0| "" 3927292800 ("" (GRIND) NIL NIL) NIL SHOSTAK
+   (|find| SUBTYPE "ifexpr.L"
+    "{K | booleans.OR(ifexpr.emptystack?(ifexpr.K), (booleans.AND(ifexpr.vrbl(ifexpr.K) = ifexpr.i, FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.R(ifexpr.i) = ifexpr.value(ifexpr.K)))))}"))
+  (|find_TCC1-1| |nil| 3763671455 ("" (GRIND) NIL NIL) NIL NIL
+   (|find| SUBTYPE "ifexpr.L"
+    "{K | booleans.OR(ifexpr.emptystack?(ifexpr.K), (booleans.AND(ifexpr.vrbl(ifexpr.K) = ifexpr.i, FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.R(ifexpr.i) = ifexpr.value(ifexpr.K)))))}")))
+ (|find_TCC3| 0
+  (|find_TCC3-0| "" 3927292800 ("" (TERMINATION-TCC) NIL NIL) NIL SHOSTAK
+   (|find| TERMINATION "ifexpr.find(ifexpr.i, ifexpr.J)" "NIL"))
+  (|find_TCC3-1| |nil| 3763671455 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|find| TERMINATION "ifexpr.find(ifexpr.i, ifexpr.J)" "NIL")))
+ (|find_TCC4| 0
+  (|find_TCC4-0| "" 3927292801
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(i, J)") (("" (GROUND) (("" (GRIND) NIL NIL)) NIL)) NIL))
+    NIL)
+   NIL SHOSTAK
+   (|find| SUBTYPE "ifexpr.find(ifexpr.i, ifexpr.J)"
+    "{K | booleans.OR(ifexpr.emptystack?(ifexpr.K), (booleans.AND(ifexpr.vrbl(ifexpr.K) = ifexpr.i, FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.R(ifexpr.i) = ifexpr.value(ifexpr.K)))))}"))
+  (|find_TCC4-1| |nil| 3763697524
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(i, J)") (("" (GROUND) (("" (GRIND) NIL NIL)) NIL)) NIL))
+    NIL)
+   NIL NIL
+   (|find| SUBTYPE "ifexpr.find(ifexpr.i, ifexpr.J)"
+    "{K | booleans.OR(ifexpr.emptystack?(ifexpr.K), (booleans.AND(ifexpr.vrbl(ifexpr.K) = ifexpr.i, FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.R(ifexpr.i) = ifexpr.value(ifexpr.K)))))}")))
+ (|simple_vars| 0
+  (|simple_vars-1| |nil| 3763749584
+   ("" (INDUCT "A")
+    (("1" (SKEEP*)
+      (("1" (GRIND :IF-MATCH NIL)
+        (("1" (INST? -2 :WHERE -6)
+          (("1" (INST? -2) (("1" (GROUND) NIL NIL)) NIL)) NIL)
+         ("2" (INST? -3 :WHERE -7)
+          (("2" (INST? -3) (("2" (GROUND) NIL NIL)) NIL)) NIL))
+        NIL))
+      NIL)
+     ("2" (GRIND) NIL NIL) ("3" (GRIND) NIL NIL) ("4" (GRIND) NIL NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|simple_assignment_TCC1| 0
+  (|simple_assignment_TCC1-0| "" 3927292802 ("" (GRIND) NIL NIL) NIL SHOSTAK
+   (|simple_assignment| SUBTYPE "ifexpr.C"
+    "{A: ifexpr.ifexpr | ifexpr.simple?(ifexpr.push(ifexpr.index(ifexpr.D), booleans.FALSE, ifexpr.L))(A)}"))
+  (|simple_assignment_TCC2-1| |nil| 3763656094 ("" (GRIND) NIL NIL) NIL NIL
+   (|simple_assignment| SUBTYPE "ifexpr.C"
+    "{A: ifexpr.ifexpr | ifexpr.simple?(ifexpr.push(ifexpr.index(ifexpr.D), booleans.FALSE, ifexpr.L))(A)}")))
+ (|simple_assignment_TCC2| 0
+  (|simple_assignment_TCC2-0| "" 3927292802
+   ("" (SKEEP :PREDS? T) (("" (GRIND) NIL NIL)) NIL) NIL SHOSTAK
+   (|simple_assignment| SUBTYPE "ifexpr.D" "(ifexpr.variable?)"))
+  (|simple_assignment_TCC3-1| |nil| 3763656094
+   ("" (SKEEP :PREDS? T) (("" (GRIND) NIL NIL)) NIL) NIL NIL
+   (|simple_assignment| SUBTYPE "ifexpr.D" "(ifexpr.variable?)")))
+ (|simple_assignment_TCC3| 0
+  (|simple_assignment_TCC3-0| "" 3927292803
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(push(index(D), FALSE, L))(C)")
+      (("" (TYPEPRED "A")
+        (("" (GRIND)
+          (("" (REWRITE "meaning_var")
+            (("" (FORWARD-CHAIN "simple_vars")
+              (("" (EXPAND "find" -1) (("" (PROPAX) NIL NIL)) NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK
+   (|simple_assignment| SUBTYPE
+    "ifexpr.simple_assignment(ifexpr.push(ifexpr.index(ifexpr.D), booleans.FALSE, ifexpr.L))(ifexpr.C) WITH [(ifexpr.index(ifexpr.D)) := booleans.FALSE]"
+    "{R | booleans.OR(ifexpr.A = ifexpr.bfalse, ifexpr.meaning(ifexpr.R)(ifexpr.A))}"))
+  (|simple_assignment_TCC4-1| |nil| 3763656094
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(push(index(D), FALSE, L))(C)")
+      (("" (TYPEPRED "A")
+        (("" (GRIND)
+          (("" (REWRITE "meaning_var")
+            (("" (FORWARD-CHAIN "simple_vars")
+              (("" (EXPAND "find" -1) (("" (PROPAX) NIL NIL)) NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|simple_assignment| SUBTYPE
+    "ifexpr.simple_assignment(ifexpr.push(ifexpr.index(ifexpr.D), booleans.FALSE, ifexpr.L))(ifexpr.C) WITH [(ifexpr.index(ifexpr.D)) := booleans.FALSE]"
+    "{R | booleans.OR(ifexpr.A = ifexpr.bfalse, ifexpr.meaning(ifexpr.R)(ifexpr.A))}")))
+ (|simple_assignment_TCC4| 0
+  (|simple_assignment_TCC4-0| "" 3927292804 ("" (GRIND) NIL NIL) NIL SHOSTAK
+   (|simple_assignment| SUBTYPE "ifexpr.B"
+    "{A: ifexpr.ifexpr | ifexpr.simple?(ifexpr.push(ifexpr.index(ifexpr.D), booleans.TRUE, ifexpr.L))(A)}"))
+  (|simple_assignment_TCC5-1| |nil| 3763656094 ("" (GRIND) NIL NIL) NIL NIL
+   (|simple_assignment| SUBTYPE "ifexpr.B"
+    "{A: ifexpr.ifexpr | ifexpr.simple?(ifexpr.push(ifexpr.index(ifexpr.D), booleans.TRUE, ifexpr.L))(A)}")))
+ (|simple_assignment_TCC5| 0
+  (|simple_assignment_TCC5-0| "" 3927292805 ("" (GRIND) NIL NIL) NIL SHOSTAK
+   (|simple_assignment| SUBTYPE "ifexpr.D" "(ifexpr.variable?)"))
+  (|simple_assignment_TCC6-1| |nil| 3763656094 ("" (GRIND) NIL NIL) NIL NIL
+   (|simple_assignment| SUBTYPE "ifexpr.D" "(ifexpr.variable?)")))
+ (|simple_assignment_TCC6| 0
+  (|simple_assignment_TCC6-0| "" 3927292806
+   ("" (SKEEP*)
+    (("" (TYPEPRED "A")
+      (("" (TYPEPRED "v(push(index(D), TRUE, L))(B)")
+        (("" (GRIND)
+          (("" (REWRITE "meaning_var" +)
+            (("" (FORWARD-CHAIN "simple_vars") (("" (GRIND) NIL NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK
+   (|simple_assignment| SUBTYPE
+    "ifexpr.simple_assignment(ifexpr.push(ifexpr.index(ifexpr.D), booleans.TRUE, ifexpr.L))(ifexpr.B) WITH [(ifexpr.index(ifexpr.D)) := booleans.TRUE]"
+    "{R | booleans.OR(ifexpr.A = ifexpr.bfalse, ifexpr.meaning(ifexpr.R)(ifexpr.A))}"))
+  (|simple_assignment_TCC7-1| |nil| 3763656094
+   ("" (SKEEP*)
+    (("" (TYPEPRED "A")
+      (("" (TYPEPRED "v(push(index(D), TRUE, L))(B)")
+        (("" (GRIND)
+          (("" (REWRITE "meaning_var" +)
+            (("" (FORWARD-CHAIN "simple_vars") (("" (GRIND) NIL NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|simple_assignment| SUBTYPE
+    "ifexpr.simple_assignment(ifexpr.push(ifexpr.index(ifexpr.D), booleans.TRUE, ifexpr.L))(ifexpr.B) WITH [(ifexpr.index(ifexpr.D)) := booleans.TRUE]"
+    "{R | booleans.OR(ifexpr.A = ifexpr.bfalse, ifexpr.meaning(ifexpr.R)(ifexpr.A))}")))
+ (|simple_assignment_TCC7| 0
+  (|simple_assignment_TCC7-0| "" 3927292806 ("" (GRIND) NIL NIL) NIL SHOSTAK
+   (|simple_assignment| SUBTYPE
+    "ifexpr.AllFalse WITH [(ifexpr.i) := booleans.TRUE]"
+    "{R | booleans.OR(ifexpr.A = ifexpr.bfalse, ifexpr.meaning(ifexpr.R)(ifexpr.A))}"))
+  (|simple_assignment_TCC8-1| |nil| 3763656094 ("" (GRIND) NIL NIL) NIL NIL
+   (|simple_assignment| SUBTYPE
+    "ifexpr.AllFalse WITH [(ifexpr.i) := booleans.TRUE]"
+    "{R | booleans.OR(ifexpr.A = ifexpr.bfalse, ifexpr.meaning(ifexpr.R)(ifexpr.A))}")))
+ (|simple_assignment_TCC8| 0
+  (|simple_assignment_TCC8-0| "" 3927292807 ("" (GRIND) NIL NIL) NIL SHOSTAK
+   (|simple_assignment| SUBTYPE "ifexpr.AllFalse"
+    "{R | booleans.OR(ifexpr.A = ifexpr.bfalse, ifexpr.meaning(ifexpr.R)(ifexpr.A))}"))
+  (|simple_assignment_TCC1-1| |nil| 3763656094 ("" (GRIND) NIL NIL) NIL NIL
+   (|simple_assignment| SUBTYPE "ifexpr.AllFalse"
+    "{R | booleans.OR(ifexpr.A = ifexpr.bfalse, ifexpr.meaning(ifexpr.R)(ifexpr.A))}")))
+ (|simple_push| 0
+  (|simple_push-1| |nil| 3763754857
+   ("" (INDUCT "A")
+    (("1" (SKEEP*)
+      (("1" (EXPAND "simple?" +)
+        (("1" (IFF)
+          (("1" (GROUND)
+            (("1" (HIDE -6)
+              (("1" (INST? -6 :COPY? T)
+                (("1" (ASSERT)
+                  (("1" (GROUND)
+                    (("1" (HIDE -4)
+                      (("1" (INST? -5)
+                        (("1" (INST? -7 :COPY? T)
+                          (("1" (GROUND)
+                            (("1" (GROUND)
+                              (("1" (HIDE -4)
+                                (("1" (INST?)
+                                  (("1" (GROUND) (("1" (GRIND) NIL NIL)) NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (GRIND) NIL NIL)
+             ("3" (REWRITE -6)
+              (("3" (GROUND)
+                (("1" (REWRITE -7) NIL NIL)
+                 ("2" (REWRITE -6)
+                  (("2" (GROUND) (("2" (REWRITE -6) NIL NIL)) NIL)) NIL))
+                NIL))
+              NIL)
+             ("4" (REWRITE -7)
+              (("4" (GROUND)
+                (("1" (REWRITE -8) NIL NIL)
+                 ("2" (REWRITE -7)
+                  (("2" (GROUND) (("2" (REWRITE -7) NIL NIL)) NIL)) NIL))
+                NIL))
+              NIL)
+             ("5" (GRIND) NIL NIL)
+             ("6" (REWRITE -6)
+              (("6" (GROUND)
+                (("1" (REWRITE -7) NIL NIL)
+                 ("2" (REWRITE -6)
+                  (("2" (GROUND)
+                    (("1" (GRIND) NIL NIL) ("2" (REWRITE -6) NIL NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("7" (REWRITE -7)
+              (("7" (GROUND)
+                (("1" (GRIND) NIL NIL)
+                 ("2" (REWRITE -7)
+                  (("2" (GROUND)
+                    (("1" (GRIND) NIL NIL) ("2" (REWRITE -7) NIL NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("2" (GRIND) NIL NIL) ("3" (GRIND) NIL NIL) ("4" (GRIND) NIL NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|simplify_TCC1| 0
+  (|simplify_TCC9-0| "" 3927292816 ("" (GRIND) NIL NIL) NIL SHOSTAK
+   (|simplify| SUBTYPE "ifexpr.D" "(ifexpr.variable?)"))
+  (|simplify_TCC11-1| |nil| 3763671455 ("" (GRIND) NIL NIL) NIL NIL
+   (|simplify| SUBTYPE "ifexpr.D" "(ifexpr.variable?)")))
+ (|simplify_TCC2| 0
+  (|simplify_TCC1-0| "" 3927292807 ("" (GRIND) NIL NIL) NIL SHOSTAK
+   (|simplify| SUBTYPE "ifexpr.B" "{A | ifexpr.norm?(ifexpr.A)}"))
+  (|simplify_TCC2-1| |nil| 3763671455 ("" (GRIND) NIL NIL) NIL NIL
+   (|simplify| SUBTYPE "ifexpr.B" "{A | ifexpr.norm?(ifexpr.A)}")))
+ (|simplify_TCC3| 0
+  (|simplify_TCC2-0| "" 3927292808 ("" (GRIND) NIL NIL) NIL SHOSTAK
+   (|simplify| SUBTYPE "ifexpr.C" "{A | ifexpr.norm?(ifexpr.A)}"))
+  (|simplify_TCC3-1| |nil| 3763671455 ("" (GRIND) NIL NIL) NIL NIL
+   (|simplify| SUBTYPE "ifexpr.C" "{A | ifexpr.norm?(ifexpr.A)}")))
+ (|simplify_TCC4| 0
+  (|simplify_TCC3-0| "" 3927292809
+   ("" (SKEEP*)
+    (("" (TYPEPRED "A")
+      (("" (TYPEPRED "v(push(i, TRUE, L))(B)")
+        (("" (TYPEPRED "v(push(i, FALSE, L))(C)")
+          (("" (GRIND) (("" (REWRITE "simple_push") NIL NIL)) NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK
+   (|simplify| SUBTYPE "ifexpr.E"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}"))
+  (|simplify_TCC4-1| |nil| 3763671455
+   ("" (SKEEP*)
+    (("" (TYPEPRED "A")
+      (("" (TYPEPRED "v(push(i, TRUE, L))(B)")
+        (("" (TYPEPRED "v(push(i, FALSE, L))(C)")
+          (("" (GRIND) (("" (REWRITE "simple_push") NIL NIL)) NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|simplify| SUBTYPE "ifexpr.E"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}")))
+ (|simplify_TCC5| 0
+  (|simplify_TCC4-0| "" 3927292811
+   ("" (SKEEP* :PREDS? T) (("" (HIDE -7) (("" (GRIND) NIL NIL)) NIL)) NIL) NIL
+   SHOSTAK
+   (|simplify| SUBTYPE "ifexpr.ift(ifexpr.D, ifexpr.E, ifexpr.F)"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}"))
+  (|simplify_TCC5-1| |nil| 3763671455
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(push(i, TRUE, L))(B)")
+      (("" (TYPEPRED "v(push(i, FALSE, L))(C)") (("" (GRIND) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|simplify| SUBTYPE "ifexpr.ift(ifexpr.D, ifexpr.E, ifexpr.F)"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}")))
+ (|simplify_TCC6| 0
+  (|simplify_TCC5-0| "" 3927292811
+   ("" (SKEEP*) (("" (TYPEPRED "A") (("" (GRIND) NIL NIL)) NIL)) NIL) NIL
+   SHOSTAK (|simplify| SUBTYPE "ifexpr.B" "{A | ifexpr.norm?(ifexpr.A)}"))
+  (|simplify_TCC7-1| |nil| 3763671455
+   ("" (SKEEP*) (("" (TYPEPRED "A") (("" (GRIND) NIL NIL)) NIL)) NIL) NIL NIL
+   (|simplify| SUBTYPE "ifexpr.B" "{A | ifexpr.norm?(ifexpr.A)}")))
+ (|simplify_TCC7| 0
+  (|simplify_TCC6-0| "" 3927292813
+   ("" (SKEEP* :PREDS? T)
+    (("" (TYPEPRED "v(L)(B)") (("1" (GRIND) NIL NIL) ("2" (GRIND) NIL NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK
+   (|simplify| SUBTYPE "ifexpr.simplify(ifexpr.L)(ifexpr.B)"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}"))
+  (|simplify_TCC8-1| |nil| 3763671455
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(L)(B)")
+      (("1" (GROUND) (("1" (TYPEPRED "K") (("1" (GRIND) NIL NIL)) NIL)) NIL)
+       ("2" (HIDE 3) (("2" (TYPEPRED "A") (("2" (GRIND) NIL NIL)) NIL)) NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|simplify| SUBTYPE "ifexpr.simplify(ifexpr.L)(ifexpr.B)"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}")))
+ (|simplify_TCC8| 0
+  (|simplify_TCC7-0| "" 3927292813
+   ("" (SKEEP*) (("" (TYPEPRED "A") (("" (GRIND) NIL NIL)) NIL)) NIL) NIL
+   SHOSTAK (|simplify| SUBTYPE "ifexpr.C" "{A | ifexpr.norm?(ifexpr.A)}"))
+  (|simplify_TCC9-1| |nil| 3763671455
+   ("" (SKEEP*) (("" (TYPEPRED "A") (("" (GRIND) NIL NIL)) NIL)) NIL) NIL NIL
+   (|simplify| SUBTYPE "ifexpr.C" "{A | ifexpr.norm?(ifexpr.A)}")))
+ (|simplify_TCC9| 0
+  (|simplify_TCC8-0| "" 3927292815
+   ("" (SKEEP* :PREDS? T)
+    (("" (TYPEPRED "v(L)(C)") (("1" (GRIND) NIL NIL) ("2" (GRIND) NIL NIL))
+      NIL))
+    NIL)
+   ((|meaning| DEF-DECL "bool" |ifexpr| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|stackassign| DEF-DECL "bool" |ifexpr| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|Assignment| TYPE-EQ-DECL NIL |ifexpr| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|size| DEF-DECL "nat" |ifexpr| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|norm?| DEF-DECL "boolean" |ifexpr| NIL)
+    (|simple?| DEF-DECL "bool" |ifexpr| NIL)
+    (|ifexpr| TYPE-DECL NIL |ifexpr| NIL) (|bstack| TYPE-DECL NIL |ifexpr| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   SHOSTAK
+   (|simplify| SUBTYPE "ifexpr.simplify(ifexpr.L)(ifexpr.C)"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}"))
+  (|simplify_TCC10-1| |nil| 3763671455
+   ("" (SKEEP*)
+    (("" (TYPEPRED "v(L)(C)")
+      (("1" (GROUND) (("1" (TYPEPRED "K") (("1" (GRIND) NIL NIL)) NIL)) NIL)
+       ("2" (TYPEPRED "A") (("2" (GRIND) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|simplify| SUBTYPE "ifexpr.simplify(ifexpr.L)(ifexpr.C)"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}")))
+ (|simplify_TCC10| 0
+  (|simplify_TCC14-0| "" 3927292819 ("" (SKEEP*) (("" (GRIND) NIL NIL)) NIL)
+   NIL SHOSTAK
+   (|simplify| SUBTYPE "ifexpr.A"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}"))
+  (|simplify_TCC1-1| |nil| 3763671455 ("" (SKEEP*) (("" (GRIND) NIL NIL)) NIL)
+   NIL NIL
+   (|simplify| SUBTYPE "ifexpr.A"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}")))
+ (|simplify_TCC11| 0
+  (|simplify_TCC15-0| "" 3927292820
+   ("" (SKEEP*)
+    (("" (GRIND) (("" (TYPEPRED "K") (("" (GRIND) NIL NIL)) NIL)) NIL)) NIL)
+   NIL SHOSTAK
+   (|simplify| SUBTYPE "ifexpr.btrue"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}"))
+  (|simplify_TCC17-1| |nil| 3763671455
+   ("" (SKEEP*)
+    (("" (GRIND) (("" (TYPEPRED "K") (("" (GRIND) NIL NIL)) NIL)) NIL)) NIL)
+   NIL NIL
+   (|simplify| SUBTYPE "ifexpr.btrue"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}")))
+ (|simplify_TCC12| 0
+  (|simplify_TCC16-0| "" 3927292821
+   ("" (SKEEP*)
+    (("" (GRIND) (("" (TYPEPRED "K") (("" (GRIND) NIL NIL)) NIL)) NIL)) NIL)
+   NIL SHOSTAK
+   (|simplify| SUBTYPE "ifexpr.bfalse"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}"))
+  (|simplify_TCC18-1| |nil| 3763671455
+   ("" (SKEEP*)
+    (("" (GRIND) (("" (TYPEPRED "K") (("" (GRIND) NIL NIL)) NIL)) NIL)) NIL)
+   NIL NIL
+   (|simplify| SUBTYPE "ifexpr.bfalse"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}")))
+ (|simplify_TCC13| 0
+  (|simplify_TCC17-0| "" 3927292821 ("" (GRIND) NIL NIL) NIL SHOSTAK
+   (|simplify| SUBTYPE "ifexpr.A"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}"))
+  (|simplify_TCC17-1| |nil| 3763747932 ("" (GRIND) NIL NIL) NIL NIL
+   (|simplify| SUBTYPE "ifexpr.A"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.L)(ifexpr.B), FORALL R: booleans.=>(ifexpr.stackassign(ifexpr.R)(ifexpr.L), ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}")))
+ (|nontaut?_TCC1| 0
+  (|nontaut?_TCC1-0| "" 3927292823
+   ("" (SKEEP*)
+    (("" (TYPEPRED "norm(A)")
+      (("" (TYPEPRED "simplify(emptystack)(norm(A))")
+        (("" (GROUND)
+          (("1" (INST?)
+            (("1"
+              (TYPEPRED
+               "simple_assignment(emptystack)(simplify(emptystack)(norm(A)))")
+              (("1" (GROUND) NIL NIL)) NIL))
+            NIL)
+           ("2" (LAZY-GRIND) NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK
+   (|nontaut?| SUBTYPE
+    "ifexpr.simplify(ifexpr.emptystack)(ifexpr.norm(ifexpr.A))"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.emptystack)(ifexpr.B), booleans.AND((booleans.OR(ifexpr.bfalse?(ifexpr.B), ifexpr.meaning(ifexpr.simple_assignment(ifexpr.emptystack)(ifexpr.B))(ifexpr.B))), FORALL R: ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}"))
+  (|nontaut?_TCC1-1| |nil| 3763776792
+   ("" (SKEEP*)
+    (("" (TYPEPRED "norm(A)")
+      (("" (TYPEPRED "simplify(emptystack)(norm(A))")
+        (("" (GROUND)
+          (("1" (INST?)
+            (("1"
+              (TYPEPRED
+               "simple_assignment(emptystack)(simplify(emptystack)(norm(A)))")
+              (("1" (GROUND) NIL NIL)) NIL))
+            NIL)
+           ("2" (LAZY-GRIND) NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL NIL
+   (|nontaut?| SUBTYPE
+    "ifexpr.simplify(ifexpr.emptystack)(ifexpr.norm(ifexpr.A))"
+    "{B | booleans.AND(ifexpr.simple?(ifexpr.emptystack)(ifexpr.B), booleans.AND((booleans.OR(ifexpr.bfalse?(ifexpr.B), ifexpr.meaning(ifexpr.simple_assignment(ifexpr.emptystack)(ifexpr.B))(ifexpr.B))), FORALL R: ifexpr.meaning(ifexpr.R)(ifexpr.B) = ifexpr.meaning(ifexpr.R)(ifexpr.A)))}"))))
+
