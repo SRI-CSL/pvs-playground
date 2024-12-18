@@ -1,0 +1,4 @@
+The directory contains a formalization of the fusion theorem [Richard Bird, Functional Algorithm Design, MPC'95]
+as formalized in [N. Shankar, Steps Towards Mechanizing Program Transformations, Science of Computer Programming, 1995].
+The formalization is an elegant illustration of the use of subtyping in PVS.  The unfold theory defines an operation
+that recursively transforms data from an input type into a binary tree representation.  The 

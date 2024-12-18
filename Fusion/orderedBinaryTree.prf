@@ -1,0 +1,126 @@
+(|binary_tree|)
+(|obt|
+ (|ordered?_TCC1| 0
+  (|ordered?_TCC1-1| |nil| 3672949090 ("" (TERMINATION-TCC) NIL NIL)
+   (NIL NIL NIL NIL) NIL
+   (|ordered?| TERMINATION "obt.ordered?(binary_tree_adt[obt.T].left(obt.A))"
+    #A((3) BASE-CHAR . "NIL"))))
+ (|ordered?_TCC2| 0
+  (|ordered?_TCC2-1| |nil| 3672949090 ("" (TERMINATION-TCC) NIL NIL)
+   (NIL NIL NIL NIL) NIL
+   (|ordered?| TERMINATION "obt.ordered?(binary_tree_adt[obt.T].right(obt.A))"
+    #A((3) BASE-CHAR . "NIL"))))
+ (|insert_TCC1| 0
+  (|insert_TCC1-1| |nil| 3672949090 ("" (TERMINATION-TCC) NIL NIL)
+   (NIL NIL NIL NIL) NIL
+   (|insert| TERMINATION "obt.insert(obt.x, obt.B)"
+    #A((3) BASE-CHAR . "NIL"))))
+ (|insert_TCC2| 0
+  (|insert_TCC2-1| |nil| 3672949090 ("" (TERMINATION-TCC) NIL NIL)
+   (NIL NIL NIL NIL) NIL
+   (|insert| TERMINATION "obt.insert(obt.x, obt.C)"
+    #A((3) BASE-CHAR . "NIL"))))
+ (|ordered?_insert_step| 0
+  (|ordered?_insert_step-1| |nil| 3672949090
+   ("" (INDUCT-AND-SIMPLIFY "A") NIL NIL)
+   ((|binary_tree| TYPE-DECL NIL |binary_tree_adt| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (PRED TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|every| ADT-DEF-DECL "boolean" |binary_tree_adt| NIL)
+    (|insert| DEF-DECL "binary_tree[T]" |obt| NIL)
+    (T FORMAL-TYPE-DECL NIL |obt| NIL)
+    (|binary_tree_induction| FORMULA-DECL NIL |binary_tree_adt| NIL))
+   NIL))
+ (|ordered?_insert| 0
+  (|ordered?_insert-1| |nil| 3672949090
+   ("" (INDUCT "A")
+    ((#A((1) BASE-CHAR . "1") (GRIND) NIL NIL)
+     (#A((1) BASE-CHAR . "2") (SKEEP*)
+      ((#A((1) BASE-CHAR . "2") (EXPAND "insert" +)
+        ((#A((1) BASE-CHAR . "2") (SPLIT)
+          ((#A((1) BASE-CHAR . "1") (FLATTEN)
+            ((#A((1) BASE-CHAR . "1") (EXPAND "ordered?" +)
+              ((#A((1) BASE-CHAR . "1") (REWRITE "ordered?_insert_step")
+                ((#A((1) BASE-CHAR . "1") (GRIND) NIL NIL)
+                 (#A((1) BASE-CHAR . "2") (HIDE 2)
+                  ((#A((1) BASE-CHAR . "2") (GRIND) NIL NIL)) NIL))
+                NIL))
+              NIL))
+            NIL)
+           (#A((1) BASE-CHAR . "2") (GROUND)
+            ((#A((1) BASE-CHAR . "2") (EXPAND "ordered?" +)
+              ((#A((1) BASE-CHAR . "2") (GRIND)
+                ((#A((1) BASE-CHAR . "2") (REWRITE "ordered?_insert_step")
+                  ((#A((1) BASE-CHAR . "2") (TYPEPRED "<=")
+                    ((#A((1) BASE-CHAR . "2") (EXPAND "total_order?")
+                      ((#A((1) BASE-CHAR . "2") (FLATTEN)
+                        ((#A((1) BASE-CHAR . "2") (EXPAND "dichotomous?")
+                          ((#A((1) BASE-CHAR . "2") (INST?)
+                            ((#A((1) BASE-CHAR . "2") (GROUND) NIL NIL)) NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((TRUE CONST-DECL "bool" |booleans| NIL)
+    (|ordered?_insert_step| FORMULA-DECL NIL |obt| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|total_order?| CONST-DECL "bool" |orders| NIL)
+    (<= FORMAL-CONST-DECL "(total_order?[T])" |obt| NIL)
+    (|dichotomous?| CONST-DECL "bool" |orders| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|every| ADT-DEF-DECL "boolean" |binary_tree_adt| NIL)
+    (|binary_tree_induction| FORMULA-DECL NIL |binary_tree_adt| NIL)
+    (T FORMAL-TYPE-DECL NIL |obt| NIL)
+    (|insert| DEF-DECL "binary_tree[T]" |obt| NIL)
+    (|ordered?| DEF-DECL "bool" |obt| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|binary_tree| TYPE-DECL NIL |binary_tree_adt| NIL))
+   NIL))
+ (|search_insert| 0
+  (|search_insert-1| |nil| 3672949090 ("" (INDUCT-AND-SIMPLIFY "A") NIL NIL)
+   (NIL NIL NIL NIL NIL NIL NIL NIL NIL) NIL)))
+(|obt_eval|
+ (|insert_list_TCC1| 0
+  (|insert_list_TCC1-1| |nil| 3672949091
+   ("" (INDUCT "ll")
+    (("1" (EXPAND "ordered?") (("1" (PROPAX) NIL NIL)) NIL)
+     ("2" (SKEEP) (("2" (EXPAND "ordered?" +) (("2" (PROPAX) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   (NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL
+    NIL NIL NIL NIL NIL NIL NIL NIL NIL)
+   NIL
+   (|insert_list| SUBTYPE "binary_tree_adt[int].leaf"
+    "(obt[int, restrict[[real, real], [int, int], bool].restrict(reals.<=)].ordered?)")))
+ (|insert_list_TCC2| 0
+  (|insert_list_TCC2-1| |nil| 3672949091 ("" (TERMINATION-TCC) NIL NIL)
+   (NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL
+    NIL)
+   NIL
+   (|insert_list| TERMINATION "obt_eval.insert_list(obt_eval.ll1)"
+    #A((3) BASE-CHAR . "NIL"))))
+ (|insert_list_TCC3| 0
+  (|insert_list_TCC3-1| |nil| 3672949091
+   ("" (INDUCT-AND-SIMPLIFY "ll" :REWRITES "ordered?_insert") NIL NIL)
+   (NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL
+    NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL NIL)
+   NIL
+   (|insert_list| SUBTYPE
+    "obt[int, restrict[[real, real], [int, int], bool].restrict(reals.<=)].insert(obt_eval.i, obt_eval.insert_list(obt_eval.ll1))"
+    "(obt[int, restrict[[real, real], [int, int], bool].restrict(reals.<=)].ordered?)")))
+ (|test| 0 (|test-1| |nil| 3672958335 ("" (ASSERT) NIL NIL) (NIL) SHOSTAK)))
+

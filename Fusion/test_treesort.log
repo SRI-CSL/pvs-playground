@@ -1,0 +1,498 @@
+; in: DEFUN |_filter|
+;     (PVS:TYPE LIST PVS::|l|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |l|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|_filter| in DEFUN
+; in: DEFUN |filter!|
+;     (PVS:TYPE LIST PVS::|l|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |l|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|filter!| in DEFUN
+; in: DEFUN |filter|
+;     (PVS:TYPE LIST PVS::|l|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |l|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|filter| in DEFUN
+WARNING: redefining PVS::|treesort__below| in DEFUN
+WARNING: redefining PVS::|treesort!below| in DEFUN
+WARNING: redefining PVS::|treesort_below| in DEFUN
+WARNING: redefining PVS::|treesort__above| in DEFUN
+WARNING: redefining PVS::|treesort!above| in DEFUN
+WARNING: redefining PVS::|treesort_above| in DEFUN
+; in: DEFUN |treesort__quicksort|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|treesort__quicksort| in DEFUN
+; in: DEFUN |treesort!quicksort|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+; 
+; compilation unit finished
+;   caught 2 WARNING conditions
+WARNING: redefining PVS::|treesort!quicksort| in DEFUN
+WARNING: redefining PVS::|treesort_quicksort| in DEFUN
+; in: DEFUN |_genlist|
+;     (PVS:TYPE FIXNUM PVS::|n|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE FIXNUM |n|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|_genlist| in DEFUN
+; in: DEFUN |genlist!|
+;     (PVS:TYPE FIXNUM PVS::|n|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE FIXNUM |n|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|genlist!| in DEFUN
+WARNING: redefining PVS::|genlist| in DEFUN
+; in: DEFUN |_testquicksortn|
+;     (PVS:TYPE FIXNUM PVS::|n|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE FIXNUM |n|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|_testquicksortn| in DEFUN
+; in: DEFUN |testquicksortn!|
+;     (PVS:TYPE FIXNUM PVS::|n|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE FIXNUM |n|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|testquicksortn!| in DEFUN
+WARNING: redefining PVS::|testquicksortn| in DEFUN
+; in: DEFUN |_binary_tree_reduce|
+;     (PVS:TYPE NIL PVS::|red|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |red|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|_binary_tree_reduce| in DEFUN
+; in: DEFUN |binary_tree_reduce!|
+;     (PVS:TYPE NIL PVS::|red|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |red|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|binary_tree_reduce!| in DEFUN
+; in: DEFUN |binary_tree_reduce|
+;     (PVS:TYPE NIL PVS::|red|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |red|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|binary_tree_reduce| in DEFUN
+; in: DEFUN |treesort__flatten|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+
+;     (PVS:TYPE LIST PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |y|)
+
+;     (SB-INT:NAMED-LAMBDA PVS::|treesort__flatten|
+;         (<= PVS::A)
+;       (BLOCK PVS::|treesort__flatten|
+;         (THE LIST
+;              (PVS::|_binary_tree_reduce| (THE LIST NIL) #'(LAMBDA # #) PVS::A))))
+; 
+; caught STYLE-WARNING:
+;   The variable <= is defined but never used.
+; 
+; compilation unit finished
+;   caught 2 WARNING conditions
+;   caught 1 STYLE-WARNING condition
+WARNING: redefining PVS::|treesort__flatten| in DEFUN
+; in: DEFUN |treesort!flatten|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+
+;     (PVS:TYPE LIST PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |y|)
+
+;     (SB-INT:NAMED-LAMBDA PVS::|treesort!flatten|
+;         (<= PVS::A)
+;       (BLOCK PVS::|treesort!flatten|
+;         NIL
+;         (THE LIST
+;              (PVS::|binary_tree_reduce!| (THE LIST NIL) #'(LAMBDA # #) PVS::A))))
+; 
+; caught STYLE-WARNING:
+;   The variable <= is defined but never used.
+; 
+; compilation unit finished
+;   caught 2 WARNING conditions
+;   caught 1 STYLE-WARNING condition
+WARNING: redefining PVS::|treesort!flatten| in DEFUN
+; in: DEFUN |treesort_flatten|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+
+;     (PVS:TYPE LIST PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |y|)
+
+;     (SB-INT:NAMED-LAMBDA PVS::|treesort_flatten|
+;         (<=)
+;       (BLOCK PVS::|treesort_flatten|
+;         #'(LAMBDA (PVS::A) (THE LIST (PVS::|_binary_tree_reduce| # #'# PVS::A)))))
+; 
+; caught STYLE-WARNING:
+;   The variable <= is defined but never used.
+; 
+; compilation unit finished
+;   caught 2 WARNING conditions
+;   caught 1 STYLE-WARNING condition
+WARNING: redefining PVS::|treesort_flatten| in DEFUN
+; in: DEFUN |unfold__unfold|
+;     (PVS:TYPE NIL PVS::|a|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |a|)
+
+;     (PVS:TYPE NIL PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |y|)
+
+;     (PVS:TYPE NIL PVS::|z|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |z|)
+; 
+; compilation unit finished
+;   caught 3 WARNING conditions
+WARNING: redefining PVS::|unfold__unfold| in DEFUN
+; in: DEFUN |unfold!unfold|
+;     (PVS:TYPE NIL PVS::|a|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |a|)
+
+;     (PVS:TYPE NIL PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |y|)
+
+;     (PVS:TYPE NIL PVS::|z|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |z|)
+; 
+; compilation unit finished
+;   caught 3 WARNING conditions
+WARNING: redefining PVS::|unfold!unfold| in DEFUN
+; in: DEFUN |unfold_unfold|
+;     (PVS:TYPE NIL PVS::|a|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |a|)
+
+;     (PVS:TYPE NIL PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |y|)
+
+;     (PVS:TYPE NIL PVS::|z|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |z|)
+; 
+; compilation unit finished
+;   caught 3 WARNING conditions
+WARNING: redefining PVS::|unfold_unfold| in DEFUN
+; in: DEFUN |treesort__unjoin|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+
+;     (PVS:TYPE NIL PVS::|a|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |a|)
+
+;     (PVS:TYPE LIST PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |y|)
+; 
+; compilation unit finished
+;   caught 3 WARNING conditions
+WARNING: redefining PVS::|treesort__unjoin| in DEFUN
+; in: DEFUN |treesort!unjoin|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+
+;     (PVS:TYPE NIL PVS::|a|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |a|)
+
+;     (PVS:TYPE LIST PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |y|)
+; 
+; compilation unit finished
+;   caught 4 WARNING conditions
+WARNING: redefining PVS::|treesort!unjoin| in DEFUN
+; in: DEFUN |treesort_unjoin|
+;     (PVS:TYPE NIL PVS::|a|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |a|)
+
+;     (PVS:TYPE LIST PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |y|)
+; 
+; compilation unit finished
+;   caught 2 WARNING conditions
+WARNING: redefining PVS::|treesort_unjoin| in DEFUN
+; in: DEFUN |treesort__mktree|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|treesort__mktree| in DEFUN
+; in: DEFUN |treesort!mktree|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+; 
+; compilation unit finished
+;   caught 2 WARNING conditions
+WARNING: redefining PVS::|treesort!mktree| in DEFUN
+WARNING: redefining PVS::|treesort_mktree| in DEFUN
+; in: DEFUN |treesort__fusionqsort|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|treesort__fusionqsort| in DEFUN
+; in: DEFUN |treesort!fusionqsort|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+; 
+; compilation unit finished
+;   caught 2 WARNING conditions
+WARNING: redefining PVS::|treesort!fusionqsort| in DEFUN
+WARNING: redefining PVS::|treesort_fusionqsort| in DEFUN
+; in: DEFUN |_testfusionqsortn|
+;     (PVS:TYPE FIXNUM PVS::|n|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE FIXNUM |n|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|_testfusionqsortn| in DEFUN
+; in: DEFUN |testfusionqsortn!|
+;     (PVS:TYPE FIXNUM PVS::|n|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE FIXNUM |n|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|testfusionqsortn!| in DEFUN
+WARNING: redefining PVS::|testfusionqsortn| in DEFUN
+; in: DEFUN |fusion__fun|
+;     (PVS:TYPE NIL PVS::|a|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |a|)
+
+;     (PVS:TYPE NIL PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |y|)
+
+;     (PVS:TYPE NIL PVS::|z|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |z|)
+; 
+; compilation unit finished
+;   caught 3 WARNING conditions
+WARNING: redefining PVS::|fusion__fun| in DEFUN
+; in: DEFUN |fusion!fun|
+;     (PVS:TYPE NIL PVS::|a|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |a|)
+
+;     (PVS:TYPE NIL PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |y|)
+
+;     (PVS:TYPE NIL PVS::|z|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |z|)
+; 
+; compilation unit finished
+;   caught 3 WARNING conditions
+WARNING: redefining PVS::|fusion!fun| in DEFUN
+; in: DEFUN |fusion_fun|
+;     (PVS:TYPE NIL PVS::|a|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |a|)
+
+;     (PVS:TYPE NIL PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |y|)
+
+;     (PVS:TYPE NIL PVS::|z|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE NIL |z|)
+; 
+; compilation unit finished
+;   caught 3 WARNING conditions
+WARNING: redefining PVS::|fusion_fun| in DEFUN
+; in: DEFUN |treesort__funsort|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+
+;     (PVS:TYPE LIST PVS::|x#0|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x#0|)
+
+;     (PVS:TYPE LIST PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |y|)
+; 
+; compilation unit finished
+;   caught 3 WARNING conditions
+WARNING: redefining PVS::|treesort__funsort| in DEFUN
+; in: DEFUN |treesort!funsort|
+;     (PVS:TYPE LIST PVS::|x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x|)
+
+;     (PVS:TYPE LIST PVS::|x#0|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x#0|)
+
+;     (PVS:TYPE LIST PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |y|)
+; 
+; compilation unit finished
+;   caught 4 WARNING conditions
+WARNING: redefining PVS::|treesort!funsort| in DEFUN
+; in: DEFUN |treesort_funsort|
+;     (PVS:TYPE LIST PVS::|x#0|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |x#0|)
+
+;     (PVS:TYPE LIST PVS::|y|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE LIST |y|)
+; 
+; compilation unit finished
+;   caught 2 WARNING conditions
+WARNING: redefining PVS::|treesort_funsort| in DEFUN
+; in: DEFUN |_testfunsortn|
+;     (PVS:TYPE FIXNUM PVS::|n|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE FIXNUM |n|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|_testfunsortn| in DEFUN
+; in: DEFUN |testfunsortn!|
+;     (PVS:TYPE FIXNUM PVS::|n|)
+; 
+; caught WARNING:
+;   unrecognized declaration (TYPE FIXNUM |n|)
+; 
+; compilation unit finished
+;   caught 1 WARNING condition
+WARNING: redefining PVS::|testfunsortn!| in DEFUN
+WARNING: redefining PVS::|testfunsortn| in DEFUN

@@ -1,0 +1,222 @@
+%%% ADT file generated from orderedBinaryTree
+
+binary_tree_adt[T: TYPE]: THEORY
+ BEGIN
+
+  binary_tree: TYPE
+
+  leaf?, node?: [binary_tree -> boolean]
+
+  val: [(node?) -> T]
+
+  left: [(node?) -> binary_tree]
+
+  right: [(node?) -> binary_tree]
+
+  leaf: (leaf?)
+
+  node: [[T, binary_tree, binary_tree] -> (node?)]
+
+  binary_tree_ord: [binary_tree -> upto(1)]
+
+  binary_tree_ord_defaxiom: AXIOM
+    binary_tree_ord(leaf) = 0 AND
+     FORALL (val: T, left: binary_tree, right: binary_tree):
+       binary_tree_ord(node(val, left, right)) = 1;
+
+  ord(x: binary_tree): upto(1) =
+      CASES x OF leaf: 0, node(node1_var, node2_var, node3_var): 1 ENDCASES
+
+  binary_tree_leaf_extensionality: AXIOM
+    FORALL (leaf?_var: (leaf?), leaf?_var2: (leaf?)):
+      leaf?_var = leaf?_var2;
+
+  binary_tree_node_extensionality: AXIOM
+    FORALL (node?_var: (node?), node?_var2: (node?)):
+      val(node?_var) = val(node?_var2) AND
+       left(node?_var) = left(node?_var2) AND
+        right(node?_var) = right(node?_var2)
+       IMPLIES node?_var = node?_var2;
+
+  binary_tree_node_eta: AXIOM
+    FORALL (node?_var: (node?)):
+      node(val(node?_var), left(node?_var), right(node?_var)) = node?_var;
+
+  binary_tree_val_node: AXIOM
+    FORALL (node1_var: T, node2_var: binary_tree, node3_var: binary_tree):
+      val(node(node1_var, node2_var, node3_var)) = node1_var;
+
+  binary_tree_left_node: AXIOM
+    FORALL (node1_var: T, node2_var: binary_tree, node3_var: binary_tree):
+      left(node(node1_var, node2_var, node3_var)) = node2_var;
+
+  binary_tree_right_node: AXIOM
+    FORALL (node1_var: T, node2_var: binary_tree, node3_var: binary_tree):
+      right(node(node1_var, node2_var, node3_var)) = node3_var;
+
+  binary_tree_inclusive: AXIOM
+    FORALL (binary_tree_var: binary_tree):
+      leaf?(binary_tree_var) OR node?(binary_tree_var);
+
+  binary_tree_induction: AXIOM
+    FORALL (p: [binary_tree -> boolean]):
+      (p(leaf) AND
+        FORALL (node1_var: T, node2_var: binary_tree,
+                node3_var: binary_tree):
+          p(node2_var) AND p(node3_var) IMPLIES
+           p(node(node1_var, node2_var, node3_var)))
+       IMPLIES FORALL (binary_tree_var: binary_tree): p(binary_tree_var);
+
+  every(p: PRED[T])(a: binary_tree):  boolean =
+      CASES a
+        OF leaf: TRUE,
+           node(node1_var, node2_var, node3_var):
+             p(node1_var) AND every(p)(node2_var) AND every(p)(node3_var)
+        ENDCASES;
+
+  every(p: PRED[T], a: binary_tree):  boolean =
+      CASES a
+        OF leaf: TRUE,
+           node(node1_var, node2_var, node3_var):
+             p(node1_var) AND every(p, node2_var) AND every(p, node3_var)
+        ENDCASES;
+
+  some(p: PRED[T])(a: binary_tree):  boolean =
+      CASES a
+        OF leaf: FALSE,
+           node(node1_var, node2_var, node3_var):
+             p(node1_var) OR some(p)(node2_var) OR some(p)(node3_var)
+        ENDCASES;
+
+  some(p: PRED[T], a: binary_tree):  boolean =
+      CASES a
+        OF leaf: FALSE,
+           node(node1_var, node2_var, node3_var):
+             p(node1_var) OR some(p, node2_var) OR some(p, node3_var)
+        ENDCASES;
+
+  subterm(x: binary_tree, y: binary_tree):  boolean =
+      x = y OR
+       CASES y
+         OF leaf: FALSE,
+            node(node1_var, node2_var, node3_var):
+              subterm(x, node2_var) OR subterm(x, node3_var)
+         ENDCASES;
+
+  <<:  (strict_well_founded?[binary_tree]) =
+      LAMBDA (x: binary_tree, y: binary_tree):
+        CASES y
+          OF leaf: FALSE,
+             node(node1_var, node2_var, node3_var):
+               (x = node2_var OR x << node2_var) OR
+                (x = node3_var OR x << node3_var)
+          ENDCASES;
+
+  binary_tree_well_founded: AXIOM strict_well_founded?[binary_tree](<<);
+
+  reduce_nat(leaf?_fun: nat, node?_fun: [[T, nat, nat] -> nat]):
+        [binary_tree -> nat] =
+      LAMBDA (binary_tree_adtvar: binary_tree):
+        LET red: [binary_tree -> nat] = reduce_nat(leaf?_fun, node?_fun) IN
+          CASES binary_tree_adtvar
+            OF leaf: leaf?_fun,
+               node(node1_var, node2_var, node3_var):
+                 node?_fun(node1_var, red(node2_var), red(node3_var))
+            ENDCASES;
+
+  REDUCE_nat(leaf?_fun: [binary_tree -> nat],
+             node?_fun: [[T, nat, nat, binary_tree] -> nat]):
+        [binary_tree -> nat] =
+      LAMBDA (binary_tree_adtvar: binary_tree):
+        LET red: [binary_tree -> nat] = REDUCE_nat(leaf?_fun, node?_fun) IN
+          CASES binary_tree_adtvar
+            OF leaf: leaf?_fun(binary_tree_adtvar),
+               node(node1_var, node2_var, node3_var):
+                 node?_fun(node1_var, red(node2_var), red(node3_var),
+                           binary_tree_adtvar)
+            ENDCASES;
+
+  reduce_ordinal(leaf?_fun: ordinal,
+                 node?_fun: [[T, ordinal, ordinal] -> ordinal]):
+        [binary_tree -> ordinal] =
+      LAMBDA (binary_tree_adtvar: binary_tree):
+        LET red: [binary_tree -> ordinal] =
+              reduce_ordinal(leaf?_fun, node?_fun)
+          IN
+          CASES binary_tree_adtvar
+            OF leaf: leaf?_fun,
+               node(node1_var, node2_var, node3_var):
+                 node?_fun(node1_var, red(node2_var), red(node3_var))
+            ENDCASES;
+
+  REDUCE_ordinal(leaf?_fun: [binary_tree -> ordinal],
+                 node?_fun:
+                   [[T, ordinal, ordinal, binary_tree] -> ordinal]):
+        [binary_tree -> ordinal] =
+      LAMBDA (binary_tree_adtvar: binary_tree):
+        LET red: [binary_tree -> ordinal] =
+              REDUCE_ordinal(leaf?_fun, node?_fun)
+          IN
+          CASES binary_tree_adtvar
+            OF leaf: leaf?_fun(binary_tree_adtvar),
+               node(node1_var, node2_var, node3_var):
+                 node?_fun(node1_var, red(node2_var), red(node3_var),
+                           binary_tree_adtvar)
+            ENDCASES;
+ END binary_tree_adt
+
+binary_tree_adt_map[T: TYPE, T1: TYPE]: THEORY
+ BEGIN
+
+  IMPORTING binary_tree_adt
+
+  map(f: [T -> T1])(a: binary_tree[T]):  binary_tree[T1] =
+      CASES a
+        OF leaf: leaf,
+           node(node1_var, node2_var, node3_var):
+             node(f(node1_var), map(f)(node2_var), map(f)(node3_var))
+        ENDCASES;
+
+  map(f: [T -> T1], a: binary_tree[T]):  binary_tree[T1] =
+      CASES a
+        OF leaf: leaf,
+           node(node1_var, node2_var, node3_var):
+             node(f(node1_var), map(f, node2_var), map(f, node3_var))
+        ENDCASES;
+
+  every(R: [[T, T1] -> boolean])(x: binary_tree[T], y: binary_tree[T1]):
+        boolean =
+      leaf?(x) AND leaf?(y) OR
+            node?(x) AND node?(y) AND R(val(x), val(y))
+        AND every(R)(left(x), left(y)) AND every(R)(right(x), right(y));
+ END binary_tree_adt_map
+
+binary_tree_adt_reduce[T: TYPE, range: TYPE]: THEORY
+ BEGIN
+
+  IMPORTING binary_tree_adt[T]
+
+  reduce(leaf?_fun: range, node?_fun: [[T, range, range] -> range]):
+        [binary_tree[T] -> range] =
+      LAMBDA (binary_tree_adtvar: binary_tree[T]):
+        LET red: [binary_tree[T] -> range] = reduce(leaf?_fun, node?_fun)
+          IN
+          CASES binary_tree_adtvar
+            OF leaf: leaf?_fun,
+               node(node1_var, node2_var, node3_var):
+                 node?_fun(node1_var, red(node2_var), red(node3_var))
+            ENDCASES;
+
+  REDUCE(leaf?_fun: [binary_tree[T] -> range],
+         node?_fun: [[T, range, range, binary_tree[T]] -> range]):
+        [binary_tree[T] -> range] =
+      LAMBDA (binary_tree_adtvar: binary_tree[T]):
+        LET red: [binary_tree[T] -> range] = REDUCE(leaf?_fun, node?_fun)
+          IN
+          CASES binary_tree_adtvar
+            OF leaf: leaf?_fun(binary_tree_adtvar),
+               node(node1_var, node2_var, node3_var):
+                 node?_fun(node1_var, red(node2_var), red(node3_var),
+                           binary_tree_adtvar)
+            ENDCASES;
+ END binary_tree_adt_reduce

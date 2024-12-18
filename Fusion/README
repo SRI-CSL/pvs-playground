@@ -1,0 +1,27 @@
+The directory contains a formalization of the fusion theorem [Richard
+Bird, Functional Algorithm Design, MPC'95] as formalized in
+[N. Shankar, Steps Towards Mechanizing Program Transformations,
+Science of Computer Programming, 1995].  The formalization is an
+elegant illustration of the use of subtyping in PVS.
+
+The unfold theory defines an operation that recursively transforms
+data from an input type into a binary tree representation.  The fusion
+theory defines an operation that is the fusion of an unfold step that
+converts the data into tree form and a reduce step that operates on
+the tree representation.  The theorem proves that the fused operation
+is equivalent to the composition of the reduce and unfold operations.
+
+The theory treesort applies the fusion theorem to derive a quicksort
+variant for lists.  Three variants of quicksort are defined using the
+filter operation from the PVS prelude.  The quicksort operation sorts
+a list by using the head element as the pivot to create two partitions
+of the tail of the list that are recursively sorted before being
+appended with the pivot element in the middle.  The fusionqsort
+operation is the composition of the mktree and flatten operations
+where mktree constructs an ordered binary tree from the input list.
+The third funsort operation is the fused version of fusionqsort
+obtained from the fusion theorem.  All three are shown to return an
+ordered permutation of the input and to be equivalent to each other.
+Some test evaluations are shown in the theory test_treesort.
+
+These proofs will only work on the SBCL version of PVS8 built after Dec 17, 2024.  

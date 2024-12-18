@@ -1,0 +1,220 @@
+unfold   [ T, B:  TYPE, size : [B -> nat] ]
+                : THEORY
+  BEGIN
+
+  IMPORTING binary_tree[T]
+
+  p : VAR PRED[B]
+  x, y, z : VAR B
+   a : VAR T
+
+   smaller(x) : TYPE = { y | size(y) < size(x)}
+
+   well_fnd(p) : TYPE =
+     [x : (p) -> [T, smaller(x), smaller(x)]]
+
+   unfold(p, (f: well_fnd(p)))(x) :
+     RECURSIVE  binary_tree  =
+    (IF p(x)
+      THEN (LET (a, y, z) = f(x)
+          IN node(a, unfold(p, f)(y),
+                     unfold(p, f)(z)))
+       ELSE leaf ENDIF)
+   MEASURE size(x)
+
+  END unfold
+
+fusion   [ T, S, Range:  TYPE, size : [S -> nat] ]
+		: THEORY
+  BEGIN
+   IMPORTING unfold[T, S, size]
+   p : VAR PRED[S]
+
+   x, y, z : VAR S
+   c : VAR Range
+
+   g: VAR [T, Range, Range -> Range]
+
+   a : VAR T
+
+   fun(p, (f : well_fnd(p)), c, g)(x) :
+     RECURSIVE  Range =
+   (IF p(x)
+    THEN (LET (a, y, z) = f(x)
+          IN g(a, fun(p, f, c, g)(y),
+                  fun(p, f, c, g)(z)))
+    ELSE c ENDIF)
+   MEASURE size(x)
+
+  fusion: THEOREM
+   (FORALL (p, (f: well_fnd(p)), c, g, x):
+      reduce(c, g)(unfold(p, f)(x))
+    = fun(p, f, c, g)(x))
+
+  fun_induction: THEOREM
+   (FORALL (q : PRED[Range], p, (f: well_fnd(p)), c, g):
+      q(c) AND
+       (FORALL x, (u : [S -> Range]):
+         p(x) IMPLIES
+          (LET (a, y, z) = f(x) IN
+             q(u(y)) AND q(u(z))
+          IMPLIES q(g(a, u(y), u(z)))))
+     IMPLIES (FORALL x: q(fun(p, f, c, g)(x))))
+      
+
+  END fusion
+
+treesort [T: TYPE, <= : (total_order?[T])]: THEORY
+ BEGIN
+
+  IMPORTING fusion[T, list[T], list[T], length[T]],
+            obt[T, <=]
+
+  A, B, C : VAR binary_tree[T]
+  x, y, z : VAR list[T]
+  a, b, c : VAR T
+  p, q    : VAR PRED[T]
+
+  flatten(A) : list[T] =
+             reduce(null[T],
+                    (LAMBDA a, x, y: append(x, cons(a, y))))(A)
+
+  below(a)(b): bool = (b <= a)
+
+  above(a)(b): bool = NOT (b <= a)
+
+  length_append: LEMMA length(append(x, y)) = length(x) + length(y)
+
+  length_filter: LEMMA (FORALL (p: PRED[T]): length(filter(x, p)) <= length(x))
+
+  filter_length: LEMMA
+         length(filter(x, below(a))) = length(x) - length(filter(x, above(a)))   
+
+  unjoin: well_fnd(cons?[T]) =
+   (LAMBDA (x: (cons?[T])):
+      (LET a = car(x),
+           y = cdr(x)
+        IN
+      (a, filter(y, below(a)), filter(y, above(a)))))
+
+  mktree(x) : binary_tree[T] =
+     unfold(cons?, unjoin)(x)
+
+  quicksort(x): RECURSIVE list[T] =
+     (CASES x OF
+       null : null,
+       cons(a, y) : append(quicksort(filter(y, below(a))),
+                           cons(a, quicksort(filter(y, above(a)))))
+      ENDCASES)
+    MEASURE length(x)
+
+  fusionqsort(x) : list[T] = flatten(mktree(x))
+
+  quicksort_by_fusion: THEOREM
+     quicksort(x) = fusionqsort(x)
+
+  ordered?(x): RECURSIVE bool =
+    (CASES x OF
+      null : TRUE,
+      cons(a, y):  (CASES y OF
+                    null : TRUE,
+                    cons(b, w): (a <= b) AND ordered?(y)
+                    ENDCASES)
+      ENDCASES)
+   MEASURE length(x)
+
+  % filter_every: LEMMA every(p)(filter(x, p))
+
+  %  every_filter: LEMMA every(p)(x) IMPLIES every(p)(filter(x, q))
+
+  every_mktree: LEMMA
+    every(p)(x) IMPLIES
+    every(p)(unfold(cons?, unjoin)(x))
+
+    every_mktree_implies: LEMMA
+        (FORALL (p, q : PRED[T]):
+           (FORALL a: p(a) IMPLIES q(a)) AND
+           every(p)(x)
+         IMPLIES every(q)(unfold(cons?, unjoin)(x)))
+
+  ordered?_mktree: LEMMA ordered?(mktree(x))
+
+   ordered?_append: LEMMA
+     ordered?(append(x, cons(a, y))) =
+       (ordered?(x) AND
+        ordered?(y) AND
+        every((LAMBDA b: b <= a))(x) AND
+        every((LAMBDA b: a <= b))(y))
+
+%  every_append: LEMMA every(p)(append(x, y)) = (every(p)(x) AND every(p)(y))
+
+  
+   every_flatten: LEMMA
+     every(p)(A) = every(p)(flatten(A))
+
+  ordered?_flatten: LEMMA  ordered?(flatten(A)) = ordered?(A)
+
+  ordered?_fusionqsort: LEMMA
+     ordered?(fusionqsort(x))
+
+%  count(a, x):  nat = reduce(0, (LAMBDA b, (i: nat): 1+ i))(x)
+
+  count(a, x): RECURSIVE nat =
+    (CASES x OF
+      null: 0,
+      cons(b, y): IF a = b THEN 1 + count(a, y) ELSE count(a, y) ENDIF
+     ENDCASES)
+    MEASURE length(x)
+
+  count_filter: LEMMA
+     count(a, filter(x, p)) =
+      (IF p(a) THEN count(a, x) ELSE 0 ENDIF)
+
+  count_append: LEMMA count(a, append(x, y)) = count(a, x) + count(a, y)
+
+  length_quicksort : LEMMA length(quicksort(x)) = length(x)
+
+
+  count_quicksort: THEOREM
+     count(a, quicksort(x)) = count(a, x)
+
+  count_fusionqsort: THEOREM
+     count(a, fusionqsort(x)) = count(a, x)
+
+  funsort(x): list[T] = fun(cons?, unjoin, null[T], (LAMBDA a, x, y: append(x, cons(a, y))))(x)
+
+  fusionqsort_fun: THEOREM
+    fusionqsort(x) = funsort(x)
+    
+
+ END treesort
+
+test_treesort: THEORY
+BEGIN
+  IMPORTING treesort[uint32, <=]
+  
+  test_quicksort1: list[uint32] = 
+    quicksort((: 8, 3, 7, 4, 9, 5, 6, 2 :))
+
+  test_fusionqsort: list[uint32] =
+   fusionqsort((: 8, 3, 7, 4, 9, 5, 6, 2 :))
+
+  test_funsort : list[uint32] =
+   funsort((: 8, 3, 7, 4, 9, 5, 6, 2 :))
+
+  genlist(n : uint32): RECURSIVE list[uint32] = 
+    (IF n = 0 THEN (: 0 :)
+     ELSE cons(n, genlist(n -1))
+     ENDIF)
+     MEASURE n
+
+  testquicksortn(n: uint32): list[uint32]
+   = quicksort(genlist(n))
+
+  testfusionqsortn(n: uint32): list[uint32]
+   = fusionqsort(genlist(n))
+
+  testfunsortn(n: uint32): list[uint32]
+   = funsort(genlist(n))
+
+END test_treesort
