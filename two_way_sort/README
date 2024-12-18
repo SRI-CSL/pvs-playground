@@ -1,0 +1,6 @@
+Two-way sort is a procedure for sorting an array of Boolean elements by maintaining a low cursor and a high cursor
+and successively allowing these cursors to move towards each other by ensuring that everything to the left of the low
+cursor is false and everything to the right of the high cursor is true.  The operation two_way_sort_rec is
+defines the iteration with cursors i and j, and is invoked by two_way_sort with the proper initialization of the
+cursors.  The correctness of the operation is captured in its type and the proof is embedded in the proofs of
+the type-correctness conditions (TCCS).  
