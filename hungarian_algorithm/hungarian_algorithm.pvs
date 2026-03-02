@@ -1,0 +1,292 @@
+hungarian_algorithm : THEORY
+BEGIN
+  IMPORTING PVSioKeyVal@top
+  IMPORTING structures@Maybe
+  IMPORTING structures@for_iterate
+
+  Element : DATATYPE
+  BEGIN
+
+    oo : infinity?
+    Marked : marked?
+    Primed : primed?
+    Value(val:nnreal) : value?
+
+  END Element
+
+  m,n : VAR posnat
+
+  Row(n) : TYPE = ARRAY[below(n)->Element]
+
+  HungarianMatrix(m,n) : TYPE = ARRAY[below(m)->Row(n)]
+
+  Marks(n) : TYPE = ARRAY[below(n)->bool]
+
+  MarkedMatrix(m,n) : TYPE = [# 
+    mat : HungarianMatrix(m,n),
+    rmarks : Marks(m),
+    cmarks : Marks(n)
+  #]
+
+  inf_or_value?(e:Element) : bool = infinity?(e) OR value?(e)
+
+  mk_marks(n) : Marks(n) = 
+    LAMBDA(i:below(n)): FALSE
+
+  mk_marked_matrix(m,n)(hm:HungarianMatrix(m,n),rm:Marks(m),cm:Marks(n)) : MarkedMatrix(m,n) =
+    (#
+      mat := hm,
+      rmarks := rm,
+      cmarks := cm
+    #)
+
+  step_one(m, n)(mat : HungarianMatrix(m, n)) : HungarianMatrix(m, n) =
+    LAMBDA (i:below(m)) :
+      % Compute the minimum element to be subtracted from the row.
+      LET min = val(
+        for(0,n-1,oo,LAMBDA(j:below(n),e:Element):
+            LET ith = mat(i)(j) IN
+            IF value?(ith) THEN
+                IF value?(e) AND val(e) <= val(ith) THEN e
+                ELSE ith
+                ENDIF
+            ELSE e
+            ENDIF
+        )) IN
+      % Subtract the minimum element from each row.
+      LAMBDA(j:below(n)):
+        LET ith = mat(i)(j) IN
+        IF value?(ith) AND min <= val(ith) THEN
+            Value(val(ith) - min) 
+        ELSE
+            ith
+        ENDIF
+
+  step_two(m, n)(mat : HungarianMatrix(m, n)) : HungarianMatrix(m, n) =
+    for(0, n-1, mat, LAMBDA(j:below(n), acc:HungarianMatrix(m,n)) : 
+      % Compute the minimum element to be subtracted from the column.
+      LET min = val(
+        for(0,m-1,oo,LAMBDA(i:below(m),e:Element):
+            LET ijth = mat(i)(j) IN
+            IF value?(ijth) THEN
+                IF value?(e) AND val(e) <= val(ijth) THEN e
+                ELSE ijth
+                ENDIF
+            ELSE e
+            ENDIF)
+      ) IN
+      % Subtract the minimum element from each column.
+      LAMBDA (i:below(m)):
+        LET ijth = mat(i)(j) IN
+        IF value?(ijth) THEN
+            mat(i) WITH [(j) := Value(val(ijth) - min)] 
+        ELSE 
+            mat(i)
+        ENDIF
+    )
+
+  ha_step_three(m,n)(mat:HungarianMatrix(m,n)) : HungarianMatrix(m,n) =
+    for (0, m-1, mat, LAMBDA(i:below(m), acc:HungarianMatrix(m,n)) :
+      acc WITH [(i) := (for (0, n-1, acc(i), LAMBDA(j:below(n), r:Row(n)):
+        r WITH [(j) :=
+          LET jth = r(j) IN
+          IF value?(jth) AND 
+            val(jth) = 0 AND 
+            (FORALL (k:below(j)) : NOT marked?(r(k))) AND
+            (FORALL (k:below(i)) : NOT marked?(acc(k)(j))) THEN
+            Marked
+          ELSE
+            jth
+          ENDIF
+        ]
+      ))]
+    )
+
+    mark_cols(m,n)(mat:HungarianMatrix(m,n)) : Marks(n) =
+      LAMBDA (j:below(n)):
+        EXISTS (i:below(m)) : marked?(mat(i)(j))
+
+    find_uncovered_zero(m,n)(mmat:MarkedMatrix(m,n)) : Maybe[[below(m), below(n)]] =
+      for (0, m-1, None, LAMBDA(i:below(m), acc:Maybe[[below(m), below(n)]]):
+        for (0, n-1, acc, LAMBDA(j:below(n), acc_:Maybe[[below(m), below(n)]]):
+          LET ijth = mat(mmat)(i)(j) IN
+          IF none?(acc_) AND value?(ijth) AND 
+             val(ijth) = 0 AND 
+             NOT rmarks(mmat)(i) AND 
+             NOT cmarks(mmat)(j) THEN
+            Some(i, j)
+          ELSE
+            acc_
+          ENDIF
+        )
+      )
+
+    find_prime_row(n)(r:Row(n)) : Maybe[below(n)] =
+      for (0, n-1, None, LAMBDA(i:below(n), acc:Maybe[below(n)]):
+        IF primed?(r(i)) THEN Some(i) ELSE acc ENDIF
+      )
+    
+    find_star_row(n)(r:Row(n)) : Maybe[below(n)] =
+      for (0, n-1, None, LAMBDA(i:below(n), acc:Maybe[below(n)]):
+        IF marked?(r(i)) THEN Some(i) ELSE acc ENDIF
+      )
+    
+    find_star_column(m,n)(m:HungarianMatrix(m,n))(j:nat) : Maybe[below(n)] =
+      for (0, m-1, None, LAMBDA(i:below(m), acc:Maybe[below(m)]):
+        IF marked?(m(i)(j)) THEN Some(i) ELSE acc ENDIF
+      )
+
+    count_primes(m,n)(mat:HungarianMatrix(m,n)) : below(m * n) =
+      for (0, m-1, 0, LAMBDA(i:below(m), acc:int):
+        for (0, n-1, acc, LAMBDA(j:below(n), acc_:int):
+          IF primed?(mat(i)(j)) THEN acc_ + 1 ELSE acc_ ENDIF
+        )
+      )
+
+    count_marks(m,n)(mat:HungarianMatrix(m,n)) : below(m * n) =
+      for (0, m-1, 0, LAMBDA(i:below(m), acc:int):
+        for (0, n-1, acc, LAMBDA(j:below(n), acc_:int):
+          IF marked?(mat(i)(j)) THEN acc_ + 1 ELSE acc_ ENDIF
+        )
+      )
+
+    compute_path(m,n)(mat:HungarianMatrix(m,n))(i,j:nat) : RECURSIVE list[[nat, nat]] =
+      % TODO: enforce requirement that primed?(mat(mmat)(i)(j)) must be true (we can only compute the path for a primed zero)
+      LET star_row = find_star_column(m,n)(mat)(j) IN
+      IF some?(star_row) THEN
+        % TODO: enforce requirement prime
+        LET 
+          prime_col = find_prime_row(n)(mat(val(star_row))),
+          l1 = (i, j),
+          l2 = (val(star_row), j),
+          l3 = compute_path(m,n)(mat)(val(star_row), val(prime_col))
+        IN
+          cons(l1, cons(l2, l3))
+      ELSE
+          cons[[nat, nat]]((i, j), null)
+      ENDIF
+      MEASURE 1
+
+    flip_path(m,n)(mat:HungarianMatrix(m,n))(path:list[[nat,nat]]) : HungarianMatrix(m,n) =
+      LET
+      (a,b) = for (0, length(path) - 1, (mat, path), LAMBDA(i:below(length(path)), acc:[HungarianMatrix(m,n), list[[nat,nat]]]):
+        LET
+          (m, p) = acc,
+          (i, j) = car(p)
+        IN
+          IF primed?(m(i)(j)) THEN
+            (m WITH [(i)(j) := Marked], cdr(p))
+          ELSE
+            (m WITH [(i)(j) := Value(0)], cdr(p))
+          ENDIF
+      )
+      IN
+        a
+
+    unprime_matrix(m,n)(mat:HungarianMatrix(m,n)) : HungarianMatrix(m,n) =
+      for (0, m-1, mat, LAMBDA(i:below(m), acc:HungarianMatrix(m,n)):
+        for (0, n-1, acc, LAMBDA(j:below(n), acc_:HungarianMatrix(m,n)):
+          IF primed?(mat(i)(j)) THEN 
+            acc_ WITH [(i)(j) := Value(0)]
+          ELSE
+            acc_
+          ENDIF
+        )
+      )
+
+    ha_step_four_substep(m,n)(mmat:MarkedMatrix(m,n)) : RECURSIVE MarkedMatrix(m,n) =
+      LET
+        uncovered_zero = find_uncovered_zero(m,n)(mmat)
+      IN
+        IF some?(uncovered_zero) THEN
+          LET
+            (i, j) = val(uncovered_zero),
+            primed_mat = mat(mmat) WITH [(i)(j) := Primed],
+            star_row = find_star_row(n)(mat(mmat)(i))
+          IN
+            IF some?(star_row) THEN
+              LET
+                m = (# mat := primed_mat, 
+                       rmarks := rmarks(mmat) WITH [(i) := TRUE],
+                       cmarks := cmarks(mmat) WITH [(val(star_row)) := FALSE] #)
+              IN
+                ha_step_four_substep(m,n)(m)
+            ELSE
+              LET
+                path = compute_path(m,n)(primed_mat)(i,j),
+                flipped_path = flip_path(m,n)(primed_mat)(path),
+                unprimed_matrix = unprime_matrix(m,n)(flipped_path),
+                new_mmat = mk_marked_matrix(m,n)(unprimed_matrix, mk_marks(m), mark_cols(m,n)(unprimed_matrix))
+              IN
+                ha_step_four_substep(m,n)(new_mmat)
+            ENDIF
+        ELSE
+          mmat WITH [(mat) := unprime_matrix(m,n)(mat(mmat))]
+        ENDIF
+      % TODO: implement better measure function
+      MEASURE 1
+
+    ha_step_four(m,n)(mat:HungarianMatrix(m,n)) : MarkedMatrix(m,n) =
+      LET
+        mmat = mk_marked_matrix(m,n)(mat, mk_marks(m), mark_cols(m,n)(mat))
+      IN
+        ha_step_four_substep(m,n)(mmat)
+
+    min_unmarked(m,n)(mmat:MarkedMatrix(m,n)) : Element =
+      for (0, m-1, oo, LAMBDA(i:below(m), acc:Element):
+        for (0, n-1, acc, LAMBDA(j:below(n), acc_:Element):
+          LET ijth = mat(mmat)(i)(j) IN
+          IF NOT rmarks(mmat)(i) AND NOT cmarks(mmat)(j) AND value?(ijth) THEN
+            IF value?(acc_) THEN 
+              IF val(acc_) < val(ijth) THEN acc_ ELSE ijth ENDIF
+            ELSE
+              mat(mmat)(i)(j)
+            ENDIF
+          ELSE
+            acc_
+          ENDIF
+        )
+      )
+
+    ha_step_five(m,n)(mmat:MarkedMatrix(m,n)) : MarkedMatrix(m,n) =
+      LET min = val(min_unmarked(m,n)(mmat)) IN
+      for (0, m-1, mmat, LAMBDA(i:below(m), acc:MarkedMatrix(m,n)):
+        for (0, n-1, acc, LAMBDA(j:below(n), acc_:MarkedMatrix(m,n)):
+          IF rmarks(mmat)(i) AND cmarks(mmat)(j) AND value?(mat(mmat)(i)(j)) THEN
+            acc_ WITH [(mat) := mat(acc_) WITH [(i)(j) := Value(val(mat(acc_)(i)(j)) + min)]]
+          ELSE
+            IF NOT rmarks(mmat)(i) AND NOT cmarks(mmat)(j) AND value?(mat(acc_)(i)(j)) THEN
+              acc_ WITH [(mat) := mat(acc_) WITH [(i)(j) := Value(val(mat(acc_)(i)(j)) - min)]]
+            ELSE
+              acc_
+            ENDIF
+          ENDIF
+        )
+      )
+    
+    ha_steps_four_five(m,n)(mat:HungarianMatrix(m,n)) : RECURSIVE MarkedMatrix(m,n) =
+      LET mmat = ha_step_four(m,n)(mat) IN
+      IF count_marks(m,n)(mat(mmat)) = m OR count_marks(m,n)(mat(mmat)) = n THEN
+        mmat
+      ELSE
+        ha_steps_four_five(m,n)(mat(ha_step_five(m,n)(mmat)))
+      ENDIF
+    MEASURE m * n - count_marks(m,n)(mat)
+
+    ha(m,n)(mat:HungarianMatrix(m,n)) : MarkedMatrix(m,n) =
+      LET
+        m1 = step_one(m,n)(mat),
+        m2 = step_two(m,n)(m1),
+        m3 = ha_step_three(m,n)(m2),
+        m4 = ha_steps_four_five(m,n)(m3)
+      IN
+        m4
+
+    hungarian_algorithm(m, n)(mat : ARRAY[below(m) -> ARRAY[below(n) -> nnreal]]) : ARRAY[below(m) -> int] =
+      LET
+        h_mat = LAMBDA(i: below(m)): (LAMBDA(j: below(n)): Value(mat(i)(j))),
+        matching = ha(m, n)(h_mat)
+      IN
+      LAMBDA(i : below(m)): val(find_star_row(n)(mat(matching)(i)))
+
+END hungarian_algorithm

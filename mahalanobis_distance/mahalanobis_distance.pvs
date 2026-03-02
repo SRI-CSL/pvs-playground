@@ -1,0 +1,29 @@
+mahalanobis_distance : THEORY BEGIN
+
+IMPORTING matrices@def_matrix_weighted_inner_prod
+IMPORTING matrices@matrix_inv
+IMPORTING matrices@def_positive_definite
+
+% TODO: prove if a matrix is positive definite then the inverse is positive definite, this means we can direclty pass in sigma
+
+% Made with https://www.unicodeit.net
+
+% My notes are from https://en.wikipedia.org/wiki/Mahalanobis_distance
+
+% The Mahalanobis distance between a probability distribution Q, with mean μ and covariance Σ,
+% from a point x is defined as
+% 
+%   d(Q, x) = √((x - μ)ᵀΣ⁻¹(x - μ))
+% 
+% @param mu The mean, μ, of the probability distribution.
+% @param inv_sigma The inverse of the covariance matrix, Σ⁻¹, of the probability distribution.
+% @param x The point from which the distance to the distribution is measured.
+% @returns The Malahanobis distance between the distribution defined by μ and Σ, and the point x.
+mahalanobis_distance(n : posnat)(mu : VectorN(n),  
+                                 inv_sigma : (spos_defn?(n)),
+                                 x : VectorN(n)) : nnreal =
+    % TODO: investigate proving properties using positive definiteness, since we 
+    % know the covariance matrix is semi positive definite by definition.
+    sqrt((x - mu) * (inv_sigma * (x - mu)))
+
+END mahalanobis_distance
