@@ -52,6 +52,16 @@ HMAC  % [ parameters ]
 
 
    test1: lbytes(32) = hmac256(64, "key", "The quick brown fox jumps over the lazy dog")
+
+   test_hmac_quick_brown_fox: _TEST_
+     bytestring2hexstring(test1) =
+       "F7BC83F430538424B13298E6AA6FB143EF4D59A14946175997479DBC2D1A3CD8"
+
+   test_hmac_rfc4231_case_1: _TEST_
+     bytestring2hexstring(hmac256(64,
+       hex2bytestring("0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B0B"),
+       "Hi There")) =
+       "B0344C61D8DB38535CA8AFCEAF0BF12B881DC200C9833DA726E9376C2E32CFF7"
        
 
 

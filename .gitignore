@@ -50,3 +50,14 @@ m4/lt~obsolete.m4
 # can automatically generate from config.status script
 # (which is called by configure script))
 Makefile
+
+# Hand-written PVS2C demo Makefiles.
+!pvs2c-demos/Makefile
+!pvs2c-demos/aes/Makefile
+!pvs2c-demos/hmac/Makefile
+!pvs2c-demos/sha256/Makefile
+
+# Generated PVS2C demo artifacts.
+pvs2c-demos/*/Makefile.bak
+pvs2c-demos/*/build/
+pvs2c-demos/*/pvs2c/

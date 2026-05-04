@@ -136,7 +136,12 @@ rotate		: THEORY
 			ENDIF
 
    u32tobytestring(x32: uint32): lbytes(4)
-    = (# length := 4, seq := u32tobytevector(x32) #)
+    = (# length := 4, seq := (LAMBDA (i: below(4)):
+          IF i = 0 THEN u32rem(u32rshift(x32, 24), 0x100)
+          ELSIF i = 1 THEN u32rem(u32rshift(x32, 16), 0x100)
+          ELSIF i = 2 THEN u32rem(u32rshift(x32, 8), 0x100)
+          ELSE u32rem(x32, 0x100)
+          ENDIF) #)
 
    byv2uint32(x : byv[4]) : uint32 =
      u32plus(u32plus(u32plus(u32lshift(x(0), 24),

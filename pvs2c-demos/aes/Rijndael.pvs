@@ -207,6 +207,18 @@ Rijndael  : THEORY
 	   Output = printh(RijndaelB(Input, Cipher)),
 	   Inverse = printh(invRijndaelB(Output, Cipher))
 	 IN bytestring2hexstring(Inverse))
+
+   test_Rijndael_spec_vector: _TEST_
+     testRijndael1 = "3925841D02DC09FBDC118597196A0B32"
+
+   test_invRijndael_spec_vector: _TEST_
+     testInvRijndael1 = "3243F6A8885A308D313198A2E0370734"
+
+   test_Rijndael_fips197_vector: _TEST_
+     (LET Input = hex2bytestring("00112233445566778899AABBCCDDEEFF"),
+          Cipher = hex2bytestring("000102030405060708090A0B0C0D0E0F"),
+          Output = RijndaelB(Input, Cipher)
+      IN bytestring2hexstring(Output)) = "69C4E0D86A7B0430D8CDB78070B4C55A"
 	   
 
 

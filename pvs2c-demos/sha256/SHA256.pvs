@@ -339,4 +339,12 @@ sha256message(X) : lbytes(32) = digest(sha256message_rec(X, 0, h))
 
 hexsha256message(hX): lbytes(32) = sha256message(hex2bytestring(hX))
 
+test_sha256_abc: _TEST_
+  bytestring2hexstring(sha256message("abc")) =
+    "BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD"
+
+test_hexsha256_abc: _TEST_
+  bytestring2hexstring(hexsha256message("616263")) =
+    "BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD"
+
   END SHA256
