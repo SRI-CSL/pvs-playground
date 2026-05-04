@@ -1,0 +1,342 @@
+SHA256  % [ parameters ]
+		: THEORY
+
+  BEGIN
+   IMPORTING rotate
+
+   % h0 := 0x6a09e667
+% h1 := 0xbb67ae85
+% h2 := 0x3c6ef372
+% h3 := 0xa54ff53a
+% h4 := 0x510e527f
+% h5 := 0x9b05688c
+% h6 := 0x1f83d9ab
+% h7 := 0x5be0cd19
+
+  h0 : uint32 = 0x6a09e667
+  h1: uint32 = 0xbb67ae85
+  h2 : uint32 = 0x3c6ef372
+  h3 : uint32 = 0xa54ff53a
+  h4 :uint32 = 0x510e527f
+  h5 :uint32 = 0x9b05688c
+  h6 :uint32 = 0x1f83d9ab
+  h7 :uint32 = 0x5be0cd19
+
+  h(i: below(8)): uint32 =
+   COND
+    i = 0 -> h0,
+    i = 1 -> h1,
+    i = 2 -> h2,
+    i = 3 -> h3,
+    i = 4 -> h4,
+    i = 5 -> h5,
+    i = 6 -> h6,
+    ELSE  -> h7
+    ENDCOND
+    
+
+  k(i : uint8): uint32 =
+   COND
+    i = 0 -> 0x428a2f98,
+    i = 1 -> 0x71374491,
+    i = 2 -> 0xb5c0fbcf,
+    i = 3 -> 0xe9b5dba5,
+    i = 4 -> 0x3956c25b,
+    i = 5 -> 0x59f111f1,
+    i = 6 -> 0x923f82a4,
+    i = 7 -> 0xab1c5ed5,
+    i = 8 -> 0xd807aa98,
+    i = 9 -> 0x12835b01,
+    i = 10 -> 0x243185be,
+    i = 11 -> 0x550c7dc3,
+    i = 12 -> 0x72be5d74,
+    i = 13 -> 0x80deb1fe,
+    i = 14 -> 0x9bdc06a7,
+    i = 15 -> 0xc19bf174,
+    i = 16 -> 0xe49b69c1,
+    i = 17 -> 0xefbe4786,
+    i = 18 -> 0x0fc19dc6,
+    i = 19 -> 0x240ca1cc,
+    i = 20 -> 0x2de92c6f,
+    i = 21 -> 0x4a7484aa,
+    i = 22 -> 0x5cb0a9dc,
+    i = 23 -> 0x76f988da,
+    i = 24 -> 0x983e5152,
+    i = 25 -> 0xa831c66d,
+    i = 26 -> 0xb00327c8,
+    i = 27 -> 0xbf597fc7,
+    i = 28 -> 0xc6e00bf3,
+    i = 29 -> 0xd5a79147,
+    i = 30 -> 0x06ca6351,
+    i = 31 -> 0x14292967,
+    i = 32 -> 0x27b70a85,
+    i = 33 -> 0x2e1b2138,
+    i = 34 -> 0x4d2c6dfc,
+    i = 35 -> 0x53380d13,
+    i = 36 -> 0x650a7354,
+    i = 37 -> 0x766a0abb,
+    i = 38 -> 0x81c2c92e,
+    i = 39 -> 0x92722c85,
+    i = 40 -> 0xa2bfe8a1,
+    i = 41 -> 0xa81a664b,
+    i = 42 -> 0xc24b8b70,
+    i = 43 -> 0xc76c51a3,
+    i = 44 -> 0xd192e819,
+    i = 45 -> 0xd6990624,
+    i = 46 -> 0xf40e3585,
+    i = 47 -> 0x106aa070,
+    i = 48 -> 0x19a4c116,
+    i = 49 -> 0x1e376c08,
+    i = 50 -> 0x2748774c,
+    i = 51 -> 0x34b0bcb5,
+    i = 52 -> 0x391c0cb3,
+    i = 53 -> 0x4ed8aa4a,
+    i = 54 -> 0x5b9cca4f,
+    i = 55 -> 0x682e6ff3,
+    i = 56 -> 0x748f82ee,
+    i = 57 -> 0x78a5636f,
+    i = 58 -> 0x84c87814,
+    i = 59 -> 0x8cc70208,
+    i = 60 -> 0x90befffa,
+    i = 61 -> 0xa4506ceb,
+    i = 62 -> 0xbef9a3f7,
+    ELSE -> 0xc67178f2
+   ENDCOND
+
+   X, Y, Z: VAR bytestring
+
+   digit?(b: byte): bool = (b >= 48 AND b <= 57) %ascii codes for 0..9
+   hexalpha?(b: byte): bool = (b >= 65 AND b <= 70) OR (b >= 97 AND b <= 102) %ascii codes for A..F, a..f
+   hexdigit?(b: byte): bool = digit?(b) OR hexalpha?(b)
+
+   hd, hd1, hd2: VAR (hexdigit?)
+   hexvalue(hd): byte =  %hex value in 0..15 of a hex digit
+       (IF hd >= 97 THEN hd - 87 ELSIF hd >= 65 THEN hd - 55 ELSE hd - 48 ENDIF)
+   hexstring: TYPE = {X | (FORALL (i: below(X`length)): hexdigit?(get(X, i)))} 
+   hex2byte(hd1, hd2: (hexdigit?)): byte = u8plus(u8lshift(hexvalue(hd1), 4), hexvalue(hd2))%converts two hex digits to a byte
+   hX, hX1, hX2: VAR hexstring
+   hex2bytestring(hX): bytestring =
+   (LET len = IF hX`length = max32
+                 THEN u32div(max32, 2) + 1 %max32 is odd
+		 ELSE u32div(hX`length + 1, 2)%safe to add 1 first
+		 ENDIF
+     IN 
+      (# length := len,
+         seq := (LAMBDA (i: below(len)):
+	          LET twoi = u32times(i, 2)
+		   IN 
+	          IF u32plus(twoi, 1) = hX`length
+		   THEN hex2byte(get(hX, twoi), 48)%pad for odd length
+		   ELSE hex2byte(get(hX, twoi), get(hX, twoi + 1))
+		   ENDIF) #))
+
+   test_hex2bytestring: bytestring = hex2bytestring("ABCDEF0123456789")
+
+   hex0(b: byte): (hexdigit?) =
+     (LET hnum = u8rshift(b, 4)
+       IN IF hnum < 10 THEN 48 + hnum
+           ELSE u8plus(55, hnum) %65 to 70
+	   ENDIF)
+
+   hex1(b: byte): (hexdigit?) =
+     (LET hnum = u8rem(b, 16)%last four bits
+       IN IF hnum < 10 THEN 48 + hnum
+           ELSE u8plus(55,  hnum) %65 to 70
+	   ENDIF)
+	   
+   bytestring2hexstring(X | 2 * X`length < bytestring_bound): hexstring = %X has to be at most half max.
+    (LET len = u32times(X`length, 2)
+     IN (# length := len,
+           seq := (LAMBDA (i:below(len)):
+                   LET i2 = u32div(i, 2)
+   	            IN IF u32rem(i, 2) = 0
+	               THEN hex0(get(X, i2))
+	               ELSE hex1(get(X, i2))
+	               ENDIF) #))
+
+   test_bytestring2hexstring: hexstring = bytestring2hexstring("ABCDEF0123456789")
+
+   bytes2uint32(X, (i : below(X`length))): uint32
+   = (IF i + 3 < X`length
+      THEN u32lshift(get(X, i), 24) + u32lshift(get(X, i+1), 16) + u32lshift(get(X, i + 2), 8) + get(X, i+3)
+      ELSIF i + 2 < X`length
+      THEN u32lshift(get(X, i), 16) + u32lshift(get(X, i + 1), 8) + get(X, i + 2)
+      ELSIF i + 1 < X`length
+      THEN u32lshift(get(X, i), 8) + get(X, i + 1)
+      ELSE get(X, i)
+      ENDIF)
+
+   equalUpto(X, Y, (i : uint32 | i <= min(X`length, Y`length))): bool =
+    (FORALL (j: below(i)): X`seq(j) = X`seq(j))
+
+   
+
+   bytes2uint32array(X: bytestring): ARRAY[below(u32ceiling(X`length/4)) -> uint32]
+   = (LAMBDA (j: below(u32ceiling(X`length/4))): bytes2uint32(X, 4*j))
+
+   word128: TYPE = lbytes(16)
+
+   x128, y128, z128: VAR word128
+
+   w128rightrotate(x128, (i : upto(128))): word128
+    = (LET a32 = bytes2uint32(x128, 0),
+           b32 = bytes2uint32(x128, 4),
+	   c32 = bytes2uint32(x128, 8),
+	   d32 = bytes2uint32(x128, 12),
+	   A32 = IF i <= 32 THEN u32plus(u32lshift(d32, 32 - i), u32rshift(a32, i))
+	         ELSIF i <= 64 THEN u32plus(u32lshift(c32, 64 - i), u32rshift(d32, i - 32))
+		 ELSIF i <= 96 THEN u32plus(u32lshift(b32, 96 - i), u32rshift(c32, i - 64))
+		 ELSE u32plus(u32lshift(a32, 128 - i), u32rshift(b32, i - 96))
+		 ENDIF,
+           B32 = IF i <= 32 THEN u32plus(u32lshift(a32, 32 - i), u32rshift(b32, i))
+	         ELSIF i <= 64 THEN u32plus(u32lshift(d32, 64 - i), u32rshift(a32, i - 32))
+		 ELSIF i <= 96 THEN u32plus(u32lshift(c32, 96 - i), u32rshift(d32, i - 64))
+		 ELSE u32plus(u32lshift(b32, 128 - i), u32rshift(c32, i - 96))
+		 ENDIF,
+           C32 = IF i <= 32 THEN u32plus(u32lshift(b32, 32 - i), u32rshift(c32, i))
+	         ELSIF i <= 64 THEN u32plus(u32lshift(a32, 64 - i), u32rshift(b32, i - 32))
+		 ELSIF i <= 96 THEN u32plus(u32lshift(d32, 96 - i), u32rshift(a32, i - 64))
+		 ELSE u32plus(u32lshift(c32, 128 - i), u32rshift(d32, i - 96))
+		 ENDIF,
+           D32 = IF i <= 32 THEN u32plus(u32lshift(c32, 32 - i), u32rshift(d32, i))
+	         ELSIF i <= 64 THEN u32plus(u32lshift(b32, 64 - i), u32rshift(c32, i - 32))
+		 ELSIF i <= 96 THEN u32plus(u32lshift(a32, 96 - i), u32rshift(b32, i - 64))
+		 ELSE u32plus(u32lshift(d32, 128 - i), u32rshift(a32, i - 96))
+		 ENDIF
+	IN
+	u32tobytestring(A32) ++ u32tobytestring(B32) ++ u32tobytestring(C32) ++ u32tobytestring(D32) )
+
+
+   
+
+
+    appendOne(X): {Y | Y`length = X`length + 1 AND equalUpto(X, Y, X`length) AND Y`seq(X`length) = 0X80}
+    = X WITH [`length := X`length + 1, `seq(X`length) |-> 0x80]
+
+   padMessage(X: bytestring): {Y: bytestring | (EXISTS (i: below(u32rshift(bytestring_bound, 9))): Y`length = u32lshift(i, 9))
+                                      AND equalUpto(X, Y, X`length) AND (FORALL (i:below(Y`length)):  i >= X`length IMPLIES Y`seq(i) = 0X00)  }
+   = (LET l: uint16 = X`length,
+          m: uint16 = u32rem(X`length, 512),
+	  n: uint32 = u32plus(X`length, u16minus(512, m))
+	IN IF m = 0 THEN X
+	     ELSE (# length := n,
+	             seq := (LAMBDA (i : below(n)): IF i < m THEN X`seq(i) ELSE 0x00 ENDIF)
+		     #)
+		     ENDIF)
+
+%512 bits/64 bytes per block rendered as an array of 16 32-bit words; append 1 followed by K 0s followed 
+%by 64-bit L which is the number of bits 8*#ofbytes in the message.  
+    extractBlocks(X)(i: below(u32ceiling((X`length + 9)/64))): ARRAY[below(16) -> uint32] = %no need to pad the message
+     (LAMBDA (j: below(16)):
+       LET cursor: uint32 = u32plus(u32times(64, i), u32times(4, j))%cursor is the pointer to the input for
+                                                                    %extracting j'th word in the i'th block
+        IN 
+         (IF cursor + 3 < X`length          %if the j'th word can be constructed entirely from the input
+           THEN bytes2uint32(X, cursor)
+           ELSIF cursor + 2 < X`length      %if only 3 bytes are available, make 0x80 the last byte
+	   THEN u32plus(u32lshift(bytes2uint32(X, cursor), 8), 0x80)
+	   ELSIF cursor + 1 < X`length      %if only 2 bytes are available, make 0x8000 the last two bytes
+	   THEN u32plus(u32lshift(bytes2uint32(X, cursor), 16), 0x8000)
+	   ELSIF cursor < X`length          %if only 1 byte is available, make 0x800000 the last three bytes. 
+	   THEN u32plus(u32lshift(bytes2uint32(X, cursor), 24), 0x800000)
+	   ELSIF cursor = X`length          %if no further input, then start padding with leading 8.
+	   THEN 0x80000000
+	   ELSIF j = 14 THEN u64rshift(8 * X`length, 32) %if the 64-bit representation of L bits can be inserted at the end
+	   ELSIF j = 15 THEN u64rshift(u64lshift(8 * X`length, 32), 32)
+	   ELSE 0x00000000  %j = 14: over 32-bit representation by rshift (cast to 32-bits), j = 5: least 32-bits.
+       ENDIF))
+
+     w0(inblock: ARRAY[below(16) -> uint32]): ARRAY[below(64) -> uint32]
+     =
+       (LAMBDA (i: below(64)):
+         IF i < 16 THEN inblock(i)
+	  ELSE 0x00000000
+	  ENDIF)
+	  
+    % print32(s: bytestring, x: uint32): uint32 = x
+    %     % (LET d = printstr(s),
+    % 	%      e = printstr(format(" ~a ", x))
+    % 	%      IN x)
+
+
+     extendW(v: ARRAY[below(64) -> uint32], i: subrange(16,64)): RECURSIVE ARRAY[below(64)->uint32]
+     = IF i = 64 THEN v
+        ELSE LET s0 = u32xor(u32xor(u32rightrotate(v(i - 15), 7), u32rightrotate(v(i-15), 18)),
+	                     u32rshift(v(i-15), 3)),
+	         s1 = u32xor(u32xor(u32rightrotate(v(i-2), 17), u32rightrotate(v(i-2), 19)),
+		             u32rshift(v(i-2), 10)),
+                 vi = u32plus(u32plus(v(i-16), s0), u32plus(v(i-7), s1))
+ 		 IN extendW(v WITH [(i) := vi], i + 1)
+	       ENDIF
+       MEASURE 64 - i
+
+
+     sha256rec(v: ARRAY[below(64) -> uint32], 
+               g: ARRAY[below(8) -> uint32],
+	       i : upto(64)) :
+	    RECURSIVE ARRAY[below(8) -> uint32]
+     = (IF i = 64 THEN g
+          ELSE (LET S1 = u32xor(u32xor(u32rightrotate(g(4), 6), u32rightrotate(g(4), 11)),
+	                 u32rightrotate(g(4), 25)),
+                    ch = u32xor(u32and(g(4), g(5)), u32and(u32not(g(4)), g(6))),
+		    temp1 = u32plus(g(7), u32plus(S1, u32plus(ch, u32plus(k(i), v(i))))),
+		    S0 = u32xor(u32xor(u32rightrotate(g(0), 2), u32rightrotate(g(0), 13)),
+		                u32rightrotate(g(0), 22)),
+		    maj = u32xor(u32xor(u32and(g(0), g(1)), u32and(g(0), g(2))), u32and(g(1), g(2))),
+		    temp2 = u32plus(S0, maj)
+		    IN sha256rec(v, g WITH [(7) := g(6),
+		                            (6) := g(5),
+					    (5) := g(4),
+					    (4) := u32plus(g(3), temp1),
+					    (3) := g(2),
+					    (2) := g(1),
+					    (1) := g(0),
+					    (0) := u32plus(temp1, temp2)], i+1))
+	    ENDIF)
+	    MEASURE 64 - i
+
+sha256(v: ARRAY[below(64) -> uint32], 
+       h: ARRAY[below(8) -> uint32]): ARRAY[below(8) -> uint32]
+       =
+       sha256rec(v, h, 0)
+
+digest(h: ARRAY[below(8) -> uint32]): lbytes(32)
+ = u32tobytestring(h(0)) ++ u32tobytestring(h(1)) ++ u32tobytestring(h(2)) ++ u32tobytestring(h(3)) ++
+   u32tobytestring(h(4)) ++ u32tobytestring(h(5)) ++ u32tobytestring(h(6)) ++ u32tobytestring(h(7))
+
+H, G: VAR ARRAY[below(8) -> uint32]
+
+% printW(w: ARRAY[below(16) -> uint32], (i:upto(16))): RECURSIVE ARRAY[below(16) -> uint32]
+%  = (IF i = 16 THEN w
+%      ELSE (LET d =  print32("w(i) = ", w(i)) IN printW(w, i + 1))
+%      ENDIF)
+%      MEASURE 16 - i
+ 
+% printV(v: ARRAY[below(64) -> uint32], (i:upto(64))): RECURSIVE ARRAY[below(64) -> uint32]
+%  = (IF i = 64 THEN v
+%      ELSE (LET d =  print32("v(i) = ", v(i)) IN printV(v, i + 1))
+%      ENDIF)
+%      MEASURE 64 - i
+
+updateHash(H, G): ARRAY[below(8) -> uint32] =
+  (LET H = H WITH [(0) := u32plus(H(0),G(0)), (1) := u32plus(H(1), G(1)), (2) := u32plus(H(2), G(2)), (3) := u32plus(H(3), G(3)),
+	                   (4) := u32plus(H(4), G(4)), (5) := u32plus(H(5), G(5)), (6) := u32plus(H(6), G(6)), (7) := u32plus(H(7), G(7))]
+			   IN H)
+     
+sha256message_rec(X, (i : upto(u32ceiling((X`length + 9)/64))), H): RECURSIVE ARRAY[below(8) -> uint32]
+  = IF i =  ceiling((X`length + 9)/64)
+      THEN H
+      ELSE LET w = extractBlocks(X)(i),
+               w64 = w0(w),
+               v = extendW(w64, 16),
+               G = sha256(v, H)
+	     IN sha256message_rec(X, i+1, updateHash(H, G))
+	     ENDIF
+     MEASURE ceiling((X`length + 9)/64) - i
+
+               
+sha256message(X) : lbytes(32) = digest(sha256message_rec(X, 0, h))
+
+hexsha256message(hX): lbytes(32) = sha256message(hex2bytestring(hX))
+
+  END SHA256

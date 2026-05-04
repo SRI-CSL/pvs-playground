@@ -1,0 +1,58 @@
+HMAC  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+  % function hmac is
+  %   input:
+  %       key:        Bytes    // Array of bytes
+  %       message:    Bytes    // Array of bytes to be hashed
+  %       hash:       Function // The hash function to use (e.g. SHA-1)
+  %       blockSize:  Integer  // The block size of the hash function (e.g. 64 bytes for SHA-1)
+  %       outputSize: Integer  // The output size of the hash function (e.g. 20 bytes for SHA-1)
+ 
+  %   // Keys longer than blockSize are shortened by hashing them
+  %   if (length(key) > blockSize) then
+  %       key ← hash(key) // key is outputSize bytes long
+
+  %   // Keys shorter than blockSize are padded to blockSize by padding with zeros on the right
+  %   if (length(key) < blockSize) then
+  %       key ← Pad(key, blockSize) // Pad key with zeros to make it blockSize bytes long
+
+  %   o_key_pad ← key xor [0x5c * blockSize]   // Outer padded key
+  %   i_key_pad ← key xor [0x36 * blockSize]   // Inner padded key
+
+  %   return hash(o_key_pad ∥ hash(i_key_pad ∥ message))
+
+   IMPORTING SHA256
+
+  hmac(blockSize: uint8,
+       key : bytestring,
+       (message : bytestring | message`length + blockSize < bytestring_bound),
+       outputSize: upto(blockSize),
+       hash: [bytestring->lbytes(outputSize)]): lbytes(outputSize)
+       = LET newkey = IF length(key) > blockSize THEN hash(key) ELSE key ENDIF,
+             newerkey: lbytes(blockSize)
+	            = IF length(newkey) < blockSize
+	                 THEN padright(blockSize)(newkey)
+		         ELSE newkey
+			 ENDIF, 
+             oKeyPad = lbytesXOR(blockSize)(newerkey, nbytes(0x5c, blockSize)),
+	     iKeyPad = lbytesXOR(blockSize)(newerkey, nbytes(0x36, blockSize))
+	  IN hash(oKeyPad ++ hash(iKeyPad ++ message))
+
+
+
+   hmac256((blockSize: uint8 | 32 <= blockSize),
+           key : bytestring,
+	   (message : bytestring | message`length + blockSize < bytestring_bound))
+	   : lbytes(32)
+   = hmac(blockSize, key, message, 32, sha256message)
+
+
+
+   test1: lbytes(32) = hmac256(64, "key", "The quick brown fox jumps over the lazy dog")
+       
+
+
+  END HMAC

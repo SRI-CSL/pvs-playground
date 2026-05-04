@@ -1,0 +1,176 @@
+rotate		: THEORY
+
+  BEGIN
+
+  IMPORTING bytevectors
+
+  x8, y8, z8: VAR uint8
+  x16, y16, z16: VAR uint16
+  x32, y32, z32: VAR uint32
+  x64, y64, z64: VAR uint64  
+
+   u8rightrotate(x8, (i : upto(8))): uint8
+    = u8plus(u8lshift(x8, 8 - i), u8rshift(x8, i))
+
+   test_u8rightrotate_0: uint8 = u8rightrotate(255, 5)
+   test_u8rightrotate_1: uint8 = u8rightrotate(0x00, 3)
+   test_u8rightrotate_2: uint8 = u8rightrotate(0xF0, 7)
+   test_u8rightrotate_3: uint8 = u8rightrotate(0x0F, 2)   
+   test_u8rightrotate_4: uint8 = u8rightrotate(255, 8)
+   test_u8rightrotate_5: uint8 = u8rightrotate(255, 0)      
+
+   u16rightrotate(x16, (i : upto(16))): uint16
+    = u16plus(u16lshift(x16, 16 - i), u16rshift(x16, i))
+
+   test_u16rightrotate_0: uint16 = u16rightrotate(0xFFFF, 15)
+   test_u16rightrotate_1: uint16 = u16rightrotate(0xF0F0, 13)
+   test_u16rightrotate_2: uint16 = u16rightrotate(0x00F0, 4)
+   test_u16rightrotate_3: uint16 = u16rightrotate(0x0F0F, 9)
+   test_u16rightrotate_4: uint16 = u16rightrotate(0x0F0F, 16)
+   test_u16rightrotate_5: uint16 = u16rightrotate(0x0F0F, 0)      
+
+
+   u32rightrotate(x32, (i : upto(32))): uint32
+    = u32plus(u32lshift(x32, 32 - i), u32rshift(x32, i))
+
+   test_u32rightrotate_0: uint32 = u32rightrotate(0xFFFFFFFF, 31)
+   test_u32rightrotate_1: uint32 = u32rightrotate(0xF0F0F0F0, 23)
+   test_u32rightrotate_2: uint32 = u32rightrotate(0x00F000F0, 14)
+   test_u32rightrotate_3: uint32 = u32rightrotate(0x0F0F0F0F, 9)
+   test_u32rightrotate_4: uint32 = u32rightrotate(0x0F0F0F0F, 32)
+   test_u32rightrotate_5: uint32 = u32rightrotate(0x0F0F0F0F, 0)   
+
+   u64rightrotate(x64, (i : upto(64))): uint64
+    = u64plus(u64lshift(x64, 64 - i), u64rshift(x64, i))
+
+   test_u64rightrotate_0: uint64 = u64rightrotate(0x00FFFFFFFFFFFFFF, 63)
+   test_u64rightrotate_1: uint64 = u64rightrotate(0x0FF0F0F0F0F0F0F0, 43)
+   test_u64rightrotate_2: uint64 = u64rightrotate(0x00F000F0F0F0F0F0, 24)
+   test_u64rightrotate_3: uint64 = u64rightrotate(0x0F0F0F0FF0F0F0F0, 9)
+   test_u64rightrotate_4: uint64 = u64rightrotate(0x0F0F0F0FF0F0F0F0, 64)
+   test_u64rightrotate_5: uint64 = u64rightrotate(0x0F0F0F0FF0F0F0F0, 0)
+
+   u8leftrotate(x8, (i : upto(8))): uint8
+    = u8plus(u8lshift(x8, i), u8rshift(x8, 8 - i))
+
+   test_u8leftrotate_0: uint8 = u8leftrotate(255, 5)
+   test_u8leftrotate_1: uint8 = u8leftrotate(0x00, 3)
+   test_u8leftrotate_2: uint8 = u8leftrotate(0xF0, 7)
+   test_u8leftrotate_3: uint8 = u8leftrotate(0x0F, 2)   
+   test_u8leftrotate_4: uint8 = u8leftrotate(255, 8)
+   test_u8leftrotate_5: uint8 = u8leftrotate(255, 0)      
+
+   u16leftrotate(x16, (i : upto(16))): uint16
+    = u16plus(u16lshift(x16, i), u16rshift(x16, 16 - i))
+
+   test_u16leftrotate_0: uint16 = u16leftrotate(0xFFFF, 15)
+   test_u16leftrotate_1: uint16 = u16leftrotate(0xF0F0, 13)
+   test_u16leftrotate_2: uint16 = u16leftrotate(0x00F0, 4)
+   test_u16leftrotate_3: uint16 = u16leftrotate(0x0F0F, 9)
+   test_u16leftrotate_4: uint16 = u16leftrotate(0x0F0F, 16)
+   test_u16leftrotate_5: uint16 = u16leftrotate(0x0F0F, 0)      
+
+
+   u32leftrotate(x32, (i : upto(32))): uint32
+    = u32plus(u32lshift(x32, i), u32rshift(x32, 32 - i))
+
+   test_u32leftrotate_0: uint32 = u32leftrotate(0xFFFFFFFF, 31)
+   test_u32leftrotate_1: uint32 = u32leftrotate(0xF0F0F0F0, 23)
+   test_u32leftrotate_2: uint32 = u32leftrotate(0x00F000F0, 14)
+   test_u32leftrotate_3: uint32 = u32leftrotate(0x0F0F0F0F, 9)
+   test_u32leftrotate_4: uint32 = u32leftrotate(0x0F0F0F0F, 32)
+   test_u32leftrotate_5: uint32 = u32leftrotate(0x0F0F0F0F, 0)   
+
+   u64leftrotate(x64, (i : upto(64))): uint64
+    = u64plus(u64lshift(x64, i), u64rshift(x64, 64 - i))
+
+   test_u64leftrotate_0: uint64 = u64leftrotate(0x00FFFFFFFFFFFFFF, 63)
+   test_u64leftrotate_1: uint64 = u64leftrotate(0x0FF0F0F0F0F0F0F0, 43)
+   test_u64leftrotate_2: uint64 = u64leftrotate(0x00F000F0F0F0F0F0, 24)
+   test_u64leftrotate_3: uint64 = u64leftrotate(0x0F0F0F0FF0F0F0F0, 9)
+   test_u64leftrotate_4: uint64 = u64leftrotate(0x0F0F0F0FF0F0F0F0, 64)
+   test_u64leftrotate_5: uint64 = u64leftrotate(0x0F0F0F0FF0F0F0F0, 0)
+
+
+  lbytes(n: uint8): TYPE = {X : bytestring | X`length = n}
+
+
+  padright(blocksize: uint8)(X: bytestring | length(X) < blocksize): lbytes(blocksize)
+  = (# length := blocksize,
+       seq := (LAMBDA (i:below(blocksize)): IF i < length(X) THEN X`seq(i) ELSE 0 ENDIF) #)
+
+  lbytesXOR(l:uint8)(X, Y :lbytes(l)): lbytes(l)
+   = (# length := l,
+        seq := (LAMBDA (i: below(l)): u8xor(X`seq(i), Y`seq(i))) #)
+
+   nbytes(byte: uint8, l: uint8): lbytes(l)
+    = (# length := l,
+         seq := (LAMBDA (i:below(l)): byte) #)
+
+   u8tobytestring(x8: uint8): lbytes(1)
+    = (# length := 1, seq := (LAMBDA (i: below(1)): x8) #)
+
+   test_u8tobytestring_0: bytestring= u8tobytestring(255);
+   test_u8tobytestring_1: bytestring= u8tobytestring(0x0F);
+   test_u8tobytestring_2: bytestring= u8tobytestring(0xF0);
+   test_u8tobytestring_3: bytestring= u8tobytestring(0x00);
+   
+   
+
+   u16tobytestring(x16: uint16): lbytes(2)
+    = (# length := 2, seq := (LAMBDA (i: below(2)):
+                      IF i = 0 THEN u16rem(u16rshift(x16, 8), 0x100)
+		        ELSE u16rem(x16, 0x100) ENDIF) #)
+
+   test_u16tobytestring_0: lbytes(2) = u16tobytestring(0xFFFF);
+   test_u16tobytestring_1: lbytes(2) = u16tobytestring(0x0F0F);
+   test_u16tobytestring_2: lbytes(2) = u16tobytestring(0xF00F);
+   test_u16tobytestring_3: lbytes(2) = u16tobytestring(0x00FF);
+
+
+   u32tobytevector(x32 : uint32)(i : below(4)) : byte
+   = IF i = 0 THEN u32rem(u32rshift(x32, 24), 0x100)
+		        ELSIF i = 1 THEN u32rem(u32rshift(x32, 16), 0x100)
+			ELSIF i = 2 THEN u32rem(u32rshift(x32, 8), 0x100)
+			ELSE u32rem(x32, 0x100)
+			ENDIF
+
+   u32tobytestring(x32: uint32): lbytes(4)
+    = (# length := 4, seq := u32tobytevector(x32) #)
+
+   byv2uint32(x : byv[4]) : uint32 =
+     u32plus(u32plus(u32plus(u32lshift(x(0), 24),
+                             u32lshift(x(1), 16)),
+	             u32lshift(x(2), 8)),
+             x(3))
+
+   u32tobytevector_inversion : THEOREM
+     FORALL (x : uint32) :
+       byv2uint32(u32tobytevector(x)) = x
+     
+
+   test_u32tobytestring_0: lbytes(4) = u32tobytestring(0xFFFFFFFF);
+   test_u32tobytestring_1: lbytes(4) = u32tobytestring(0x0F0F0F0F);
+   test_u32tobytestring_2: lbytes(4) = u32tobytestring(0xF00FF00F);
+   test_u32tobytestring_3: lbytes(4) = u32tobytestring(0x00FF00FF);
+
+   u64tobytestring(x64: uint64): lbytes(8)
+    = (# length := 8, seq := (LAMBDA (i: below(8)):
+                      IF i = 0 THEN u64rem(u64rshift(x64, 56), 0x100)
+		        ELSIF i = 1 THEN u64rem(u64rshift(x64, 48), 0x100)
+			ELSIF i = 2 THEN u64rem(u64rshift(x64, 40), 0x100)
+			ELSIF i = 3 THEN  u64rem(u64rshift(x64, 32), 0x100)
+			ELSIF i = 4 THEN  u64rem(u64rshift(x64, 24), 0x100)	
+			ELSIF i = 5 THEN  u64rem(u64rshift(x64, 16), 0x100)				
+			ELSIF i = 6 THEN  u64rem(u64rshift(x64, 8), 0x100)	   
+			ELSE u64rem(x64, 0x100)
+			ENDIF) #)
+
+   test_u64tobytestring_0: lbytes(8) = u64tobytestring(u64plus(u64lshift(0xFFFFFFFF, 32), 0xFFFFFFFF));
+   test_u64tobytestring_1: lbytes(8) = u64tobytestring(0x0F0F0F0F0F0);
+   test_u64tobytestring_2: lbytes(8) = u64tobytestring(0xF00FF00FF00);
+   test_u64tobytestring_3: lbytes(8) = u64tobytestring(0x00FF00FF00F);
+
+
+
+  END rotate
