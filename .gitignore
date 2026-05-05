@@ -61,3 +61,4 @@ Makefile
 pvs2c-demos/*/Makefile.bak
 pvs2c-demos/*/build/
 pvs2c-demos/*/pvs2c/
+pvs2c-demos/*/test-vectors/
