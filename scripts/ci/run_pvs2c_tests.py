@@ -40,6 +40,29 @@ class TestTheory:
     tests: tuple[TestDecl, ...]
 
 
+@dataclass(frozen=True)
+class RunCheck:
+    seen: dict[str, str]
+    missing: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class TheoryResult:
+    directory: str
+    file: str
+    theory: str
+    declared: int
+    status: str
+    pvs2c_exit: int | None = None
+    run_exit: int | None = None
+    printed: int = 0
+    true_count: int = 0
+    false_count: int = 0
+    false_tests: tuple[str, ...] = ()
+    missing: tuple[str, ...] = ()
+    notes: tuple[str, ...] = ()
+
+
 class StepError(RuntimeError):
     pass
 
@@ -207,7 +230,7 @@ def assert_pvs_log_ok(theory: TestTheory, step: str, output: str, log_path: Path
         raise StepError(f"{step} reported PVS errors for {theory.theory}; see {log_path}")
 
 
-def assert_run_output(theory: TestTheory, output: str, log_path: Path) -> None:
+def inspect_run_output(theory: TestTheory, output: str, log_path: Path) -> RunCheck:
     expected = {test.name for test in theory.tests}
     seen: dict[str, str] = {}
     for match in RUN_OUTPUT_RE.finditer(output):
@@ -218,6 +241,106 @@ def assert_run_output(theory: TestTheory, output: str, log_path: Path) -> None:
     missing = sorted(expected - set(seen))
     if missing:
         print(f"WARNING: generated test binary output for {theory.theory} did not list expected tests: {', '.join(missing)}; see {log_path}.")
+    return RunCheck(seen, tuple(missing))
+
+
+def md_cell(value: object) -> str:
+    return str(value).replace("|", "\\|").replace("\n", "<br>")
+
+
+def compact_list(values: tuple[str, ...], limit: int = 5) -> str:
+    if not values:
+        return ""
+    shown = ", ".join(f"`{value}`" for value in values[:limit])
+    if len(values) > limit:
+        shown += f", ... ({len(values) - limit} more)"
+    return shown
+
+
+def write_step_summary(
+    summary_path: str | None,
+    demo_root: Path,
+    theories: list[TestTheory],
+    results: list[TheoryResult],
+    error: Exception | None = None,
+) -> None:
+    if not summary_path:
+        return
+
+    total_declared = sum(len(item.tests) for item in theories)
+    total_completed = sum(item.declared for item in results if item.status != "failed")
+    skipped = ", ".join(f"`{path}`" for path in sorted(str(path) for path in EXCLUDED_PATHS)) or "none"
+
+    lines = [
+        "# PVS2C Demo CI Summary",
+        "",
+        f"- Discovered `{total_declared}` active `_TEST_` declarations in `{len(theories)}` theories.",
+        f"- Generated C test binaries executed for `{total_completed}` discovered declarations.",
+        f"- Skipped paths: {skipped}.",
+    ]
+    if error is not None:
+        lines.append(f"- Outcome: failed during CI setup or theory processing: `{md_cell(error)}`.")
+    else:
+        lines.append("- Outcome: completed.")
+
+    lines.extend(
+        [
+            "",
+            "| Status | Source | Theory | Declared | Printed | True | False | Missing | pvs2c exit | Run exit | Notes |",
+            "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+        ]
+    )
+
+    for result in results:
+        source = f"{result.directory}/{result.file}" if result.directory != "." else result.file
+        notes = "; ".join(result.notes)
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    md_cell(result.status),
+                    md_cell(source),
+                    md_cell(result.theory),
+                    str(result.declared),
+                    str(result.printed),
+                    str(result.true_count),
+                    str(result.false_count),
+                    str(len(result.missing)),
+                    "" if result.pvs2c_exit is None else str(result.pvs2c_exit),
+                    "" if result.run_exit is None else str(result.run_exit),
+                    md_cell(notes),
+                ]
+            )
+            + " |"
+        )
+
+    warning_results = [item for item in results if item.missing or item.false_count or item.notes]
+    if warning_results:
+        lines.extend(["", "<details>", "<summary>Warnings and result details</summary>", ""])
+        for item in warning_results:
+            label = f"{item.directory}/{item.theory}" if item.directory != "." else item.theory
+            details: list[str] = []
+            if item.false_count:
+                details.append(f"{item.false_count} printed `false`: {compact_list(item.false_tests)}")
+            if item.missing:
+                details.append(f"missing output for {compact_list(item.missing)}")
+            details.extend(item.notes)
+            if details:
+                lines.append(f"- `{label}`: {'; '.join(details)}")
+        lines.extend(["", "</details>"])
+
+    Path(summary_path).write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def failed_result(demo_root: Path, theory: TestTheory, error: Exception) -> TheoryResult:
+    return TheoryResult(
+        directory=str(theory.directory.relative_to(demo_root)),
+        file=theory.file.name,
+        theory=theory.theory,
+        declared=len(theory.tests),
+        status="failed",
+        notes=(str(error),),
+    )
 
 
 def run_theory(
@@ -227,7 +350,7 @@ def run_theory(
     pvs_location: Path,
     theory: TestTheory,
     env: dict[str, str],
-) -> int:
+) -> TheoryResult:
     rel_dir = theory.directory.relative_to(demo_root)
     log_prefix = log_dir / sanitize_relpath(rel_dir) / theory.theory
     pvs = pvs_location / "pvs"
@@ -261,8 +384,11 @@ def run_theory(
             f"pvs2c-theory exited {pvs2c_status} and did not generate {generated_mk}; see {pvs2c_log}\n"
             f"{tail(pvs2c_output)}"
         )
+    notes: list[str] = []
     if pvs2c_status != 0:
-        print(f"WARNING: pvs2c-theory for {theory.theory} exited {pvs2c_status}, but generated files are present; continuing to compile and run them.")
+        note = f"pvs2c-theory exited {pvs2c_status}, but generated files are present"
+        print(f"WARNING: {note}; continuing to compile and run them.")
+        notes.append(note)
 
     make_env = env.copy()
     make_env["PVS2C_DEMOS_ROOT"] = str(demo_root)
@@ -278,10 +404,30 @@ def run_theory(
 
     run_log = log_prefix.with_name(log_prefix.name + "-run.log")
     run_status, run_output = run_logged([str(generated_bin)], theory.directory, run_log, env, check=False)
-    assert_run_output(theory, run_output, run_log)
+    run_check = inspect_run_output(theory, run_output, run_log)
     if run_status != 0:
-        print(f"WARNING: generated test binary for {theory.theory} exited {run_status}; continuing after execution.")
-    return len(theory.tests)
+        note = f"generated test binary exited {run_status}"
+        print(f"WARNING: {note}; continuing after execution.")
+        notes.append(note)
+
+    false_tests = tuple(sorted(name for name, value in run_check.seen.items() if value == "false"))
+    true_count = sum(1 for value in run_check.seen.values() if value == "true")
+    status = "warning" if notes or run_check.missing else "executed"
+    return TheoryResult(
+        directory=str(rel_dir),
+        file=theory.file.name,
+        theory=theory.theory,
+        declared=len(theory.tests),
+        status=status,
+        pvs2c_exit=pvs2c_status,
+        run_exit=run_status,
+        printed=len(run_check.seen),
+        true_count=true_count,
+        false_count=len(false_tests),
+        false_tests=false_tests,
+        missing=run_check.missing,
+        notes=tuple(notes),
+    )
 
 
 def parse_args() -> argparse.Namespace:
@@ -335,10 +481,19 @@ def main() -> int:
 
     env = os.environ.copy()
     env["PVS_LOCATION"] = str(pvs_location)
-    passed = 0
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    results: list[TheoryResult] = []
     for item in theories:
-        passed += run_theory(repo_root, demo_root, log_dir, pvs_location, item, env)
-    print(f"\nPVS2C CI passed: generated C test binaries executed for {passed} discovered _TEST_ declarations.")
+        try:
+            results.append(run_theory(repo_root, demo_root, log_dir, pvs_location, item, env))
+        except StepError as error:
+            results.append(failed_result(demo_root, item, error))
+            write_step_summary(summary_path, demo_root, theories, results, error)
+            raise
+
+    executed = sum(item.declared for item in results if item.status != "failed")
+    write_step_summary(summary_path, demo_root, theories, results)
+    print(f"\nPVS2C CI passed: generated C test binaries executed for {executed} discovered _TEST_ declarations.")
     return 0
 
 
