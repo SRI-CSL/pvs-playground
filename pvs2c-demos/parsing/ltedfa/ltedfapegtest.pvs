@@ -1,0 +1,371 @@
+ltedfapegtest   : THEORY
+
+  BEGIN
+   IMPORTING ltedfapegproof
+
+   % digit(x: byte): bool = (x >= 48 AND x <= 57)
+   % any(x: byte): bool = TRUE
+   % whitespace(x: byte): bool = (x = 32 OR (x >= 9 AND x <= 13))
+
+   %Commenting out djson since it is superseded by ejson
+   % djson(n: non_terminal):  prepeg =
+   % (COND
+   % n = 0 -> lte(3, 1, 31), %data -> wspace ? data$ / skip
+   % n = 1 -> lte(16, 31, 2), %data$ -> digit ? skip / adata
+   % n = 2 -> lte(24, 5, 7), % adata -> obrace ? dictail / stringarray
+   % n = 3 -> lte(4, 31, 31), % wspace -> whitespace ? skip / skip
+   % n = 4 -> any(wspaceDfa), % whitespace -> any(whitespace)
+   % n = 5 -> lte(25, 31, 6), % dictail -> cbrace ? skip / dictentry*
+   % n = 6 -> lte(8, 10, 30), % dictentry* -> token ? rhsdata* / fail
+   % n = 7 -> lte(8, 31, 9), % stringarray -> token ? skip / array
+   % n = 8 -> any(tokenDfa), % token -> any(token)
+   % n = 9 -> lte(26, 13, 30), % array -> obrack ? arraydata* / fail
+   % n = 10 -> lte(29, 11, 30), % rhsdata* -> colon ? rhsdatatail / fail
+   % n = 11 -> lte (1, 12, 30), % rhsdatatail -> data ? commadictail / fail
+   % n = 12 -> lte(28, 5, 25), % commadictail -> comma ? dictail / cbrace
+   % n = 13 -> lte(27, 31, 15), % arraydata* -> cbrack ? empty / arraydatadata*
+   % n = 14 -> lte(28, 15, 27),  % commaarraydata* -> comma ? arraydatadata* / cbrack
+   % n = 15 -> lte(1, 14, 30), % arraydatadata* -> data ? commaarraydata* / fail
+   % n = 16 -> any(digitDfa), % digit -> any(digit)
+   % n = 17 -> terminal(123), % obracechar -> terminal(123)
+   % n = 18 -> terminal(125), % cbracechar -> terminal(125)
+   % n = 19 -> terminal(91), % obrackchar -> terminal(91)
+   % n = 20 -> terminal(93), % cbrackchar -> terminal(93)
+   % n = 21 -> terminal(34), % quote -> terminal(34)
+   % n = 22 -> terminal(44), % commachar -> terminal(44)
+   % n = 23 -> terminal(58), % colonchar -> terminal(58)
+   % n = 24 -> lte(17, 3, 30), % obrace -> obracechar ? wspace / fail
+   % n = 25 -> lte(18, 3, 30), % cbrace -> cbracechar ? wspace / fail
+   % n = 26 -> lte(19, 3, 30), % obrack -> obrackchar ? wspace / fail
+   % n = 27 -> lte(20, 3, 30), % cbrack -> cbrackchar ? wspace / fail
+   % n = 28 -> lte(22, 3, 30), % comma -> commachar ? wspace / fail
+   % n = 29 -> lte(23, 3, 30), % colon -> colonchar ? wspace / fail
+   % n = 30 -> failure, % fail -> failure
+   % ELSE -> epsilon
+   % ENDCOND)
+
+   % djsontable : ARRAY[non_terminal -> prepeg]
+   % = (LET tbl : ARRAY[non_terminal -> prepeg] = djson IN tbl)
+
+   ejson(n: non_terminal):  prepeg =
+   (COND
+   n = 0 -> lte(3, 1, 31), %data -> wspace ? dictdata / skip
+   n = 1 -> lte(24, 5, 2), %dictdata -> obrace ? dictail / adata
+   n = 2 -> lte(26, 13, 12), % adata -> obrack ? arraydata* / digitkeywordtoken
+   n = 3 -> lte(4, 31, 31), % wspace -> whitespace ? skip / skip
+   n = 4 -> any(wspaceDfa), % whitespace -> any(whitespace)
+   n = 5 -> lte(25, 31, 6), % dictail -> cbrace ? skip / ndictail
+   n = 6 -> lte(7, 11, 30), % ndictail -> dictentry  ? dictail* / fail
+   n = 7 -> lte(10, 1, 30), % dictentry -> tokencolon ? dictdata / fail
+   n = 8 -> any(stringDfa), % token -> any(token)
+   n = 9 -> lte(26, 13, 30), % array -> obrack ? arraydata* / fail
+   n = 10 -> lte(8, 29, 30), % tokencolon -> token ? colon / fail
+   n = 11 -> lte (28, 6, 25), % dictail* -> comma ? ndictail / cbrace
+   n = 12 -> lte(16, 31, 32), % digitkeywordtoken -> digit ? skip / keywordtoken
+   n = 13 -> lte(27, 31, 15), % arraydata* -> cbrack ? skip / arraydatadata*
+   n = 14 -> lte(28, 15, 27),  % commaarraydata* -> comma ? arraydatadata* / cbrack
+   n = 15 -> lte(1, 14, 30), % arraydatadata* -> dictdata ? commaarraydata* / fail
+   n = 16 -> any(numberDfa), % digit -> any(digit)
+   n = 17 -> terminal(123), % obracechar -> terminal(123)
+   n = 18 -> terminal(125), % cbracechar -> terminal(125)
+   n = 19 -> terminal(91), % obrackchar -> terminal(91)
+   n = 20 -> terminal(93), % cbrackchar -> terminal(93)
+   n = 21 -> terminal(34), % quote -> terminal(34)
+   n = 22 -> terminal(44), % commachar -> terminal(44)
+   n = 23 -> terminal(58), % colonchar -> terminal(58)
+   n = 24 -> lte(17, 3, 30), % obrace -> obracechar ? wspace / fail
+   n = 25 -> lte(18, 3, 30), % cbrace -> cbracechar ? wspace / fail
+   n = 26 -> lte(19, 3, 30), % obrack -> obrackchar ? wspace / fail
+   n = 27 -> lte(20, 3, 30), % cbrack -> cbrackchar ? wspace / fail
+   n = 28 -> lte(22, 3, 30), % comma -> commachar ? wspace / fail
+   n = 29 -> lte(23, 3, 30), % colon -> colonchar ? wspace / fail
+   n = 30 -> failure, % fail -> failure
+   n = 31 -> epsilon, % skip -> skip
+   n = 32 -> lte(33, 31, 8), % keywordtoken -> keyword ? skip / token
+   n = 33 -> any(keywordDfa), % keyword -> any(keyword)
+   ELSE -> epsilon
+   ENDCOND)
+
+   ejsontable : ARRAY[non_terminal -> prepeg]
+   = (LET tbl : ARRAY[non_terminal -> prepeg] = ejson IN tbl)
+
+   % json_ast: DATATYPE WITH SUBTYPES lst
+   % BEGIN
+   %  digit(dstring: bytestring): digit?
+   %  token(tstring: bytestring): token?
+   %  empty: empty? : lst
+   %  cns(fst: json_ast, rst: lst): aray : lst %a dictionary is a list of key/value pairs
+   %  entry(key: bytestring, val: json_ast): entry?
+   % ENDg json_ast
+   % build_ast(len, G, (s: strings(len)))(S, n, (i | i <= len), P: (allgoodentries?)): RECURSIVE json_ast
+   % =
+
+
+
+
+   % ljson: ARRAY[non_terminal -> prepeg] =
+   % (LAMBDA (n: non_terminal):
+   % COND
+   % n = 0 -> lte(18, 1, 2), % data -> digit ? numeral$ / adata
+   % n = 1 -> lte(18, 1, 3), % numeral$ -> digit ? numeral$ / wspace
+   % n = 2 -> lte(27, 4, 6), % adata -> obrace ? dictail / stringarray
+   % n = 3 -> lte(17, 3, 34), % wspace -> space ? wspace / epsilon
+   % n = 4 -> lte(28, 34, 5), % dictail -> cbrace ? epsilon / dictentry*
+   % n = 5 -> lte(7, 11, 33), % dictentry* -> token ? rhsdata* / fail
+   % n = 6 -> lte(7, 34, 10), % stringarray -> token ? epsilon / array
+   % n = 7 -> lte(24, 8, 33), % token -> quote ? tokentail / fail
+   % n = 8 -> lte(24, 3, 9), % tokentail -> quote ? wspace / tokentail$
+   % n = 9 -> lte(19, 8, 33), % tokentail$ -> any ? tokentail / fail
+   % n = 10 -> lte(29, 14, 33), % array -> obrack ? arraydata* / fail
+   % n = 11 -> lte (32, 12, 33), % rhsdata* -> colon ? rhsdatatail / fail
+   % n = 12 -> lte(0, 13, 33), % rhsdatatail -> data ? commadictail / fail
+   % n = 13 -> lte(31, 4, 28), % commadictail -> comma ? dictail / cbrace
+   % n = 14 -> lte(30, 3, 16),  % arraydata* -> cbrack ? wspace / arraydatadata*
+   % n = 15 -> lte(31, 16, 30), % commaarraydata* -> comma ? arraydatdata* / cbrack
+   % n = 16 -> lte(0, 15, 33), % arraydatadata* -> data ? commaarraydata* / fail
+   % n = 17 -> any(whitespace), % space -> any(wspace)
+   % n = 18 -> any(digit), % digit -> any(digit)
+   % n = 19 -> any(any), % any -> any(any)
+   % n = 20 -> terminal(123), % obracechar -> terminal(123)
+   % n = 21 -> terminal(125), % cbracechar -> terminal(125)
+   % n = 22 -> terminal(91), % obrackchar -> terminal(91)
+   % n = 23 -> terminal(93), % cbrackchar -> terminal(93)
+   % n = 24 -> terminal(34), % quote -> terminal(34)
+   % n = 25 -> terminal(44), % commachar -> terminal(44)
+   % n = 26 -> terminal(58), % colonchar -> terminal(58)
+   % n = 27 -> lte(20, 3, 33), % obrace -> obracechar ? wspace / fail
+   % n = 28 -> lte(21, 3, 33), % cbrace -> cbracechar ? wspace / fail
+   % n = 29 -> lte(22, 3, 33), % obrack -> obrackchar ? wspace / fail
+   % n = 30 -> lte(23, 3, 33), % cbrack -> cbrackchar ? wspace / fail
+   % n = 31 -> lte(25, 3, 33), % comma -> commachar ? wspace / fail
+   % n = 32 -> lte(26, 3, 33), % colon -> colonchar ? wspace / fail
+   % n = 33 -> failure, % fail -> failure
+   % ELSE -> epsilon
+   % ENDCOND)
+
+   % pjson: ARRAY[non_terminal -> peg] =
+   % (LAMBDA (n: non_terminal):
+   % COND
+   %  n = 0 -> choice(1, 3),  %data -> numeral / adata
+   %  n = 1 -> concat(46, 2), %numeral -> any(48-57) o numeral$
+   %  n = 2 -> choice(1, 7),  %numeral$ -> numeral / wspace
+   %  n = 3 -> choice(4, 35),  %adata -> dict / stringarray
+   %  n = 4 -> concat(5, 11),  %dict -> obrace o dictail
+   %  n = 5 -> concat(6, 7),  %obrace -> { o wspace
+   %  n = 6 -> terminal(123), %{
+   %  n = 7 -> choice(8, 10), %wspace ->  wspace$ / epsilon
+   %  n = 8 -> concat(9, 7),  %wspace$ -> space o wspace
+   %  n = 9 -> any(whitespace),  %space
+   %  n = 10 -> epsilon,
+   %  n = 11 -> choice(12, 14), %dictail -> cbrace / dictail$
+   %  n = 12 -> concat(13, 7), %cbrace -> terminal(125) o wspace
+   %  n = 13 -> terminal(125),
+   %  n = 14 -> concat(15, 31), % dictail$ -> dictentry o dictailc
+   %  n = 15 -> concat(16, 28), %dictentry -> lhs o seprhs
+   %  n = 16 -> choice(1, 17),  %lhs -> numeral / token
+   %  n = 17 -> concat(18, 7), %token -> token$ o wspace
+   %  n = 18 -> concat(19, 25), %token$ -> terminal(34) o tokentail
+   %  n = 19 -> terminal(34),
+   %  n = 20 -> choice(21, 25), %tokentail-> esctail / qtail
+   %  n = 21 -> concat(22, 20), %esctail -> esquote o tokentail
+   %  n = 22 -> concat(23, 19), %esquote -> terminal(92) o terminal(34)
+   %  n = 23 -> terminal(92),
+   %  n = 24 -> concat(19, 7), %quote -> terminal(34) o wspace
+   %  n = 25 -> choice(24, 26), %qtail -> quote / tktail
+   %  n = 26 -> concat(27, 20), %tktail -> any o tokentail
+   %  n = 27 -> any(any),
+   %  n = 28 -> concat(29, 0), %seprhs -> separator o data
+   %  n = 29 -> concat(30, 7), %separator -> terminal(58) o wspace
+   %  n = 30 -> terminal(58),
+   %  n = 31 -> choice(32, 12),  %dictailc -> cdictailc / cbrace
+   %  n = 32 -> concat(33, 14),   %cdictailc -> comma o dictail$
+   %  n = 33 -> concat(34, 7),  %comma -> terminal(44) o wspace
+   %  n = 34 -> terminal(44),
+   %  n = 35 -> choice(17, 36), %stringarray -> token/array
+   %  n = 36 -> concat(37, 39), %array -> obrack o aentries
+   %  n = 37 -> concat(38, 7), %obrack -> terminal(91) o wspace
+   %  n = 38 -> terminal(91),
+   %  n = 39 -> concat(40, 44), %aentries -> aentries* o cbrack
+   %  n = 40 -> choice(41, 7), %aentries* -> aentries$ / wspace
+   %  n = 41 -> concat(0, 42), %aentries$ -> data o aentriestail
+   %  n = 42 -> choice(43, 7), %aentriestail -> centries / wspace
+   %  n = 43 -> concat(33, 41), %centries -> comma o aentries$
+   %  n = 44 -> concat(45, 7),  %cbrack -> terminal(93) o wspace
+   %  n = 45 -> terminal(93),
+   %  n = 46 -> any(digit),
+   %  ELSE -> epsilon
+   %  ENDCOND)
+
+
+    len, l1, l2 : VAR uint8
+
+    empty(len):  strings(len) = (LAMBDA (i:below(len)): 32)
+
+    cat(l1, (l2 : below(I[uint8](exp2(8) - l1 - 1))))(s1: strings(l1), s2: strings(I[uint8](l2))): strings(I[uint8](l1 + l2)) =
+     LAMBDA (i:below(l1 + l2)): IF i < l1 THEN s1(i) ELSE s2(i - l1) ENDIF
+
+    tok0: strings(7) =
+    (LAMBDA (i : below(7)):
+     COND i = 0 -> 39, i = 1 -> 116, i = 2 -> 111, i = 3 -> 107, i = 4 -> 101, i = 5 -> 110, i = 6 -> 39 ENDCOND)
+
+    tok1: strings(9) =
+     (LAMBDA (i : below(9)): COND i = 0 -> 39, i = 1 -> 116, i = 2 -> 111, i = 3 -> 107, i = 4 -> 101, i = 5 -> 110, i = 6 -> 92, i = 7 -> 39, i = 8 -> 39 ENDCOND)
+
+    emptydict: strings(9) =
+       (LAMBDA (i: below(9)):   COND i = 0 -> 123, i = 1 -> 32, i = 2 -> 32, i = 3 -> 32, i = 4 -> 32, i = 5 -> 32, i = 6 -> 32, i = 7 -> 125, i = 8 -> 32 ENDCOND)
+
+    obrace: strings(3) = (LAMBDA (i: below(3)): COND i = 0 -> 123, i = 1 -> 32, i = 2 -> 32 ENDCOND)
+    cbrace: strings(3) = (LAMBDA (i: below(3)): COND i = 0 -> 125, i = 1 -> 32, i = 2 -> 32 ENDCOND)
+    colon: strings(3) = (LAMBDA (i: below(3)): COND i = 0 -> 58, i = 1 -> 32, i = 2 -> 32 ENDCOND)
+    emptydict2: strings(6) =
+      cat(3, 3)(obrace, cbrace)
+
+    dict1: strings(22) =
+      cat(3, 19)(obrace, cat(7, 12)(tok0, cat(3, 9)(colon, cat(6, 3)(emptydict2, cbrace))))
+
+
+    G: VAR lang_spec
+    n: VAR non_terminal
+
+    % test4: ent = doparse(144, pjson, mk_bytestring("{\"protocols\" : {\"AKA\" : {      \"name\" : \"AKA\",      \"actors\" : {        \"UE\" : {          \"name\":\"UE\",          }      }    }  }}"), 0)
+
+    iparse(len, G, (s: strings(len)), (start: upto(len)), (root: non_terminal)): ent
+    = (LET pend = (LAMBDA n: pending),
+          St: state(len, G, s, start, root) = (#
+         stack := push(start, root),
+         depth := 1,
+         lflag := FALSE,
+         scaf := (LAMBDA (i: upto(len)): pend) WITH [(start)(root) := push(0, num_non_terminals)] #)
+      IN parse(len, G, s, start, root, St)`scaf(start)(root))
+
+    jsonreadfile(fn: bytestring): bool =
+     (LET lf: lifted_file = open(fn)
+     IN IF pass?(lf)
+       THEN LET f: file = contents(lf),
+                fs : uint32 = file_size(f),
+        fstr: bytestring = getbytestring(f, 0, fs)
+         IN TRUE
+       ELSE FALSE
+       ENDIF)
+
+    jsonreadfileinit(fn: bytestring): bool =
+     (LET lf: lifted_file = open(fn)
+     IN IF pass?(lf)
+       THEN LET f: file = contents(lf),
+                fs : uint32 = file_size(f),
+        fstr: bytestring = getbytestring(f, 0, fs),
+        pend = (LAMBDA n: pending),
+                St: state(fs, ejson, fstr`seq, 0, 0) = (#
+        stack := push(0, 0),
+        depth := 1,
+        scaf := (LAMBDA (i: upto(fs)): pend) WITH [(0)(0) := push(0, num_non_terminals)],
+        lflag := FALSE #)
+         IN TRUE
+       ELSE FALSE
+       ENDIF)
+
+
+    jsonparsecheckfile(fn: bytestring): bool =
+     (LET lf: lifted_file = open(fn)
+      IN pass?(lf)
+       AND LET f: file = contents(lf),
+                fs : uint32 = file_size(f),
+        fstr: bytestring = getbytestring(f, 0, fs),
+        pend = (LAMBDA n: pending),
+                St: state(fs, ejson, fstr`seq, 0, 0) = (#
+        stack := push(0, 0),
+        depth := 1,
+        scaf := (LAMBDA (i: upto(fs)): pend) WITH [(0)(0) := push(0, num_non_terminals)],
+        lflag := FALSE #),
+        endSt = parse(fs, ejson, fstr`seq, 0, 0, St)
+         IN IF defent?(endSt`scaf(0)(0))
+            THEN
+         LET proof = buildproof(fs, ejson, fstr`seq, 0, 0)(endSt, 0, 0)
+         IN good_parsetree?(fstr`length, ejson, fstr`seq)(qempty, 0, 0, proof)
+            ELSE FALSE ENDIF)
+
+
+    jsonparsefile(fn: bytestring): parsetree =
+     (LET lf: lifted_file = open(fn)
+     IN IF pass?(lf)
+       THEN LET f: file = contents(lf),
+                fs : uint32 = file_size(f),
+        fstr: bytestring = getbytestring(f, 0, fs),
+        pend = (LAMBDA n: pending),
+                St: state(fs, ejson, fstr`seq, 0, 0) = (#
+        stack := push(0, 0),
+        depth := 1,
+        scaf := (LAMBDA (i: upto(fs)): pend) WITH [(0)(0) := push(0, num_non_terminals)],
+        lflag := FALSE #)
+         IN buildproof(fs, ejson, fstr`seq, 0, 0)(parse(fs, ejson, fstr`seq, 0, 0, St), 0, 0)
+       ELSE zero(0, fail(0))
+       ENDIF)
+
+
+    jsonbuildast(fn: bytestring): (allgoodentries?) =
+     (LET lf: lifted_file = open(fn)
+     IN IF pass?(lf)
+       THEN LET f: file = contents(lf),
+                fs : uint32 = file_size(f),
+        fstr: bytestring = getbytestring(f, 0, fs),
+        pend = (LAMBDA n: pending),
+                St: state(fs, ejson, fstr`seq, 0, 0) = (#
+        stack := push(0, 0),
+        depth := 1,
+        scaf := (LAMBDA (i: upto(fs)): pend) WITH [(0)(0) := push(0, num_non_terminals)],
+        lflag := FALSE #)
+         IN buildast(fs, ejson, fstr`seq, 0, 0, parse(fs, ejson, fstr`seq, 0, 0, St), qempty, 0, 0)
+       ELSE zero(0, fail(0))
+       ENDIF)
+
+    json_ast_from_str(s: bytestring): (allgoodentries?) =
+      LET
+        len = s`length,
+        pend = (LAMBDA n: pending),
+                St: state(len, ejson, s`seq, 0, 0) = (#
+                  stack := push(0, 0),
+                  depth := 1,
+                  scaf := (LAMBDA (i: upto(len)): pend) WITH [(0)(0) := push(0, num_non_terminals)],
+                  lflag := FALSE #)
+         IN buildast(len, ejson, s`seq, 0, 0, parse(len, ejson, s`seq, 0, 0, St), qempty, 0, 0)
+
+    jsonpureparsefile(fn: bytestring): ent =
+     (LET lf: lifted_file = open(fn)
+     IN IF pass?(lf)
+       THEN LET f: file = contents(lf),
+                fs : uint32 = file_size(f),
+        fstr: bytestring = getbytestring(f, 0, fs),
+        pend = (LAMBDA n: pending),
+        St: state(fs, ejson, fstr`seq, 0, 0) = (#
+          stack := push(0, 0),
+          depth := 1,
+          scaf := (LAMBDA (i: upto(fs)): pend) WITH [(0)(0) := push(0, num_non_terminals)],
+          lflag := FALSE
+        #)
+         IN parse(fs, ejsontable, fstr`seq, 0, 0, St)`scaf(0)(fs)
+       ELSE fail(0)
+       ENDIF)
+
+    parsetable: TYPE = [# length : uint32, scaffold : scaffold(length) #]
+
+    % jsonparsefiletable(fn: bytestring):
+    %  (LET lf: lifted_file = open(fn)
+    %  IN IF pass?(lf)
+    %    THEN LET f: file = contents(lf),
+    %             fs : uint32 = file_size(f),
+    %       fstr: bytestring = getbytestring(f, 0, fs),
+    %       pend = (LAMBDA n: pending),
+    %             St: state(fs, djson, fstr`seq, 0, 0) = (#
+    %       stack := push(0, 0),
+    %       depth := 1,
+    %       scaf := (LAMBDA (i: upto(fs)): pend) WITH [(0)(0) := push(0, num_non_terminals)],
+    %       lflag := FALSE #)
+    %        IN (# length := fs, scaffold := parse(fs, djsontable, fstr`seq, 0, 0, St)`scaf(0)(fs) #)
+    %    ELSE fail(0)
+    %    ENDIF)
+
+    test_bytestring: bytestring = mk_bytestring("test_files/test.json")
+    test_parsetree: parsetree = jsonparsefile(test_bytestring)
+    test_ast: (allgoodentries?) = jsonbuildast(test_bytestring)
+
+  END ltedfapegtest

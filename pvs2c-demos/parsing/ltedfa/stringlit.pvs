@@ -1,0 +1,12 @@
+stringlit  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+  % ASSUMING
+   % assuming declarations
+  % ENDASSUMING
+
+     foo: bytestring = "∀"
+
+  END stringlit

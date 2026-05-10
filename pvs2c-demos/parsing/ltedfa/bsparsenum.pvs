@@ -1,0 +1,290 @@
+bsparsenum: THEORY
+
+BEGIN
+  parseresult_num: DATATYPE
+  BEGIN
+    failed_num: failed_num?
+    success_int(result_int: int64): success_int?
+    success_dec(result_dec: int64, result_exp: int64): success_dec?
+  END parseresult_num
+
+  is_digit(b: byte): bool = b >= 48 AND b < 58
+  is_e(b: byte): bool = b = 69 OR b = 101
+  is_dot(b: byte): bool = b = 46
+  is_minus(b: byte): bool = b = 45
+  is_plus(b: byte): bool = b = 43
+  byte_to_digit(b: (is_digit)): uint8 = b - 48
+
+  MAX_MANTISSA: int64 = 900000000000000000
+
+  % pow_inner(x: nat, base: nat, acc: nat): RECURSIVE nat =
+  %   IF x = 0 THEN
+  %     acc
+  %   ELSE
+  %     pow_inner(x-1, base, acc*base)
+  %   ENDIF
+  % MEASURE x
+
+  % pow10(x: int): real =
+  %   IF x < 0 THEN
+  %     1 / pow_inner(-x, 10, 1)
+  %   ELSE
+  %     pow_inner(x, 10, 1)
+  %   ENDIF
+
+  % test_pow10_0: _TEST_ pow10(0) = 1
+  % test_pow10_1: _TEST_ pow10(1) = 10
+  % test_pow10_2: _TEST_ pow10(2) = 100
+  % test_pow10_3: _TEST_ pow10(3) = 1000
+  % test_pow10_neg1: _TEST_ pow10(-1) = 0.1
+  % test_pow10_neg2: _TEST_ pow10(-2) = 0.01
+  % test_pow10_neg3: _TEST_ pow10(-3) = 0.001
+
+  %%%%%%%%%%%%%%%%%%%%%
+  %% Natural Numbers %%
+  %%%%%%%%%%%%%%%%%%%%%
+
+  bs_to_nat_inner(bs: bytestring, i: upto(bs`length), acc: int64): RECURSIVE parseresult_num =
+    IF i >= length(bs) THEN
+      success_int(acc)
+    ELSIF NOT is_digit(get(bs, i)) THEN
+      failed_num
+    ELSE
+      IF acc < MAX_MANTISSA THEN
+        bs_to_nat_inner(bs, i+1, acc * 10 + byte_to_digit(get(bs, i)))
+      ELSE
+        failed_num
+      ENDIF
+    ENDIF
+  MEASURE length(bs) - i
+
+  bs_to_nat(bs: bytestring): parseresult_num =
+    if length(bs) = 0 THEN
+      failed_num
+    ELSE
+      bs_to_nat_inner(bs, 0, 0)
+    ENDIF
+
+  test_bs_to_nat_0: _TEST_ bs_to_nat("0") = success_int(0)
+  test_bs_to_nat_00: _TEST_ bs_to_nat("00") = success_int(0)
+  test_bs_to_nat_1: _TEST_ bs_to_nat("1") = success_int(1)
+  test_bs_to_nat_01: _TEST_ bs_to_nat("01") = success_int(1)
+  test_bs_to_nat_001: _TEST_ bs_to_nat("001") = success_int(1)
+  test_bs_to_nat_5: _TEST_ bs_to_nat("5") = success_int(5)
+  test_bs_to_nat_10: _TEST_ bs_to_nat("10") = success_int(10)
+  test_bs_to_nat_11: _TEST_ bs_to_nat("11") = success_int(11)
+  test_bs_to_nat_501: _TEST_ bs_to_nat("501") = success_int(501)
+  test_bs_to_nat_632: _TEST_ bs_to_nat("632") = success_int(632)
+  test_bs_to_nat_3429: _TEST_ bs_to_nat("3429") = success_int(3429)
+  test_bs_to_nat_fail1: _TEST_ bs_to_nat("abcde") = failed_num
+  test_bs_to_nat_fail2: _TEST_ bs_to_nat("3a") = failed_num
+  test_bs_to_nat_fail3: _TEST_ bs_to_nat("a3") = failed_num
+  test_bs_to_nat_fail4: _TEST_ bs_to_nat("") = failed_num
+  test_bs_to_nat_fail5: _TEST_ bs_to_nat("-1") = failed_num
+  test_recognizer_success: _TEST_ success_int?(bs_to_nat("1"))
+  test_recognizer_failed: _TEST_ failed_num?(bs_to_nat("abcd"))
+
+
+  %%%%%%%%%%%%%%
+  %% Integers %%
+  %%%%%%%%%%%%%%
+
+
+  % Naive version
+  % %%%%%%%%%%%%%
+  % bs_to_int(bs: bytestring): parseresult_num =
+  %   IF length(bs) = 0 THEN
+  %     failed_num
+  %   ELSIF length(bs) > 1 AND is_minus(get(bs, 0)) THEN
+  %     CASES bs_to_nat(suffix(bs, 1)) OF
+  %       success_int(x): success_int(x * -1),
+  %       success_dec(x, y): failed_num,
+  %       failed_num: failed_num
+  %     ENDCASES
+  %   ELSE
+  %     bs_to_nat(bs)
+  %   ENDIF
+
+  % GMP-sensitive version
+  % %%%%%%%%%%%%%%%%%%%%%
+
+  max_int64: MACRO int64 = 9223372036854775807
+  min_int64: MACRO int64 = -9223372036854775807 - 1
+
+  bytestring_to_uint_rec(bs: bytestring,
+                        (i: upto(bs`length)),
+			acc: { u: uint64 | u <= (10^i - 1) }
+			): RECURSIVE parseresult_num =
+  IF length(bs) >= 19 THEN failed_num % int64s can only be 19 digits long
+  ELSIF i = length(bs) THEN success_int(acc)
+  ELSE LET digit = get(bs, i) IN
+       IF NOT is_digit(digit) THEN failed_num
+       ELSE LET new_acc = acc * 10 + byte_to_digit(digit) IN
+            bytestring_to_uint_rec(bs, i+1, new_acc)
+       ENDIF
+  ENDIF
+  MEASURE length(bs) - i
+
+  bs_to_int(bs: bytestring): parseresult_num =
+    IF length(bs) = 0 OR length(bs) >= 19 THEN failed_num
+    ELSE LET neg? = (length(bs) > 1 AND get(bs, 0) = 45),
+             bs: bytestring = IF neg? THEN suffix(bs, 1) ELSE bs ENDIF IN
+         IF length(bs) = 0 THEN failed_num
+         ELSE LET result = bytestring_to_uint_rec(bs, 0, 0) IN
+           CASES result OF
+             success_int(x): IF x >= max_int64 OR x <= min_int64 THEN failed_num
+	                   ELSE success_int(IF neg? THEN x * -1 ELSE x ENDIF)
+			   ENDIF
+	     ELSE failed_num
+           ENDCASES
+         ENDIF
+    ENDIF
+
+  test_bs_to_int_0: _TEST_ bs_to_int("0") = success_int(0)
+  test_bs_to_int_00: _TEST_ bs_to_int("00") = success_int(0)
+  test_bs_to_int_1: _TEST_ bs_to_int("1") = success_int(1)
+  test_bs_to_int_01: _TEST_ bs_to_int("01") = success_int(1)
+  test_bs_to_int_001: _TEST_ bs_to_int("001") = success_int(1)
+  test_bs_to_int_5: _TEST_ bs_to_int("5") = success_int(5)
+  test_bs_to_int_10: _TEST_ bs_to_int("10") = success_int(10)
+  test_bs_to_int_11: _TEST_ bs_to_int("11") = success_int(11)
+  test_bs_to_int_501: _TEST_ bs_to_int("501") = success_int(501)
+  test_bs_to_int_632: _TEST_ bs_to_int("632") = success_int(632)
+  test_bs_to_int_3429: _TEST_ bs_to_int("3429") = success_int(3429)
+  test_bs_to_int_fail1: _TEST_ bs_to_int("abcde") = failed_num
+  test_bs_to_int_fail2: _TEST_ bs_to_int("3a") = failed_num
+  test_bs_to_int_fail3: _TEST_ bs_to_int("a3") = failed_num
+  test_bs_to_int_fail4: _TEST_ bs_to_int("") = failed_num
+  test_bs_to_int_neg_only: _TEST_ bs_to_int("-") = failed_num
+  test_bs_to_int_neg1: _TEST_ bs_to_int("-1") = success_int(-1)
+  test_bs_to_int_neg01: _TEST_ bs_to_int("-01") = success_int(-1)
+  test_bs_to_int_neg001: _TEST_ bs_to_int("-001") = success_int(-1)
+  test_bs_to_int_neg5: _TEST_ bs_to_int("-5") = success_int(-5)
+  test_bs_to_int_neg10: _TEST_ bs_to_int("-10") = success_int(-10)
+  test_bs_to_int_neg11: _TEST_ bs_to_int("-11") = success_int(-11)
+  test_bs_to_int_neg501: _TEST_ bs_to_int("-501") = success_int(-501)
+  test_bs_to_int_neg632: _TEST_ bs_to_int("-632") = success_int(-632)
+  test_bs_to_int_neg3429: _TEST_ bs_to_int("-3429") = success_int(-3429)
+
+
+  %%%%%%%%%%%%%%%%%%%%%
+  %% Decimal Numbers %%
+  %%%%%%%%%%%%%%%%%%%%%
+
+  bs_to_num_inner(bs: bytestring, i: upto(bs`length), acc: int64, dot_pos: uint32, seen_digit: bool): RECURSIVE parseresult_num =
+    IF i >= length(bs) THEN
+      IF NOT seen_digit THEN
+        failed_num
+      ELSIF dot_pos = 0 THEN
+        success_int(acc)
+      ELSE
+        % A dot was found at index (dot_pos - 1).
+        % The number of digits after the dot is length(bs) - dot_pos.
+        success_dec(acc, dot_pos - length(bs))
+      ENDIF
+    ELSE
+      LET c = get(bs, i) IN
+      IF is_digit(c) THEN
+        IF acc < MAX_MANTISSA THEN
+          bs_to_num_inner(bs, i + 1, acc * 10 + byte_to_digit(c), dot_pos, true)
+        ELSE
+          failed_num
+        ENDIF
+      ELSIF is_dot(c) THEN
+        IF dot_pos /= 0 THEN
+          failed_num
+        ELSE
+          bs_to_num_inner(bs, i + 1, acc, i + 1, seen_digit)
+        ENDIF
+      ELSIF is_e(c) AND NOT seen_digit THEN
+        failed_num
+      ELSIF is_e(c) THEN
+        LET
+          dot_exp: int64 =
+            IF dot_pos = 0 THEN
+              0
+            ELSE
+              dot_pos - i
+            ENDIF,
+          plus_modifier: uint8 =
+            IF is_plus(get(bs, i+1)) THEN
+              1
+            ELSE
+              0
+            ENDIF
+        IN
+          CASES bs_to_int(suffix(bs, i + 1 + plus_modifier)) OF
+            success_int(x): success_dec(acc, x + dot_exp),
+            success_dec(x, y): failed_num,
+            failed_num: failed_num
+          ENDCASES
+      ELSE
+        failed_num
+      ENDIF
+    ENDIF
+  MEASURE length(bs) - i
+
+  bs_to_num(bs: bytestring): parseresult_num =
+    IF length(bs) = 0 THEN
+      failed_num
+    ELSIF length(bs) > 1 AND is_minus(get(bs, 0)) THEN
+      CASES bs_to_num_inner(suffix(bs, 1), 0, 0, 0, false) OF
+        success_int(x): success_int(x * -1),
+        success_dec(mantissa, exp): success_dec(mantissa * -1, exp),
+        failed_num: failed_num
+      ENDCASES
+    ELSE
+      bs_to_num_inner(bs, 0, 0, 0, false)
+    ENDIF
+
+  test_bs_to_num_0: _TEST_ bs_to_num("0") = success_int(0)
+  test_bs_to_num_00: _TEST_ bs_to_num("00") = success_int(0)
+  test_bs_to_num_1: _TEST_ bs_to_num("1") = success_int(1)
+  test_bs_to_num_01: _TEST_ bs_to_num("01") = success_int(1)
+  test_bs_to_num_001: _TEST_ bs_to_num("001") = success_int(1)
+  test_bs_to_num_5: _TEST_ bs_to_num("5") = success_int(5)
+  test_bs_to_num_10: _TEST_ bs_to_num("10") = success_int(10)
+  test_bs_to_num_11: _TEST_ bs_to_num("11") = success_int(11)
+  test_bs_to_num_501: _TEST_ bs_to_num("501") = success_int(501)
+  test_bs_to_num_632: _TEST_ bs_to_num("632") = success_int(632)
+  test_bs_to_num_3429: _TEST_ bs_to_num("3429") = success_int(3429)
+  test_bs_to_num_fail1: _TEST_ bs_to_num("abcde") = failed_num
+  test_bs_to_num_fail2: _TEST_ bs_to_num("3a") = failed_num
+  test_bs_to_num_fail3: _TEST_ bs_to_num("a3") = failed_num
+  test_bs_to_num_fail4: _TEST_ bs_to_num("") = failed_num
+  test_bs_to_num_neg_only: _TEST_ bs_to_num("-") = failed_num
+  test_bs_to_num_neg1: _TEST_ bs_to_num("-1") = success_int(-1)
+  test_bs_to_num_neg01: _TEST_ bs_to_num("-01") = success_int(-1)
+  test_bs_to_num_neg001: _TEST_ bs_to_num("-001") = success_int(-1)
+  test_bs_to_num_neg5: _TEST_ bs_to_num("-5") = success_int(-5)
+  test_bs_to_num_neg10: _TEST_ bs_to_num("-10") = success_int(-10)
+  test_bs_to_num_neg11: _TEST_ bs_to_num("-11") = success_int(-11)
+  test_bs_to_num_neg501: _TEST_ bs_to_num("-501") = success_int(-501)
+  test_bs_to_num_neg632: _TEST_ bs_to_num("-632") = success_int(-632)
+  test_bs_to_num_neg3429: _TEST_ bs_to_num("-3429") = success_int(-3429)
+  test_bs_to_num_1point1: _TEST_ bs_to_num("1.1") = success_dec(11, -1)
+  test_bs_to_num_1point1e2: _TEST_ bs_to_num("1.1e2") = success_dec(11, 1)
+  test_bs_to_num_1point1eminus1: _TEST_ bs_to_num("1.1e-1") = success_dec(11, -2)
+  test_bs_to_num_point1: _TEST_ bs_to_num(".1") = success_dec(1, -1)
+  test_bs_to_num_neg_zero: _TEST_ bs_to_num("-0") = success_int(0)
+  test_bs_to_num_fail_double_neg: _TEST_ bs_to_num("--1") = failed_num
+  test_bs_to_num_trailing_point: _TEST_ bs_to_num("1.") = success_dec(1, 0)
+  test_bs_to_num_neg_point1: _TEST_ bs_to_num("-.1") = success_dec(-1, -1)
+  test_bs_to_num_fail_point_only: _TEST_ bs_to_num(".") = failed_num
+  test_bs_to_num_fail_double_point: _TEST_ bs_to_num("1.1.1") = failed_num
+  test_bs_to_num_fail_sign_point: _TEST_ bs_to_num("-.") = failed_num
+  test_bs_to_num_1point1E2: _TEST_ bs_to_num("1.1E2") = success_dec(11, 1)
+  test_bs_to_num_1eplus2: _TEST_ bs_to_num("1e+2") = success_dec(1, 2) % fail
+  test_bs_to_num_neg_point1e2: _TEST_ bs_to_num("-.1e2") = success_dec(-1, 1)
+  test_bs_to_num_neg_1e_neg2: _TEST_ bs_to_num("-1e-2") = success_dec(-1, -2)
+  test_bs_to_num_zero_exp: _TEST_ bs_to_num("0e5") = success_dec(0, 5)
+  test_bs_to_num_fail_exp_only: _TEST_ bs_to_num("e5") = failed_num % fail
+  test_bs_to_num_fail_exp_no_num: _TEST_ bs_to_num("1e") = failed_num
+  test_bs_to_num_fail_exp_sign_only: _TEST_ bs_to_num("1e-") = failed_num
+  test_bs_to_num_fail_exp_decimal: _TEST_ bs_to_num("1e1.5") = failed_num
+  test_bs_to_num_fail_comma: _TEST_ bs_to_num("1,000") = failed_num
+  test_bs_to_num_fail_underscore: _TEST_ bs_to_num("1_000") = failed_num
+
+  test_exp: int64 = result_exp(bs_to_num("1.1e2"))
+
+END bsparsenum

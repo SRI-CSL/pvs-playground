@@ -1,0 +1,11 @@
+aseq_reduce[dom, rng : TYPE]: THEORY
+BEGIN
+
+aseq_lreduce(f : [dom, rng ->rng], base : rng)(A : aseq[dom], i : upto(A`length)) : RECURSIVE rng
+= (IF i = A`length
+    THEN base
+    ELSE f(A`seq(i), aseq_lreduce(f, base)(A, i+1))
+    ENDIF)
+   MEASURE A`length - i
+
+END aseq_reduce

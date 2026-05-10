@@ -1,0 +1,50 @@
+arrayCount   [T: TYPE ]
+		: THEORY
+
+  BEGIN
+
+  len: VAR index
+
+  P: VAR [T -> bool]
+
+   arr(len): TYPE = ARRAY[below(len) -> T]
+
+   count(len)(P)(A : arr(len)): upto(len) =
+     card({i : below(len) | P(A(i))})
+
+   u, v: VAR T
+
+   count_update0: LEMMA
+     (FORALL (i: below(len)), (A : arr(len)):
+       NOT P(A(i)) AND P(u)
+         IMPLIES  count(len)(P)(A WITH [(i) := u]) = count(len)(P)(A) + 1)
+
+   count_update: LEMMA
+     (FORALL (i: below(len)), (A : arr(len)):
+       NOT P(A(i)) AND P(u)
+         IMPLIES count(len)(P)(A) < count(len)(P)(A WITH [(i) := u]))
+
+   count_update00: LEMMA
+      (FORALL (i: below(len)), (A : arr(len)):
+          count(len)(P)(A WITH [(i) := u]) =
+	   IF P(A(i)) THEN IF P(u) THEN count(len)(P)(A) ELSE count(len)(P)(A) - 1 ENDIF
+	    ELSIF P(u) THEN count(len)(P)(A) + 1 ELSE count(len)(P)(A) ENDIF)
+
+
+   count_update1: LEMMA
+     (FORALL (i: below(len)), (A : arr(len)):
+       NOT P(A(i)) AND P(u)
+         IMPLIES count(len)(P)(A) < count(len)(P)(A WITH [(i) |-> u]))
+
+   count_update2: LEMMA
+     (FORALL (i: below(len)), (A : arr(len)):
+       P(A(i)) AND NOT P(u)
+         IMPLIES count(len)(P)(A WITH [(i) := u]) < count(len)(P)(A))
+
+   count_update3: LEMMA
+     (FORALL (i: below(len)), (A : arr(len)):
+       P(A(i)) AND NOT P(u)
+         IMPLIES count(len)(P)(A WITH [(i) |-> u]) < count(len)(P)(A))
+
+
+  END arrayCount

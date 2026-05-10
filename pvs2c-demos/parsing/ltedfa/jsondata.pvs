@@ -1,0 +1,109 @@
+% fmap[A, B: TYPE%, default_B: B
+%      ]  : THEORY
+% %finite maps map a finite subset of A to B.
+%   BEGIN
+%    fmap: TYPE = [# domain : finite_set[A],
+%                    map : [(domain) -> B]
+% 		   #]
+
+%    emptymap: fmap = (# domain := emptyset[A], map := (LAMBDA (x: (emptyset[A])): choose(fullset[B])% default_B
+%    ) #)
+
+%    F, G : VAR fmap
+%    x, y, z: VAR A
+%    u, v, w: VAR B
+
+%    defined?(F, x): bool = member(x, F`domain)
+
+%    apply(F, x): lift[B] = IF defined?(F, x) THEN up(F`map(x)) ELSE bottom ENDIF
+
+%    add(x, u, (F | x ∉ F`domain)): fmap
+%     = F WITH [`domain := add(x, F`domain),
+%               `map(x) |-> u]
+
+% END fmap
+
+jsondata: THEORY
+BEGIN
+
+IMPORTING itoa, stringutils
+
+jsondata  : DATATYPE
+%This datatype is used to construct json data as strings, key/value pairs,
+%dictionaries, numerals (uint and int), and arrays.
+  BEGIN
+   % IMPORTING fmap
+   jstr(strval: bytestring): jstr?
+   jbool(boolval: boolean): jbool?
+   jnull: jnull?
+   jpair(key: bytestring, value: jsondata): jpair?
+   jdict(contents : aseq[(jpair?)]): jdict?
+   jnumeral(val: int64, exp: int64): jnumeral?
+   jarray(arrval : aseq[jsondata]): jarray?
+  END jsondata
+
+% Function to convert a jnumeral to its string representation.
+% Follows the format <value>e<exponent> if the exponent is non-zero.
+jnumeral_to_string(n: (jnumeral?)): bytestring =
+  itoa(val(n)) ++ (IF exp(n) = 0 THEN "" ELSE "e" ++ itoa(exp(n)) ENDIF)
+
+test_jnumeral_to_string_no_exp: _TEST_ jnumeral_to_string(jnumeral(12345, 0)) = itoa(12345)
+test_jnumeral_to_string_with_exp: _TEST_ jnumeral_to_string(jnumeral(12, -5)) = "12e-5"
+test_jnumeral_to_string_zero_val: _TEST_ jnumeral_to_string(jnumeral(0, 10)) = "0e10"
+
+string_literal(s: bytestring): bytestring = "\"" ++ escape_string(s) ++ "\""
+
+amap_inner(f: [jsondata -> bytestring], s: aseq[jsondata], i: index, acc: aseq[bytestring]): RECURSIVE aseq[bytestring] =
+  IF i >= s`length THEN
+    acc
+  ELSE
+    amap_inner(f, s, i+1, aseq_add(f(s`seq(i)), acc))
+  ENDIF
+  MEASURE s`length - i
+
+amap(f: [jsondata -> bytestring], s: aseq[jsondata]): aseq[bytestring] =
+  amap_inner(f, s, 0, empty_aseq)
+
+json_to_string(j: jsondata): RECURSIVE bytestring =
+  CASES j OF
+    jstr(s): string_literal(s),
+    jbool(b): IF b THEN "true" ELSE "false" ENDIF,
+    jnull: "null",
+    jdict(c): "{" ++ join(mk_bytestring(", "), amap((LAMBDA (p: jsondata): IF jpair?(p) THEN string_literal(key(p)) ++ ": " ++ json_to_string(value(p)) ELSE mk_bytestring("") ENDIF), c)) ++ "}",
+    jnumeral(v, e): jnumeral_to_string(j),
+    jarray(a): "[" ++ join(mk_bytestring(", "), amap(json_to_string, a)) ++ "]"
+  ENDCASES
+  MEASURE j by <<
+
+  test_json: jsondata =
+  jdict((# length := 3,
+           seq := [:
+             jpair(mk_bytestring("foo"),
+                       jnumeral(1, 0)),
+             jpair(mk_bytestring("bar"),
+                   jstr(mk_bytestring("bar"))),
+             jpair(mk_bytestring("quux"),
+                   jdict((# length := 2,
+                        seq := [:
+                          jpair(mk_bytestring("bar1"),
+                                jstr(mk_bytestring("bar1"))),
+                          jpair(mk_bytestring("foo1"),
+                                jnumeral(1, 0))
+                               :]
+                          #)))
+          :]
+        #))
+
+  json_to_string_test: _TEST_ json_to_string(test_json) = "{\"foo\": 1, \"bar\": \"bar\", \"quux\": {\"bar1\": \"bar1\", \"foo1\": 1}}"
+
+  test_json_array: jsondata =
+    jarray((# length := 4,
+              seq := [:
+                jnumeral(1, 0),
+                jnumeral(2, 0),
+                jnumeral(3, 0),
+                jnumeral(4, 0)
+              :] #))
+
+  json_to_string_test_array: _TEST_ json_to_string(test_json_array) = "[1, 2, 3, 4]"
+END jsondata

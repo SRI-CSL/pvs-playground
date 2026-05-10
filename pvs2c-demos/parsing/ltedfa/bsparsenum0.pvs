@@ -1,0 +1,250 @@
+bsparsenum0: THEORY
+
+BEGIN
+  % parseresult [T: TYPE]: DATATYPE
+  % BEGIN
+  %   failed: failed?
+  %   success(result: T): success?
+  % END parseresult
+
+  % parseresult: DATATYPE
+  % BEGIN
+  %   failed: failed?
+  %   success(result: nat): success?
+  % END parseresult
+
+  parseresult_c: DATATYPE
+  BEGIN
+    failed_c: failed_c?
+    success_c(result_c: int64): success_c?
+  END parseresult_c
+
+  % parseresult_num: DATATYPE
+  % BEGIN
+  %   failed_num: failed_num?
+  %   success_nat(result: nat): success_nat?
+  %   success_int(result: int64): success_int?
+  %   success_real(result: real): success_real?
+  % END parseresult_num
+
+  is_digit(b: byte): bool = b >= 48 AND b < 58
+  is_e(b: byte): bool = b = 69 OR b = 101
+  is_dot(b: byte): bool = b = 46
+  byte_to_digit(b: byte): int64 = b - 48
+
+  % bs_to_nat_inner(bs: bytestring, i: nat, acc: nat): RECURSIVE parseresult =
+  %   IF i >= length(bs) THEN
+  %     success(acc)
+  %   ELSIF NOT is_digit(get(bs, i)) THEN
+  %     failed
+  %   ELSE
+  %     bs_to_nat_inner(bs, i+1, acc * 10 + byte_to_digit(get(bs, i)))
+  %   ENDIF
+  % MEASURE length(bs) - i
+
+  % bs_to_nat(bs: bytestring): parseresult =
+  %   if length(bs) = 0 THEN
+  %     failed
+  %   ELSE
+  %     bs_to_nat_inner(bs, 0, 0)
+  %   ENDIF
+
+  % bs_to_int(bs: bytestring): parseresult_c =
+  %   IF length(bs) = 0 THEN
+  %     failed_c
+  %   ELSIF length(bs) > 1 AND get(bs, 0) = 45 THEN % minus sign
+  %     CASES bs_to_nat(suffix(bs, 1)) OF
+  %       success(x): success_c(x * -1),
+  %       failed: failed_c
+  %     ENDCASES
+  %   ELSE
+  %     CASES bs_to_nat(bs) OF
+  %       success(x): success_c(x),
+  %       failed: failed_c
+  %     ENDCASES
+  %   ENDIF
+
+  max_int64: MACRO int64 = 9223372036854775807
+
+  bytestring_to_int_aux_rec(bs: bytestring, i, acc: int64): RECURSIVE parseresult_c =
+    IF i >= length(bs) THEN success_c(acc)
+    ELSIF NOT is_digit(get(bs, i)) THEN failed_c
+    ELSE LET new_acc = acc * 10 + byte_to_digit(get(bs, i)) IN
+           % new_acc temporarily represented as bignum, fails after
+         IF new_acc >= max_int64 THEN failed_c
+	 ELSE bytestring_to_int_aux_rec(bs, i+1, new_acc)
+	 ENDIF
+    ENDIF
+  MEASURE bs`length - i
+
+  bytestring_to_int_aux(bs: bytestring, neg?: bool): parseresult_c =
+    LET bs: bytestring = IF neg? THEN suffix(bs, 1) ELSE bs ENDIF IN
+    IF length(bs) = 0 THEN failed_c
+    ELSE CASES bytestring_to_int_aux_rec(bs, 0, 0) OF
+           success_c(x): success_c(IF neg? THEN x * -1 ELSE x ENDIF),
+	   failed_c: failed_c
+         ENDCASES
+    ENDIF
+
+  bytestring_to_int(bs: bytestring): parseresult_c =
+    IF length(bs) = 0 THEN failed_c
+    ELSE LET neg?: bool = length(bs) > 1 AND get(bs, 0) = 45 IN
+         bytestring_to_int_aux(bs, neg?)
+    ENDIF
+
+  % bs2int_equiv: THEOREM
+  %   FORALL (bs: bytestring):
+  %     bytestring_to_int(bs) = bs_to_int(bs)
+
+  % bs_to_num_inner(bs: bytestring, i: nat, acc: nat, dot_pos: nat): RECURSIVE parseresult_num =
+  %   IF i >= length(bs) THEN
+  %     IF dot_pos = 0 THEN
+  %       success_nat(acc)
+  %     ELSE
+  %       % A dot was found at index (dot_pos - 1).
+  %       % The number of digits after the dot is length(bs) - dot_pos.
+  %       success_real(acc / (10 ^ (length(bs) - dot_pos)))
+  %     ENDIF
+  %   ELSE
+  %     LET c = get(bs, i) IN
+  %     IF is_digit(c) THEN
+  %       bs_to_num_inner(bs, i + 1, acc * 10 + byte_to_digit(c), dot_pos)
+  %     ELSIF is_dot(c) THEN
+  %       IF dot_pos /= 0 THEN
+  %         failed_num
+  %       ELSE
+  %         bs_to_num_inner(bs, i + 1, acc, i + 1)
+  %       ENDIF
+  %     ELSIF is_e(c) THEN
+  %       LET mantissa: real =
+  %         IF dot_pos = 0 THEN acc
+  %         ELSE acc / (10 ^ (i - dot_pos))
+  %         ENDIF
+  %       IN
+  %         CASES bs_to_int(suffix(bs, i + 1)) OF
+  %           success_c(x): success_real(mantissa * (10 ^ x)),
+  %           failed_c: failed_num
+  %         ENDCASES
+  %     ELSE
+  %       failed_num
+  %     ENDIF
+  %   ENDIF
+  % MEASURE length(bs) - i
+
+  % bs_to_num(bs: bytestring): parseresult_num =
+  %   IF length(bs) = 0 THEN
+  %     failed_num
+  %   ELSIF length(bs) > 1 AND get(bs, 0) = 45 THEN % minus sign
+  %     CASES bs_to_num_inner(suffix(bs, 1), 0, 0, 0) OF
+  %       success_nat(x): success_int(x * -1),
+  %       success_int(x): success_int(x * -1),
+  %       success_real(x): success_real(x * -1),
+  %       failed_num: failed_num
+  %     ENDCASES
+  %   ELSE
+  %     bs_to_num_inner(bs, 0, 0, 0)
+  %   ENDIF
+
+  % test_bs_to_nat_0: _TEST_ bs_to_nat(mk_bytestring("0")) = success(0)
+  % test_bs_to_nat_00: _TEST_ bs_to_nat(mk_bytestring("00")) = success(0)
+  % test_bs_to_nat_1: _TEST_ bs_to_nat(mk_bytestring("1")) = success(1)
+  % test_bs_to_nat_01: _TEST_ bs_to_nat(mk_bytestring("01")) = success(1)
+  % test_bs_to_nat_001: _TEST_ bs_to_nat(mk_bytestring("001")) = success(1)
+  % test_bs_to_nat_5: _TEST_ bs_to_nat(mk_bytestring("5")) = success(5)
+  % test_bs_to_nat_10: _TEST_ bs_to_nat(mk_bytestring("10")) = success(10)
+  % test_bs_to_nat_11: _TEST_ bs_to_nat(mk_bytestring("11")) = success(11)
+  % test_bs_to_nat_501: _TEST_ bs_to_nat(mk_bytestring("501")) = success(501)
+  % test_bs_to_nat_632: _TEST_ bs_to_nat(mk_bytestring("632")) = success(632)
+  % test_bs_to_nat_3429: _TEST_ bs_to_nat(mk_bytestring("3429")) = success(3429)
+  % test_bs_to_nat_fail1: _TEST_ bs_to_nat(mk_bytestring("abcde")) = failed
+  % test_bs_to_nat_fail2: _TEST_ bs_to_nat(mk_bytestring("3a")) = failed
+  % test_bs_to_nat_fail3: _TEST_ bs_to_nat(mk_bytestring("a3")) = failed
+  % test_bs_to_nat_fail4: _TEST_ bs_to_nat(mk_bytestring("")) = failed
+  % test_bs_to_nat_fail5: _TEST_ bs_to_nat(mk_bytestring("-1")) = failed
+  % test_recognizer_success: _TEST_ success?(bs_to_nat(mk_bytestring("1")))
+  % test_recognizer_failed: _TEST_ failed?(bs_to_nat(mk_bytestring("abcd")))
+
+  % test_bs_to_int_0: _TEST_ bs_to_int(mk_bytestring("0")) = success_c(0)
+  % test_bs_to_int_00: _TEST_ bs_to_int(mk_bytestring("00")) = success_c(0)
+  % test_bs_to_int_1: _TEST_ bs_to_int(mk_bytestring("1")) = success_c(1)
+  % test_bs_to_int_01: _TEST_ bs_to_int(mk_bytestring("01")) = success_c(1)
+  % test_bs_to_int_001: _TEST_ bs_to_int(mk_bytestring("001")) = success_c(1)
+  % test_bs_to_int_5: _TEST_ bs_to_int(mk_bytestring("5")) = success_c(5)
+  % test_bs_to_int_10: _TEST_ bs_to_int(mk_bytestring("10")) = success_c(10)
+  % test_bs_to_int_11: _TEST_ bs_to_int(mk_bytestring("11")) = success_c(11)
+  % test_bs_to_int_501: _TEST_ bs_to_int(mk_bytestring("501")) = success_c(501)
+  % test_bs_to_int_632: _TEST_ bs_to_int(mk_bytestring("632")) = success_c(632)
+  % test_bs_to_int_3429: _TEST_ bs_to_int(mk_bytestring("3429")) = success_c(3429)
+  % test_bs_to_int_fail1: _TEST_ bs_to_int(mk_bytestring("abcde")) = failed_c
+  % test_bs_to_int_fail2: _TEST_ bs_to_int(mk_bytestring("3a")) = failed_c
+  % test_bs_to_int_fail3: _TEST_ bs_to_int(mk_bytestring("a3")) = failed_c
+  % test_bs_to_int_fail4: _TEST_ bs_to_int(mk_bytestring("")) = failed_c
+  % test_bs_to_int_neg_only: _TEST_ bs_to_int(mk_bytestring("-")) = failed_c
+  % test_bs_to_int_neg1: _TEST_ bs_to_int(mk_bytestring("-1")) = success_c(-1)
+  % test_bs_to_int_neg01: _TEST_ bs_to_int(mk_bytestring("-01")) = success_c(-1)
+  % test_bs_to_int_neg001: _TEST_ bs_to_int(mk_bytestring("-001")) = success_c(-1)
+  % test_bs_to_int_neg5: _TEST_ bs_to_int(mk_bytestring("-5")) = success_c(-5)
+  % test_bs_to_int_neg10: _TEST_ bs_to_int(mk_bytestring("-10")) = success_c(-10)
+  % test_bs_to_int_neg11: _TEST_ bs_to_int(mk_bytestring("-11")) = success_c(-11)
+  % test_bs_to_int_neg501: _TEST_ bs_to_int(mk_bytestring("-501")) = success_c(-501)
+  % test_bs_to_int_neg632: _TEST_ bs_to_int(mk_bytestring("-632")) = success_c(-632)
+  % test_bs_to_int_neg3429: _TEST_ bs_to_int(mk_bytestring("-3429")) = success_c(-3429)
+
+
+  test_bytestring_to_int_0: _TEST_ bytestring_to_int(mk_bytestring("0")) = success_c(0)
+  test_bytestring_to_int_00: _TEST_ bytestring_to_int(mk_bytestring("00")) = success_c(0)
+  test_bytestring_to_int_1: _TEST_ bytestring_to_int(mk_bytestring("1")) = success_c(1)
+  test_bytestring_to_int_01: _TEST_ bytestring_to_int(mk_bytestring("01")) = success_c(1)
+  test_bytestring_to_int_001: _TEST_ bytestring_to_int(mk_bytestring("001")) = success_c(1)
+  test_bytestring_to_int_5: _TEST_ bytestring_to_int(mk_bytestring("5")) = success_c(5)
+  test_bytestring_to_int_10: _TEST_ bytestring_to_int(mk_bytestring("10")) = success_c(10)
+  test_bytestring_to_int_11: _TEST_ bytestring_to_int(mk_bytestring("11")) = success_c(11)
+  test_bytestring_to_int_501: _TEST_ bytestring_to_int(mk_bytestring("501")) = success_c(501)
+  test_bytestring_to_int_632: _TEST_ bytestring_to_int(mk_bytestring("632")) = success_c(632)
+  test_bytestring_to_int_3429: _TEST_ bytestring_to_int(mk_bytestring("3429")) = success_c(3429)
+  test_bytestring_to_int_fail1: _TEST_ bytestring_to_int(mk_bytestring("abcde")) = failed_c
+  test_bytestring_to_int_fail2: _TEST_ bytestring_to_int(mk_bytestring("3a")) = failed_c
+  test_bytestring_to_int_fail3: _TEST_ bytestring_to_int(mk_bytestring("a3")) = failed_c
+  test_bytestring_to_int_fail4: _TEST_ bytestring_to_int(mk_bytestring("")) = failed_c
+  test_bytestring_to_int_neg_only: _TEST_ bytestring_to_int(mk_bytestring("-")) = failed_c
+  test_bytestring_to_int_neg1: _TEST_ bytestring_to_int(mk_bytestring("-1")) = success_c(-1)
+  test_bytestring_to_int_neg01: _TEST_ bytestring_to_int(mk_bytestring("-01")) = success_c(-1)
+  test_bytestring_to_int_neg001: _TEST_ bytestring_to_int(mk_bytestring("-001")) = success_c(-1)
+  test_bytestring_to_int_neg5: _TEST_ bytestring_to_int(mk_bytestring("-5")) = success_c(-5)
+  test_bytestring_to_int_neg10: _TEST_ bytestring_to_int(mk_bytestring("-10")) = success_c(-10)
+  test_bytestring_to_int_neg11: _TEST_ bytestring_to_int(mk_bytestring("-11")) = success_c(-11)
+  test_bytestring_to_int_neg501: _TEST_ bytestring_to_int(mk_bytestring("-501")) = success_c(-501)
+  test_bytestring_to_int_neg632: _TEST_ bytestring_to_int(mk_bytestring("-632")) = success_c(-632)
+  test_bytestring_to_int_neg3429: _TEST_ bytestring_to_int(mk_bytestring("-3429")) = success_c(-3429)
+
+
+  % test_bs_to_num_0: _TEST_ bs_to_num(mk_bytestring("0")) = success_nat(0)
+  % test_bs_to_num_00: _TEST_ bs_to_num(mk_bytestring("00")) = success_nat(0)
+  % test_bs_to_num_1: _TEST_ bs_to_num(mk_bytestring("1")) = success_nat(1)
+  % test_bs_to_num_01: _TEST_ bs_to_num(mk_bytestring("01")) = success_nat(1)
+  % test_bs_to_num_001: _TEST_ bs_to_num(mk_bytestring("001")) = success_nat(1)
+  % test_bs_to_num_5: _TEST_ bs_to_num(mk_bytestring("5")) = success_nat(5)
+  % test_bs_to_num_10: _TEST_ bs_to_num(mk_bytestring("10")) = success_nat(10)
+  % test_bs_to_num_11: _TEST_ bs_to_num(mk_bytestring("11")) = success_nat(11)
+  % test_bs_to_num_501: _TEST_ bs_to_num(mk_bytestring("501")) = success_nat(501)
+  % test_bs_to_num_632: _TEST_ bs_to_num(mk_bytestring("632")) = success_nat(632)
+  % test_bs_to_num_3429: _TEST_ bs_to_num(mk_bytestring("3429")) = success_nat(3429)
+  % test_bs_to_num_fail1: _TEST_ bs_to_num(mk_bytestring("abcde")) = failed_num
+  % test_bs_to_num_fail2: _TEST_ bs_to_num(mk_bytestring("3a")) = failed_num
+  % test_bs_to_num_fail3: _TEST_ bs_to_num(mk_bytestring("a3")) = failed_num
+  % test_bs_to_num_fail4: _TEST_ bs_to_num(mk_bytestring("")) = failed_num
+  % test_bs_to_num_neg_only: _TEST_ bs_to_num(mk_bytestring("-")) = failed_num
+  % test_bs_to_num_neg1: _TEST_ bs_to_num(mk_bytestring("-1")) = success_int(-1)
+  % test_bs_to_num_neg01: _TEST_ bs_to_num(mk_bytestring("-01")) = success_int(-1)
+  % test_bs_to_num_neg001: _TEST_ bs_to_num(mk_bytestring("-001")) = success_int(-1)
+  % test_bs_to_num_neg5: _TEST_ bs_to_num(mk_bytestring("-5")) = success_int(-5)
+  % test_bs_to_num_neg10: _TEST_ bs_to_num(mk_bytestring("-10")) = success_int(-10)
+  % test_bs_to_num_neg11: _TEST_ bs_to_num(mk_bytestring("-11")) = success_int(-11)
+  % test_bs_to_num_neg501: _TEST_ bs_to_num(mk_bytestring("-501")) = success_int(-501)
+  % test_bs_to_num_neg632: _TEST_ bs_to_num(mk_bytestring("-632")) = success_int(-632)
+  % test_bs_to_num_neg3429: _TEST_ bs_to_num(mk_bytestring("-3429")) = success_int(-3429)
+  % test_bs_to_num_1point1: _TEST_ bs_to_num(mk_bytestring("1.1")) = success_real(1.1)
+  % test_bs_to_num_1point1e2: _TEST_ bs_to_num(mk_bytestring("1.1e2")) = success_real(110)
+  % test_bs_to_num_1point1eminus1: _TEST_ bs_to_num(mk_bytestring("1.1e-1")) = success_real(0.11)
+
+END bsparsenum0
