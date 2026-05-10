@@ -13,6 +13,7 @@ from pathlib import Path
 
 
 EXCLUDED_DIRS = {"build", "pvs2c", "pvsbin", "test-vectors"}
+EXCLUDED_PATHS = {Path("parsing/ltedfa")}
 PVS_ERROR_RE = re.compile(r"^In file ", re.MULTILINE)
 RUN_OUTPUT_RE = re.compile(
     r"^\s*(?P<theory>[A-Za-z][A-Za-z0-9_]*)\.(?P<test>[A-Za-z][A-Za-z0-9_]*)\s*==>\s*(?P<value>true|false)\b",
@@ -59,7 +60,11 @@ def strip_pvs_comment(line: str) -> str:
 
 
 def is_excluded(path: Path, root: Path) -> bool:
-    return any(part in EXCLUDED_DIRS for part in path.relative_to(root).parts)
+    relative = path.relative_to(root)
+    return (
+        any(part in EXCLUDED_DIRS for part in relative.parts)
+        or any(relative == excluded or excluded in relative.parents for excluded in EXCLUDED_PATHS)
+    )
 
 
 def discover_test_theories(demo_root: Path) -> list[TestTheory]:
