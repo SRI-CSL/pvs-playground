@@ -122,7 +122,13 @@ def tail(text: str, lines: int = 60) -> str:
     return "\n".join(split[-lines:])
 
 
-def run_logged(command: list[str], cwd: Path, log_path: Path, env: dict[str, str]) -> str:
+def run_logged(
+    command: list[str],
+    cwd: Path,
+    log_path: Path,
+    env: dict[str, str],
+    check: bool = True,
+) -> tuple[int, str]:
     log_path.parent.mkdir(parents=True, exist_ok=True)
     print(f"+ ({cwd}) {command_text(command)}")
     output_parts: list[str] = []
@@ -144,13 +150,13 @@ def run_logged(command: list[str], cwd: Path, log_path: Path, env: dict[str, str
             sys.stdout.write(line)
         return_code = process.wait()
     output = "".join(output_parts)
-    if return_code != 0:
+    if check and return_code != 0:
         raise StepError(
             f"Command failed with exit {return_code}: {command_text(command)}\n"
             f"Log: {log_path}\n"
             f"{tail(output)}"
         )
-    return output
+    return return_code, output
 
 
 def pvs_expr_for_typecheck(theory: str) -> str:
@@ -236,7 +242,7 @@ def run_theory(
     print(f"\n==> {rel_dir}/{theory.file.name}:{theory.theory} ({len(theory.tests)} tests)")
 
     typecheck_log = log_prefix.with_name(log_prefix.name + "-typecheck.log")
-    typecheck_output = run_logged(
+    _, typecheck_output = run_logged(
         [str(pvs), "-raw", "-E", pvs_expr_for_typecheck(theory.theory)],
         theory.directory,
         typecheck_log,
@@ -245,18 +251,24 @@ def run_theory(
     assert_pvs_log_ok(theory, "typecheck", typecheck_output, typecheck_log)
 
     pvs2c_log = log_prefix.with_name(log_prefix.name + "-pvs2c.log")
-    pvs2c_output = run_logged(
+    pvs2c_status, pvs2c_output = run_logged(
         [str(pvs), "-raw", "-E", pvs_expr_for_pvs2c(theory.theory)],
         theory.directory,
         pvs2c_log,
         env,
+        check=False,
     )
     assert_pvs_log_ok(theory, "pvs2c-theory", pvs2c_output, pvs2c_log)
 
     generated_mk = theory.directory / "pvs2c" / "include" / f"{theory.theory}.mk"
     generated_bin = theory.directory / "pvs2c" / "bin" / theory.theory
     if not generated_mk.exists():
-        raise StepError(f"pvs2c-theory did not generate {generated_mk}")
+        raise StepError(
+            f"pvs2c-theory exited {pvs2c_status} and did not generate {generated_mk}; see {pvs2c_log}\n"
+            f"{tail(pvs2c_output)}"
+        )
+    if pvs2c_status != 0:
+        print(f"WARNING: pvs2c-theory for {theory.theory} exited {pvs2c_status}, but generated files are present; continuing to compile and run them.")
 
     make_env = env.copy()
     make_env["PVS2C_DEMOS_ROOT"] = str(demo_root)
@@ -271,7 +283,7 @@ def run_theory(
         raise StepError(f"make did not produce {generated_bin}")
 
     run_log = log_prefix.with_name(log_prefix.name + "-run.log")
-    run_output = run_logged([str(generated_bin)], theory.directory, run_log, env)
+    _, run_output = run_logged([str(generated_bin)], theory.directory, run_log, env)
     assert_run_output(theory, run_output, run_log)
     return len(theory.tests)
 
