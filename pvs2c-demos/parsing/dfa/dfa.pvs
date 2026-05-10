@@ -1,0 +1,286 @@
+dfa : THEORY
+%theory for DFAs with one final state and numstates many non-final states.
+%This means empty strings are not accepted. 
+  BEGIN
+    IMPORTING stringutils
+
+    len, max: VAR index %the length of the input
+    byte: TYPE = below(256)
+    strings(len): TYPE = ARRAY[below(len) -> byte]
+
+    dfaResult: DATATYPE
+    BEGIN
+     failed: failed?
+     success(span:  index, chars: bytestring): success?
+    END dfaResult
+
+    offset(i : uint8 | i > 2): uint8 = i - 2
+
+    dfa: TYPE =
+    [# numstates : {i : uint8 | i > 2}, %0 is failure, 1 is success, 2 is the start state
+       tbl : ARRAY[below(offset(numstates)) -> ARRAY[byte -> below(numstates)]],
+       goodstate: ARRAY[below(numstates)-> bool],
+       terminal : ARRAY[byte -> bool]
+       #]
+
+    goodDfaResult?(len: index, startpos: upto(len))(res: dfaResult): bool =
+      (success?(res) => startpos + span(res) <= len)
+
+    dfaparse(D : dfa,
+             len: index,
+	     str: strings(len),
+	     startpos : upto(len),
+	     cur: below(D`numstates), 
+	     pos: subrange(startpos, len)):
+      RECURSIVE (goodDfaResult?(len, startpos))
+      = IF pos < len
+        THEN IF cur = 0 % represents the failed state of the DFA
+	      THEN failed
+	      ELSIF cur = 1
+	      THEN IF D`terminal(str(pos)) %The terminal condition has to hold of the next character to stop
+	           THEN success(pos - startpos, (# length := pos - startpos,
+		      seq:= (LAMBDA (i: below(pos - startpos)): % (i: subrange(startpos, pos-1)
+		        str(startpos + i)) #))
+		   ELSE dfaparse(D, len, str, startpos, cur, pos + 1)
+		   ENDIF
+	      ELSE (LET newstate = D`tbl(cur - 2)(str(pos)) %add 2 to get the right non-final state
+	            IN IF newstate <= 1 %don't consume input when going to fail0/success1 state
+		       THEN dfaparse(D, len, str, startpos, newstate, pos)
+		        ELSE dfaparse(D, len, str, startpos, newstate, pos + 1)
+			ENDIF)
+	      ENDIF
+	ELSIF cur = 0 THEN failed
+	ELSIF cur = 1 OR D`goodstate(cur) THEN success(pos - startpos, (# length := pos - startpos,
+	   seq := (LAMBDA (i: below(pos - startpos)): str(startpos+i)) #))
+	ELSE failed
+	ENDIF
+	MEASURE lex2(len - pos, cur)
+
+     DfaParse(D: dfa, len: index,
+	              str: strings(len),
+	              startpos : upto(len)): 
+       (goodDfaResult?(len, startpos))
+       = dfaparse(D, len, str, startpos, 2, startpos)
+
+   digitstate2: ARRAY[byte -> below(4)] =
+   (LET X: ARRAY[byte->below(4)] = (LAMBDA (b : byte):
+	             IF digit(b) THEN 3 %Stay in 0 for whitespace char
+		     ELSE 0 ENDIF )
+     IN X)
+
+   digitstate3: ARRAY[byte->below(4)] =
+     (LET X:ARRAY[byte->below(4)] = (LAMBDA (b : byte): IF digit(b) THEN 3 ELSE 1 ENDIF)
+      IN X)
+
+   digitDfa: dfa =  %digit succeeds if leading character is a digit
+      (# numstates := 4,
+         tbl := [: digitstate2, %0=fail, 1=success
+	            digitstate3 %succeed on non-digit
+	            :],
+	 goodstate := (LAMBDA (i: below(4)): i = 3),
+	 terminal := (LAMBDA (b: byte): NOT whitespace(b))
+     	     #)
+
+   tokenstate1: ARRAY[byte->below(5)] =
+     (LET X: ARRAY[byte->below(4)] = (LAMBDA (b : byte):
+	             IF is_quote(b)  THEN 3
+		     ELSE 0 ENDIF )
+      IN X)
+
+   tokenstate2: ARRAY[byte->below(5)] =
+     (LET X: ARRAY[byte->below(5)] =
+           (LAMBDA (b : byte):
+	             IF is_quote(b)  THEN 4 %go to 4 on close quote
+		     ELSE 3 ENDIF )
+      IN X)
+
+   tokenstate3: ARRAY[byte->below(5)] =
+     (LET X: ARRAY[byte->below(4)] =
+          (LAMBDA (b : byte): 1)
+      IN X)
+
+
+
+   tokenDfa: dfa =
+      (# numstates := 5,
+         tbl := [: tokenstate1,
+	           tokenstate2, 
+		      %else stay in 3
+		     tokenstate3 %Accept
+		    :],
+	 goodstate := (LAMBDA (i: below(5)): FALSE),		    
+	 terminal := (LAMBDA (b: byte): NOT whitespace(b))
+     	     #)
+
+    wspacestate1:  ARRAY[byte->below(3)] =
+     (LET X: ARRAY[byte->below(3)] = (LAMBDA (b : byte): 1)
+      IN X)
+
+
+    wspaceDfa: dfa = 
+      (# numstates := 3,
+         tbl := [: wspacestate1
+		  :],
+         goodstate := (LAMBDA (i: below(3)): i = 2),
+	 terminal := (LAMBDA (b: byte): NOT whitespace(b)) %stop when you see a non-whitespace
+	 #)
+
+    % stringDfa recognizes a JSON string with escape characters
+    % States:
+    % 0: fail
+    % 1: success
+    % 2: start, expecting "
+    % 3: in_string, consuming normal characters
+    % 4: escape, saw a \
+    % 5: end, saw closing "
+    string_start: ARRAY[byte -> below(6)] = (LAMBDA (b: byte): IF is_quote(b) THEN 3 ELSE 0 ENDIF)
+    string_in:    ARRAY[byte -> below(6)] = (LAMBDA (b: byte): IF is_backslash(b) THEN 4 ELSIF is_quote(b) THEN 5 ELSE 3 ENDIF)
+    string_escape:ARRAY[byte -> below(6)] = (LAMBDA (b: byte): IF escapable(b) THEN 3 ELSE 0 ENDIF)
+    string_end:   ARRAY[byte -> below(6)] = (LAMBDA (b: byte): 1)
+
+    stringDfa: dfa =
+      (# numstates := 6,
+         tbl := [: string_start,
+                   string_in,
+                   string_escape,
+                   string_end :],
+         goodstate := (LAMBDA (i: below(6)): i = 5),
+         terminal := (LAMBDA (b: byte): NOT whitespace(b))
+      #)
+
+    % numberDfa recognizes a JSON number
+    % States:
+    % 0: fail
+    % 1: success
+    % 2: start
+    % 3: leading_minus
+    % 4: integer_part
+    % 5: decimal_point
+    % 6: fractional_part
+    % 7: exponent_e
+    % 8: exponent_sign
+    % 9: exponent_part
+    num_start:         ARRAY[byte -> below(10)] = (LAMBDA (b: byte): IF is_minus(b) THEN 3 ELSIF digit(b) THEN 4 ELSIF is_dot(b) THEN 5 ELSE 0 ENDIF)
+    num_leading_minus: ARRAY[byte -> below(10)] = (LAMBDA (b: byte): IF digit(b) THEN 4 ELSIF is_dot(b) THEN 5 ELSE 0 ENDIF)
+    num_integer_part:  ARRAY[byte -> below(10)] = (LAMBDA (b: byte): IF digit(b) THEN 4 ELSIF is_dot(b) THEN 5 ELSIF is_eE(b) THEN 7 ELSE 1 ENDIF)
+    num_decimal_point: ARRAY[byte -> below(10)] = (LAMBDA (b: byte): IF digit(b) THEN 6 ELSE 0 ENDIF)
+    num_frac_part:     ARRAY[byte -> below(10)] = (LAMBDA (b: byte): IF digit(b) THEN 6 ELSIF is_eE(b) THEN 7 ELSE 1 ENDIF)
+    num_exponent_e:    ARRAY[byte -> below(10)] = (LAMBDA (b: byte): IF is_plus(b) OR is_minus(b) THEN 8 ELSIF digit(b) THEN 9 ELSE 0 ENDIF)
+    num_exponent_sign: ARRAY[byte -> below(10)] = (LAMBDA (b: byte): IF digit(b) THEN 9 ELSE 0 ENDIF)
+    num_exponent_part: ARRAY[byte -> below(10)] = (LAMBDA (b: byte): IF digit(b) THEN 9 ELSE 1 ENDIF)
+
+
+    numberDfa: dfa =
+      (# numstates := 10,
+         tbl := [: num_start,
+                   num_leading_minus,
+                   num_integer_part,
+                   num_decimal_point,
+                   num_frac_part,
+                   num_exponent_e,
+                   num_exponent_sign,
+                   num_exponent_part :],
+         goodstate := (LAMBDA (i: below(10)): i = 4 OR i = 6 OR i = 9),
+         terminal := (LAMBDA (b: byte): NOT whitespace(b))
+      #)
+
+    % keywordDfa recognizes "true", "false", "null"
+    % States: 0-fail, 1-success, 2-start
+    % true: 2 -> 3(t) -> 4(r) -> 5(u) -> 6(e)
+    % false: 2 -> 7(f) -> 8(a) -> 9(l) -> 10(s) -> 11(e)
+    % null: 2 -> 12(n) -> 13(u) -> 14(l) -> 15(l)
+    key_start: ARRAY[byte -> below(16)] = (LAMBDA (b: byte): IF is_t(b) THEN 3 ELSIF is_f(b) THEN 7 ELSIF is_n(b) THEN 12 ELSE 0 ENDIF)
+    key_t:     ARRAY[byte -> below(16)] = (LAMBDA (b: byte): IF is_r(b) THEN 4 ELSE 0 ENDIF)
+    key_tr:    ARRAY[byte -> below(16)] = (LAMBDA (b: byte): IF is_u(b) THEN 5 ELSE 0 ENDIF)
+    key_tru:   ARRAY[byte -> below(16)] = (LAMBDA (b: byte): IF is_e(b) THEN 6 ELSE 0 ENDIF)
+    key_true:  ARRAY[byte -> below(16)] = (LAMBDA (b: byte): 1)
+    key_f:     ARRAY[byte -> below(16)] = (LAMBDA (b: byte): IF is_a(b) THEN 8 ELSE 0 ENDIF)
+    key_fa:    ARRAY[byte -> below(16)] = (LAMBDA (b: byte): IF is_l(b) THEN 9 ELSE 0 ENDIF)
+    key_fal:   ARRAY[byte -> below(16)] = (LAMBDA (b: byte): IF is_s(b) THEN 10 ELSE 0 ENDIF)
+    key_fals:  ARRAY[byte -> below(16)] = (LAMBDA (b: byte): IF is_e(b) THEN 11 ELSE 0 ENDIF)
+    key_false: ARRAY[byte -> below(16)] = (LAMBDA (b: byte): 1)
+    key_n:     ARRAY[byte -> below(16)] = (LAMBDA (b: byte): IF is_u(b) THEN 13 ELSE 0 ENDIF)
+    key_nu:    ARRAY[byte -> below(16)] = (LAMBDA (b: byte): IF is_l(b) THEN 14 ELSE 0 ENDIF)
+    key_nul:   ARRAY[byte -> below(16)] = (LAMBDA (b: byte): IF is_l(b) THEN 15 ELSE 0 ENDIF)
+    key_null:  ARRAY[byte -> below(16)] = (LAMBDA (b: byte): 1)
+
+    keywordDfa: dfa =
+      (# numstates := 16,
+         tbl := [: key_start,
+                   key_t, key_tr, key_tru, key_true,
+                   key_f, key_fa, key_fal, key_fals, key_false,
+                   key_n, key_nu, key_nul, key_null
+                :],
+         goodstate := (LAMBDA (i: below(16)): i = 6 OR i = 11 OR i = 15),
+         terminal := (LAMBDA (b: byte): TRUE)
+      #)
+
+    lookup_dfa(name: bytestring): dfa =
+      IF name = "wspaceDfa" THEN
+        wspaceDfa
+      ELSIF name = "tokenDfa" THEN
+        tokenDfa
+      ELSIF name = "digitDfa" THEN
+        digitDfa
+      ELSIF name = "stringDfa" THEN
+        stringDfa
+      ELSIF name = "numberDfa" THEN
+        numberDfa
+      ELSIF name = "keywordDfa" THEN
+        keywordDfa
+      ELSE
+        wspaceDfa % TODO - replace with DFA that always immediately fails
+      ENDIF
+
+    testdfa(d: dfa, s: bytestring, success: boolean, consumed: uint32): boolean =
+      CASES DfaParse(d, s`length, s`seq, 0) OF
+        success(span, chars): success = TRUE AND span = consumed,
+        failed: success = FALSE
+      ENDCASES
+
+    dfaTest_token_1: _TEST_ testdfa(tokenDfa, "foo", FALSE, 0)
+    dfaTest_token_2: _TEST_ testdfa(tokenDfa, "\"foo\" ", TRUE, 6)
+    dfaTest_token_3: _TEST_ testdfa(tokenDfa, "\"foo", FALSE, 0)
+    dfaTest_token_4: _TEST_ testdfa(tokenDfa, "\"foo\"b", TRUE, 5)
+
+    % TODO - wspaceDfa always succeeds, but may consume a variable amount of input
+    %        expand testdfa to check that
+    dfatest_wspace_1: _TEST_ testdfa(wspaceDfa, "   ", TRUE, 3)
+    dfatest_wspace_2: _TEST_ testdfa(wspaceDfa, "", TRUE, 0)
+    dfatest_wspace_3: _TEST_ testdfa(wspaceDfa, "foo", TRUE, 0)
+
+    dfatest_number_1: _TEST_ testdfa(numberDfa, "12", TRUE, 2)
+    dfatest_number_2: _TEST_ testdfa(numberDfa, "1.2", TRUE, 3)
+    dfatest_number_3: _TEST_ testdfa(numberDfa, ".12", TRUE, 3)
+    dfatest_number_4: _TEST_ testdfa(numberDfa, "-12", TRUE, 3)
+    dfatest_number_5: _TEST_ testdfa(numberDfa, "12e2", TRUE, 4)
+    dfatest_number_6: _TEST_ testdfa(numberDfa, "-12.3e4", TRUE, 7)
+    dfatest_number_7: _TEST_ testdfa(numberDfa, "12e-3", TRUE, 5)
+    dfatest_number_8: _TEST_ testdfa(numberDfa, "1-2", TRUE, 1)
+    dfatest_number_9: _TEST_ testdfa(numberDfa, "12 ", TRUE, 3)
+    dfatest_number_10: _TEST_ testdfa(numberDfa, "1.2 ", TRUE, 4)
+    dfatest_number_11: _TEST_ testdfa(numberDfa, ".12 ", TRUE, 4)
+    dfatest_number_12: _TEST_ testdfa(numberDfa, "12e+3", TRUE, 5)
+
+    dfatest_keyword_1: _TEST_ testdfa(keywordDfa, "true", TRUE, 4)
+    dfatest_keyword_2: _TEST_ testdfa(keywordDfa, "TRUE", FALSE, 0)
+    dfatest_keyword_3: _TEST_ testdfa(keywordDfa, "false", TRUE, 5)
+    dfatest_keyword_4: _TEST_ testdfa(keywordDfa, "FALSE", FALSE, 0)
+    dfatest_keyword_5: _TEST_ testdfa(keywordDfa, "True", FALSE, 0)
+    dfatest_keyword_6: _TEST_ testdfa(keywordDfa, "truE", FALSE, 0)
+    dfatest_keyword_7: _TEST_ testdfa(keywordDfa, "null", TRUE, 4)
+    dfatest_keyword_8: _TEST_ testdfa(keywordDfa, " null", FALSE, 0)
+    dfatest_keyword_9: _TEST_ testdfa(keywordDfa, "null ", TRUE, 5)
+
+    dfatest_string_1: _TEST_ testdfa(stringDfa, "missing quotes", FALSE, 0)
+    dfatest_string_2: _TEST_ testdfa(stringDfa, "\"having quotes\"", TRUE, 15)
+    % TODO: Fix these tests so they use raw literal arrays as strings to get around Lisp string parsing
+    % dfatest_string_3: _TEST_ testdfa(stringDfa, "\"escaped return\\r\"", TRUE)
+    % dfatest_string_4: _TEST_ testdfa(stringDfa, "\"escaped linefeed\\n\"", TRUE)
+    % dfatest_string_5: _TEST_ testdfa(stringDfa, "\"form feed\\f\"", TRUE)
+    % dfatest_string_6: _TEST_ testdfa(stringDfa, "\"backspace\\b\"", TRUE)
+    % dfatest_string_7: _TEST_ testdfa(stringDfa, "\"tab\\t\"", TRUE)
+    %dfatest_string_8: _TEST_ testdfa(stringDfa, "\"badescape\\q\"", FALSE)
+    % dfatest_string_9: _TEST_ testdfa(stringDfa, "\"backslash\\\\\"", TRUE)
+    % dfatest_string_10: _TEST_ testdfa(stringDfa, "\"escaped\\\" quote\"", TRUE)
+  END dfa

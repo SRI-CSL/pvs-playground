@@ -1,0 +1,283 @@
+dpeg  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+   i, j, k : VAR size
+
+   s, s1, s2: VAR bytestring
+
+   result : DATATYPE
+    BEGIN
+    failure : failure?
+    success(span: index): success?
+   END result
+
+   % result(i) : TYPE = {j : size | j <= i}
+   % good_result(i : size) : TYPE = {r : result(i)| r > 0} % 1 is an empty result, i.e., of length 0
+   % nonempty_result(i : size): TYPE = {r : result(i) | r /= 1} % r = 0 is failure,
+   %                                      % r = 2 and above is a nonempty result of length r - 1.
+   
+   good_result(i : index): TYPE = {r : result | failure?(r) OR span(r) <= i}
+   pos_result(i : index): TYPE = {r : good_result(i) | failure?(r) OR 0 < span(r)}
+
+   guard : TYPE = [s : bytestring, i : upto(s`length) -> uint32]
+%   ne_guard: TYPE = [s : bytestring, i : upto(s`length) -> nonempty_result(s`length - i + 1)]
+%   ne_guard_guard: JUDGEMENT ne_guard SUBTYPE_OF guard
+
+   dpeg_expr: DATATYPE
+   BEGIN
+    fail : fail? %always fails; result is 0
+    skip : skip? %always succeeds; result is 1
+   % nonterm(nt : index): nonterm? %not needed
+   % any(p : guard): any? % not needed
+    glte(p : guard, b, c: index): glte?
+            %let-then-else where guard p must return a nonempty result;
+	    %continue with b if result = failure; restart with c o.w.
+   END dpeg_expr
+
+   %Whitespace could just be a predicate that chews up all the leading whitespace chars
+   %You also want to chew up all trailing whitespaces following any parse
+   %Digits: glte(digit, Digits, whitespace)
+   %string: string <- glte(quote, stringtail, fail) 
+   %        stringtail <- glte(quote, whitespace, chars)
+   %        chars <- glte(char, stringtail, fail)
+   %token: token <- glte(alpha, tokentail, fail); tokentail <- glte(alphanumeric, token, whitespace);
+   %Concatenation n1; n2 is captured by generating a new grammar copying n1 with
+   %skip replaced by n2, any(p) replaced by glte(p, nt2, fail).  Have to ensure that p is nonempty.
+   %Alternately, one could extend the grammar G with n12 <= glte(parse(G, n1), n2, fail)
+   %Kleene iteration n^* is achieved by extending the grammar with n* <- glte(any(parse(G, n)), n*, skip)
+   %To do this at the grammar level, copy the grammar for n as ns and replace each occurrence of skip with
+   %ns and any 0-reachable fail with skip. 
+   %Several static analyses are possible.  One, grammar slicing to isolate the productions R reachable by a 
+   %nonterminal.  Initially add n to R.  For each n in R, if n <- F(n1, n2) in G, add n1 and n2 to R, until
+   %R reaches a fixpoint.  Two, the nullable set L can be computed by placing all the nodes in L,
+   %then deleting n from L for  n <- any(p), where p is non-nullable or n <- fail.
+   %Delete n from L for  n <- glte(p, n1, n2), n2 is dropped from L.  Any production
+   %not in L is non-nullable.  For example, n for n<-fail is non-nullable.
+   %If n is non-nullable, then n^* is nullable but also admissible.  The occurrence of
+   %n1 in n <- glte(p, n1, n2) can be replaced by a production where n1 >= n.
+   %This allows any recursion to be well-formed since it allows information about progress to be
+   %signalled through the nonterminal level. Another analysis is 0-reachability: The set of nodes
+   %Z 0-r from n is calculated by adding n2 to Z for n <- glte(p, n1, n2), and for any m in Z2, 
+   %such that m <- glte(p, n1, n2), add n2.  For well-formedness, we need n to not be 0-r from itself.
+   %If this is true for each nonterminal, then we can ensure termination without requiring an ordering
+   %on nonterminals.  If G is well-formed, we can order the nonterminals to also ensure termination.
+   %We can then ensure that concatenation takes two well-formed grammars and constructs another well-formed
+   %one.
+   %Finally, one can easily compile dpegs into DFA where the states are DPEG nonterminals so that
+   %if n -> fail, you mark n as a non-final state
+   %if n -> skip, you mark n as a final state
+   %if n - glte(p, n1, n2), then you have a transition from n to n2 where p evaluates to 0, and
+   %from n to n1, otherwise with k tokens consumed where p evaluates to k.  Any nonterminal
+   % could be evaluated by starting from the corresponding state.
+   %Conversely, any DFA can be mapped to a DPEG by using $ as an end-of-string marker.
+   %For any final state s, with outgoing edges ai->si, we have the grammar productions
+   %s -> if $ then skip else if a1 then s1 ...else fail
+   %For a non-final state, it is just s-> if a1 then s1 ... else fail.
+
+
+
+   g, g1, g2: VAR dpeg_expr
+
+   dpeg_grammar: TYPE = {G : aseq[dpeg_expr] | G`length > 0}
+
+   G, G1, G2: VAR dpeg_grammar
+   pos : VAR index
+
+
+   matches(G, (nt : below(G`length)))(s, (pos : upto(s`length))) : 
+     RECURSIVE good_result(s`length - pos)
+   = (CASES G`seq(nt) OF
+      fail: failure,
+      skip: success(0),
+      glte(p, nt1, nt2):
+       (LET i = p(s, pos)
+        IN
+	IF i = 0 
+        THEN 
+	  IF nt2 < nt
+	  THEN matches(G, nt2)(s, pos)
+	  ELSE failure
+	  ENDIF
+        ELSIF i > 1 AND i - 1 <= s`length - pos  AND nt1 < G`length
+        THEN  CASES matches(G, nt1)(s, pos + i - 1) OF
+	          success(rspan): success(rspan + i - 1)
+		  ELSE failure
+	      ENDCASES
+	ELSE failure
+	ENDIF)
+      ENDCASES)	
+      MEASURE lex2(s`length - pos, nt)
+
+   result_sofar(sofar: index, res: good_result(maxindex - sofar)): result
+   = (CASES res OF
+       failure : failure,
+       success(i): success(i + sofar)
+       ENDCASES)
+
+   encode_result(maxspan : index, res : good_result(maxspan)): upto(maxspan + 1)
+   = (CASES res OF
+       failure : 0,
+       success(i): i + 1
+       ENDCASES)
+
+   decode_result(i : upto(maxindex + 1)): result
+   = (IF i = 0 THEN failure ELSE success(i - 1) ENDIF)
+
+   %sofar starts at 0 for any position and counts the characters consumed. 
+   dpeg_parse(G, (nt : below(G`length)), s, (sofar : upto(s`length)), pos : subrange(sofar, s`length)):
+      RECURSIVE {i: upto(maxindex + 1) | i = encode_result(s`length - pos + sofar, result_sofar(sofar, matches(G, nt)(s, pos)))}
+      = (CASES G`seq(nt) OF
+      fail: 0, 
+      skip: sofar + 1,
+      glte(p, nt1, nt2):
+       (LET i = p(s, pos)
+        IN 
+        IF i = 0
+	THEN IF nt2 < nt
+	     THEN dpeg_parse(G, nt2, s, sofar, pos)
+	     ELSE 0
+	     ENDIF
+        ELSIF i > 1 AND i - 1 <= s`length - pos  AND nt1 < G`length
+        THEN dpeg_parse(G, nt1, s, sofar + i - 1, pos + i - 1)
+	ELSE 0
+	ENDIF)
+       ENDCASES)
+      MEASURE lex2(s`length - pos, nt)
+
+%m is reachable by empty steps from n   
+   zreachable(G, (n : below(G`length)))(m : below(G`length)): RECURSIVE bool =
+   CASES G`seq(n) OF
+    glte(p, n1, n2): m = n2 OR (n2 < n AND zreachable(G, n2)(m))
+    ELSE FALSE
+    ENDCASES
+    MEASURE n
+
+   skipzreachable(G, (n : below(G`length))): RECURSIVE bool =
+   (CASES G`seq(n) OF
+      skip: TRUE,
+      glte(p, n1, n2): n2 < n AND skipzreachable(G, n2)      
+      ELSE FALSE
+    ENDCASES)
+    MEASURE n
+
+   % nskipzreachable_nonempty: RECURSIVE JUDGEMENT
+   %   matches(G, (n : below(G`length) | NOT skipzreachable(G, n)))(s, (pos : upto(s`length)))
+   %   HAS_TYPE pos_result(s`length - pos)
+
+   nskipzreachable_nonempty: LEMMA
+   (FORALL G, (n : below(G`length)), s, (pos : upto(s`length)): 
+    (LET res =  matches(G, n)(s, pos)
+     IN skipzreachable(G, n) OR failure?(res) OR 0 < span(res)))
+
+    IMPORTING stringutils
+
+     mk_guard(p : [byte -> bool])(s, (i : upto(s`length))): below(3)
+     = (IF i < s`length AND p(s`seq(i))
+        THEN 2
+        ELSE 0
+       ENDIF)
+
+   %whitespace always succeeds. If whitespace character, then repeat, else skip.
+   % Whitespace (HT, NL, VT, NP, CR, SP) in stringutils is more liberal than the standard
+   %which only allows SP, HT, NL, and CR. 
+   wspace_grammar: dpeg_grammar = (# length := 3, seq := [: fail, skip, glte(mk_guard(whitespace), 2, 1) :] #)
+
+   test_wspace1: _TEST_ dpeg_parse(wspace_grammar, 2, mk_bytestring(""), 0, 0) = 1
+   test_wspace2: _TEST_ dpeg_parse(wspace_grammar, 2, mk_bytestring("a"), 0, 0) = 1
+   test_wspace3: _TEST_ dpeg_parse(wspace_grammar, 2, mk_bytestring("   "), 0, 0) = 4
+   test_wspace4: _TEST_ dpeg_parse(wspace_grammar, 2, mk_bytestring("        99"), 0, 0) = 9
+
+
+   is_plus_minus(b : byte): bool = (is_minus(b) OR is_plus(b))
+   %numeral_grammar accepts 0, -1, -1.0, 1.0e+2, -2.345e-6.
+   %checks optional leading minus, followed by integral part (digit), followed by optional dot folowed by
+   %fractional digit, followed by optional exponent tag (e or E) followed by signed digit, all followed by
+   %trailing whitespace.
+   numeral_grammar: dpeg_grammar = (# length := 13,
+                                     seq := [: fail, skip,
+				               glte(mk_guard(whitespace), 2, 1),%2 <- whitespace, 2, 1
+					       glte(mk_guard(digit), 3, 2),%3 <- exponent tail digits
+					       glte(mk_guard(digit), 3, 0), %4 <- exponent needs leading digit
+					       glte(mk_guard(is_plus_minus), 4, 4), %5 <- exponent sign optional
+					       glte(mk_guard(is_eE), 5, 2),%6<- optional exponent leading with e or E 
+					       glte(mk_guard(digit), 7, 6),%7<-fractional digit tail
+					       glte(mk_guard(digit), 7, 0), %8<-leading fractional digit, required 
+					       glte(mk_guard(is_dot), 8, 2),%9<-fractional dot or whitespace
+					       glte(mk_guard(digit), 10, 9), %10<- integral tail
+					       glte(mk_guard(digit), 10, 0),%11<-leading integral digit required
+					       glte(mk_guard(is_minus), 11, 11):] #)%12 <- optional leading minus
+
+   test_numeral1: _TEST_ dpeg_parse(numeral_grammar, 12, mk_bytestring(""), 0, 0) = 0
+   test_numeral2: _TEST_ dpeg_parse(numeral_grammar, 12, mk_bytestring("0  "), 0, 0) = 4
+   test_numeral3: _TEST_ dpeg_parse(numeral_grammar, 12, mk_bytestring("-0 "), 0, 0) = 4
+   test_numeral4: _TEST_ dpeg_parse(numeral_grammar, 12, mk_bytestring("99.99 "), 0, 0) = 7
+   test_numeral5: _TEST_ dpeg_parse(numeral_grammar, 12, mk_bytestring("-99.99 "), 0, 0) = 8
+   test_numeral6: _TEST_ dpeg_parse(numeral_grammar, 12, mk_bytestring("99.e-7 "), 0, 0) = 0
+   test_numeral7: _TEST_ dpeg_parse(numeral_grammar, 12, mk_bytestring("99.9e9 "), 0, 0) = 8   
+   test_numeral8: _TEST_ dpeg_parse(numeral_grammar, 12, mk_bytestring("-0.9e9 "), 0, 0) = 8
+   %Keywords are true, false, null
+   key_true_guard(s, (i : upto(s`length))): below(5) =
+     IF (s`length - i >= 4 AND is_t(s`seq(i)) AND is_r(s`seq(i+1)) AND is_u(s`seq(i+2)) AND is_e(s`seq(i+3)))
+     THEN 5
+     ELSE 0
+     ENDIF
+
+   key_false_guard(s, (i : upto(s`length))): below(6) =
+    (IF (s`length - i >= 5 AND is_f(s`seq(i)) AND is_a(s`seq(i+1)) AND is_l(s`seq(i+2)) AND is_s(s`seq(i+3)) AND is_e(s`seq(i+4)))
+     THEN 6
+     ELSE 0
+     ENDIF)
+
+   key_null_guard(s, (i : upto(s`length))): below(5) = 
+      IF (s`length - i >= 4 AND is_n(s`seq(i)) AND is_u(s`seq(i+1)) AND is_l(s`seq(i+2)) AND is_l(s`seq(i+3)))
+      THEN 5
+      ELSE 0
+      ENDIF
+
+   key_grammar: dpeg_grammar =
+    (# length := 6, seq := [: fail, skip, glte(mk_guard(whitespace), 2, 1), glte(key_null_guard, 2, 0), glte(key_false_guard, 2, 3), glte(key_true_guard, 2, 4) :] #)
+
+   test_key1: _TEST_ dpeg_parse(key_grammar, 5, mk_bytestring(""), 0, 0) = 0
+   test_key2: _TEST_ dpeg_parse(key_grammar, 5, mk_bytestring("null "), 0, 0) = 6
+   test_key3: _TEST_ dpeg_parse(key_grammar, 5, mk_bytestring("true "), 0, 0) = 6
+   test_key4: _TEST_ dpeg_parse(key_grammar, 5, mk_bytestring("  false "), 0, 2) = 7
+   test_key5: _TEST_ dpeg_parse(key_grammar, 5, mk_bytestring("key "), 0, 0) = 0
+
+
+   ebackslash(s, (i : upto(s`length))): below(3) =
+    IF (s`length - i >= 2 AND is_backslash(s`seq(i)) AND is_backslash(s`seq(i+1)))
+    THEN 2
+    ELSE 0
+    ENDIF
+
+   equote(s, (i : upto(s`length))): below(3) =
+    IF (s`length - i >= 2 AND is_backslash(s`seq(i)) AND is_quote(s`seq(i+1)))
+    THEN 2
+    ELSE 0
+    ENDIF
+    
+   %strings have a leading quote, followed by escaped characters, or any non-escape, non-/ character
+   %
+   string_grammar : dpeg_grammar =
+     (# length := 8, seq := [: fail, skip, glte(mk_guard(whitespace), 2, 1),%trailing whitespace
+                               glte(mk_guard(any), 6, 0), %3<-any character that isn't a backslash or quote
+			       glte(mk_guard(is_quote), 2, 3), %4 <- closing quote, then whitespace, else any
+			       glte(mk_guard(escapable), 6, 0), %5 <- must be escapable, then continue(6) else fail
+			       glte(mk_guard(is_backslash), 5, 4), %6<- string chars starting with backslash
+			       glte(mk_guard(is_quote), 6, 0) :] #) %7 <-starting quote followed by string tail
+
+   test_string1: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring(""), 0, 0) = 0
+   test_string1_1: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"\""), 0, 0) = 3
+   test_string2: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"null\""), 0, 0) = 7
+   test_string3: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"str\\\b\t\ning\\\" "), 0, 0) = 0
+   test_string3_1: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"str\\\b\t\ning\\\"\" "), 0, 0) = 15   
+   test_string4: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"false false\""), 0, 2) = 0
+   test_string4_1: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"false false\""), 0, 0) = 14
+   test_string5: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"\\\"\\\"\\key\" "), 0, 0) = 0
+   test_string5_1: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"\\\"\\\"\\nkey\" "), 0, 0) = 12
+   test_string6: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"false false\"   \"true true\"  "), 0, 0) = 17   
+   test_string6_1: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"false false\"   \"true true\"  "), 0, 16) = 14
+   
+  END dpeg

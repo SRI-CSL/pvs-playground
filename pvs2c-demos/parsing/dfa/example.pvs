@@ -1,0 +1,271 @@
+example: THEORY
+BEGIN
+
+  % IMPORTING djsondata_prelude
+
+  % hl7_schema: djsonschematype = djdicttype(
+  %   % Set ID - PID
+  %   add("PID.1", jstrty,
+  %   % Patient ID
+  %   add("PID.2", jintty,
+  %   % Patient Identifier List
+  %   add("PID.3", djarraytype(0, 250, jstrty),
+  %   % Alternate Patient ID
+  %   add("PID.4", jintty,
+  %   % Patient Name
+  %   add("PID.5", jstrty,
+  %   % Mother's Maiden Name
+  %   add("PID.6", jstrty,
+  %   % Date/Time of Birth
+  %   add("PID.7", jstrty,
+  %   % Administrative Sex
+  %   add("PID.8", djstrtype((LAMBDA (s: bytestring): s`length = 1)),
+  %   % Patient Alias
+  %   add("PID.9", jstrty,
+  %   % Race
+  %   add("PID.10", jstrty,
+  %   % Patient Address
+  %   add("PID.11", jstrty,
+  %   % County Code
+  %   add("PID.12", jintty,
+  %   % Phone Number - Home
+  %   add("PID.13", jstrty,
+  %   % Phone Number - Business
+  %   add("PID.14", jstrty,
+  %   % Primary Language
+  %   add("PID.15", jstrty,
+  %   % Marital Status
+  %   add("PID.16", jstrty,
+  %   % Religion
+  %   add("PID.17", jstrty,
+  %   % Patient Account Number
+  %   add("PID.18", jintty,
+  %   % SSN Number
+  %   add("PID.19", jintty,
+  %   % Driver's License Number
+  %   add("PID.20", jintty,
+  %   % Mother's Identifier
+  %   add("PID.21", jstrty,
+  %   % Ethnic Group
+  %   add("PID.22", jstrty,
+  %   % Birth Place
+  %   add("PID.23", jstrty,
+  %   % Multiple Birth Indicator
+  %   add("PID.24", jboolty,
+  %   % Birth Order
+  %   add("PID.25", jintty,
+  %   % Citizenship
+  %   add("PID.26", jstrty,
+  %   % Veterans Military Status
+  %   add("PID.27", jstrty,
+  %   % Nationality
+  %   add("PID.28", jstrty,
+  %   % Patient Death Date and Time
+  %   add("PID.29", jstrty,
+  %   % Patient Death Indicator
+  %   add("PID.30", jboolty,
+  %   % Identity Unknown Indicator
+  %   add("PID.31", jboolty,
+  %   % Identity Reliability Code
+  %   add("PID.32", jstrty,
+  %   % Last Update Date/Time
+  %   add("PID.33", jstrty,
+  %   % Last Update Facility
+  %   add("PID.34", jstrty,
+  %   % Species Code
+  %   add("PID.35", jstrty,
+  %   % Breed Code
+  %   add("PID.36", jstrty,
+  %   % Strain
+  %   add("PID.37", jstrty,
+  %   % Production Class Code
+  %   add("PID.38", jstrty,
+  %   empty_schema_fmap)))))))))))))))))))))))))))))))))))))),
+  %   empty_schema_fmap)
+
+  % fhir_schema: djsonschematype = djdicttype(
+  %   add("id", jintty,
+  %   add("active", jboolty,
+  %   add("name", jstrty,% djarraytype(0, 250, jstrty),
+  %   add("telecom", jstrty,
+  %   add("gender", jstrty,
+  %   add("birthDate", jstrty,
+  %   add("deceasedBoolean", jboolty,
+  %   add("deceasedDateTime", jstrty,
+  %   add("address", jstrty,
+  %   add("maritalStatus", jstrty,
+  %   add("multipleBirthBoolean", jboolty,
+  %   add("contact", jstrty,
+  %   add("communication", jstrty,
+  %   add("generalPractitioner", jstrty,
+  %   add("managingOrganization", jstrty,
+  %   empty_schema_fmap))))))))))))))),
+  %   empty_schema_fmap)
+
+  % IMPORTING djsondata[hl7_schema] AS source
+  % IMPORTING djsondata[fhir_schema] AS target
+
+  % wf_S: TYPE = source.wf_jsondata
+  % wf_T: TYPE = target.wf_jsondata
+
+
+  IMPORTING jsondata
+  IMPORTING jslt_helpers
+
+
+  toy_transform1(s: jsondata): jsondata =
+    LET foo1: jsondata = json_get_key(s, "foo"),
+        bar1: jsondata = json_get_key(s, "bar"),
+	quux: jsondata = json_get_key(s, "quux") IN
+	jdict((# length := 3, seq := [:
+          jpair("foo2", foo1),
+	  jpair("bar2", bar1),
+	  jpair("quux2", quux)
+        :]#))
+
+
+  toy_input: jsondata =
+    jdict((# length := 3, seq := [:
+      jpair("foo", jnumeral(1, 0)),
+      jpair("bar", jnumeral(2, 0)),
+      jpair("quux", jnumeral(3, 0))
+    :]#))
+
+
+  toy_output: jsondata =
+    jdict((# length := 3, seq := [:
+      jpair("foo2", jnumeral(1, 0)),
+      jpair("bar2", jnumeral(2, 0)),
+      jpair("quux2", jnumeral(3, 0))
+    :]#))
+
+
+  toy_test: _TEST_
+   toy_transform1(toy_input) = toy_output
+
+
+
+% { "id": .PID.2,
+%   "active": false,
+%   "name": .PID.5,
+%   "telecom": -1,
+%   "gender": .PID.8,
+%   "birthDate": .PID.7,
+%   "deceasedBoolean": .PID.30,
+%   "deceasedDateTime": .PID.29,
+%   "address": .PID.11,
+%   "maritalStatus": .PID.16,
+%   "multipleBirthBoolean": .PID.24,
+%   "contact": "NO CONTACT",
+%   "generalPractitioner": "NO GP",
+%   "managingOrganization": "NO MO" }
+
+  transform(s: jsondata): jsondata =
+    LET id: jsondata = json_get_key(s, "PID.2"),
+        active: jsondata = jbool(FALSE),
+        name: jsondata = json_get_key(s, "PID.5"),
+	telecom: jsondata = jnumeral(-1, 0),
+	gender: jsondata = json_get_key(s, "PID.8"),
+	birthDate: jsondata = json_get_key(s, "PID.7"),
+	deceasedBoolean: jsondata = json_get_key(s, "PID.30"),
+	deceasedDateTime: jsondata = json_get_key(s, "PID.29"),
+	address: jsondata = json_get_key(s, "PID.11"),
+	maritalStatus: jsondata = json_get_key(s, "PID.16"),
+	multipleBirthBoolean: jsondata = json_get_key(s, "PID.24"),
+	contact: jsondata = jstr("NO CONTACT"),
+	communication: jsondata = jstr("NO COMMUNICATION"),
+	generalPractitioner: jsondata = jstr("NO GP"),
+	managingOrganization: jsondata = jstr("NO MO") IN
+    jdict((# length := 15, seq := [:
+      jpair("id", id),
+      jpair("active", active),
+      jpair("name", name),
+      jpair("telecom", telecom),
+      jpair("gender", gender),
+      jpair("birthDate", birthDate),
+      jpair("deceasedBoolean", deceasedBoolean),
+      jpair("deceasedDateTime", deceasedDateTime),
+      jpair("address", address),
+      jpair("maritalStatus", maritalStatus),
+      jpair("multipleBirthBoolean", multipleBirthBoolean),
+      jpair("contact", contact),
+      jpair("communication", communication),
+      jpair("generalPractitioner", generalPractitioner),
+      jpair("managingOrganization", managingOrganization)
+    :] #))
+
+  transformed_bytestring(s: jsondata): bytestring =
+    LET t = transform(s) IN
+    json_to_string(t)
+	
+  example_hl7: jsondata =
+    jdict((# length := 38, seq := [:
+      jpair("PID.1", jstr("SET-ID")),
+      jpair("PID.2", jnumeral(12345, 0)),
+      jpair("PID.3", jarray((# length := 1, seq := [: jstr("Karthik") :]#))),
+      jpair("PID.4", jnumeral(54321, 0)),
+      jpair("PID.5", jstr("Karthik")),
+      jpair("PID.6", jstr("FHIRFLY")),
+      jpair("PID.7", jstr("06102002:04:00:00")),
+      jpair("PID.8", jstr("M")),
+      jpair("PID.9", jstr("KVN")),
+      jpair("PID.10", jstr("Asian")),
+      jpair("PID.11", jstr("333 Ravenswood Avenue")),
+      jpair("PID.12", jnumeral(94025, 0)),
+      jpair("PID.13", jstr("408-391-5068")),
+      jpair("PID.14", jstr("408-391-5068")),
+      jpair("PID.15", jstr("English")),
+      jpair("PID.16", jstr("Single")),
+      jpair("PID.17", jstr("N/A")),
+      jpair("PID.18", jnumeral(6102002, 0)),
+      jpair("PID.19", jnumeral(123450610, 0)),
+      jpair("PID.20", jnumeral(123445, 0)),
+      jpair("PID.21", jstr("ident")),
+      jpair("PID.22", jstr("Asian")),
+      jpair("PID.23", jstr("Lowell, MA")),
+      jpair("PID.24", jbool(FALSE)),
+      jpair("PID.25", jnumeral(1, 0)),
+      jpair("PID.26", jstr("USA")),
+      jpair("PID.27", jstr("N/A")),
+      jpair("PID.28", jstr("USA")),
+      jpair("PID.29", jstr("N/A")),
+      jpair("PID.30", jbool(FALSE)),
+      jpair("PID.31", jbool(FALSE)),
+      jpair("PID.32", jstr("N/A")),
+      jpair("PID.33", jstr("TODAY")),
+      jpair("PID.34", jstr("SRI")),
+      jpair("PID.35", jstr("Human")),
+      jpair("PID.36", jstr("N/A")),
+      jpair("PID.37", jstr("N/A")),
+      jpair("PID.38", jstr("N/A"))
+    :] #))
+
+  output: jsondata =
+      jdict((# length := 15, seq := [:
+      jpair("id", jnumeral(12345, 0)),
+      jpair("active", jbool(FALSE)),
+      jpair("name", jstr("Karthik")),
+      jpair("telecom", jnumeral(-1, 0)),
+      jpair("gender", jstr("M")),
+      jpair("birthDate", jstr("06102002:04:00:00")),
+      jpair("deceasedBoolean", jbool(FALSE)),
+      jpair("deceasedDateTime", jstr("N/A")),
+      jpair("address", jstr("333 Ravenswood Avenue")),
+      jpair("maritalStatus", jstr("Single")),
+      jpair("multipleBirthBoolean", jbool(FALSE)),
+      jpair("contact", jstr("NO CONTACT")),
+      jpair("communication", jstr("NO COMMUNICATION")),
+      jpair("generalPractitioner", jstr("NO GP")),
+      jpair("managingOrganization", jstr("NO MO"))
+    :] #))
+
+
+  transform_test: _TEST_
+    transform(example_hl7) = output
+
+  bytestring_test: _TEST_
+    transformed_bytestring(example_hl7) /= ""
+      
+
+
+END example

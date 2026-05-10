@@ -1,0 +1,76 @@
+json_to_prepeg : THEORY
+BEGIN
+  IMPORTING jsondata, jsonnumber, ltedfapeg, dfa
+
+  CONVERSION- TotalFun_to_LPartFun
+
+  parse_rule(rule_obj: (jdict?)): prepeg =
+    LET type_val = find_val("type", rule_obj) IN
+    IF bottom?(type_val) OR NOT jstr?(down(type_val)) THEN failure
+    ELSE
+    LET type_str = strval(down(type_val)) IN
+      IF type_str = "lte" THEN
+        LET vals_opt = find_val("values", rule_obj) IN
+        IF bottom?(vals_opt) OR NOT jarray?(down(vals_opt)) THEN
+          failure
+        ELSE
+          LET arr = arrval(down(vals_opt)) IN
+          IF length(arr) = 3 THEN
+            LET p1 = get_nat(numval(arr(0))),
+                p2 = get_nat(numval(arr(1))),
+                p3 = get_nat(numval(arr(2)))
+            IN lte(p1, p2, p3)
+          ELSE
+            failure
+          ENDIF
+        ENDIF
+      ELSIF type_str = "terminal" THEN
+        LET val_opt = find_val("value", rule_obj) IN
+        IF bottom?(val_opt) OR NOT jnumeral?(down(val_opt)) THEN
+          failure
+        ELSE
+          terminal(get_nat(numval(down(val_opt))))
+        ENDIF
+      ELSIF type_str = "dfa" THEN
+        LET val_opt = find_val("value", rule_obj) IN
+        IF bottom?(val_opt) OR NOT jstr?(down(val_opt)) THEN
+          failure
+        ELSE
+          any(lookup_dfa(strval(down(val_opt))))
+        ENDIF
+      ELSIF type_str = "failure" THEN
+        failure
+      ELSIF type_str = "epsilon" THEN
+        epsilon
+      ELSE
+        epsilon
+      ENDIF
+    ENDIF
+
+  json_to_peg_func(rules: (jarray?)): [non_terminal -> prepeg] =
+    LET rules_arr = arrval(rules) IN
+    (LAMBDA (n: non_terminal):
+      LET rule_entry = find(
+        LAMBDA (entry: jsondata):
+          IF NOT jarray?(entry) THEN
+            FALSE
+          ELSE
+          LET pair = arrval(entry) IN
+            length(pair) = 2 AND
+            jnumeral?(pair(0)) AND
+            get_nat(numval(pair(0))) = n
+          ENDIF,
+        rules_arr) IN
+      IF bottom?(rule_entry) OR NOT jarray?(down(rule_entry)) THEN
+        epsilon
+      ELSE
+        LET pair = arrval(down(rule_entry)) IN
+        IF length(pair) = 2 AND jdict?(pair(1)) THEN
+          parse_rule(contents(pair(1)))
+        ELSE
+          epsilon
+        ENDIF
+      ENDIF
+    )
+
+END json_to_prepeg

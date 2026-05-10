@@ -1,0 +1,67 @@
+jsonschema : THEORY
+%json schemas describe the type or grammar of a JSON object.  An data object might be
+%a dictionary with required and optional fields, each with its type,
+%a numeral that is uint8/16/32/64 or int8/16/32/64,
+%an array of min/max length and element type,
+  BEGIN
+  
+  IMPORTING jsondata
+
+  % IMPORTING finite_map
+  jsonschematype: DATATYPE
+   BEGIN
+   jstrtype: jstrtype?
+   jbooltype: jbooltype?
+   jnulltype: jnulltype?
+   jinttype: jinttype?
+   jdicttype(required: fmap[bytestring, jsonschematype],
+             optional: fmap[bytestring, jsonschematype]): jdicttype?
+   jarraytype(min: uint32,
+              max: uint32,
+	      elemtype: jsonschematype): jarraytype?
+  END jsonschematype
+
+  R, S, T: var jsonschematype
+  x, y, z  : VAR jsondata
+
+  check(R, x): RECURSIVE bool
+   = (CASES R OF
+       jnulltype: jnull?(x),
+       jbooltype: jbool?(x),
+       jstrtype: jstr?(x),
+       jinttype: jnumeral?(x),
+       jdicttype(req, opt):
+          jdict?(x) AND
+	  (FORALL (b: (req`domain)):
+	     defined?(contents(x), b) AND
+	     check(down(apply(req, b)), down(apply(contents(x), b)))) AND
+	  (FORALL (b: (difference(contents(x)`domain, req`domain))):
+	     defined?(opt, b) AND
+	     check(down(apply(opt, b)), down(apply(contents(x), b)))),
+       jarraytype(min, max, elemtype):
+         jarray?(x) AND
+	 min <= arrval(x)`length  AND
+	 arrval(x)`length <= max AND
+	 (FORALL (i : below(arrval(x)`length)):
+	    check(elemtype, arrval(x)`seq(i)))
+    ENDCASES)
+    MEASURE R BY <<
+
+  test_schema: jsonschematype =
+    jdicttype(add(mk_bytestring("name"), jstrtype, add(mk_bytestring("age"), jinttype, emptymap)),
+              add(mk_bytestring("SSN"), jinttype, emptymap))
+	      
+  test_instance: jsondata =
+    jdict(add(mk_bytestring("age"), jnumeral(23), add(mk_bytestring("name"), jstr(mk_bytestring("Karthik")), emptymap)))
+
+  test_instance_2: jsondata =
+    jdict(add(mk_bytestring("age"), jnumeral(23), add(mk_bytestring("name"), jstr(mk_bytestring("Karthik")), add(mk_bytestring("SSN"), jnumeral(12345), emptymap))))
+
+  check_test: _TEST_
+    check(test_schema, test_instance)
+
+  check_test_2: _TEST_
+    check(test_schema, test_instance_2)
+          
+
+END jsonschema

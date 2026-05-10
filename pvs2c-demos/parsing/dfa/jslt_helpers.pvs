@@ -1,0 +1,205 @@
+jslt_helpers: THEORY
+BEGIN
+
+% jsltlib: LIBRARY = "/Users/e35480/projects/CHALO/fhir-fly/lte/"
+
+IMPORTING jsondata
+
+  json_get_key_rec(obj: jsondata, key: bytestring, i: below(contents(obj)`length)): RECURSIVE jsondata =
+    IF key(contents(obj)`seq(i)) = key THEN value(contents(obj)`seq(i))
+    ELSE json_get_key_rec(obj, key, i+1)
+    ENDIF
+  MEASURE contents(obj)`length - i
+
+  json_get_key(obj: jsondata, key: bytestring): jsondata =
+    json_get_key_rec(obj, key, 0)
+
+  % TODO: make use of this one rather than the one above
+  % json_get_field(obj: jsondata, key: bytestring): jsondata =
+  %   CASES obj OF
+  %     jdict(contents): 
+  %       LET result = apply(contents, key) IN
+  %         CASES result OF
+  %           up(value): value,
+  %           bottom: jnull
+  %         ENDCASES
+  %     ELSE jnull
+  %   ENDCASES
+
+  % json_get_index(obj: jsondata, index: jsondata): jsondata =
+  %   CASES obj OF
+  %     jarray(arrval): 
+  %       CASES index OF
+  %         jnumeral(idx, n): 
+  %           IF idx < arrval`length THEN arrval`seq(idx)
+  %           ELSE jnull
+  %           ENDIF
+  %         ELSE jnull
+  %       ENDCASES,
+  %     jdict(contents):
+  %       CASES index OF
+  %         jstr(key): json_get_field(obj, key)
+  %         ELSE jnull
+  %       ENDCASES
+  %     ELSE jnull
+  %   ENDCASES
+
+  % % TODO - rewrite this with ^/^^/whatever from the prelude?
+  % json_slice(obj: jsondata, start: jsondata, ed: jsondata): jsondata =
+  %   CASES obj OF
+  %     jarray(arrval):
+  %       CASES start OF
+  %         jnumeral(start_idx):
+  %           CASES ed OF
+  %             jnumeral(end_idx):
+  %               LET actual_start = max(0, min(start_idx, arrval`length)),
+  %                   actual_end = max(actual_start, min(end_idx, arrval`length)),
+  %                   slice_length = actual_end - actual_start IN
+  %                 IF slice_length = 0 THEN
+  %                   jarray((# length := 0, seq := (LAMBDA (i: below(0)): jnull) #))
+  %                 ELSE
+  %                   jarray((# length := slice_length, 
+  %                            seq := (LAMBDA (i: below(slice_length)): arrval`seq(actual_start + i)) #))
+  %                 ENDIF
+  %             ELSE jnull
+  %           ENDCASES
+  %         ELSE jnull
+  %       ENDCASES
+  %     ELSE jnull
+  %   ENDCASES
+
+  % json_slice_from(obj: jsondata, start: jsondata): jsondata =
+  %   CASES obj OF
+  %     jarray(arrval):
+  %       CASES start OF
+  %         jnumeral(start_idx):
+  %           json_slice(obj, start, jnumeral(arrval`length))
+  %         ELSE jnull
+  %       ENDCASES
+  %     ELSE jnull
+  %   ENDCASES
+
+  % json_slice_to(obj: jsondata, ed: jsondata): jsondata =
+  %   json_slice(obj, jnumeral(0), ed)
+
+  % json_is_truthy(val: jsondata): boolean =
+  %   CASES val OF
+  %     jnull: false,
+  %     jbool(b): b,
+  %     jstr(s): length(s) > 0,
+  %     jnumeral(n): n /= 0,
+  %     jarray(arr): arr`length > 0,
+  %     jdict(dict): card(dict`domain) > 0
+  %   ENDCASES
+
+  % % Extract numeric value for arithmetic operations
+  % json_to_number(val: jsondata): uint64 =
+  %   CASES val OF
+  %     jnumeral(n): n,
+  %     jbool(b): IF b THEN 1 ELSE 0 ENDIF
+  %     ELSE 0
+  %   ENDCASES
+
+  % % Generic numeric operation handler
+  % json_numeric_op(op: bytestring, left: jsondata, right: jsondata): jsondata =
+  %   LET left_num = json_to_number(left),
+  %       right_num = json_to_number(right) IN
+  %     IF op = "+" THEN jnumeral(left_num + right_num)
+  %     ELSIF op = "-" THEN jnumeral(left_num - right_num)
+  %     ELSIF op = "*" THEN jnumeral(left_num * right_num)
+  %     ELSIF op = "/" THEN 
+  %       IF right_num /= 0 THEN jnumeral(left_num / right_num) ELSE jnull ENDIF
+  %     ELSE jnull
+  %     ENDIF
+
+  % % Numeric comparison operations  
+  % json_numeric_compare(op: bytestring, left: jsondata, right: jsondata): boolean =
+  %   LET left_num = json_to_number(left),
+  %       right_num = json_to_number(right) IN
+  %     IF op = "<" THEN left_num < right_num
+  %     ELSIF op = "<=" THEN left_num <= right_num
+  %     ELSIF op = ">" THEN left_num > right_num
+  %     ELSIF op = ">=" THEN left_num >= right_num
+  %     ELSE false
+  %     ENDIF
+
+  % bytestring_concat(s1, s2: bytestring): bytestring =
+  %   (# length := length(s1) + length(s2),
+  %      seq := seq(s1) o seq(s2) #)
+       
+  % % String concatenation
+  % json_concat(left: jsondata, right: jsondata): jsondata =
+  %   jstr(bytestring_concat(json_to_string(left), json_to_string(right)))
+
+  % json_size(val: jsondata): jsondata =
+  %   CASES val OF
+  %     jarray(arr): jnumeral(arr`length),
+  %     jdict(dict): jnumeral(card(dict`domain)),
+  %     jstr(s): jnumeral(length(s))
+  %     ELSE jnumeral(0)
+  %   ENDCASES
+
+  % json_equals(left: jsondata, right: jsondata): boolean =
+  %   CASES left OF
+  %     jnull: jnull?(right),
+  %     jbool(b1): 
+  %       CASES right OF
+  %         jbool(b2): b1 = b2
+  %         ELSE FALSE
+  %       ENDCASES,
+  %     jstr(s1):
+  %       CASES right OF
+  %         jstr(s2): s1 = s2
+  %         ELSE FALSE
+  %       ENDCASES,
+  %     jnumeral(n1):
+  %       CASES right OF
+  %         jnumeral(n2): n1 = n2
+  %         ELSE FALSE
+  %       ENDCASES
+  %     ELSE FALSE
+  %   ENDCASES
+
+
+  % json_type(val: jsondata): jsondata =
+  %   CASES val OF
+  %     jnull: jstr("null"),
+  %     jbool(b): jstr("boolean"),
+  %     jstr(s): jstr("string"),
+  %     jnumeral(n): jstr("number"),
+  %     jarray(arr): jstr("array"),
+  %     jdict(dict): jstr("object")
+  %   ENDCASES
+
+  % json_empty(val: jsondata): jsondata =
+  %   CASES val OF
+  %     jnull: jbool(true),
+  %     jstr(s): jbool(length(s) = 0),
+  %     jarray(arr): jbool(arr`length = 0),
+  %     jdict(dict): jbool(card(dict`domain) = 0),
+  %     jnumeral(n): jbool(n = 0),
+  %     jbool(b): jbool(NOT b)
+  %   ENDCASES
+
+  % json_substring(str: jsondata, start: jsondata, length_opt: jsondata): jsondata =
+  %   CASES str OF
+  %     jstr(s):
+  %       CASES start OF
+  %         jnumeral(start_idx):
+  %           IF start_idx >= length(s) THEN jstr("")
+  %           ELSE
+  %             CASES length_opt OF
+  %               jnumeral(len):
+  %                 LET actual_len = min(len, length(s) - start_idx) IN
+  %                   jstr(substr(s, start_idx, actual_len)),
+  %               jnull:
+  %                 jstr(substr(s, start_idx, length(s) - start_idx))
+  %               ELSE jstr("")
+  %             ENDCASES
+  %           ENDIF
+  %         ELSE jstr("")
+  %       ENDCASES
+  %     ELSE jstr("")
+  %   ENDCASES
+
+END jslt_helpers

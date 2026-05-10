@@ -1,0 +1,136 @@
+bsparsestr: THEORY
+
+BEGIN
+  IMPORTING stringutils
+
+  parseresult_str: DATATYPE
+  BEGIN
+    failed_str(reason: bytestring): failed_str?
+    success_str(result: bytestring): success_str?
+  END parseresult_str
+
+  bs_to_parsed_string_inner(bs: bytestring, i: below(bs`length+1), acc: bytestring): RECURSIVE parseresult_str =
+    IF i = bs`length THEN
+      success_str(acc)
+    ELSIF is_backslash(get(bs, i)) THEN
+      IF (i+1) >= bs`length THEN
+        failed_str("string not long enough")
+      ELSE
+        LET escaped = get(bs, i+1) IN
+          IF NOT escapable(escaped) THEN
+            failed_str("escaped character not escapable " ++ unit(escaped) ++ " ")
+          ELSE
+            bs_to_parsed_string_inner(bs, i+2, acc ++ unit(escape_convert(escaped)))
+          ENDIF
+      ENDIF
+    ELSE
+      bs_to_parsed_string_inner(bs, i+1, acc ++ unit(get(bs, i)))
+    ENDIF
+  MEASURE bs`length - i
+
+  bs_to_parsed_string(bs: bytestring): parseresult_str =
+    bs_to_parsed_string_inner(bs, 0, null)
+
+  parseresult_keyword: DATATYPE
+  BEGIN
+    keyword_true: keyword_true?
+    keyword_false: keyword_false?
+    keyword_null: keyword_null?
+    failed_keyword: failed_keyword?
+  END parseresult_keyword
+
+  true_kw: bytestring = mk_bytestring("true")
+  false_kw: bytestring = mk_bytestring("false")
+  null_kw: bytestring = mk_bytestring("null")
+
+  bs_to_keyword(bs: bytestring): parseresult_keyword =
+    COND
+      bs = true_kw -> keyword_true,
+      bs = false_kw -> keyword_false,
+      bs = null_kw -> keyword_null,
+      ELSE -> failed_keyword
+    ENDCOND
+
+  test_string_verbose(instr: aseq[byte], expect: aseq[byte], expect_fail: bool): bool =
+    LET
+      preamble = printc("In:"),
+      instr_bs = printc(instr),
+      midamble = printc("Expected:"),
+      expect_bs = printc(expect)
+    IN
+      CASES bs_to_parsed_string(instr_bs) OF
+        failed_str(reason):
+          LET failed = printc("Failed: " ++ reason) IN
+          expect_fail AND preamble`length > 0 AND instr_bs`length > 0 AND midamble`length > 0 AND failed`length > 0,
+        success_str(s):
+          LET out = printc("Out"), outstr = printc(s), padding = printc("...")
+            IN
+          expect_bs = s AND out`length > 0 AND outstr`length /= 100000001 AND padding`length /= 0
+      ENDCASES
+
+  test_string(instr: aseq[byte], expect: aseq[byte], expect_fail: bool): bool =
+    CASES bs_to_parsed_string(instr) OF
+      failed_str(reason): expect_fail,
+      success_str(s): expect = s
+    ENDCASES
+
+  % hello world -> hello world
+  bs_to_parsed_string_test_1: _TEST_ test_string(
+    (# length := 11, seq := [: 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100 :] #),
+    (# length := 11, seq := [: 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100 :] #),
+    false)
+
+  % \n -> <newline>
+  bs_to_parsed_string_test_2: _TEST_ test_string(
+    (# length := 2, seq := [: 92, 110 :] #),
+    (# length := 1, seq := [: 10 :] #),
+    false)
+
+  % \" -> "
+  bs_to_parsed_string_test_3: _TEST_ test_string(
+    (# length := 2, seq := [: 92, 34 :] #),
+    (# length := 1, seq := [: 34 :] #),
+    false)
+
+  % text\\with\\slashes -> text\with\slashes
+  bs_to_parsed_string_test_4: _TEST_ test_string(
+    (# length := 19, seq := [: 116, 101, 120, 116, 92, 92, 119, 105, 116, 104, 92, 92, 115, 108, 97, 115, 104, 101, 115 :] #),
+    (# length := 17, seq := [: 116, 101, 120, 116, 92, 119, 105, 116, 104, 92, 115, 108, 97, 115, 104, 101, 115 :] #),
+    false)
+
+  % multiple\n\t\r\b\f\\\/\"escapes -> multiple<newline><tab><carriage return><backspace><formfeed>\/"escapes
+  bs_to_parsed_string_test_5: _TEST_ test_string(
+    (# length := 31, seq := [: 109, 117, 108, 116, 105, 112, 108, 101, 92, 110, 92, 116, 92, 114, 92, 98, 92, 102, 92, 92, 92, 47, 92, 34, 101, 115, 99, 97, 112, 101, 115 :] #),
+    (# length := 23, seq := [: 109, 117, 108, 116, 105, 112, 108, 101, 10, 9, 13, 8, 12, 92, 47, 34, 101, 115, 99, 97, 112, 101, 115 :] #),
+    false)
+
+  % invalid\aescape -> fail
+  bs_to_parsed_string_test_6: _TEST_ test_string(
+    (# length := 13, seq := [: 105, 110, 118, 97, 108, 105, 100, 92, 97, 101, 115, 99, 97, 112, 101 :] #),
+    "",
+    true)
+
+  % \ -> fail
+  bs_to_parsed_string_test_7: _TEST_ test_string(
+    (# length := 1, seq := [: 92 :] #),
+    "",
+    true)
+
+  % empty -> empty
+  bs_to_parsed_string_test_8: _TEST_ test_string("", "", false)
+
+  % \/ -> /
+  bs_to_parsed_string_test_9: _TEST_ test_string(
+    (# length := 2, seq := [: 92, 47 :] #),
+    (# length := 1, seq := [: 47 :] #),
+    false)
+
+  bs_to_keyword_test_1: _TEST_ bs_to_keyword(mk_bytestring("true")) = keyword_true
+  bs_to_keyword_test_2: _TEST_ bs_to_keyword(mk_bytestring("false")) = keyword_false
+  bs_to_keyword_test_3: _TEST_ bs_to_keyword(mk_bytestring("null")) = keyword_null
+  bs_to_keyword_test_4: _TEST_ bs_to_keyword(mk_bytestring("trueX")) = failed_keyword
+  bs_to_keyword_test_5: _TEST_ bs_to_keyword(mk_bytestring("True")) = failed_keyword
+  bs_to_keyword_test_6: _TEST_ bs_to_keyword(mk_bytestring("null_kw")) = failed_keyword
+  bs_to_keyword_test_7: _TEST_ bs_to_keyword(mk_bytestring("somethingelse")) = failed_keyword
+  bs_to_keyword_test_8: _TEST_ bs_to_keyword(mk_bytestring("")) = failed_keyword
+END bsparsestr

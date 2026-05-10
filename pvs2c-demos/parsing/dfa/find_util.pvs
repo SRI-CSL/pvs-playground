@@ -1,0 +1,16 @@
+find_util[T: TYPE]: THEORY
+BEGIN
+    find_rec(pred: [T -> bool], arr: aseq[T], i: nat): RECURSIVE lift[T] =
+        IF i >= length(arr) THEN
+            bottom
+        ELSIF pred(arr(i)) THEN
+            up(arr(i))
+        ELSE
+            find_rec(pred, arr, i + 1)
+        ENDIF
+    MEASURE length(arr) - i
+
+    find(pred: [T -> bool], arr: aseq[T]): lift[T] =
+        find_rec(pred, arr, 0)
+
+END find_util

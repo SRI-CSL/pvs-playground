@@ -1,0 +1,72 @@
+dpeg   [attr: TYPE ]
+		: THEORY
+
+  BEGIN
+
+   i, j, k : VAR size
+
+   s, s1, s2: VAR bytestring
+
+   inherited, synthesized: TYPE = attr %for mnemonic value
+   
+
+   result(i) : TYPE = {j : size | j <= i}
+   good_result(i : size) : TYPE = {r : result(i)| r > 0} % 1 is an empty result, i.e., of length 0
+   nonempty_result(i : size): TYPE = {r : result(i) | r /= 1} % r = 0 is failure,
+                                        % r = 2 and above is a nonempty result of length r - 1.
+   
+
+   guard : TYPE = [s : bytestring, i : upto(s`length) -> result(s`length - i + 1)]
+   ne_guard: TYPE = [s : bytestring, i : upto(s`length) -> nonempty_result(s`length - i + 1)]
+   ne_guard_guard: JUDGEMENT ne_guard SUBTYPE_OF guard
+
+   dpeg_expr: DATATYPE
+   BEGIN
+    fail : fail? %always fails, no attributes; result is 0
+    skip(skipsyn: [attr -> attr] : skip? %always succeeds; result is 1
+    glte(p : guard, b, c: index, bin, cin : [attr->attr], syn: [attr, attr -> attr]): glte?
+            %let-then-else where guard p must return a nonempty result;
+	    %continue with b if result > 1; restart with c o.w.
+   END dpeg_expr
+
+   %Whitespace is just a predicate that chews up all the leading whitespace chars
+   %You want to chew up all trailing whitespaces following any parse
+   %Digits: glte(digit, Digits, whitespace)
+   %string: glte(quote, nonquotestring, glte(quote, Whitespace, fail))
+   %token: tokentail <- glte(alphanumeric, token, skip); token <- glte(alpha, tokentail, fail).
+
+   g, g1, g2: VAR dpeg_expr
+
+   dpeg_grammar: TYPE = aseq[dpeg_expr]
+
+   G, G1, G2: VAR dpeg_grammar
+
+   matches(G)(nt : below(G`length), s, (pos : index | pos <= s`length), max_nonterm: upto(G`length)):
+     RECURSIVE upto(s`length - pos + 1)
+   = (CASES G`seq(nt) OF
+      fail: 0,
+      skip: 1,
+      any(p): p(s, pos),
+      nonterm(i): IF i < max_nonterm
+                  THEN matches(G)(i, s, pos, i)
+		  ELSE 0 ENDIF,
+      glte(p, nt1, nt2):
+       (LET res0 = p(s, pos)
+        IN 
+        IF res0 = 0
+        THEN IF nt2 < max_nonterm
+	     THEN matches(G)(nt2, s, pos, nt2)
+	     ELSE 0
+	     ENDIF
+	ELSIF res0 = 1
+	THEN 0
+	ELSE LET res1 = matches(G)(nt1, s, pos + res0 - 1, G`length)
+	      IN IF res1 = 0 THEN 0 ELSE res0 + res1 - 1 ENDIF
+        ENDIF)
+	ENDCASES)
+	MEASURE lex2(s`length - pos, max_nonterm)
+
+%   dpeg_parse(g)
+      
+
+  END dpeg
