@@ -122,11 +122,7 @@ def ensure_pvs2c_bench(build_dir: Path) -> Path:
 
     cc = os.environ.get("CC", "cc")
     cflags = shlex.split(
-        os.environ.get(
-            "CFLAGS",
-            "-O3 -DNDEBUG -march=native -flto -fomit-frame-pointer "
-            "-fstrict-aliasing -w -foptimize-sibling-calls -fPIC",
-        )
+        os.environ.get("CFLAGS", "-O2 -w -foptimize-sibling-calls -fPIC")
     )
     cmd = [
         cc,
