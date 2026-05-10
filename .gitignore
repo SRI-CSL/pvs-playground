@@ -64,6 +64,7 @@ pvs2c-demos/**/pvs2c/
 pvs2c-demos/**/test-vectors/
 
 # PVS generated state.
+.pvscontext
 pvsbin/
 *.bin
 
