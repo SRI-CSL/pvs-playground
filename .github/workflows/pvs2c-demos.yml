@@ -50,11 +50,23 @@ jobs:
           git clone --depth 1 --branch "$PVS_REF" "$PVS_REPO" "$PVS_LOCATION"
           git -C "$PVS_LOCATION" rev-parse HEAD
 
+      - name: Install Quicklisp for SBCL
+        run: |
+          curl -fsSL https://beta.quicklisp.org/quicklisp.lisp -o /tmp/quicklisp.lisp
+          sbcl --noinform --non-interactive \
+            --load /tmp/quicklisp.lisp \
+            --eval '(quicklisp-quickstart:install)' \
+            --eval '(ql-util:without-prompting (ql:add-to-init-file))'
+          sbcl --noinform --non-interactive \
+            --eval '(require :asdf)' \
+            --eval '(ql:quickload (list :babel :clack :websocket-driver :hunchentoot :anaphora :lparallel :cl-json :cffi) :silent t)' \
+            --eval '(uiop:quit)'
+
       - name: Build PVS
         working-directory: ${{ env.PVS_LOCATION }}
         run: |
           ./configure
-          make -j"$(nproc)"
+          make
           ./pvs -raw -E '(progn (format t "PVS is ready~%") (finish-output) (uiop:quit))' < /dev/null
 
       - name: Discover, compile, and run generated _TEST_ binaries
