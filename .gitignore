@@ -58,7 +58,22 @@ Makefile
 !pvs2c-demos/sha256/Makefile
 
 # Generated PVS2C demo artifacts.
-pvs2c-demos/*/Makefile.bak
-pvs2c-demos/*/build/
-pvs2c-demos/*/pvs2c/
-pvs2c-demos/*/test-vectors/
+pvs2c-demos/**/Makefile.bak
+pvs2c-demos/**/build/
+pvs2c-demos/**/pvs2c/
+pvs2c-demos/**/test-vectors/
+
+# PVS generated state.
+pvsbin/
+*.bin
+
+# Compiled artifacts and generated binaries.
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+*.out
+
+# Editor backup files.
+*~
