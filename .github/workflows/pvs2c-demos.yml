@@ -24,7 +24,7 @@ jobs:
 
     env:
       PVS_REPO: https://github.com/SRI-CSL/PVS.git
-      PVS_REF: master
+      PVS_REF: dev
       PVS_LOCATION: ${{ github.workspace }}/.ci/PVS
       NASALIB_REPO: https://github.com/nasa/pvslib.git
       NASALIB_REF: master
