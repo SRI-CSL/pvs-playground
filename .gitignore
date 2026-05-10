@@ -76,6 +76,8 @@ pvsbin/
 *.dylib
 *.exe
 *.out
+__pycache__/
+*.py[cod]
 
 # Editor backup files.
 *~
