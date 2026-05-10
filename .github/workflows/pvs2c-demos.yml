@@ -3,11 +3,13 @@ name: PVS2C demos
 on:
   push:
     paths:
+      - ".gitmodules"
       - ".github/workflows/pvs2c-demos.yml"
       - "scripts/ci/**"
       - "pvs2c-demos/**"
   pull_request:
     paths:
+      - ".gitmodules"
       - ".github/workflows/pvs2c-demos.yml"
       - "scripts/ci/**"
       - "pvs2c-demos/**"
@@ -33,6 +35,8 @@ jobs:
     steps:
       - name: Check out demos
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Install Ubuntu dependencies
         run: |
@@ -83,9 +87,9 @@ jobs:
         run: |
           scripts/ci/run_pvs2c_tests.py --clean-generated --demo-root pvs2c-demos
 
-      - name: Run crypto demo drivers
+      - name: Run demo drivers
         run: |
-          make -C pvs2c-demos run-aes run-hmac run-sha256
+          make -C pvs2c-demos run-aes run-hmac run-sha256 run-utf8_decoder
 
       - name: Upload PVS2C logs
         if: always()

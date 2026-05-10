@@ -1,0 +1,135 @@
+utf8_decoder_tests: THEORY
+BEGIN
+
+  IMPORTING utf8_decoder
+
+  rep1: bytestring = (# length := 3, seq := [: 0xEF, 0xBF, 0xBD :] #)
+  rep2: bytestring =
+    (# length := 6,
+       seq := [: 0xEF, 0xBF, 0xBD, 0xEF, 0xBF, 0xBD :] #)
+  rep3: bytestring =
+    (# length := 9,
+       seq := [: 0xEF, 0xBF, 0xBD, 0xEF, 0xBF, 0xBD,
+                 0xEF, 0xBF, 0xBD :] #)
+  rep4: bytestring =
+    (# length := 12,
+       seq := [: 0xEF, 0xBF, 0xBD, 0xEF, 0xBF, 0xBD,
+                 0xEF, 0xBF, 0xBD, 0xEF, 0xBF, 0xBD :] #)
+
+  valid_four_byte: bytestring =
+    (# length := 4, seq := [: 0xF0, 0x9D, 0x92, 0x9C :] #)
+
+  valid_four_byte_part1: bytestring =
+    (# length := 1, seq := [: 0xF0 :] #)
+
+  valid_four_byte_part2: bytestring =
+    (# length := 3, seq := [: 0x9D, 0x92, 0x9C :] #)
+
+  c2_part: bytestring =
+    (# length := 1, seq := [: 0xC2 :] #)
+
+  bad_second_replace: bytestring =
+    (# length := 4, seq := [: 0xEF, 0xBF, 0xBD, 0x20 :] #)
+
+  space_byte: bytestring =
+    (# length := 1, seq := [: 0x20 :] #)
+
+  cp_A: codepoints =
+    (# length := 1, seq := [: 65 :] #)
+
+  cp_replacement: codepoints =
+    (# length := 1, seq := [: replacement_codepoint :] #)
+
+  valid_ascii_test: _TEST_ valid_utf8?("abc")
+
+  valid_nul_test: _TEST_
+    valid_utf8?((# length := 1, seq := [: 0x00 :] #))
+
+  valid_two_byte_test: _TEST_
+    valid_utf8?((# length := 2, seq := [: 0xC2, 0xA9 :] #))
+
+  valid_three_byte_first_test: _TEST_
+    valid_utf8?((# length := 3, seq := [: 0xE0, 0xA0, 0x80 :] #))
+
+  valid_four_byte_last_test: _TEST_
+    valid_utf8?((# length := 4, seq := [: 0xF4, 0x8F, 0xBF, 0xBF :] #))
+
+  valid_noncharacter_test: _TEST_
+    valid_utf8?((# length := 3, seq := [: 0xEF, 0xBF, 0xBF :] #))
+
+  invalid_lone_continuation_test: _TEST_
+    NOT valid_utf8?((# length := 1, seq := [: 0x80 :] #))
+
+  invalid_overlong_two_byte_test: _TEST_
+    NOT valid_utf8?((# length := 2, seq := [: 0xC0, 0xAF :] #))
+
+  invalid_overlong_three_byte_test: _TEST_
+    NOT valid_utf8?((# length := 3, seq := [: 0xE0, 0x80, 0xAF :] #))
+
+  invalid_surrogate_test: _TEST_
+    NOT valid_utf8?((# length := 3, seq := [: 0xED, 0xA0, 0x80 :] #))
+
+  invalid_too_large_test: _TEST_
+    NOT valid_utf8?((# length := 4, seq := [: 0xF4, 0x90, 0x80, 0x80 :] #))
+
+  invalid_incomplete_eof_test: _TEST_
+    NOT valid_utf8?((# length := 2, seq := [: 0xE2, 0x82 :] #))
+
+  sanitize_valid_preserves_bytes_test: _TEST_
+    sanitize_replace(valid_four_byte) = valid_four_byte
+
+  sanitize_skip_lone_continuation_test: _TEST_
+    sanitize_skip((# length := 1, seq := [: 0x80 :] #)) = ""
+
+  sanitize_replace_lone_continuation_test: _TEST_
+    sanitize_replace((# length := 1, seq := [: 0x80 :] #)) = rep1
+
+  sanitize_replace_too_large_test: _TEST_
+    sanitize_replace((# length := 4, seq := [: 0xF4, 0x90, 0x80, 0x80 :] #)) = rep4
+
+  sanitize_replace_surrogate_test: _TEST_
+    sanitize_replace((# length := 3, seq := [: 0xED, 0xA0, 0x80 :] #)) = rep3
+
+  sanitize_replace_overlong_three_test: _TEST_
+    sanitize_replace((# length := 3, seq := [: 0xE0, 0x80, 0xAF :] #)) = rep3
+
+  sanitize_replace_bad_second_byte_reprocesses_test: _TEST_
+    sanitize_replace((# length := 2, seq := [: 0xC2, 0x20 :] #)) =
+      bad_second_replace
+
+  sanitize_skip_bad_second_byte_reprocesses_test: _TEST_
+    sanitize_skip((# length := 2, seq := [: 0xC2, 0x20 :] #)) =
+      space_byte
+
+  sanitize_replace_incomplete_eof_test: _TEST_
+    sanitize_replace((# length := 2, seq := [: 0xE2, 0x82 :] #)) = rep1
+
+  sanitize_skip_incomplete_eof_test: _TEST_
+    sanitize_skip((# length := 2, seq := [: 0xE2, 0x82 :] #)) = ""
+
+  stream_replace_split_valid_test: _TEST_
+    finish_replace_stream(
+      sanitize_replace_stream_chunk(valid_four_byte_part2,
+        sanitize_replace_stream_chunk(valid_four_byte_part1, initial_frame))) =
+      valid_four_byte
+
+  stream_replace_reprocesses_split_bad_second_test: _TEST_
+    finish_replace_stream(
+      sanitize_replace_stream_chunk(space_byte,
+        sanitize_replace_stream_chunk(c2_part, initial_frame))) =
+      bad_second_replace
+
+  stream_skip_reprocesses_split_bad_second_test: _TEST_
+    finish_skip_stream(
+      sanitize_skip_stream_chunk(space_byte,
+        sanitize_skip_stream_chunk(c2_part, initial_frame))) =
+      space_byte
+
+  decode_ascii_test: _TEST_
+    decode_replace("A") = cp_A
+
+  decode_replace_invalid_test: _TEST_
+    decode_replace((# length := 1, seq := [: 0x80 :] #)) =
+      cp_replacement
+
+END utf8_decoder_tests

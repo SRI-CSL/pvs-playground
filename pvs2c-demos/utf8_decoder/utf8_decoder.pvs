@@ -1,0 +1,295 @@
+utf8_decoder: THEORY
+BEGIN
+
+  IMPORTING bytestrings
+
+  codepoints: TYPE =
+    [# length: index,
+       seq: ARRAY[below(length) -> uint32] #]
+
+  empty_codepoints: codepoints =
+    (# length := 0, seq := (LAMBDA (i: below(0)): 0) #)
+
+  codepoints_add(cp: uint32, cps: codepoints): codepoints =
+    LET new_length = cps`length + 1 IN
+      (# length := new_length,
+         seq := (LAMBDA (i: below(new_length)):
+                   IF i = cps`length THEN cp ELSE cps`seq(i) ENDIF) #)
+
+  decoder_state: TYPE =
+    [# needed: uint8,
+       lower: byte,
+       upper: byte,
+       codep: uint32 #]
+
+  step_result: TYPE =
+    [# status: uint8,
+       next: decoder_state,
+       codepoint: uint32 #]
+
+  stream_frame: TYPE =
+    [# st: decoder_state,
+       pending: bytestring,
+       out: bytestring #]
+
+  accept_status: uint8 = 0
+  need_more_status: uint8 = 1
+  reject_status: uint8 = 2
+
+  continuation_min: byte = 0x80
+  continuation_max: byte = 0xBF
+  replacement_codepoint: uint32 = 0xFFFD
+  replacement_bytes: bytestring =
+    (# length := 3, seq := [: 0xEF, 0xBF, 0xBD :] #)
+
+  initial_state: decoder_state =
+    (# needed := 0,
+       lower := continuation_min,
+       upper := continuation_max,
+       codep := 0 #)
+
+  ascii?(b: byte): bool = b <= 0x7F
+  continuation?(b: byte): bool = b >= continuation_min AND b <= continuation_max
+
+  starter2?(b: byte): bool = b >= 0xC2 AND b <= 0xDF
+  starter3_plain?(b: byte): bool =
+    (b >= 0xE1 AND b <= 0xEC) OR (b >= 0xEE AND b <= 0xEF)
+  starter4_plain?(b: byte): bool = b >= 0xF1 AND b <= 0xF3
+
+  valid_start?(b: byte): bool =
+    starter2?(b) OR b = 0xE0 OR starter3_plain?(b) OR b = 0xED OR
+    b = 0xF0 OR starter4_plain?(b) OR b = 0xF4
+
+  scalar_value?(cp: uint32): bool =
+    cp <= 0x10FFFF AND NOT (cp >= 0xD800 AND cp <= 0xDFFF)
+
+  start_codepoint(b: (valid_start?)): uint32 =
+    COND
+      starter2?(b) -> u8minus(b, 0xC0),
+      b >= 0xE0 AND b <= 0xEF -> u8minus(b, 0xE0),
+      ELSE -> u8minus(b, 0xF0)
+    ENDCOND
+
+  start_state(b: (valid_start?)): decoder_state =
+    COND
+      starter2?(b) ->
+        (# needed := 1,
+           lower := continuation_min,
+           upper := continuation_max,
+           codep := start_codepoint(b) #),
+      b = 0xE0 ->
+        (# needed := 2,
+           lower := 0xA0,
+           upper := continuation_max,
+           codep := start_codepoint(b) #),
+      starter3_plain?(b) ->
+        (# needed := 2,
+           lower := continuation_min,
+           upper := continuation_max,
+           codep := start_codepoint(b) #),
+      b = 0xED ->
+        (# needed := 2,
+           lower := continuation_min,
+           upper := 0x9F,
+           codep := start_codepoint(b) #),
+      b = 0xF0 ->
+        (# needed := 3,
+           lower := 0x90,
+           upper := continuation_max,
+           codep := start_codepoint(b) #),
+      starter4_plain?(b) ->
+        (# needed := 3,
+           lower := continuation_min,
+           upper := continuation_max,
+           codep := start_codepoint(b) #),
+      ELSE ->
+        (# needed := 3,
+           lower := continuation_min,
+           upper := 0x8F,
+           codep := start_codepoint(b) #)
+    ENDCOND
+
+  continuation_codepoint(st: decoder_state, b: byte): uint32 =
+    u32plus(u32times(st`codep, 64), u8minus(b, continuation_min))
+
+  feed_byte(st: decoder_state, b: byte): step_result =
+    IF st`needed = 0 THEN
+      COND
+        ascii?(b) ->
+          (# status := accept_status,
+             next := initial_state,
+             codepoint := b #),
+        valid_start?(b) ->
+          (# status := need_more_status,
+             next := start_state(b),
+             codepoint := start_codepoint(b) #),
+        ELSE ->
+          (# status := reject_status,
+             next := initial_state,
+             codepoint := replacement_codepoint #)
+      ENDCOND
+    ELSIF b >= st`lower AND b <= st`upper THEN
+      LET cp = continuation_codepoint(st, b),
+          remaining = u8minus(st`needed, 1)
+      IN
+        IF remaining = 0 THEN
+          (# status := accept_status,
+             next := initial_state,
+             codepoint := cp #)
+        ELSE
+          (# status := need_more_status,
+             next := (# needed := remaining,
+                        lower := continuation_min,
+                        upper := continuation_max,
+                        codep := cp #),
+             codepoint := cp #)
+        ENDIF
+    ELSE
+      (# status := reject_status,
+         next := initial_state,
+         codepoint := replacement_codepoint #)
+    ENDIF
+
+  validate_rec(s: bytestring, i: upto(s`length), st: decoder_state):
+    RECURSIVE bool =
+    IF i = s`length THEN
+      st`needed = 0
+    ELSE
+      LET r = feed_byte(st, get(s, i)) IN
+        IF r`status = reject_status THEN
+          FALSE
+        ELSE
+          validate_rec(s, i + 1, r`next)
+        ENDIF
+    ENDIF
+  MEASURE s`length - i
+
+  valid_utf8?(s: bytestring): bool = validate_rec(s, 0, initial_state)
+
+  emit_invalid(replace?: bool, out: bytestring): bytestring =
+    IF replace? THEN out ++ replacement_bytes ELSE out ENDIF
+
+  finish_sanitize(st: decoder_state, replace?: bool, out: bytestring): bytestring =
+    IF st`needed = 0 THEN out ELSE emit_invalid(replace?, out) ENDIF
+
+  initial_frame: stream_frame =
+    (# st := initial_state, pending := "", out := "" #)
+
+  sanitize_rec(replace?: bool,
+               s: bytestring,
+               i: upto(s`length),
+               st: decoder_state,
+               pending: bytestring,
+               out: bytestring): RECURSIVE bytestring =
+    IF i = s`length THEN
+      finish_sanitize(st, replace?, out)
+    ELSE
+      LET b = get(s, i),
+          r = feed_byte(st, b)
+      IN
+        IF r`status = accept_status THEN
+          IF st`needed = 0 THEN
+            sanitize_rec(replace?, s, i + 1, r`next, "", out ++ unit(b))
+          ELSE
+            LET accepted_bytes = pending ++ unit(b) IN
+              sanitize_rec(replace?, s, i + 1, r`next, "", out ++ accepted_bytes)
+          ENDIF
+        ELSIF r`status = need_more_status THEN
+          sanitize_rec(replace?, s, i + 1, r`next, pending ++ unit(b), out)
+        ELSIF st`needed = 0 THEN
+          sanitize_rec(replace?, s, i + 1, initial_state, "", emit_invalid(replace?, out))
+        ELSE
+          sanitize_rec(replace?, s, i, initial_state, "", emit_invalid(replace?, out))
+        ENDIF
+    ENDIF
+  MEASURE 2 * (s`length - i) + IF st`needed = 0 THEN 0 ELSE 1 ENDIF
+
+  sanitize_chunk_rec(replace?: bool,
+                     s: bytestring,
+                     i: upto(s`length),
+                     st: decoder_state,
+                     pending: bytestring,
+                     out: bytestring): RECURSIVE stream_frame =
+    IF i = s`length THEN
+      (# st := st, pending := pending, out := out #)
+    ELSE
+      LET b = get(s, i),
+          r = feed_byte(st, b)
+      IN
+        IF r`status = accept_status THEN
+          IF st`needed = 0 THEN
+            sanitize_chunk_rec(replace?, s, i + 1, r`next, "", out ++ unit(b))
+          ELSE
+            LET accepted_bytes = pending ++ unit(b) IN
+              sanitize_chunk_rec(replace?, s, i + 1, r`next, "", out ++ accepted_bytes)
+          ENDIF
+        ELSIF r`status = need_more_status THEN
+          sanitize_chunk_rec(replace?, s, i + 1, r`next, pending ++ unit(b), out)
+        ELSIF st`needed = 0 THEN
+          sanitize_chunk_rec(replace?, s, i + 1, initial_state, "", emit_invalid(replace?, out))
+        ELSE
+          sanitize_chunk_rec(replace?, s, i, initial_state, "", emit_invalid(replace?, out))
+        ENDIF
+    ENDIF
+  MEASURE 2 * (s`length - i) + IF st`needed = 0 THEN 0 ELSE 1 ENDIF
+
+  sanitize_chunk(replace?: bool, s: bytestring, fr: stream_frame): stream_frame =
+    sanitize_chunk_rec(replace?, s, 0, fr`st, fr`pending, fr`out)
+
+  finish_stream(replace?: bool, fr: stream_frame): bytestring =
+    finish_sanitize(fr`st, replace?, fr`out)
+
+  sanitize_replace_stream_chunk(s: bytestring, fr: stream_frame): stream_frame =
+    sanitize_chunk(TRUE, s, fr)
+
+  sanitize_skip_stream_chunk(s: bytestring, fr: stream_frame): stream_frame =
+    sanitize_chunk(FALSE, s, fr)
+
+  finish_replace_stream(fr: stream_frame): bytestring =
+    finish_stream(TRUE, fr)
+
+  finish_skip_stream(fr: stream_frame): bytestring =
+    finish_stream(FALSE, fr)
+
+  sanitize_replace(s: bytestring): bytestring =
+    finish_replace_stream(sanitize_replace_stream_chunk(s, initial_frame))
+
+  sanitize_skip(s: bytestring): bytestring =
+    finish_skip_stream(sanitize_skip_stream_chunk(s, initial_frame))
+
+  decode_rec(replace?: bool,
+             s: bytestring,
+             i: upto(s`length),
+             st: decoder_state,
+             acc: codepoints): RECURSIVE codepoints =
+    IF i = s`length THEN
+      IF st`needed = 0 THEN
+        acc
+      ELSIF replace? THEN
+        codepoints_add(replacement_codepoint, acc)
+      ELSE
+        acc
+      ENDIF
+    ELSE
+      LET r = feed_byte(st, get(s, i)) IN
+        IF r`status = accept_status THEN
+          decode_rec(replace?, s, i + 1, r`next, codepoints_add(r`codepoint, acc))
+        ELSIF r`status = need_more_status THEN
+          decode_rec(replace?, s, i + 1, r`next, acc)
+        ELSIF st`needed = 0 THEN
+          decode_rec(replace?, s, i + 1, initial_state,
+                     IF replace? THEN codepoints_add(replacement_codepoint, acc) ELSE acc ENDIF)
+        ELSE
+          decode_rec(replace?, s, i, initial_state,
+                     IF replace? THEN codepoints_add(replacement_codepoint, acc) ELSE acc ENDIF)
+        ENDIF
+    ENDIF
+  MEASURE 2 * (s`length - i) + IF st`needed = 0 THEN 0 ELSE 1 ENDIF
+
+  decode_replace(s: bytestring): codepoints =
+    decode_rec(TRUE, s, 0, initial_state, empty_codepoints)
+
+  decode_skip(s: bytestring): codepoints =
+    decode_rec(FALSE, s, 0, initial_state, empty_codepoints)
+
+END utf8_decoder

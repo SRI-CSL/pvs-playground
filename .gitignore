@@ -56,6 +56,7 @@ Makefile
 !pvs2c-demos/aes/Makefile
 !pvs2c-demos/hmac/Makefile
 !pvs2c-demos/sha256/Makefile
+!pvs2c-demos/utf8_decoder/Makefile
 
 # Generated PVS2C demo artifacts.
 pvs2c-demos/**/Makefile.bak
