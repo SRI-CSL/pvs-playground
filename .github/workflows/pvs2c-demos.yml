@@ -26,6 +26,9 @@ jobs:
       PVS_REPO: https://github.com/SRI-CSL/PVS.git
       PVS_REF: master
       PVS_LOCATION: ${{ github.workspace }}/.ci/PVS
+      NASALIB_REPO: https://github.com/nasa/pvslib.git
+      NASALIB_REF: master
+      PVS_LIBRARY_PATH: ${{ github.workspace }}/.ci/nasalib
 
     steps:
       - name: Check out demos
@@ -49,6 +52,13 @@ jobs:
           mkdir -p "$(dirname "$PVS_LOCATION")"
           git clone --depth 1 --branch "$PVS_REF" "$PVS_REPO" "$PVS_LOCATION"
           git -C "$PVS_LOCATION" rev-parse HEAD
+
+      - name: Check out NASALib
+        run: |
+          mkdir -p "$(dirname "$PVS_LIBRARY_PATH")"
+          git clone --depth 1 --branch "$NASALIB_REF" "$NASALIB_REPO" "$PVS_LIBRARY_PATH"
+          git -C "$PVS_LIBRARY_PATH" rev-parse HEAD
+          test -d "$PVS_LIBRARY_PATH/algebra"
 
       - name: Install Quicklisp for SBCL
         run: |
