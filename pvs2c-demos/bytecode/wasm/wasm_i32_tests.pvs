@@ -1,0 +1,72 @@
+wasm_i32_tests: THEORY
+BEGIN
+
+  IMPORTING wasm_i32
+
+  add_body: bytestring =
+    (# length := 7,
+       seq := [: 0x00,
+                 0x20, 0x00,
+                 0x20, 0x01,
+                 0x6A,
+                 0x0B :] #)
+
+  affine_body: bytestring =
+    (# length := 16,
+       seq := [: 0x00,
+                 0x20, 0x00,
+                 0x41, 0x07,
+                 0x6C,
+                 0x20, 0x01,
+                 0x41, 0x03,
+                 0x6C,
+                 0x6A,
+                 0x41, 0x0B,
+                 0x6A,
+                 0x0B :] #)
+
+  factorial_body: bytestring =
+    (# length := 37,
+       seq := [: 0x01, 0x01, 0x7F,
+                 0x41, 0x01,
+                 0x21, 0x01,
+                 0x02, 0x40,
+                 0x03, 0x40,
+                 0x20, 0x00,
+                 0x45,
+                 0x0D, 0x01,
+                 0x20, 0x01,
+                 0x20, 0x00,
+                 0x6C,
+                 0x21, 0x01,
+                 0x20, 0x00,
+                 0x41, 0x01,
+                 0x6B,
+                 0x21, 0x00,
+                 0x0C, 0x00,
+                 0x0B,
+                 0x0B,
+                 0x20, 0x01,
+                 0x0B :] #)
+
+  add_result: exec_result = invoke2(add_body, 32, 40, 2)
+  affine_result: exec_result = invoke2(affine_body, 64, 5, 9)
+  fact0_result: exec_result = invoke1(factorial_body, 128, 0)
+  fact5_result: exec_result = invoke1(factorial_body, 512, 5)
+
+  test_add_halts: _TEST_
+    add_result`status = halt_status AND add_result`value = 42
+
+  test_affine_halts: _TEST_
+    affine_result`status = halt_status AND affine_result`value = 73
+
+  test_factorial_zero: _TEST_
+    fact0_result`status = halt_status AND fact0_result`value = 1
+
+  test_factorial_five: _TEST_
+    fact5_result`status = halt_status AND fact5_result`value = 120
+
+  test_bad_local_traps: _TEST_
+    invoke1(add_body, 32, 1)`status = trap_status
+
+END wasm_i32_tests

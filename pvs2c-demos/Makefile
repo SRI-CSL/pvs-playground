@@ -1,4 +1,4 @@
-.PHONY: run-aes run-hmac run-sha256 run-utf8_decoder run-crypto ci-pvs2c-tests ci clean-aes clean-hmac clean-sha256 clean-utf8_decoder clean
+.PHONY: run-aes run-hmac run-sha256 run-utf8_decoder run-bytecode-wasm run-crypto ci-pvs2c-tests ci clean-aes clean-hmac clean-sha256 clean-utf8_decoder clean-bytecode-wasm clean
 
 run-aes:
 	$(MAKE) -C aes run
@@ -12,6 +12,9 @@ run-sha256:
 run-utf8_decoder:
 	$(MAKE) -C utf8_decoder run
 
+run-bytecode-wasm:
+	$(MAKE) -C bytecode/wasm run
+
 run-crypto: run-aes run-hmac run-sha256
 
 ci-pvs2c-tests:
@@ -21,6 +24,7 @@ ci:
 	python3 ../scripts/ci/run_pvs2c_tests.py --repo-root .. --demo-root pvs2c-demos
 	$(MAKE) run-crypto
 	$(MAKE) run-utf8_decoder
+	$(MAKE) run-bytecode-wasm
 
 clean-aes:
 	$(MAKE) -C aes clean
@@ -34,4 +38,7 @@ clean-sha256:
 clean-utf8_decoder:
 	$(MAKE) -C utf8_decoder clean
 
-clean: clean-aes clean-hmac clean-sha256 clean-utf8_decoder
+clean-bytecode-wasm:
+	$(MAKE) -C bytecode/wasm clean
+
+clean: clean-aes clean-hmac clean-sha256 clean-utf8_decoder clean-bytecode-wasm

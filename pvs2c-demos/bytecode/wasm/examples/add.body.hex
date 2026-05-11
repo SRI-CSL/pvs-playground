@@ -1,0 +1,4 @@
+# WebAssembly function body payload for examples/add.wat.
+# Local declaration vector: 00
+# Code: local.get 0; local.get 1; i32.add; end
+00 20 00 20 01 6A 0B

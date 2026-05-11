@@ -1,0 +1,23 @@
+# WebAssembly function body payload for examples/factorial.wat.
+# Local declaration vector: one group, one i32 local.
+01 01 7F
+41 01
+21 01
+02 40
+03 40
+20 00
+45
+0D 01
+20 01
+20 00
+6C
+21 01
+20 00
+41 01
+6B
+21 00
+0C 00
+0B
+0B
+20 01
+0B
