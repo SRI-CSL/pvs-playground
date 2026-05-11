@@ -1,0 +1,50 @@
+sigma  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+  l, m, n, m1, m2, n1, n2: VAR index
+
+  vector(n) : TYPE = ARRAY[below(n) -> real]
+
+
+  sigma(n, (f: vector(n))):
+      RECURSIVE
+        real =
+        (IF n = 0
+         THEN 0
+         ELSE f(n - 1)
+              + sigma(n - 1,
+                      (LAMBDA (i: below[n - 1]): f(i)))
+         ENDIF)
+       MEASURE n
+
+   
+   additive?(g : [real -> real]): bool
+    = (FORALL (x, y: real): g(x + y) = g(x) + g(y))
+
+   additive_zero: LEMMA
+      (FORALL (g: (additive?)): g(0) = 0)
+
+   additive_sigma: LEMMA
+     (FORALL n, (f : vector(n)), (g : (additive?)):
+        g(sigma(n, f)) = sigma(n, g o f))
+
+   sigma_plus: LEMMA
+     (FORALL n, (f, g : vector(n)): 
+        sigma(n, (LAMBDA (i: below(n)): f(i) + g(i))) = sigma(n, f) + sigma(n, g))
+
+	
+   sigma_swap: LEMMA
+   (FORALL (f: [below(m), below(n) -> real]): 
+      sigma(m, (LAMBDA (i : below(m)): sigma(n, (LAMBDA (j :below(n)): f(i, j)))))
+      = sigma(n, (LAMBDA (j : below(n)): sigma(m, (LAMBDA (i :below(m)): f(i, j))))))
+
+   sigma_split: LEMMA
+    (FORALL (f : vector(m)), (k : upto(m)): 
+      sigma(m, f) =
+       sigma(k, (LAMBDA (i : below(k)): f(i))) +
+       sigma(m - k, (LAMBDA (i : below(m - k)): f(i + k))))
+  
+
+  END sigma
