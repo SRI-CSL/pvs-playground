@@ -13,7 +13,12 @@ from pathlib import Path
 
 
 EXCLUDED_DIRS = {"build", "pvs2c", "pvsbin", "test-vectors"}
-EXCLUDED_PATHS = {Path("parsing/ltedfa")}
+EXCLUDED_PATHS = {
+    Path("parsing/ltedfa"),
+    # Spec-only dependency for the UTF-8 demo.  It imports parser support that
+    # is not generated as a standalone PVS2C test binary yet.
+    Path("utf8_decoder/utf8_spec.pvs"),
+}
 PVS_ERROR_RE = re.compile(r"^In file ", re.MULTILINE)
 RUN_OUTPUT_RE = re.compile(
     r"^\s*(?P<theory>[A-Za-z][A-Za-z0-9_]*)\.(?P<test>[A-Za-z][A-Za-z0-9_]*)\s*==>\s*(?P<value>true|false)\b",
