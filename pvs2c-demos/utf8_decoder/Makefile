@@ -1,6 +1,9 @@
 PVS_LOCATION ?= $(HOME)/git/PVS
 PVS := $(PVS_LOCATION)/pvs
 
+NO_GENERATED_MK_GOALS := clean typecheck pvs2c validate-artifacts
+INCLUDE_GENERATED_MK := $(if $(MAKECMDGOALS),$(filter-out $(NO_GENERATED_MK_GOALS),$(MAKECMDGOALS)),all)
+
 DEMO := utf8_decoder
 TC_THEORY := utf8_decoder_tests
 MAIN_THEORY := utf8_decoder_tests
@@ -29,7 +32,9 @@ GENERATED_LIB_OBJS = $(filter-out $(SRCDIR)/$(MAIN_THEORY).o,$(OBJS_$(MAIN_THEOR
 PVS_TYPECHECK_EXPR := (progn (setq *suppress-output* nil) (tc "$(TC_THEORY)" t) (finish-output) (uiop:quit))
 PVS2C_EXPR := (progn (setq *suppress-output* t) (pvs2c-theory "$(MAIN_THEORY)" t) (finish-output) (uiop:quit))
 
+ifneq ($(INCLUDE_GENERATED_MK),)
 -include $(GENERATED_MK)
+endif
 
 .PHONY: all run typecheck pvs2c validate-artifacts clean
 
