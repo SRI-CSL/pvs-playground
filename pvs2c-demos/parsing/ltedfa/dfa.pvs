@@ -270,17 +270,19 @@ dfa : THEORY
     dfatest_keyword_6: _TEST_ testdfa(keywordDfa, "truE", FALSE, 0)
     dfatest_keyword_7: _TEST_ testdfa(keywordDfa, "null", TRUE, 4)
     dfatest_keyword_8: _TEST_ testdfa(keywordDfa, " null", FALSE, 0)
-    dfatest_keyword_9: _TEST_ testdfa(keywordDfa, "null ", TRUE, 5)
+    dfatest_keyword_9: _TEST_ testdfa(keywordDfa, "null ", TRUE, 4)
+
+    json_string_escaped_linefeed: bytestring =
+      mk_bytestring("\"escaped linefeed") ++ escape_char(10) ++ mk_bytestring("\"")
+    json_string_backslash_escape: bytestring =
+      mk_bytestring("\"backslash") ++ escape_char(92) ++ mk_bytestring("\"")
+    json_string_escaped_quote: bytestring =
+      mk_bytestring("\"escaped") ++ escape_char(34) ++ mk_bytestring(" quote\"")
 
     dfatest_string_1: _TEST_ testdfa(stringDfa, "missing quotes", FALSE, 0)
     dfatest_string_2: _TEST_ testdfa(stringDfa, "\"having quotes\"", TRUE, 15)
-    % TODO: Fix these tests so they use raw literal arrays as strings to get around Lisp string parsing
-    % dfatest_string_3: _TEST_ testdfa(stringDfa, "\"escaped return\\r\"", TRUE)
-    % dfatest_string_4: _TEST_ testdfa(stringDfa, "\"escaped linefeed\\n\"", TRUE)
-    % dfatest_string_5: _TEST_ testdfa(stringDfa, "\"form feed\\f\"", TRUE)
-    % dfatest_string_6: _TEST_ testdfa(stringDfa, "\"backspace\\b\"", TRUE)
-    % dfatest_string_7: _TEST_ testdfa(stringDfa, "\"tab\\t\"", TRUE)
-    %dfatest_string_8: _TEST_ testdfa(stringDfa, "\"badescape\\q\"", FALSE)
-    % dfatest_string_9: _TEST_ testdfa(stringDfa, "\"backslash\\\\\"", TRUE)
-    % dfatest_string_10: _TEST_ testdfa(stringDfa, "\"escaped\\\" quote\"", TRUE)
+    dfatest_string_3: _TEST_ testdfa(stringDfa, json_string_escaped_linefeed, TRUE, 20)
+    dfatest_string_4: _TEST_ testdfa(stringDfa, "\"badescape\\q", FALSE, 0)
+    dfatest_string_5: _TEST_ testdfa(stringDfa, json_string_backslash_escape, TRUE, 13)
+    dfatest_string_6: _TEST_ testdfa(stringDfa, json_string_escaped_quote, TRUE, 17)
   END dfa

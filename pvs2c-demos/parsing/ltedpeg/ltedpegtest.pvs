@@ -277,20 +277,32 @@ ltedpegtest 	: THEORY
        ELSE fail(0)
        ENDIF)
 
-    jsonpureparsefile_test1: _TEST_
-      good?(jsonpureparsefile("test1.json"))
+    jsonpureparsefile_test_empty_object: _TEST_
+      good?(jsonpureparsefile("../examples/json/empty_object.json"))
 
-    jsonpureparsefile_test2: _TEST_
-      good?(jsonpureparsefile("test2.json"))
+    jsonpureparsefile_test_null: _TEST_
+      good?(jsonpureparsefile("../examples/json/null.json"))
 
-    jsonpureparsefile_test3: _TEST_
-      good?(jsonpureparsefile("test3.json"))
+    jsonpureparsefile_test_person_cards: _TEST_
+      good?(jsonpureparsefile("../examples/json/person_cards.json"))
+
+    jsonpureparsefile_test_nested_object: _TEST_
+      good?(jsonpureparsefile("../examples/json/nested_object.json"))
+
+    jsonpureparsefile_test_empty_array: _TEST_
+      good?(jsonpureparsefile("../examples/json/empty_array.json"))
+
+    jsonpureparsefile_test_keywords: _TEST_
+      good?(jsonpureparsefile("../examples/json/keywords_object.json"))
+
+    jsonpureparsefile_test_geojson: _TEST_
+      good?(jsonpureparsefile("../examples/json/geojson1.json"))
 
     jsonpureparsefile_test_irModel: _TEST_
-      good?(jsonpureparsefile("irModel.json"))
+      good?(jsonpureparsefile("../examples/json/irModel.json"))
 
     jsonpureparsefile_test_prelude: _TEST_
-      good?(jsonpureparsefile("prelude.cache.json"))
+      good?(jsonpureparsefile("../examples/json/prelude.cache.json"))
 
 
     % parsetable: TYPE = [# length : uint32, scaffold : scaffold(length) #]

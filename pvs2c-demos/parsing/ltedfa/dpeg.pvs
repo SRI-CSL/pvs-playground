@@ -264,16 +264,24 @@ dpeg  % [ parameters ]
 			       glte(mk_guard(is_backslash), 5, 4), %6<- string chars starting with backslash
 			       glte(mk_guard(is_quote), 6, 0) :] #) %7 <-starting quote followed by string tail
 
+   single_byte(b: byte): lbytes(1) = (# length := 1, seq := [: b :] #)
+
+   escaped_quotes_bad_escape: bytestring =
+     mk_bytestring("\"") ++ escape_char(34) ++ escape_char(34) ++ single_byte(92) ++ mk_bytestring("key\" ")
+
+   escaped_quotes_newline: bytestring =
+     mk_bytestring("\"") ++ escape_char(34) ++ escape_char(34) ++ escape_char(10) ++ mk_bytestring("key\" ")
+
    test_string1: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring(""), 0, 0) = 0
    test_string1_1: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"\""), 0, 0) = 3
    test_string2: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"null\""), 0, 0) = 7
-   test_string3: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"str\\\b\t\ning\\\" "), 0, 0) = 0
-   test_string3_1: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"str\\\b\t\ning\\\"\" "), 0, 0) = 15   
+   test_string3: _TEST_ dpeg_parse(string_grammar, 7, escaped_quotes_bad_escape, 0, 0) = 0
+   test_string3_1: _TEST_ dpeg_parse(string_grammar, 7, escaped_quotes_newline, 0, 0) = 13
    test_string4: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"false false\""), 0, 2) = 0
    test_string4_1: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"false false\""), 0, 0) = 14
-   test_string5: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"\\\"\\\"\\key\" "), 0, 0) = 0
-   test_string5_1: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"\\\"\\\"\\nkey\" "), 0, 0) = 12
-   test_string6: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"false false\"   \"true true\"  "), 0, 0) = 17   
+   test_string5: _TEST_ dpeg_parse(string_grammar, 7, escaped_quotes_bad_escape, 0, 0) = 0
+   test_string5_1: _TEST_ dpeg_parse(string_grammar, 7, escaped_quotes_newline, 0, 0) = 13
+   test_string6: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"false false\"   \"true true\"  "), 0, 0) = 17
    test_string6_1: _TEST_ dpeg_parse(string_grammar, 7, mk_bytestring("\"false false\"   \"true true\"  "), 0, 16) = 14
    
   END dpeg

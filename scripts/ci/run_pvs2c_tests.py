@@ -14,10 +14,16 @@ from pathlib import Path
 
 EXCLUDED_DIRS = {"build", "pvs2c", "pvsbin", "test-vectors"}
 EXCLUDED_PATHS = {
-    Path("parsing/ltedfa"),
     # Spec-only dependency for the UTF-8 demo.  It imports parser support that
     # is not generated as a standalone PVS2C test binary yet.
     Path("utf8_decoder/utf8_spec.pvs"),
+}
+EXCLUDED_PATH_SUFFIXES = {
+    # Keep these ltedfa theories out of PVS2C CI for now.  They are parser
+    # clients rather than the ltedfa parser mechanism itself, and are tracked
+    # separately until their C-generation surface is ready.
+    Path("parsing/ltedfa/jsondata_interface.pvs"),
+    Path("parsing/ltedfa/jsonschema.pvs"),
 }
 PVS_ERROR_RE = re.compile(r"^In file ", re.MULTILINE)
 RUN_OUTPUT_RE = re.compile(
@@ -92,7 +98,16 @@ def is_excluded(path: Path, root: Path) -> bool:
     return (
         any(part in EXCLUDED_DIRS for part in relative.parts)
         or any(relative == excluded or excluded in relative.parents for excluded in EXCLUDED_PATHS)
+        or any(path_matches_suffix(relative, excluded) for excluded in EXCLUDED_PATH_SUFFIXES)
     )
+
+
+def path_matches_suffix(path: Path, suffix: Path) -> bool:
+    path_parts = path.parts
+    suffix_parts = suffix.parts
+    if len(path_parts) >= len(suffix_parts):
+        return path_parts[-len(suffix_parts) :] == suffix_parts
+    return suffix_parts[-len(path_parts) :] == path_parts
 
 
 def discover_test_theories(demo_root: Path) -> list[TestTheory]:
@@ -174,6 +189,7 @@ def run_logged(
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
+            errors="replace",
             bufsize=1,
         )
         assert process.stdout is not None
@@ -274,7 +290,10 @@ def write_step_summary(
 
     total_declared = sum(len(item.tests) for item in theories)
     total_completed = sum(item.declared for item in results if item.status != "failed")
-    skipped = ", ".join(f"`{path}`" for path in sorted(str(path) for path in EXCLUDED_PATHS)) or "none"
+    skipped = ", ".join(
+        f"`{path}`"
+        for path in sorted(str(path) for path in EXCLUDED_PATHS | EXCLUDED_PATH_SUFFIXES)
+    ) or "none"
 
     lines = [
         "# PVS2C Demo CI Summary",

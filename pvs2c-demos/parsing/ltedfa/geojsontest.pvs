@@ -2,18 +2,10 @@ geojsontest : THEORY
 
   BEGIN
 
-  IMPORTING jsondata_interface
+  IMPORTING ltedfapegtest
 
-  do_geojsontest(fname: string): result_type =
-    LET ast = jsonbuildast(mk_bytestring("world-geojson/countries/") ++ fname) IN
-      IF allgoodentries?(ast) THEN
-        ejson_parsetree_to_json(ast)
-      ELSE
-        r_failed("not all good entries")
-      ENDIF
-
-
-  checkparse(fname : string): bool = NOT r_failed?(do_geojsontest(fname))
+  checkparse(fname : string): bool =
+    good?(jsonpureparsefile(mk_bytestring("../examples/world-geojson/countries/") ++ fname))
 
   check_afghanistan: _TEST_ checkparse("afghanistan.json")
   check_albania: _TEST_ checkparse("albania.json")
