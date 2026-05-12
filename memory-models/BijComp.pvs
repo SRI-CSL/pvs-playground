@@ -1,0 +1,14 @@
+BijComp  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+   A, B: TYPE
+
+   f : VAR [A -> B]
+
+   bij_comp: LEMMA
+      bijective?(f) IFF
+      ∀ (X: set[A]):  image(f)(complement(X)) = complement(image(f)(X))
+
+  END BijComp
