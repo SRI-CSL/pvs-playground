@@ -57,7 +57,11 @@ Makefile
 !pvs2c-demos/hmac/Makefile
 !pvs2c-demos/sha256/Makefile
 !pvs2c-demos/utf8_decoder/Makefile
+!pvs2c-demos/bytecode/Makefile
 !pvs2c-demos/bytecode/sqlite_vdbe/Makefile
+!pvs2c-demos/bytecode/wasm/Makefile
+!pvs2c-demos/parsing/ltedfa/Makefile
+!pvs2c-demos/parsing/ltedpeg/Makefile
 
 # Generated PVS2C demo artifacts.
 pvs2c-demos/**/Makefile.bak
