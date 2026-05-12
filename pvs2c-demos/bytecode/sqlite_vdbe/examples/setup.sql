@@ -1,0 +1,4 @@
+CREATE TABLE t(x INTEGER, name TEXT);
+INSERT INTO t VALUES (-7, 'neg');
+INSERT INTO t VALUES (3, 'small');
+INSERT INTO t VALUES (11, 'big');
