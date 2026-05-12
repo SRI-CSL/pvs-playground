@@ -250,13 +250,19 @@ BEGIN
 
   branch_to(body: bytestring, st: machine_state(body),
             (depth: below(st`controls`depth))): machine_state(body) =
-    LET f = branch_frame(st`controls, depth),
-        keep = branch_keep_depth(st`controls, depth, f),
-        target = IF f`kind = loop_kind THEN f`body_pc ELSE f`end_pc + 1 ENDIF,
+    LET f = branch_frame(st`controls, depth) IN	    
+    IF f`end_pc >= body`length
+    THEN trap(body, st)
+    ELSE
+    LET keep = branch_keep_depth(st`controls, depth, f),
+        target = IF f`kind = loop_kind
+		 THEN f`body_pc
+		 ELSE f`end_pc + 1 ENDIF,
         next_controls = st`controls WITH [`depth := keep],
         jumped = st WITH [`controls := next_controls]
     IN
       set_pc(body, jumped, target)
+    ENDIF
 
   enter_control(body: bytestring, st: machine_state(body), kind: (frame_kind?)):
     machine_state(body) =
@@ -418,30 +424,30 @@ BEGIN
         trap(body, st)
       ENDIF
 
-  body_parse: TYPE =
+  body_parse(body: bytestring): TYPE =
     [# ok: bool,
-       code_pc: index,
+       code_pc: upto(body`length),
        local_count: upto(max_locals) #]
 
-  parse_fail: body_parse =
+  parse_fail(body: bytestring): body_parse(body) =
     (# ok := FALSE, code_pc := 0, local_count := 0 #)
 
   parse_locals_rec(body: bytestring, i: upto(length(body)),
                    groups: nat, total: upto(max_locals)):
-    RECURSIVE body_parse =
+    RECURSIVE body_parse(body) =
     IF groups = 0 THEN
       (# ok := TRUE, code_pc := i, local_count := total #)
     ELSIF i + 1 < length(body) AND get(body, i + 1) = valtype_i32 AND
           total + get(body, i) <= max_locals_u8 THEN
       parse_locals_rec(body, i + 2, groups - 1, total + get(body, i))
     ELSE
-      parse_fail
+      parse_fail(body)
     ENDIF
   MEASURE groups
 
-  parse_body(body: bytestring): body_parse =
+  parse_body(body: bytestring): body_parse(body) =
     IF length(body) = 0 THEN
-      parse_fail
+      parse_fail(body)
     ELSE
       LET groups = get(body, 0) IN
         parse_locals_rec(body, 1, groups, 0)
