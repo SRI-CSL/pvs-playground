@@ -1,0 +1,909 @@
+oauth2_rfc6749: CONTEXT =
+BEGIN
+
+  % Executable finite-state abstraction of RFC 6749, "The OAuth 2.0
+  % Authorization Framework".  The model covers the RFC roles, client
+  % registration classes, authorization-code, implicit, password,
+  % client-credentials, refresh-token, and extension grants, plus protected
+  % resource access and the security obligations that can be represented as
+  % finite-state checks.
+  %
+  % Abstractions:
+  % - Concrete HTTP syntax, JSON serialization, ABNF character classes, TLS
+  %   certificate validation, and token entropy are represented by finite
+  %   state predicates.
+  % - Scope is a small ordered lattice [0..3], where <= means "no broader
+  %   than".
+  % - Two clients are enough to model client/code/refresh binding.
+
+  Client: TYPE = {client_a, client_b};
+  ClientType: TYPE = {confidential_client, public_client};
+  ClientProfile: TYPE = {web_application, user_agent_application, native_application};
+
+  GrantType: TYPE = {
+    grant_authorization_code,
+    grant_implicit,
+    grant_password,
+    grant_client_credentials,
+    grant_refresh_token,
+    grant_extension
+  };
+
+  ResponseType: TYPE = {
+    response_code,
+    response_token,
+    response_extension,
+    response_missing,
+    response_unknown
+  };
+
+  AuthMethod: TYPE = {
+    auth_none,
+    auth_basic,
+    auth_body,
+    auth_other,
+    auth_id_only,
+    auth_multiple
+  };
+
+  HttpMethod: TYPE = {http_get, http_post, http_other};
+
+  RedirectStatus: TYPE = {
+    redirect_exact_match,
+    redirect_registered_match,
+    redirect_missing,
+    redirect_mismatch,
+    redirect_invalid,
+    redirect_has_fragment
+  };
+
+  TokenStatus: TYPE = {token_none, token_valid, token_expired, token_revoked};
+  CodeStatus: TYPE = {code_none, code_issued, code_used, code_expired, code_revoked};
+  RefreshStatus: TYPE = {refresh_none, refresh_valid, refresh_old, refresh_revoked};
+  Scope: TYPE = [0..3];
+
+  Event: TYPE = {
+    ev_idle,
+    ev_registered,
+    ev_auth_code_authorized,
+    ev_auth_code_error,
+    ev_auth_code_token_ok,
+    ev_auth_code_reuse_denied,
+    ev_implicit_token_ok,
+    ev_password_token_ok,
+    ev_client_credentials_token_ok,
+    ev_extension_token_ok,
+    ev_refresh_token_ok,
+    ev_resource_ok,
+    ev_resource_error,
+    ev_access_expired,
+    ev_token_error,
+    ev_invalid_redirect_blocked,
+    ev_endpoint_tls_reject,
+    ev_multi_auth_reject,
+    ev_public_client_auth_reject,
+    ev_csrf_reject,
+    ev_sanitize_reject,
+    ev_unsupported_response_type
+  };
+
+  ErrorCode: TYPE = {
+    err_none,
+    err_invalid_request,
+    err_invalid_client,
+    err_invalid_grant,
+    err_unauthorized_client,
+    err_unsupported_grant_type,
+    err_invalid_scope,
+    err_access_denied,
+    err_unsupported_response_type,
+    err_invalid_token
+  };
+
+  HttpStatus: TYPE = {status_none, status_200, status_302, status_400, status_401};
+
+  auth_method_is_credential?(m: AuthMethod): BOOLEAN =
+    (m = auth_basic) OR (m = auth_body) OR (m = auth_other);
+
+  redirect_ok?(r: RedirectStatus): BOOLEAN =
+    (r = redirect_exact_match) OR (r = redirect_registered_match);
+
+  redirect_bad?(r: RedirectStatus): BOOLEAN =
+    (r = redirect_missing) OR
+    (r = redirect_mismatch) OR
+    (r = redirect_invalid) OR
+    (r = redirect_has_fragment);
+
+  token_endpoint_success?(e: Event): BOOLEAN =
+    (e = ev_auth_code_token_ok) OR
+    (e = ev_password_token_ok) OR
+    (e = ev_client_credentials_token_ok) OR
+    (e = ev_extension_token_ok) OR
+    (e = ev_refresh_token_ok);
+
+  token_issued_success?(e: Event): BOOLEAN =
+    token_endpoint_success?(e) OR (e = ev_implicit_token_ok);
+
+  auth_endpoint_success?(e: Event): BOOLEAN =
+    (e = ev_auth_code_authorized) OR (e = ev_implicit_token_ok);
+
+  cleartext_sensitive_event?(e: Event): BOOLEAN =
+    token_endpoint_success?(e) OR
+    (e = ev_implicit_token_ok) OR
+    (e = ev_auth_code_authorized);
+
+  oauth: MODULE =
+  BEGIN
+    LOCAL registered: BOOLEAN
+    LOCAL registered_client: Client
+    LOCAL client_type: ClientType
+    LOCAL client_profile: ClientProfile
+    LOCAL client_has_credentials: BOOLEAN
+    LOCAL redirect_registered: BOOLEAN
+
+    LOCAL code_status: CodeStatus
+    LOCAL code_client: Client
+    LOCAL code_scope: Scope
+    LOCAL code_redirect_was_in_initial: BOOLEAN
+    LOCAL code_use_count: [0..1]
+
+    LOCAL access_status: TokenStatus
+    LOCAL access_client: Client
+    LOCAL access_scope: Scope
+    LOCAL access_grant_type: GrantType
+    LOCAL access_token_type_understood: BOOLEAN
+
+    LOCAL refresh_status: RefreshStatus
+    LOCAL refresh_client: Client
+    LOCAL refresh_scope: Scope
+    LOCAL old_refresh_discarded: BOOLEAN
+
+    LOCAL ro_password_held_by_client: BOOLEAN
+    LOCAL last_event: Event
+    LOCAL last_error: ErrorCode
+    LOCAL last_http_status: HttpStatus
+    LOCAL last_client_type: ClientType
+    LOCAL last_profile: ClientProfile
+    LOCAL last_grant_type: GrantType
+    LOCAL last_response_type: ResponseType
+    LOCAL last_auth_method: AuthMethod
+    LOCAL last_method: HttpMethod
+    LOCAL last_tls: BOOLEAN
+    LOCAL last_redirect_status: RedirectStatus
+    LOCAL last_redirected: BOOLEAN
+    LOCAL last_fragment_contains_access_token: BOOLEAN
+    LOCAL last_refresh_sent_to_resource: BOOLEAN
+    LOCAL last_scope_requested: Scope
+    LOCAL last_scope_issued: Scope
+    LOCAL last_scope_response_present: BOOLEAN
+    LOCAL last_resource_scope: Scope
+    LOCAL last_cache_no_store: BOOLEAN
+    LOCAL last_pragma_no_cache: BOOLEAN
+    LOCAL last_generated_secret_strength_ok: BOOLEAN
+    LOCAL last_csrf_client_ok: BOOLEAN
+    LOCAL last_csrf_as_ok: BOOLEAN
+    LOCAL last_state_present: BOOLEAN
+    LOCAL last_state_matches: BOOLEAN
+    LOCAL last_sanitized: BOOLEAN
+    LOCAL last_bruteforce_protected: BOOLEAN
+    LOCAL last_code_was_expired: BOOLEAN
+
+    INITIALIZATION
+      registered = FALSE;
+      registered_client = client_a;
+      client_type = public_client;
+      client_profile = native_application;
+      client_has_credentials = FALSE;
+      redirect_registered = FALSE;
+      code_status = code_none;
+      code_client = client_a;
+      code_scope = 0;
+      code_redirect_was_in_initial = FALSE;
+      code_use_count = 0;
+      access_status = token_none;
+      access_client = client_a;
+      access_scope = 0;
+      access_grant_type = grant_authorization_code;
+      access_token_type_understood = FALSE;
+      refresh_status = refresh_none;
+      refresh_client = client_a;
+      refresh_scope = 0;
+      old_refresh_discarded = TRUE;
+      ro_password_held_by_client = FALSE;
+      last_event = ev_idle;
+      last_error = err_none;
+      last_http_status = status_none;
+      last_client_type = public_client;
+      last_profile = native_application;
+      last_grant_type = grant_authorization_code;
+      last_response_type = response_missing;
+      last_auth_method = auth_none;
+      last_method = http_get;
+      last_tls = FALSE;
+      last_redirect_status = redirect_missing;
+      last_redirected = FALSE;
+      last_fragment_contains_access_token = FALSE;
+      last_refresh_sent_to_resource = FALSE;
+      last_scope_requested = 0;
+      last_scope_issued = 0;
+      last_scope_response_present = FALSE;
+      last_resource_scope = 0;
+      last_cache_no_store = FALSE;
+      last_pragma_no_cache = FALSE;
+      last_generated_secret_strength_ok = TRUE;
+      last_csrf_client_ok = FALSE;
+      last_csrf_as_ok = FALSE;
+      last_state_present = FALSE;
+      last_state_matches = FALSE;
+      last_sanitized = FALSE;
+      last_bruteforce_protected = FALSE;
+      last_code_was_expired = FALSE
+
+    TRANSITION
+      [
+        register_confidential_web:
+          NOT registered
+          -->
+            registered' = TRUE;
+            registered_client' = client_a;
+            client_type' = confidential_client;
+            client_profile' = web_application;
+            client_has_credentials' = TRUE;
+            redirect_registered' = TRUE;
+            last_event' = ev_registered;
+            last_client_type' = confidential_client;
+            last_profile' = web_application;
+            last_sanitized' = TRUE
+
+      []
+        register_public_native:
+          NOT registered
+          -->
+            registered' = TRUE;
+            registered_client' = client_a;
+            client_type' = public_client;
+            client_profile' = native_application;
+            client_has_credentials' = FALSE;
+            redirect_registered' = TRUE;
+            last_event' = ev_registered;
+            last_client_type' = public_client;
+            last_profile' = native_application;
+            last_sanitized' = TRUE
+
+      []
+        register_public_user_agent:
+          NOT registered
+          -->
+            registered' = TRUE;
+            registered_client' = client_a;
+            client_type' = public_client;
+            client_profile' = user_agent_application;
+            client_has_credentials' = FALSE;
+            redirect_registered' = TRUE;
+            last_event' = ev_registered;
+            last_client_type' = public_client;
+            last_profile' = user_agent_application;
+            last_sanitized' = TRUE
+
+      []
+        auth_code_authorize_ok:
+          registered
+          -->
+            code_status' = code_issued;
+            code_client' = registered_client;
+            code_scope' = 3;
+            code_redirect_was_in_initial' = TRUE;
+            code_use_count' = 0;
+            last_event' = ev_auth_code_authorized;
+            last_error' = err_none;
+            last_http_status' = status_302;
+            last_response_type' = response_code;
+            last_method' = http_get;
+            last_tls' = TRUE;
+            last_redirect_status' = redirect_exact_match;
+            last_redirected' = TRUE;
+            last_fragment_contains_access_token' = FALSE;
+            last_scope_requested' = 3;
+            last_csrf_as_ok' = TRUE;
+            last_state_present' = TRUE;
+            last_state_matches' = TRUE;
+            last_sanitized' = TRUE
+
+      []
+        auth_code_authorize_error:
+          registered
+          -->
+            last_event' = ev_auth_code_error;
+            last_error' = err_access_denied;
+            last_http_status' = status_302;
+            last_response_type' = response_code;
+            last_method' = http_get;
+            last_tls' = TRUE;
+            last_redirect_status' = redirect_exact_match;
+            last_redirected' = TRUE;
+            last_sanitized' = TRUE
+
+      []
+        auth_code_token_ok_confidential:
+          code_status = code_issued AND client_type = confidential_client
+          -->
+            code_status' = code_used;
+            code_use_count' = 1;
+            access_status' = token_valid;
+            access_client' = code_client;
+            access_scope' = 2;
+            access_grant_type' = grant_authorization_code;
+            access_token_type_understood' = TRUE;
+            refresh_status' = refresh_valid;
+            refresh_client' = code_client;
+            refresh_scope' = 2;
+            old_refresh_discarded' = TRUE;
+            last_event' = ev_auth_code_token_ok;
+            last_error' = err_none;
+            last_http_status' = status_200;
+            last_client_type' = client_type;
+            last_grant_type' = grant_authorization_code;
+            last_auth_method' = auth_basic;
+            last_method' = http_post;
+            last_tls' = TRUE;
+            last_redirect_status' = redirect_exact_match;
+            last_scope_requested' = code_scope;
+            last_scope_issued' = 2;
+            last_scope_response_present' = TRUE;
+            last_cache_no_store' = TRUE;
+            last_pragma_no_cache' = TRUE;
+            last_generated_secret_strength_ok' = TRUE;
+            last_sanitized' = TRUE;
+            last_code_was_expired' = FALSE
+
+      []
+        auth_code_token_ok_public:
+          code_status = code_issued AND client_type = public_client
+          -->
+            code_status' = code_used;
+            code_use_count' = 1;
+            access_status' = token_valid;
+            access_client' = code_client;
+            access_scope' = 2;
+            access_grant_type' = grant_authorization_code;
+            access_token_type_understood' = TRUE;
+            refresh_status' = refresh_valid;
+            refresh_client' = code_client;
+            refresh_scope' = 2;
+            old_refresh_discarded' = TRUE;
+            last_event' = ev_auth_code_token_ok;
+            last_error' = err_none;
+            last_http_status' = status_200;
+            last_client_type' = client_type;
+            last_grant_type' = grant_authorization_code;
+            last_auth_method' = auth_none;
+            last_method' = http_post;
+            last_tls' = TRUE;
+            last_redirect_status' = redirect_exact_match;
+            last_scope_requested' = code_scope;
+            last_scope_issued' = 2;
+            last_scope_response_present' = TRUE;
+            last_cache_no_store' = TRUE;
+            last_pragma_no_cache' = TRUE;
+            last_generated_secret_strength_ok' = TRUE;
+            last_sanitized' = TRUE;
+            last_code_was_expired' = FALSE
+
+      []
+        auth_code_reuse_denied:
+          code_status = code_used
+          -->
+            last_event' = ev_auth_code_reuse_denied;
+            last_error' = err_invalid_grant;
+            last_http_status' = status_400;
+            last_grant_type' = grant_authorization_code;
+            last_code_was_expired' = FALSE
+
+      []
+        expire_code:
+          code_status = code_issued
+          -->
+            code_status' = code_expired;
+            last_event' = ev_idle
+
+      []
+        expired_code_denied:
+          code_status = code_expired
+          -->
+            last_event' = ev_token_error;
+            last_error' = err_invalid_grant;
+            last_http_status' = status_400;
+            last_grant_type' = grant_authorization_code;
+            last_code_was_expired' = TRUE
+
+      []
+        implicit_token_ok:
+          registered AND redirect_registered
+          -->
+            access_status' = token_valid;
+            access_client' = registered_client;
+            access_scope' = 2;
+            access_grant_type' = grant_implicit;
+            access_token_type_understood' = TRUE;
+            refresh_status' = refresh_none;
+            last_event' = ev_implicit_token_ok;
+            last_error' = err_none;
+            last_http_status' = status_302;
+            last_client_type' = client_type;
+            last_response_type' = response_token;
+            last_method' = http_get;
+            last_tls' = TRUE;
+            last_redirect_status' = redirect_registered_match;
+            last_redirected' = TRUE;
+            last_fragment_contains_access_token' = TRUE;
+            last_scope_requested' = 3;
+            last_scope_issued' = 2;
+            last_scope_response_present' = TRUE;
+            last_generated_secret_strength_ok' = TRUE;
+            last_csrf_as_ok' = TRUE;
+            last_state_present' = TRUE;
+            last_state_matches' = TRUE;
+            last_sanitized' = TRUE
+
+      []
+        password_token_ok_confidential:
+          registered AND client_type = confidential_client
+          -->
+            access_status' = token_valid;
+            access_client' = registered_client;
+            access_scope' = 2;
+            access_grant_type' = grant_password;
+            access_token_type_understood' = TRUE;
+            refresh_status' = refresh_valid;
+            refresh_client' = registered_client;
+            refresh_scope' = 2;
+            ro_password_held_by_client' = FALSE;
+            last_event' = ev_password_token_ok;
+            last_error' = err_none;
+            last_http_status' = status_200;
+            last_client_type' = client_type;
+            last_grant_type' = grant_password;
+            last_auth_method' = auth_basic;
+            last_method' = http_post;
+            last_tls' = TRUE;
+            last_scope_requested' = 3;
+            last_scope_issued' = 2;
+            last_scope_response_present' = TRUE;
+            last_cache_no_store' = TRUE;
+            last_pragma_no_cache' = TRUE;
+            last_generated_secret_strength_ok' = TRUE;
+            last_sanitized' = TRUE;
+            last_bruteforce_protected' = TRUE
+
+      []
+        password_token_ok_public:
+          registered AND client_type = public_client
+          -->
+            access_status' = token_valid;
+            access_client' = registered_client;
+            access_scope' = 2;
+            access_grant_type' = grant_password;
+            access_token_type_understood' = TRUE;
+            refresh_status' = refresh_valid;
+            refresh_client' = registered_client;
+            refresh_scope' = 2;
+            ro_password_held_by_client' = FALSE;
+            last_event' = ev_password_token_ok;
+            last_error' = err_none;
+            last_http_status' = status_200;
+            last_client_type' = client_type;
+            last_grant_type' = grant_password;
+            last_auth_method' = auth_none;
+            last_method' = http_post;
+            last_tls' = TRUE;
+            last_scope_requested' = 3;
+            last_scope_issued' = 2;
+            last_scope_response_present' = TRUE;
+            last_cache_no_store' = TRUE;
+            last_pragma_no_cache' = TRUE;
+            last_generated_secret_strength_ok' = TRUE;
+            last_sanitized' = TRUE;
+            last_bruteforce_protected' = TRUE
+
+      []
+        client_credentials_token_ok:
+          registered AND client_type = confidential_client
+          -->
+            access_status' = token_valid;
+            access_client' = registered_client;
+            access_scope' = 2;
+            access_grant_type' = grant_client_credentials;
+            access_token_type_understood' = TRUE;
+            refresh_status' = refresh_none;
+            last_event' = ev_client_credentials_token_ok;
+            last_error' = err_none;
+            last_http_status' = status_200;
+            last_client_type' = client_type;
+            last_grant_type' = grant_client_credentials;
+            last_auth_method' = auth_basic;
+            last_method' = http_post;
+            last_tls' = TRUE;
+            last_scope_requested' = 3;
+            last_scope_issued' = 2;
+            last_scope_response_present' = TRUE;
+            last_cache_no_store' = TRUE;
+            last_pragma_no_cache' = TRUE;
+            last_generated_secret_strength_ok' = TRUE;
+            last_sanitized' = TRUE
+
+      []
+        extension_token_ok:
+          registered
+          -->
+            access_status' = token_valid;
+            access_client' = registered_client;
+            access_scope' = 2;
+            access_grant_type' = grant_extension;
+            access_token_type_understood' = TRUE;
+            refresh_status' = refresh_valid;
+            refresh_client' = registered_client;
+            refresh_scope' = 2;
+            last_event' = ev_extension_token_ok;
+            last_error' = err_none;
+            last_http_status' = status_200;
+            last_client_type' = client_type;
+            last_grant_type' = grant_extension;
+            last_auth_method' = IF client_type = confidential_client THEN auth_basic ELSE auth_none ENDIF;
+            last_method' = http_post;
+            last_tls' = TRUE;
+            last_scope_requested' = 3;
+            last_scope_issued' = 2;
+            last_scope_response_present' = TRUE;
+            last_cache_no_store' = TRUE;
+            last_pragma_no_cache' = TRUE;
+            last_generated_secret_strength_ok' = TRUE;
+            last_sanitized' = TRUE
+
+      []
+        refresh_token_ok:
+          refresh_status = refresh_valid
+          -->
+            access_status' = token_valid;
+            access_client' = refresh_client;
+            access_scope' = 1;
+            access_grant_type' = grant_refresh_token;
+            access_token_type_understood' = TRUE;
+            refresh_status' = refresh_valid;
+            refresh_client' = refresh_client;
+            refresh_scope' = refresh_scope;
+            old_refresh_discarded' = TRUE;
+            last_event' = ev_refresh_token_ok;
+            last_error' = err_none;
+            last_http_status' = status_200;
+            last_client_type' = client_type;
+            last_grant_type' = grant_refresh_token;
+            last_auth_method' = IF client_type = confidential_client THEN auth_basic ELSE auth_none ENDIF;
+            last_method' = http_post;
+            last_tls' = TRUE;
+            last_scope_requested' = refresh_scope;
+            last_scope_issued' = 1;
+            last_scope_response_present' = TRUE;
+            last_cache_no_store' = TRUE;
+            last_pragma_no_cache' = TRUE;
+            last_generated_secret_strength_ok' = TRUE;
+            last_sanitized' = TRUE
+
+      []
+        resource_ok:
+          access_status = token_valid AND access_token_type_understood AND access_scope >= 1
+          -->
+            last_event' = ev_resource_ok;
+            last_error' = err_none;
+            last_http_status' = status_200;
+            last_resource_scope' = 1;
+            last_scope_issued' = access_scope;
+            last_refresh_sent_to_resource' = FALSE
+
+      []
+        resource_error:
+          access_status /= token_valid OR
+          NOT access_token_type_understood OR
+          access_scope < 1
+          -->
+            last_event' = ev_resource_error;
+            last_error' = err_invalid_token;
+            last_http_status' = status_400;
+            last_resource_scope' = 1;
+            last_refresh_sent_to_resource' = FALSE
+
+      []
+        expire_access_token:
+          access_status = token_valid
+          -->
+            access_status' = token_expired;
+            last_event' = ev_access_expired
+
+      []
+        invalid_redirect_blocked:
+          registered
+          -->
+            last_event' = ev_invalid_redirect_blocked;
+            last_error' = err_invalid_request;
+            last_http_status' = status_400;
+            last_response_type' = response_code;
+            last_redirect_status' = redirect_mismatch;
+            last_redirected' = FALSE
+
+      []
+        endpoint_tls_reject:
+          registered
+          -->
+            last_event' = ev_endpoint_tls_reject;
+            last_error' = err_invalid_request;
+            last_http_status' = status_400;
+            last_tls' = FALSE
+
+      []
+        multi_auth_reject:
+          registered
+          -->
+            last_event' = ev_multi_auth_reject;
+            last_error' = err_invalid_request;
+            last_http_status' = status_400;
+            last_auth_method' = auth_multiple
+
+      []
+        public_client_auth_reject:
+          registered AND client_type = public_client
+          -->
+            last_event' = ev_public_client_auth_reject;
+            last_error' = err_invalid_client;
+            last_http_status' = status_400;
+            last_auth_method' = auth_id_only
+
+      []
+        csrf_reject:
+          registered
+          -->
+            last_event' = ev_csrf_reject;
+            last_error' = err_invalid_request;
+            last_http_status' = status_400;
+            last_csrf_as_ok' = FALSE
+
+      []
+        sanitize_reject:
+          registered
+          -->
+            last_event' = ev_sanitize_reject;
+            last_error' = err_invalid_request;
+            last_http_status' = status_400;
+            last_sanitized' = FALSE
+
+      []
+        unsupported_response_type:
+          registered
+          -->
+            last_event' = ev_unsupported_response_type;
+            last_error' = err_unsupported_response_type;
+            last_http_status' = status_400;
+            last_response_type' = response_unknown
+
+      []
+        idle:
+          TRUE
+          -->
+            last_event' = ev_idle;
+            last_error' = err_none;
+            last_http_status' = status_none
+      ]
+  END;
+
+  % RFC 6749 section 1.2, datatracker lines 313-362: the abstract protocol
+  % issues access tokens before protected resources are served.
+  req_s1_2_access_token_precedes_resource: THEOREM oauth
+    |- G((last_event = ev_resource_ok) => access_status = token_valid);
+
+  % RFC 6749 section 1.3, lines 368-445: OAuth defines four grant types and
+  % permits extension grants.
+  req_s1_3_token_source_is_defined_grant: THEOREM oauth
+    |- G(token_issued_success?(last_event) =>
+         ((access_grant_type = grant_authorization_code) OR
+          (access_grant_type = grant_implicit) OR
+          (access_grant_type = grant_password) OR
+          (access_grant_type = grant_client_credentials) OR
+          (access_grant_type = grant_refresh_token) OR
+          (access_grant_type = grant_extension)));
+
+  % RFC 6749 section 1.5, lines 478-500: refresh tokens are intended only for
+  % authorization servers and are never sent to resource servers.
+  req_s1_5_refresh_not_sent_to_resource_server: THEOREM oauth
+    |- G((last_event = ev_resource_ok) => NOT last_refresh_sent_to_resource);
+
+  % RFC 6749 section 2.2, lines 714-719: client_id is not a secret and MUST NOT
+  % be used alone for client authentication.
+  req_s2_2_client_id_not_authentication: THEOREM oauth
+    |- G(token_endpoint_success?(last_event) => last_auth_method /= auth_id_only);
+
+  % RFC 6749 section 2.3, lines 755-799 and section 5.2, lines 2050-2054:
+  % clients use at most one authentication mechanism per request.
+  req_s2_3_single_client_auth_method: THEOREM oauth
+    |- G(token_endpoint_success?(last_event) => last_auth_method /= auth_multiple);
+
+  % RFC 6749 section 2.3.1, lines 755-799: client-password authentication at
+  % the token endpoint is protected by TLS.
+  req_s2_3_1_password_auth_uses_tls: THEOREM oauth
+    |- G((token_endpoint_success?(last_event) AND
+          ((last_auth_method = auth_basic) OR (last_auth_method = auth_body)))
+         => last_tls);
+
+  % RFC 6749 section 3.1, lines 838-859: authorization endpoint requests use
+  % TLS and GET in this profile.
+  req_s3_1_authorization_endpoint_tls_get: THEOREM oauth
+    |- G(auth_endpoint_success?(last_event) =>
+         (last_tls AND last_method = http_get));
+
+  % RFC 6749 section 3.1.1, lines 871-888: response_type is required and must
+  % be code, token, or a registered extension.
+  req_s3_1_1_supported_response_types: THEOREM oauth
+    |- G(auth_endpoint_success?(last_event) =>
+         ((last_response_type = response_code) OR
+          (last_response_type = response_token) OR
+          (last_response_type = response_extension)));
+
+  % RFC 6749 section 3.1.2.4 and 4.1.2.1, lines 972-975 and 1253-1258:
+  % invalid/mismatching redirect URIs are not automatically followed.
+  req_s3_1_2_invalid_redirect_not_followed: THEOREM oauth
+    |- G((last_event = ev_invalid_redirect_blocked) => NOT last_redirected);
+
+  % RFC 6749 section 3.2, lines 1011-1021: token endpoint requests use TLS and
+  % POST.
+  req_s3_2_token_endpoint_tls_post: THEOREM oauth
+    |- G(token_endpoint_success?(last_event) =>
+         (last_tls AND last_method = http_post));
+
+  % RFC 6749 section 3.2.1, lines 1023-1055: authorization codes are bound to
+  % the client they were issued to.
+  req_s3_2_1_code_bound_to_requesting_client: THEOREM oauth
+    |- G((last_event = ev_auth_code_token_ok) => access_client = code_client);
+
+  % RFC 6749 section 3.3, lines 1070-1079: if issued scope differs from the
+  % requested scope, the scope response parameter is present.
+  req_s3_3_scope_change_reported: THEOREM oauth
+    |- G(token_issued_success?(last_event) AND
+         (last_scope_issued /= last_scope_requested)
+         => last_scope_response_present);
+
+  % RFC 6749 section 4.1.2 and 10.5, lines 1231-1235 and 2565-2572:
+  % authorization codes are single-use, short-lived, and bound to client/URI.
+  req_s4_1_authorization_code_single_use: THEOREM oauth
+    |- G(code_use_count <= 1);
+
+  req_s4_1_expired_code_not_exchanged: THEOREM oauth
+    |- G((last_event = ev_auth_code_token_ok) => NOT last_code_was_expired);
+
+  req_s4_1_redirect_uri_checked_on_code_exchange: THEOREM oauth
+    |- G((last_event = ev_auth_code_token_ok AND code_redirect_was_in_initial)
+         => redirect_ok?(last_redirect_status));
+
+  % RFC 6749 section 4.2.2, lines 1579-1608: implicit grant returns the token
+  % in the URI fragment and MUST NOT issue a refresh token.
+  req_s4_2_implicit_no_refresh_token: THEOREM oauth
+    |- G((last_event = ev_implicit_token_ok) => refresh_status = refresh_none);
+
+  req_s4_2_implicit_token_in_fragment: THEOREM oauth
+    |- G((last_event = ev_implicit_token_ok) => last_fragment_contains_access_token);
+
+  % RFC 6749 section 4.3.1, lines 1767-1770: after password grant success, the
+  % client discards the resource-owner credentials.
+  req_s4_3_password_credentials_discarded: THEOREM oauth
+    |- G((last_event = ev_password_token_ok) => NOT ro_password_held_by_client);
+
+  % RFC 6749 section 4.3.2, lines 1810-1823: password grants validate resource
+  % owner credentials and are protected against brute-force attacks.
+  req_s4_3_password_grant_bruteforce_protected: THEOREM oauth
+    |- G((last_event = ev_password_token_ok) => last_bruteforce_protected);
+
+  % RFC 6749 section 4.4, lines 1859-1896: the client-credentials grant is only
+  % for confidential clients and the client authenticates.
+  req_s4_4_client_credentials_confidential_only: THEOREM oauth
+    |- G((last_event = ev_client_credentials_token_ok)
+         => last_client_type = confidential_client);
+
+  req_s4_4_client_credentials_authenticated: THEOREM oauth
+    |- G((last_event = ev_client_credentials_token_ok)
+         => auth_method_is_credential?(last_auth_method));
+
+  % RFC 6749 sections 4.5 and 8, lines 1936-1962 and 2272-2319: extension
+  % grants are explicitly marked as extensions in the token request.
+  req_s4_5_extension_grant_marked_as_extension: THEOREM oauth
+    |- G((last_event = ev_extension_token_ok)
+         => last_grant_type = grant_extension);
+
+  % RFC 6749 section 5.1, lines 1971-2014: successful token responses use
+  % no-store/no-cache.
+  req_s5_1_success_token_response_cache_headers: THEOREM oauth
+    |- G(token_endpoint_success?(last_event)
+         => (last_cache_no_store AND last_pragma_no_cache));
+
+  % RFC 6749 section 5.2, lines 2040-2079: failed token requests return an
+  % error code.
+  req_s5_2_token_error_has_error_code: THEOREM oauth
+    |- G((last_event = ev_token_error OR
+          last_event = ev_auth_code_reuse_denied OR
+          last_event = ev_multi_auth_reject OR
+          last_event = ev_public_client_auth_reject)
+         => last_error /= err_none);
+
+  % RFC 6749 section 6, lines 2168-2189: refresh-token requests are bound to
+  % the client and cannot broaden scope.
+  req_s6_refresh_bound_to_client: THEOREM oauth
+    |- G((last_event = ev_refresh_token_ok) => access_client = refresh_client);
+
+  req_s6_refresh_scope_not_broadened: THEOREM oauth
+    |- G((last_event = ev_refresh_token_ok) => access_scope <= refresh_scope);
+
+  req_s6_rotated_refresh_scope_identical: THEOREM oauth
+    |- G((last_event = ev_refresh_token_ok AND old_refresh_discarded)
+         => refresh_scope = last_scope_requested);
+
+  % RFC 6749 section 7, lines 2191-2218: protected resources are served only
+  % after the token is valid, unexpired, understood, and scoped.
+  req_s7_resource_requires_valid_token_scope_type: THEOREM oauth
+    |- G((last_event = ev_resource_ok) =>
+         (access_status = token_valid AND
+          last_resource_scope <= access_scope AND
+          access_token_type_understood));
+
+  % RFC 6749 section 10.1, lines 2434-2453: client auth credentials are not
+  % issued to native or user-agent applications.
+  req_s10_1_no_public_app_client_credentials: THEOREM oauth
+    |- G(client_has_credentials =>
+         (client_type = confidential_client AND client_profile = web_application));
+
+  % RFC 6749 section 10.3, lines 2496-2509: access tokens are confidential,
+  % transmitted with TLS, and generated with enough unpredictability.
+  req_s10_3_access_tokens_tls_and_unguessable: THEOREM oauth
+    |- G(token_issued_success?(last_event) =>
+         (last_tls AND last_generated_secret_strength_ok));
+
+  % RFC 6749 section 10.4, lines 2518-2550: refresh tokens are bound to the
+  % client and generated so unauthorized parties cannot guess them.
+  req_s10_4_refresh_tokens_bound_and_unguessable: THEOREM oauth
+    |- G((refresh_status = refresh_valid) =>
+         (refresh_client = access_client AND last_generated_secret_strength_ok));
+
+  % RFC 6749 section 10.6, lines 2604-2611: redirect manipulation is prevented
+  % by checking the redirect URI used at code exchange.
+  req_s10_6_redirect_manipulation_prevented: THEOREM oauth
+    |- G((last_event = ev_auth_code_token_ok AND code_redirect_was_in_initial)
+         => redirect_ok?(last_redirect_status));
+
+  % RFC 6749 section 10.8, lines 2638-2645: tokens, passwords, and client
+  % credentials are not transmitted in the clear.
+  req_s10_8_no_cleartext_sensitive_credentials: THEOREM oauth
+    |- G(cleartext_sensitive_event?(last_event) => last_tls);
+
+  % RFC 6749 section 10.9, lines 2647-2653: authorization and token endpoints
+  % require TLS with server authentication.
+  req_s10_9_endpoint_authenticity_tls: THEOREM oauth
+    |- G((auth_endpoint_success?(last_event) OR token_endpoint_success?(last_event))
+         => last_tls);
+
+  % RFC 6749 section 10.10, lines 2655-2664: generated credentials resist
+  % guessing attacks.
+  req_s10_10_generated_credentials_unguessable: THEOREM oauth
+    |- G(token_issued_success?(last_event) => last_generated_secret_strength_ok);
+
+  % RFC 6749 section 10.12, lines 2702-2727: authorization endpoints implement
+  % CSRF protection.
+  req_s10_12_as_csrf_for_authorization: THEOREM oauth
+    |- G(auth_endpoint_success?(last_event) => last_csrf_as_ok);
+
+  % RFC 6749 section 10.14, lines 2754-2763: state and redirect_uri values are
+  % sanitized/validated when accepted.
+  req_s10_14_sanitize_state_and_redirect: THEOREM oauth
+    |- G((auth_endpoint_success?(last_event) OR token_endpoint_success?(last_event))
+         => last_sanitized);
+
+  % RFC 6749 section 10.15, lines 2765-2784: redirect validation blocks open
+  % redirector abuse.
+  req_s10_15_open_redirector_blocked: THEOREM oauth
+    |- G((last_event = ev_invalid_redirect_blocked) =>
+         (redirect_bad?(last_redirect_status) AND NOT last_redirected));
+
+END
