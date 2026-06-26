@@ -1,0 +1,40 @@
+itoa: THEORY
+BEGIN
+  digit_to_string(d: {i: nat | i < 10}): bytestring =
+    COND
+      d = 0 -> "0",
+      d = 1 -> "1",
+      d = 2 -> "2",
+      d = 3 -> "3",
+      d = 4 -> "4",
+      d = 5 -> "5",
+      d = 6 -> "6",
+      d = 7 -> "7",
+      d = 8 -> "8",
+      d = 9 -> "9",
+      ELSE -> "?"
+    ENDCOND
+
+  itoa_pos(n: int64): RECURSIVE bytestring =
+    IF n < 10 THEN
+      digit_to_string(n)
+    ELSE
+      itoa_pos(n / 10) ++ digit_to_string(nrem(n, 10))
+    ENDIF
+  MEASURE n
+
+  itoa(n: int64): bytestring =
+    IF n = 0 THEN
+      "0"
+    ELSIF n < 0 THEN
+      "-" ++ itoa_pos(abs(n))
+    ELSE
+      itoa_pos(n)
+    ENDIF
+
+  test0: _TEST_ itoa(0) = "0"
+  test10: _TEST_ itoa(10) = "10"
+  test15: _TEST_ itoa(15) = "15"
+  testminus1: _TEST_ itoa(-1) = "-1"
+
+END itoa

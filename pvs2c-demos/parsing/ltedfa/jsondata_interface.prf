@@ -1,0 +1,1027 @@
+(|jsondata_interface|
+ (|get_key_rec_TCC1| 0
+  (|get_key_rec_TCC1-1| NIL 3963606695
+   ("" (SKEEP) (("" (TYPEPRED "i") (("" (ASSERT) NIL NIL)) NIL)) NIL)
+   ((|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|jpair?| ADT-RECOGNIZER-DECL "[jsondata -> boolean]" |jsondata| NIL)
+    (|jsondata| TYPE-DECL NIL |jsondata| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   NIL
+   (|get_key_rec| SUBTYPE
+    "(number_fields.-)(jsondata_interface.kvs`length, jsondata_interface.i)"
+    "naturalnumber" (51 10 51 24))))
+ (|get_key_rec_TCC2| 0
+  (|get_key_rec_TCC2-1| NIL 3963606695
+   ("" (SKEEP*) (("" (TYPEPRED "i") (("" (ASSERT) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|jsondata| TYPE-DECL NIL |jsondata| NIL)
+    (|jpair?| ADT-RECOGNIZER-DECL "[jsondata -> boolean]" |jsondata| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|get_key_rec| SUBTYPE "jsondata_interface.i" "below[kvs`length]"
+    (47 24 47 25))))
+ (|get_key_rec_TCC3| 0
+  (|get_key_rec_TCC4-1| NIL 3963606695
+   ("" (SKEEP*) (("" (TYPEPRED "i") (("" (ASSERT) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|jsondata| TYPE-DECL NIL |jsondata| NIL)
+    (|jpair?| ADT-RECOGNIZER-DECL "[jsondata -> boolean]" |jsondata| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|get_key_rec| SUBTYPE "(number_fields.+)(jsondata_interface.i, 1)"
+    "upto(jsondata_interface.kvs`length)" (48 29 48 32))))
+ (|get_key_rec_TCC4| 0
+  (|get_key_rec_TCC5-1| NIL 3963606695
+   ("" (SKEEP*) (("" (TYPEPRED "i") (("" (ASSERT) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|jsondata| TYPE-DECL NIL |jsondata| NIL)
+    (|jpair?| ADT-RECOGNIZER-DECL "[jsondata -> boolean]" |jsondata| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|get_key_rec| TERMINATION
+    "jsondata_interface.get_key_rec(jsondata_interface.kvs, jsondata_interface.key, (number_fields.+)(jsondata_interface.i, 1))"
+    "NIL" (48 7 48 33))))
+ (|get_key_TCC1| 0
+  (|get_key_TCC1-1| NIL 3963606695 ("" (SKEEP*) (("" (GRIND) NIL NIL)) NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|get_key| SUBTYPE "0"
+    "upto(jsondata.contents(jsondata_interface.object)`length)"
+    (54 39 54 40))))
+ (|dict_TCC1| 0
+  (|dict_TCC1-1| NIL 3963606695 ("" (EVAL-FORMULA) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL (|dict| SUBTYPE "\"foo\"" "bstring" (60 57 60 60))))
+ (|dict_TCC2| 0
+  (|dict_TCC2-1| NIL 3963606695 ("" (EVAL-FORMULA) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL (|dict| SUBTYPE "\"bar\"" "bstring" (60 69 60 72))))
+ (|dict_TCC3| 0
+  (|dict_TCC3-1| NIL 3963606695 ("" (EVAL-FORMULA) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL (|dict| SUBTYPE "\"abc\"" "bstring" (60 84 60 87))))
+ (|dict_TCC4| 0
+  (|dict_TCC4-1| NIL 3963606695 ("" (EVAL-FORMULA) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL (|dict| SUBTYPE "\"def\"" "bstring" (60 96 60 99))))
+ (|has_key_test1_TCC1| 0
+  (|has_key_test1_TCC1-1| NIL 3963662137 ("" (EVAL-FORMULA) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL (|has_key_test1| SUBTYPE "\"foo\"" "bstring" (63 18 63 21))))
+ (|has_key_test2_TCC1| 0
+  (|has_key_test2_TCC1-1| NIL 3963662137 ("" (EVAL-FORMULA) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL (|has_key_test2| SUBTYPE "\"abc\"" "bstring" (66 18 66 21))))
+ (|has_key_test3_TCC1| 0
+  (|has_key_test3_TCC1-1| NIL 3963662137
+   ("" (GRIND)
+    (("" (CASE "i!1 = 0")
+      (("1" (GRIND) NIL NIL)
+       ("2" (CASE "i!1 = 1")
+        (("1" (GRIND) NIL NIL)
+         ("2" (CASE "i!1 = 2") (("1" (GRIND) NIL NIL) ("2" (ASSERT) NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|nth| DEF-DECL "T" |list_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|character| TYPE-DECL NIL |character_adt| NIL)
+    (|char?| ADT-RECOGNIZER-DECL "[character -> boolean]" |character_adt| NIL)
+    (|char| TYPE-EQ-DECL NIL |strings| NIL)
+    (|list| TYPE-DECL NIL |list_adt| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|finseq| TYPE-EQ-DECL NIL |finite_sequences| NIL)
+    (|cons?| ADT-RECOGNIZER-DECL "[list -> boolean]" |list_adt| NIL)
+    (|cons| ADT-CONSTRUCTOR-DECL "[[T, list] -> (cons?)]" |list_adt| NIL)
+    (|char| ADT-CONSTRUCTOR-DECL "[below[0x110000] -> (char?)]" |character_adt|
+     NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL))
+   NIL (|has_key_test3| SUBTYPE "\"bar\"" "bstring" (69 22 69 25))))
+ (|parse_string_TCC1| 0
+  (|parse_string_TCC1-1| NIL 3965221077
+   ("" (SKEEP) (("" (ASSERT) NIL NIL)) NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|parse_string| SUBTYPE "1" "upto(length(jsondata_interface.s))"
+    (80 29 80 30))))
+ (|parse_string_TCC2| 0
+  (|parse_string_TCC2-1| NIL 3965221077
+   ("" (SKEEP) (("" (ASSERT) NIL NIL)) NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|parse_string| SUBTYPE "(number_fields.-)(length(jsondata_interface.s), 1)"
+    "subrange(1, length(jsondata_interface.s))" (80 32 80 45))))
+ (|ejson_parsetree_to_json_TCC1| 0
+  (|ejson_parsetree_to_json_TCC1-1| NIL 3965221077
+   ("" (WELL-FOUNDED-TCC) NIL NIL) NIL NIL
+   (|ejson_parsetree_to_json| WELL-FOUNDED
+    "restrict[[ltedfapegproof.parsetree, ltedfapegproof.parsetree], [(ltedfapegproof.allgoodentries?), (ltedfapegproof.allgoodentries?)], bool].restrict(ltedfapegproof.<<)"
+    "NIL" (183 16 183 18))))
+ (|ejson_parsetree_to_json_TCC2| 0
+  (|ejson_parsetree_to_json_TCC2-1| NIL 3965221077
+   ("" (SKEEP*) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.ent"
+    "(ltedfapeg.good?)" (95 39 95 42))))
+ (|ejson_parsetree_to_json_TCC3| 0
+  (|ejson_parsetree_to_json_TCC3-1| NIL 3965221077
+   ("" (SKEEP*) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.ent"
+    "(ltedfapeg.good?)" (97 40 97 43))))
+ (|ejson_parsetree_to_json_TCC4| 0
+  (|ejson_parsetree_to_json_TCC4-1| NIL 3965221077
+   ("" (SKEEP*) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.subone"
+    "(ltedfapegproof.allgoodentries?)" (105 42 105 48))))
+ (|ejson_parsetree_to_json_TCC5| 0
+  (|ejson_parsetree_to_json_TCC5-1| NIL 3965221077
+   ("" (SKEEP*)
+    (("" (EXPAND "restrict") (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((|restrict| CONST-DECL "R" |restrict| NIL)
+    (<< ADT-DEF-DECL "(strict_well_founded?[parsetree])" |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| TERMINATION
+    "jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subone)"
+    "NIL" (105 18 105 49))))
+ (|ejson_parsetree_to_json_TCC6| 0
+  (|ejson_parsetree_to_json_TCC6-1| NIL 3965221077
+   ("" (SKEEP*) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.subtwo"
+    "(ltedfapegproof.allgoodentries?)" (106 48 106 54))))
+ (|ejson_parsetree_to_json_TCC7| 0
+  (|ejson_parsetree_to_json_TCC7-1| NIL 3965221077
+   ("" (SKEEP*)
+    (("" (EXPAND "restrict") (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((|restrict| CONST-DECL "R" |restrict| NIL)
+    (<< ADT-DEF-DECL "(strict_well_founded?[parsetree])" |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| TERMINATION
+    "jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subtwo)"
+    "NIL" (106 24 106 55))))
+ (|ejson_parsetree_to_json_TCC8| 0
+  (|ejson_parsetree_to_json_TCC8-1| NIL 3965221077
+   ("" (SKEEP*) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.subtwo"
+    "(ltedfapegproof.allgoodentries?)" (112 42 112 48))))
+ (|ejson_parsetree_to_json_TCC9| 0
+  (|ejson_parsetree_to_json_TCC9-1| NIL 3965221077
+   ("" (SKEEP*) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (<< ADT-DEF-DECL "(strict_well_founded?[parsetree])" |ltedfapegproof| NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL)
+    (|well_founded_restrict| APPLICATION-JUDGEMENT "(well_founded?[S])"
+     |restrict_order_props| NIL)
+    (|strict_order_restrict| APPLICATION-JUDGEMENT "(strict_order?[S])"
+     |restrict_order_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| TERMINATION
+    "jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subtwo)"
+    "NIL" (112 18 112 49))))
+ (|ejson_parsetree_to_json_TCC10| 0
+  (|ejson_parsetree_to_json_TCC10-1| NIL 3965221077 ("" (GRIND) NIL NIL)
+   ((|empty_seq| CONST-DECL "finseq" |finite_sequences| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE
+    "finite_sequences[(jsondata.jpair?)].empty_seq" "aseq[(jpair?)]"
+    (113 40 113 49))))
+ (|ejson_parsetree_to_json_TCC11| 0
+  (|ejson_parsetree_to_json_TCC11-1| NIL 3965221077
+   ("" (SKEEP) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.subone"
+    "(ltedfapegproof.allgoodentries?)" (119 42 119 48))))
+ (|ejson_parsetree_to_json_TCC12| 0
+  (|ejson_parsetree_to_json_TCC12-1| NIL 3965221077
+   ("" (SKEEP) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (<< ADT-DEF-DECL "(strict_well_founded?[parsetree])" |ltedfapegproof| NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL)
+    (|well_founded_restrict| APPLICATION-JUDGEMENT "(well_founded?[S])"
+     |restrict_order_props| NIL)
+    (|strict_order_restrict| APPLICATION-JUDGEMENT "(strict_order?[S])"
+     |restrict_order_props| NIL))
+   NIL
+   (|ejson_parsetree_to_json| TERMINATION
+    "jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subone)"
+    "NIL" (119 18 119 49))))
+ (|ejson_parsetree_to_json_TCC13| 0
+  (|ejson_parsetree_to_json_TCC13-1| NIL 3965221077
+   ("" (SKEEP) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.subtwo"
+    "(ltedfapegproof.allgoodentries?)" (123 46 123 52))))
+ (|ejson_parsetree_to_json_TCC14| 0
+  (|ejson_parsetree_to_json_TCC14-1| NIL 3965221077
+   ("" (SKEEP) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (<< ADT-DEF-DECL "(strict_well_founded?[parsetree])" |ltedfapegproof| NIL)
+    (|restrict| CONST-DECL "R" |restrict| NIL))
+   NIL
+   (|ejson_parsetree_to_json| TERMINATION
+    "jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subtwo)"
+    "NIL" (123 22 123 53))))
+ (|ejson_parsetree_to_json_TCC15| 0
+  (|ejson_parsetree_to_json_TCC15-1| NIL 3965221077
+   ("" (SKEEP*) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|full_aseq?| CONST-DECL "bool" |array_sequences| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|empty_aseq| CONST-DECL "aseq" |array_sequences| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE
+    "array_sequences[jsondata.jsondata].empty_aseq"
+    "{a | (booleans.NOT)(array_sequences[jsondata.jsondata].full_aseq?(a))}"
+    (125 57 125 67))))
+ (|ejson_parsetree_to_json_TCC16| 0
+  (|ejson_parsetree_to_json_TCC16-1| NIL 3965221077
+   ("" (SKEEP*)
+    (("" (TYPEPRED "x1")
+      (("" (HIDE-ALL-BUT (-1 -6 8)) (("" (GRIND) NIL NIL)) NIL)) NIL))
+    NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|jsondata| TYPE-DECL NIL |jsondata| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|full_aseq?| CONST-DECL "bool" |array_sequences| NIL)
+    (|aseq_add| CONST-DECL "aseq" |array_sequences| NIL)
+    (|empty_aseq| CONST-DECL "aseq" |array_sequences| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE
+    "array_sequences[jsondata.jsondata].aseq_add(jsondata_interface.json_entry, array_sequences[jsondata.jsondata].empty_aseq)"
+    "aseq[(jpair?)]" (125 36 125 68))))
+ (|ejson_parsetree_to_json_TCC17| 0
+  (|ejson_parsetree_to_json_TCC17-1| NIL 3965221077
+   ("" (SKEEP) (("" (SKEEP) (("" (EVAL-FORMULA 9) NIL NIL)) NIL)) NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "\"failed jpair\"" "bstring"
+    (127 37 127 49))))
+ (|ejson_parsetree_to_json_TCC18| 0
+  (|ejson_parsetree_to_json_TCC18-1| NIL 3965221077
+   ("" (SKEEP*) (("" (EVAL-FORMULA 8) NIL NIL)) NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "\"brancha \"" "bstring"
+    (131 40 131 48))))
+ (|ejson_parsetree_to_json_TCC19| 0
+  (|ejson_parsetree_to_json_TCC19-1| NIL 3965221077
+   ("" (SKEEP*)
+    (("" (TYPEPRED "ent") (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL))
+      NIL))
+    NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|ent| TYPE-DECL NIL |ltedfapeg| NIL)
+    (|defent?| CONST-DECL "bool" |ltedfapegproof| NIL)
+    (|defent| TYPE-EQ-DECL NIL |ltedfapegproof| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.ent"
+    "(ltedfapeg.good?)" (131 72 131 75))))
+ (|ejson_parsetree_to_json_TCC20| 0
+  (|ejson_parsetree_to_json_TCC21-1| NIL 3965221077 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|full_aseq?| CONST-DECL "bool" |array_sequences| NIL)
+    (|aseq_add| CONST-DECL "aseq" |array_sequences| NIL)
+    (|jsondata| TYPE-DECL NIL |jsondata| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|jdict?| ADT-RECOGNIZER-DECL "[jsondata -> boolean]" |jsondata| NIL)
+    (|jpair?| ADT-RECOGNIZER-DECL "[jsondata -> boolean]" |jsondata| NIL)
+    (|contents| ADT-ACCESSOR-DECL "[(jdict?) -> aseq[(jpair?)]]" |jsondata|
+     NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|defent| TYPE-EQ-DECL NIL |ltedfapegproof| NIL)
+    (|defent?| CONST-DECL "bool" |ltedfapegproof| NIL)
+    (|ent| TYPE-DECL NIL |ltedfapeg| NIL)
+    (|non_terminal| TYPE-EQ-DECL NIL |ltedfapeg| NIL)
+    (|num_non_terminals| CONST-DECL "byte" |ltedfapeg| NIL)
+    (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE
+    "array_sequences[jsondata.jsondata].aseq_add(jsondata_interface.json_entry, jsondata.contents(jsondata_interface.json_rest))"
+    "aseq[(jpair?)]" (133 40 133 81))))
+ (|ejson_parsetree_to_json_TCC21| 0
+  (|ejson_parsetree_to_json_TCC25-1| NIL 3965221077
+   ("" (SKEEP*) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.subone"
+    "(ltedfapegproof.allgoodentries?)" (153 42 153 48))))
+ (|ejson_parsetree_to_json_TCC22| 0
+  (|ejson_parsetree_to_json_TCC26-1| NIL 3965221077
+   ("" (TERMINATION-TCC) NIL NIL)
+   ((|restrict| CONST-DECL "R" |restrict| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (<< ADT-DEF-DECL "(strict_well_founded?[parsetree])" |ltedfapegproof| NIL)
+    (|defent| TYPE-EQ-DECL NIL |ltedfapegproof| NIL)
+    (|defent?| CONST-DECL "bool" |ltedfapegproof| NIL)
+    (|ent| TYPE-DECL NIL |ltedfapeg| NIL)
+    (|non_terminal| TYPE-EQ-DECL NIL |ltedfapeg| NIL)
+    (|num_non_terminals| CONST-DECL "byte" |ltedfapeg| NIL)
+    (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| TERMINATION
+    "jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subone)"
+    "NIL" (153 18 153 49))))
+ (|ejson_parsetree_to_json_TCC23| 0
+  (|ejson_parsetree_to_json_TCC27-1| NIL 3965221077
+   ("" (SKEEP*) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.subtwo"
+    "(ltedfapegproof.allgoodentries?)" (154 44 154 50))))
+ (|ejson_parsetree_to_json_TCC24| 0
+  (|ejson_parsetree_to_json_TCC28-1| NIL 3965221077
+   ("" (TERMINATION-TCC) NIL NIL)
+   ((|restrict| CONST-DECL "R" |restrict| NIL)
+    (<< ADT-DEF-DECL "(strict_well_founded?[parsetree])" |ltedfapegproof| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|defent| TYPE-EQ-DECL NIL |ltedfapegproof| NIL)
+    (|defent?| CONST-DECL "bool" |ltedfapegproof| NIL)
+    (|ent| TYPE-DECL NIL |ltedfapeg| NIL)
+    (|non_terminal| TYPE-EQ-DECL NIL |ltedfapeg| NIL)
+    (|num_non_terminals| CONST-DECL "byte" |ltedfapeg| NIL)
+    (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| TERMINATION
+    "jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subtwo)"
+    "NIL" (154 20 154 51))))
+ (|ejson_parsetree_to_json_TCC25| 0
+  (|ejson_parsetree_to_json_TCC29-1| NIL 3965221077
+   ("" (SKEEP*) (("" (TYPEPRED "pt") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.subtwo"
+    "(ltedfapegproof.allgoodentries?)" (164 42 164 48))))
+ (|ejson_parsetree_to_json_TCC26| 0
+  (|ejson_parsetree_to_json_TCC30-1| NIL 3965221077
+   ("" (TERMINATION-TCC) NIL NIL)
+   ((|restrict| CONST-DECL "R" |restrict| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (<< ADT-DEF-DECL "(strict_well_founded?[parsetree])" |ltedfapegproof| NIL)
+    (|defent| TYPE-EQ-DECL NIL |ltedfapegproof| NIL)
+    (|defent?| CONST-DECL "bool" |ltedfapegproof| NIL)
+    (|ent| TYPE-DECL NIL |ltedfapeg| NIL)
+    (|non_terminal| TYPE-EQ-DECL NIL |ltedfapeg| NIL)
+    (|num_non_terminals| CONST-DECL "byte" |ltedfapeg| NIL)
+    (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| TERMINATION
+    "jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subtwo)"
+    "NIL" (164 18 164 49))))
+ (|ejson_parsetree_to_json_TCC27| 0
+  (|ejson_parsetree_to_json_TCC31-1| NIL 3965221077 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|empty_seq| CONST-DECL "finseq" |finite_sequences| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|defent| TYPE-EQ-DECL NIL |ltedfapegproof| NIL)
+    (|defent?| CONST-DECL "bool" |ltedfapegproof| NIL)
+    (|ent| TYPE-DECL NIL |ltedfapeg| NIL)
+    (|non_terminal| TYPE-EQ-DECL NIL |ltedfapeg| NIL)
+    (|num_non_terminals| CONST-DECL "byte" |ltedfapeg| NIL)
+    (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE
+    "finite_sequences[jsondata.jsondata].empty_seq" "aseq[jsondata]"
+    (165 41 165 50))))
+ (|ejson_parsetree_to_json_TCC28| 0
+  (|ejson_parsetree_to_json_TCC32-1| NIL 3965221077
+   ("" (SKOLEM-TYPEPRED) (("" (GRIND) NIL NIL)) NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|defent| TYPE-EQ-DECL NIL |ltedfapegproof| NIL)
+    (|defent?| CONST-DECL "bool" |ltedfapegproof| NIL)
+    (|ent| TYPE-DECL NIL |ltedfapeg| NIL)
+    (|non_terminal| TYPE-EQ-DECL NIL |ltedfapeg| NIL)
+    (|num_non_terminals| CONST-DECL "byte" |ltedfapeg| NIL)
+    (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.subone"
+    "(ltedfapegproof.allgoodentries?)" (171 44 171 50))))
+ (|ejson_parsetree_to_json_TCC29| 0
+  (|ejson_parsetree_to_json_TCC33-1| NIL 3965221077
+   ("" (TERMINATION-TCC) NIL NIL)
+   ((|restrict| CONST-DECL "R" |restrict| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (<< ADT-DEF-DECL "(strict_well_founded?[parsetree])" |ltedfapegproof| NIL)
+    (|defent| TYPE-EQ-DECL NIL |ltedfapegproof| NIL)
+    (|defent?| CONST-DECL "bool" |ltedfapegproof| NIL)
+    (|ent| TYPE-DECL NIL |ltedfapeg| NIL)
+    (|non_terminal| TYPE-EQ-DECL NIL |ltedfapeg| NIL)
+    (|num_non_terminals| CONST-DECL "byte" |ltedfapeg| NIL)
+    (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| TERMINATION
+    "jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subone)"
+    "NIL" (171 20 171 51))))
+ (|ejson_parsetree_to_json_TCC30| 0
+  (|ejson_parsetree_to_json_TCC34-1| NIL 3965221077
+   ("" (SKOLEM-TYPEPRED) (("" (GRIND) NIL NIL)) NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|defent| TYPE-EQ-DECL NIL |ltedfapegproof| NIL)
+    (|defent?| CONST-DECL "bool" |ltedfapegproof| NIL)
+    (|ent| TYPE-DECL NIL |ltedfapeg| NIL)
+    (|non_terminal| TYPE-EQ-DECL NIL |ltedfapeg| NIL)
+    (|num_non_terminals| CONST-DECL "byte" |ltedfapeg| NIL)
+    (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| SUBTYPE "jsondata_interface.subtwo"
+    "(ltedfapegproof.allgoodentries?)" (172 44 172 50))))
+ (|ejson_parsetree_to_json_TCC31| 0
+  (|ejson_parsetree_to_json_TCC35-1| NIL 3965221077
+   ("" (TERMINATION-TCC) NIL NIL)
+   ((|restrict| CONST-DECL "R" |restrict| NIL)
+    (<< ADT-DEF-DECL "(strict_well_founded?[parsetree])" |ltedfapegproof| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|defent| TYPE-EQ-DECL NIL |ltedfapegproof| NIL)
+    (|defent?| CONST-DECL "bool" |ltedfapegproof| NIL)
+    (|ent| TYPE-DECL NIL |ltedfapeg| NIL)
+    (|non_terminal| TYPE-EQ-DECL NIL |ltedfapeg| NIL)
+    (|num_non_terminals| CONST-DECL "byte" |ltedfapeg| NIL)
+    (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| TERMINATION
+    "jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subtwo)"
+    "NIL" (172 20 172 51))))
+ (|ejson_parsetree_to_json_TCC32| 0
+  (|ejson_parsetree_to_json_TCC37-1| NIL 3965221077
+   ("" (COND-DISJOINT-TCC) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|defent| TYPE-EQ-DECL NIL |ltedfapegproof| NIL)
+    (|defent?| CONST-DECL "bool" |ltedfapegproof| NIL)
+    (|ent| TYPE-DECL NIL |ltedfapeg| NIL)
+    (|non_terminal| TYPE-EQ-DECL NIL |ltedfapeg| NIL)
+    (|num_non_terminals| CONST-DECL "byte" |ltedfapeg| NIL)
+    (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|allgoodentries?| DEF-DECL "bool" |ltedfapegproof| NIL)
+    (|parsetree| TYPE-DECL NIL |ltedfapegproof| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|ejson_parsetree_to_json| DISJOINTNESS
+    "COND      (jsondata_interface.nt = 0) OR (jsondata_interface.nt = 2) OR (jsondata_interface.nt = 1) OR (jsondata_interface.nt = 12) OR (jsondata_interface.nt = 10) OR (jsondata_interface.nt = 11) -> CASES jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subone) OF r_failed: jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subtwo), r_success(json): jsondata_interface.r_success(json) ENDCASES, jsondata_interface.nt = 5 -> CASES jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subtwo) OF r_failed: jsondata_interface.r_success(jsondata.jdict(finite_sequences[(jsondata.jpair?)].empty_seq)), r_success(json): jsondata_interface.r_success(json) ENDCASES, jsondata_interface.nt = 6 -> CASES jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subone) OF r_failed: jsondata_interface.r_failed, r_success(json_entry): CASES jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subtwo) OF r_failed: IF jsondata.jpair?(json_entry) THEN jsondata_interface.r_success(jsondata.jdict(array_sequences[jsondata.jsondata].aseq_add(json_entry, array_sequences[jsondata.jsondata].empty_aseq))) ELSE LET foo = file.printc(bytestrings.mk_bytestring(\"failed jpair\")) IN IF reals.>(jsondata_interface.foo`length, 0) THEN jsondata_interface.r_failed ELSE jsondata_interface.r_failed ENDIF ENDIF, r_success(json_rest): IF booleans.AND(jsondata.jpair?(json_entry), jsondata.jdict?(json_rest)) THEN LET foo = file.printc(bytestrings.mk_bytestring(\"brancha \")), bar = file.printc(ltedfapeg.chars(jsondata_interface.ent)) IN IF booleans.AND(reals.>(jsondata_interface.foo`length, 0), booleans.AND(reals.>(jsondata_interface.bar`length, 0), (booleans.NOT)(array_sequences[(jsondata.jpair?)].full_aseq?(jsondata.contents(json_rest))))) THEN jsondata_interface.r_success(jsondata.jdict(array_sequences[jsondata.jsondata].aseq_add(json_entry, jsondata.contents(json_rest)))) ELSE jsondata_interface.r_failed ENDIF ELSE jsondata_interface.r_failed ENDIF ENDCASES ENDCASES, jsondata_interface.nt = 7 -> LET key = jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subone), value = jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subtwo) IN IF booleans.AND(jsondata_interface.r_success?(jsondata_interface.key), booleans.AND(jsondata.jstr?(jsondata_interface.json(jsondata_interface.key)), jsondata_interface.r_success?(jsondata_interface.value))) THEN jsondata_interface.r_success(jsondata.jpair(jsondata.strval(jsondata_interface.json(jsondata_interface.key)), jsondata_interface.json(jsondata_interface.value))) ELSE jsondata_interface.r_failed ENDIF, booleans.OR(jsondata_interface.nt = 13, jsondata_interface.nt = 14) -> CASES jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subtwo) OF r_failed: jsondata_interface.r_success(jsondata.jarray(finite_sequences[jsondata.jsondata].empty_seq)), r_success(json): jsondata_interface.r_success(json) ENDCASES, jsondata_interface.nt = 15 -> LET car = jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subone), cdr = jsondata_interface.ejson_parsetree_to_json(jsondata_interface.subtwo) IN IF booleans.AND(jsondata_interface.r_success?(jsondata_interface.car), booleans.AND(jsondata_interface.r_success?(jsondata_interface.cdr), booleans.AND(jsondata.jarray?(jsondata_interface.json(jsondata_interface.cdr)), (booleans.NOT)(array_sequences[jsondata.jsondata].full_aseq?(jsondata.arrval(jsondata_interface.json(jsondata_interface.cdr))))))) THEN jsondata_interface.r_success(jsondata.jarray(array_sequences[jsondata.jsondata].aseq_add(jsondata_interface.json(jsondata_interface.car), jsondata.arrval(jsondata_interface.json(jsondata_interface.cdr))))) ELSE jsondata_interface.r_failed ENDIF, ELSE -> jsondata_interface.r_failed ENDCOND"
+    "NIL" (102 8 181 15))))
+ (|trivial_filename_TCC1| 0
+  (|trivial_filename_TCC1-1| NIL 3964020946 ("" (EVAL-FORMULA) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL
+   (|trivial_filename| SUBTYPE "\"trivial.json\"" "bstring" (280 47 280 59))))
+ (|trivial_test_TCC1| 0
+  (|trivial_test_TCC1-1| NIL 3964020946 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|trivial_test| SUBTYPE "jsondata_interface.trivial_json"
+    "(jsondata_interface.r_success?)" (287 19 287 31))))
+ (|test_filename_TCC1| 0
+  (|test_filename_TCC1-1| NIL 3964020946 ("" (EVAL-FORMULA) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL (|test_filename| SUBTYPE "\"test.json\"" "bstring" (291 44 291 53))))
+ (|test_result_TCC1| 0
+  (|test_result_TCC1-1| NIL 3964020946 ("" (EVAL-FORMULA) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL (|test_result| SUBTYPE "\"quux\"" "bstring" (300 29 300 33))))
+ (|test_result_TCC2| 0
+  (|test_result_TCC2-1| NIL 3964020946 ("" (EVAL-FORMULA) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL (|test_result| SUBTYPE "\"bar1\"" "bstring" (305 38 305 42))))
+ (|test_json_inner_TCC1| 0
+  (|test_json_inner_TCC1-1| NIL 3965221077 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_json_inner| SUBTYPE "jsondata_interface.test_json"
+    "(jsondata_interface.r_success?)" (311 35 311 44)))))
+

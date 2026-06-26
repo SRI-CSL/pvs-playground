@@ -1,0 +1,334 @@
+(|wasm_i32|
+ (|empty_stack_TCC1| 0
+  (|empty_stack_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|empty_stack| SUBTYPE "0" "upto(wasm_i32.max_stack)" (66 17 66 18))))
+ (|push_TCC1| 0
+  (|push_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|push| SUBTYPE "s`height + 1" "upto(wasm_i32.max_stack)" (77 23 77 35))))
+ (|push_TCC2| 0
+  (|push_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|push| SUBTYPE "s`height" "below(wasm_i32.max_stack)" (78 20 78 28))))
+ (|push_TCC3| 0
+  (|push_TCC3-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|push| SUBTYPE "s WITH [`height := s`height + 1, `values(s`height) := v]"
+    "{t: wasm_i32.value_stack | t`height = (number_fields.+)(1, wasm_i32.s`height)}"
+    (77 4 78 35))))
+ (|pop_TCC1| 0
+  (|pop_TCC1-1| NIL 3987526939
+   ("" (SKEEP) (("" (ALL-TYPEPREDS) (("" (GRIND) NIL NIL)) NIL)) NIL) NIL NIL
+   (|pop| SUBTYPE "s`height - 1" "upto(wasm_i32.max_stack)" (86 34 86 46))))
+ (|pop_TCC2| 0
+  (|pop_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|pop| SUBTYPE "s WITH [`height := s`height - 1]"
+    "{t: wasm_i32.value_stack | t`height = (number_fields.-)(wasm_i32.s`height, 1)}"
+    (86 15 86 47))))
+ (|pop_TCC3| 0
+  (|pop_TCC3-1| NIL 3987526939
+   ("" (SKEEP) (("" (ALL-TYPEPREDS) (("" (GRIND) NIL NIL)) NIL)) NIL) NIL NIL
+   (|pop| SUBTYPE "s`height - 1" "below(wasm_i32.max_stack)" (85 25 85 37))))
+ (|zero_frame_TCC1| 0
+  (|zero_frame_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|zero_frame| SUBTYPE "block_kind" "(wasm_i32.frame_kind?)" (98 15 98 25))))
+ (|empty_control_TCC1| 0
+  (|empty_control_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|empty_control| SUBTYPE "0" "upto(wasm_i32.max_control)" (107 16 107 17))))
+ (|push_control_TCC1| 0
+  (|push_control_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|push_control| SUBTYPE "cs`depth + 1" "upto(wasm_i32.max_control)"
+    (116 23 116 35))))
+ (|push_control_TCC2| 0
+  (|push_control_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|push_control| SUBTYPE "cs`depth" "below(wasm_i32.max_control)"
+    (117 21 117 29))))
+ (|push_control_TCC3| 0
+  (|push_control_TCC3-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|push_control| SUBTYPE
+    "cs WITH [`depth := cs`depth + 1, `frames(cs`depth) := f]"
+    "{out: wasm_i32.control_stack | out`depth = (number_fields.+)(1, wasm_i32.cs`depth)}"
+    (116 4 117 36))))
+ (|pop_control_TCC1| 0
+  (|pop_control_TCC1-1| NIL 3987526939
+   ("" (SKEEP) (("" (ALL-TYPEPREDS) (("" (GRIND) NIL NIL)) NIL)) NIL) NIL NIL
+   (|pop_control| SUBTYPE "cs`depth - 1" "upto(wasm_i32.max_control)"
+    (121 23 121 35))))
+ (|pop_control_TCC2| 0
+  (|pop_control_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|pop_control| SUBTYPE "cs WITH [`depth := cs`depth - 1]"
+    "{out: wasm_i32.control_stack | out`depth = (number_fields.-)(wasm_i32.cs`depth, 1)}"
+    (121 4 121 36))))
+ (|branch_frame_TCC1| 0
+  (|branch_frame_TCC1-1| NIL 3987526939
+   ("" (SKEEP) (("" (ALL-TYPEPREDS) (("" (GRIND) NIL NIL)) NIL)) NIL) NIL NIL
+   (|branch_frame| SUBTYPE "cs`depth - 1 - depth" "below(wasm_i32.max_control)"
+    (124 14 124 34))))
+ (|branch_keep_depth_TCC1| 0
+  (|branch_keep_depth_TCC1-1| NIL 3987526939
+   ("" (SKEEP) (("" (ALL-TYPEPREDS) (("" (GRIND) NIL NIL)) NIL)) NIL) NIL NIL
+   (|branch_keep_depth| SUBTYPE "cs`depth - depth" "upto(wasm_i32.max_control)"
+    (129 6 129 22))))
+ (|branch_keep_depth_TCC2| 0
+  (|branch_keep_depth_TCC2-1| NIL 3987526939
+   ("" (SKEEP) (("" (ALL-TYPEPREDS) (("" (GRIND) NIL NIL)) NIL)) NIL) NIL NIL
+   (|branch_keep_depth| SUBTYPE "cs`depth - depth - 1"
+    "upto(wasm_i32.max_control)" (131 6 131 26))))
+ (|halt_TCC1| 0
+  (|halt_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|halt| SUBTYPE "length(body)" "upto(length(wasm_i32.body))"
+    (162 20 162 32))))
+ (|result_of_TCC1| 0
+  (|result_of_TCC1-1| NIL 3987526939
+   ("" (SKEEP) (("" (ALL-TYPEPREDS) (("" (GRIND) NIL NIL)) NIL)) NIL) NIL NIL
+   (|result_of| SUBTYPE "st`pc" "index" (182 19 182 24))))
+ (|next_scan_pc_TCC1| 0
+  (|next_scan_pc_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|next_scan_pc| SUBTYPE "i + 2" "upto(length(wasm_i32.body))"
+    (199 6 199 11))))
+ (|next_scan_pc_TCC2| 0
+  (|next_scan_pc_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|next_scan_pc| SUBTYPE "i + 1" "upto(length(wasm_i32.body))"
+    (201 6 201 11))))
+ (|scan_end_rec_TCC1| 0
+  (|scan_end_rec_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|scan_end_rec| SUBTYPE "length(body) - i" "naturalnumber"
+    (222 10 222 26))))
+ (|scan_end_rec_TCC2| 0
+  (|scan_end_rec_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|scan_end_rec| SUBTYPE "i" "index" (212 36 212 37))))
+ (|scan_end_rec_TCC3| 0
+  (|scan_end_rec_TCC3-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|scan_end_rec| SUBTYPE "i + 1" "upto(length(wasm_i32.body))"
+    (214 31 214 36))))
+ (|scan_end_rec_TCC4| 0
+  (|scan_end_rec_TCC4-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|scan_end_rec| SUBTYPE "depth - 1" "nat" (214 38 214 47))))
+ (|scan_end_rec_TCC5| 0
+  (|scan_end_rec_TCC5-1| NIL 3987526939 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|scan_end_rec| TERMINATION "scan_end_rec(body, i + 1, depth - 1)" "NIL"
+    (214 12 214 48))))
+ (|scan_end_rec_TCC6| 0
+  (|scan_end_rec_TCC6-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|scan_end_rec| SUBTYPE "i" "below(length(wasm_i32.body))"
+    (217 48 217 49))))
+ (|scan_end_rec_TCC7| 0
+  (|scan_end_rec_TCC7-1| NIL 3987526939 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|scan_end_rec| TERMINATION
+    "scan_end_rec(body, next_scan_pc(body, i), depth + 1)" "NIL"
+    (217 10 217 62))))
+ (|scan_end_rec_TCC8| 0
+  (|scan_end_rec_TCC8-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|scan_end_rec| SUBTYPE "i" "below(length(wasm_i32.body))"
+    (219 48 219 49))))
+ (|scan_end_rec_TCC9| 0
+  (|scan_end_rec_TCC9-1| NIL 3987526939 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|scan_end_rec| TERMINATION
+    "scan_end_rec(body, next_scan_pc(body, i), depth)" "NIL" (219 10 219 58))))
+ (|scan_end_rec_TCC10| 0
+  (|scan_end_rec_TCC10-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|scan_end_rec| SUBTYPE "i" "below(length(wasm_i32.body))"
+    (209 25 209 26))))
+ (|find_matching_end_TCC1| 0
+  (|find_matching_end_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|find_matching_end| SUBTYPE "pc + 2" "upto(length(wasm_i32.body))"
+    (227 25 227 31))))
+ (|well_control?_TCC1| 0
+  (|well_control?_TCC1-1| NIL 3987526939
+   ("" (SKEEP) (("" (ALL-TYPEPREDS) (("" (GRIND) NIL NIL)) NIL)) NIL) NIL NIL
+   (|well_control?| SUBTYPE "i" "below(wasm_i32.max_control)"
+    (238 62 238 63))))
+ (|branch_to_TCC1| 0
+  (|branch_to_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|branch_to| SUBTYPE "st`controls" "(wasm_i32.control_nonempty?)"
+    (253 25 253 36))))
+ (|branch_to_TCC2| 0
+  (|branch_to_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|branch_to| SUBTYPE "target" "index" (259 27 259 33))))
+ (|enter_control_TCC1| 0
+  (|enter_control_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|enter_control| SUBTYPE "st`pc" "below(length(wasm_i32.body))"
+    (265 41 265 46))))
+ (|enter_control_TCC2| 0
+  (|enter_control_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|enter_control| SUBTYPE "body_pc" "index" (269 41 269 48))))
+ (|finish_end_TCC1| 0
+  (|finish_end_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|finish_end| SUBTYPE "st`controls" "(wasm_i32.control_nonempty?)"
+    (282 27 282 38))))
+ (|finish_end_TCC2| 0
+  (|finish_end_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|finish_end| SUBTYPE "st`stack" "(wasm_i32.nonempty?)" (285 25 285 33))))
+ (|get_local_TCC1| 0
+  (|get_local_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|get_local| SUBTYPE "ix" "below(wasm_i32.max_locals)" (296 64 296 66))))
+ (|set_local_TCC1| 0
+  (|set_local_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|set_local| SUBTYPE "st`stack" "(wasm_i32.nonempty?)" (304 18 304 26))))
+ (|set_local_TCC2| 0
+  (|set_local_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|set_local| SUBTYPE "ix" "below(wasm_i32.max_locals)" (307 33 307 35))))
+ (|tee_local_TCC1| 0
+  (|tee_local_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|tee_local| SUBTYPE "ix" "below(wasm_i32.max_locals)" (316 37 316 39))))
+ (|unary_eqz_TCC1| 0
+  (|unary_eqz_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|unary_eqz| SUBTYPE "st`stack" "(wasm_i32.nonempty?)" (333 18 333 26))))
+ (|unary_eqz_TCC2| 0
+  (|unary_eqz_TCC2-1| NIL 3987526939
+   ("" (SKEEP) (("" (ALL-TYPEPREDS) (("" (GRIND) NIL NIL)) NIL)) NIL) NIL NIL
+   (|unary_eqz| SUBTYPE "p`rest" "(wasm_i32.pushable?)" (334 19 334 25))))
+ (|binary_i32_TCC1| 0
+  (|binary_i32_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|binary_i32| SUBTYPE "st`stack" "(wasm_i32.nonempty?)" (344 19 344 27))))
+ (|binary_i32_TCC2| 0
+  (|binary_i32_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|binary_i32| SUBTYPE "p2`rest" "(wasm_i32.nonempty?)" (346 19 346 26))))
+ (|binary_i32_TCC3| 0
+  (|binary_i32_TCC3-1| NIL 3987526939 ("" (COND-DISJOINT-TCC) NIL NIL) NIL NIL
+   (|binary_i32| DISJOINTNESS
+    "COND op = op_i32_add -> u32plus(lhs, rhs), op = op_i32_sub -> u32minus(lhs, rhs), op = op_i32_mul -> u32times(lhs, rhs), op = op_i32_eq -> bool32(lhs = rhs), ELSE -> bool32(lhs /= rhs) ENDCOND"
+    "NIL" (349 12 355 19))))
+ (|binary_i32_TCC4| 0
+  (|binary_i32_TCC4-1| NIL 3987526939
+   ("" (SKEEP) (("" (ALL-TYPEPREDS) (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|pushable?| CONST-DECL "bool" |wasm_i32| NIL)
+    (|max_stack_u8| CONST-DECL "uint8" |wasm_i32| NIL)
+    (/= CONST-DECL "boolean" |notequal| NIL)
+    (|bool32| CONST-DECL "uint32" |wasm_i32| NIL)
+    (|op_i32_eq| CONST-DECL "byte" |wasm_i32| NIL)
+    (|u32times| CONST-DECL "uint32" |integertypes| NIL)
+    (|op_i32_mul| CONST-DECL "byte" |wasm_i32| NIL)
+    (|u32minus| CONST-DECL "uint32" |integertypes| NIL)
+    (|op_i32_sub| CONST-DECL "byte" |wasm_i32| NIL)
+    (|u32plus| CONST-DECL "uint32" |integertypes| NIL)
+    (|max32| CONST-DECL "uint32" |integertypes| NIL)
+    (|op_i32_add| CONST-DECL "byte" |wasm_i32| NIL)
+    (|pop| CONST-DECL "pop_result(s)" |wasm_i32| NIL)
+    (|trichotomous?| CONST-DECL "bool" |orders| NIL)
+    (|strict_order?| CONST-DECL "bool" |orders| NIL)
+    (|transitive?| CONST-DECL "bool" |relations| NIL)
+    (|irreflexive?| CONST-DECL "bool" |relations| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|odd?| CONST-DECL "bool" |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|max_stack| CONST-DECL "posnat" |wasm_i32| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|max_locals| CONST-DECL "posnat" |wasm_i32| NIL)
+    (|max_control| CONST-DECL "posnat" |wasm_i32| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|control_stack| TYPE-EQ-DECL NIL |wasm_i32| NIL)
+    (|locals_array| TYPE-EQ-DECL NIL |wasm_i32| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|value_stack| TYPE-EQ-DECL NIL |wasm_i32| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|machine_state| TYPE-EQ-DECL NIL |wasm_i32| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|strict_total_order?| CONST-DECL "bool" |orders| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   NIL
+   (|binary_i32| SUBTYPE "p1`rest" "(wasm_i32.pushable?)" (356 19 356 26))))
+ (|step_TCC1| 0
+  (|step_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|step| SUBTYPE "st`pc" "below(length(wasm_i32.body))" (390 23 390 28))))
+ (|step_TCC2| 0
+  (|step_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|step| SUBTYPE "loop_kind" "(wasm_i32.frame_kind?)" (396 32 396 41))))
+ (|step_TCC3| 0
+  (|step_TCC3-1| NIL 3987526939 ("" (COND-DISJOINT-TCC) NIL NIL) NIL NIL
+   (|step| DISJOINTNESS
+    "COND op = op_br -> branch_instruction(body, st, imm), op = op_br_if -> branch_if_instruction(body, st, imm), op = op_local_get -> get_local(body, st, imm), op = op_local_set -> set_local(body, st, imm), op = op_local_tee -> tee_local(body, st, imm), op = op_i32_const -> push_const(body, st, imm), ELSE -> trap(body, st) ENDCOND"
+    "NIL" (403 10 411 17))))
+ (|parse_fail_TCC1| 0
+  (|parse_fail_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|parse_fail| SUBTYPE "0" "upto(wasm_i32.max_locals)" (427 49 427 50))))
+ (|parse_locals_rec_TCC1| 0
+  (|parse_locals_rec_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|parse_locals_rec| SUBTYPE "i" "index" (433 32 433 33))))
+ (|parse_locals_rec_TCC2| 0
+  (|parse_locals_rec_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|parse_locals_rec| SUBTYPE "i" "below(length(wasm_i32.body))"
+    (435 28 435 29))))
+ (|parse_locals_rec_TCC3| 0
+  (|parse_locals_rec_TCC3-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|parse_locals_rec| SUBTYPE "i + 2" "upto(length(wasm_i32.body))"
+    (436 29 436 34))))
+ (|parse_locals_rec_TCC4| 0
+  (|parse_locals_rec_TCC4-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|parse_locals_rec| SUBTYPE "groups - 1" "nat" (436 36 436 46))))
+ (|parse_locals_rec_TCC5| 0
+  (|parse_locals_rec_TCC5-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|parse_locals_rec| SUBTYPE "total + get(body, i)"
+    "upto(wasm_i32.max_locals)" (436 48 436 68))))
+ (|parse_locals_rec_TCC6| 0
+  (|parse_locals_rec_TCC6-1| NIL 3987526939 ("" (TERMINATION-TCC) NIL NIL) NIL
+   NIL
+   (|parse_locals_rec| TERMINATION
+    "parse_locals_rec(body, i + 2, groups - 1, total + get(body, i))" "NIL"
+    (436 6 436 69))))
+ (|parse_body_TCC1| 0
+  (|parse_body_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|parse_body| SUBTYPE "0" "below(length(wasm_i32.body))" (446 29 446 30))))
+ (|parse_body_TCC2| 0
+  (|parse_body_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|parse_body| SUBTYPE "1" "upto(length(wasm_i32.body))" (447 31 447 32))))
+ (|run_rec_TCC1| 0
+  (|run_rec_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|run_rec| SUBTYPE "fuel - 1" "uint32" (468 20 468 28))))
+ (|run_rec_TCC2| 0
+  (|run_rec_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|run_rec| SUBTYPE "st" "(wasm_i32.running?(wasm_i32.body))"
+    (468 41 468 43))))
+ (|run_rec_TCC3| 0
+  (|run_rec_TCC3-1| NIL 3987526939 ("" (TERMINATION-TCC) NIL NIL) NIL NIL
+   (|run_rec| TERMINATION "run_rec(body, fuel - 1, step(body, st))" "NIL"
+    (468 6 468 45))))
+ (|invoke0_TCC1| 0
+  (|invoke0_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|invoke0| SUBTYPE "parsed`code_pc" "upto(length(wasm_i32.body))"
+    (476 33 476 47))))
+ (|invoke1_TCC1| 0
+  (|invoke1_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|invoke1| SUBTYPE "0" "below(wasm_i32.max_locals)" (489 41 489 42))))
+ (|invoke2_TCC1| 0
+  (|invoke2_TCC1-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|invoke2| SUBTYPE "0" "below(wasm_i32.max_locals)" (504 41 504 42))))
+ (|invoke2_TCC2| 0
+  (|invoke2_TCC2-1| NIL 3987526939 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|invoke2| SUBTYPE "1" "below(wasm_i32.max_locals)" (504 52 504 53)))))
+

@@ -1,0 +1,3 @@
+[submodule "pvs2c-demos/utf8_decoder/utf8tests"]
+	path = pvs2c-demos/utf8_decoder/utf8tests
+	url = https://github.com/flenniken/utf8tests

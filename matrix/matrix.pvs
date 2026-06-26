@@ -1,0 +1,173 @@
+matrix  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+  l, m, n, m1, m2, n1, n2: VAR index
+
+  IMPORTING sigma
+
+  matrix(m, n): TYPE = ARRAY[below(m) -> vector(n)]
+
+  I(n): matrix(n, n) =
+   (LAMBDA (i: below(n)):
+    (LAMBDA (j: below(n)):
+     IF i = j THEN 1 ELSE 0 ENDIF))
+
+  Z(m, n): matrix(m, n) =
+      (LAMBDA (i : below(m)):
+        (LAMBDA (j : below(n)): 0))
+
+   madd(m, n)(A, B : matrix(m, n)): matrix(m, n)
+   = (LAMBDA (i : below(m)):
+       (LAMBDA (j : below(n)): A(i)(j) + B(i)(j)))
+
+   mmult(l, m, n: nat, A : matrix(l, m), B : matrix(m, n))
+    : matrix(l, n)
+    = (LAMBDA (i: below(l)):
+       (LAMBDA (j : below(n)):
+         sigma(m, (LAMBDA (k: below(m)): A(i)(k) * B(k)(j)))))
+
+   associativity: LEMMA
+   (FORALL (A : matrix(l, m)), (B : matrix(m, n)), (C : matrix(n, n2)): 
+     mmult(l, n, n2, mmult(l, m, n, A, B), C)
+     = mmult(l, m, n2, A, mmult(m, n, n2, B, C)))
+
+   left_ident: LEMMA
+   (FORALL m, n, (A : matrix(m, n)): 
+    mmult(m, m, n, I(m), A) = A)
+
+   right_ident: LEMMA
+   (FORALL m, n, (A : matrix(m, n)): 
+    mmult(m, n, n, A, I(n)) = A)
+
+   sqmatrix(n): TYPE = matrix(n, n)
+
+   right_inverse(n, (A: sqmatrix(n)))(B: sqmatrix(n)): bool
+    = (mmult(n, n, n, A, B) = I(n))
+
+   left_inverse(n, (A: sqmatrix(n)))(B: sqmatrix(n)): bool
+    = (mmult(n, n, n, B, A) = I(n))
+
+   inverse(n, (A: sqmatrix(n)))(B: sqmatrix(n)): bool
+   = right_inverse(n, A)(B) ∧ left_inverse(n, A)(B)
+
+   unique_inverse: LEMMA
+      FORALL n, (A: sqmatrix(n)), (B, C: sqmatrix(n)):
+        inverse(n, A)(B) AND inverse(n, A)(C)
+	=> B = C
+
+   invertible?(n, (A: sqmatrix(n))): bool
+    = (EXISTS (B : sqmatrix(n)): inverse(n, A)(B))
+
+   % inverse_left_inverse: LEMMA
+   % (FORALL n, (A, B: sqmatrix(n)): 
+   %   inverse(n, A)(B) <=> left_inverse(n, A)(B))
+
+   lower_triangular?(n, (A : sqmatrix(n))): bool
+   = (FORALL (i, j : below(n)):
+       j > i IMPLIES A(i)(j) = 0)
+
+   concat(m, n1, n2)(A1 : matrix(m, n1), A2 : matrix(m, n2)):
+    matrix(m, n1 + n2)
+   = (LAMBDA (i : below(m)):
+       (LAMBDA (j : below(n1 + n2)):
+          IF j < n1 THEN A1(i)(j) ELSE A2(i)(j - n1) ENDIF))
+
+   stack(m1, m2, n)(A1 : matrix(m1, n), A2 : matrix(m2, n)):
+     matrix(m1 + m2, n)
+   =  (LAMBDA (i : below(m1 + m2 )):
+        IF i < m1 THEN A1(i) ELSE A2(i - m1) ENDIF)
+
+   mmult_stack: LEMMA
+     (FORALL (m1, m2, n, k: nat), (A1 : matrix(m1, n)), (A2 : matrix(m2, n)), (B: matrix(n, k)):
+       mmult(m1 + m2, n, k, stack(m1, m2, n)(A1, A2), B)
+       = stack(m1, m2, k)(mmult(m1, n, k, A1, B), mmult(m2, n, k, A2, B)))
+
+   mmult_concat_stack: LEMMA
+     (FORALL (m, n1, n2, k: nat), (A1 : matrix(m, n1)), (A2 : matrix(m, n2)), (B1 : matrix(n1, k)), (B2: matrix(n2, k)):
+       mmult(m, n1 + n2, k, concat(m, n1, n2)(A1, A2), stack(n1, n2, k)(B1, B2))
+       = madd(m, k)(mmult(m, n1, k, A1, B1), mmult(m, n2, k, A2, B2)))
+
+  topleft(m, n)(i : upto(m), j : upto(n))(A : matrix(m, n)) : matrix(i, j)
+   = (LAMBDA (ii : below(i)):
+      (LAMBDA (jj : below(j)): A(ii)(jj)))
+
+  topright(m, n)(i : upto(m), j : upto(n))(A : matrix(m, n)) : matrix(i, n - j)
+   = (LAMBDA (ii : below(i)):
+      (LAMBDA (jj : below(n - j)): A(ii)(jj + j)))
+
+  botleft(m, n)(i : upto(m), j : upto(n))(A : matrix(m, n)) : matrix(m - i, j)
+   = (LAMBDA (ii : below(m - i)):
+      (LAMBDA (jj : below(j)): A(ii + i)(jj)))
+
+  botright(m, n)(i : upto(m), j : upto(n))(A : matrix(m, n)) : matrix(m - i, n - j)
+   = (LAMBDA (ii : below(m - i)):
+      (LAMBDA (jj : below(n - j)): A(ii + i)(jj + j)))
+
+  topleft_lt: JUDGEMENT
+    topleft(m, (n | n = m))(i : upto(m), (j : upto(n) | j = i))(L : sqmatrix(m) | lower_triangular?(m, L)) HAS_TYPE {K : sqmatrix(i) | lower_triangular?(i, K)}
+
+  botright: JUDGEMENT
+    botright(m, (n | n = m))(i : upto(m), (j : upto(n) | j = i))(L : sqmatrix(m) | lower_triangular?(m, L)) HAS_TYPE {K : sqmatrix(m - i) | lower_triangular?(m - i, K)}
+
+
+%A slice of a matrix has the start row0 and col0 and the uppper bounds rowhi and colhi.    
+   slice(m, n: nat): TYPE = [# M : matrix(m, n),
+                               row0 : upto(m),
+                               col0 : upto(n),
+			       rowhi: subrange(row0, m),
+			       colhi: subrange(col0, n) #]
+%extracts the matrix from a slice
+   slice2matrix(m, n)(A : slice(m, n))(i : below(A`rowhi - A`row0))(j : below(A`colhi - A`col0)): real
+    =  A`M(i + A`row0)(j + A`col0)
+    
+%computes number of rows in a slice
+   numrows(m, n)(A : slice(m,n)): upto(A`rowhi - A`row0)
+    = (A`rowhi - A`row0)
+%computes number of columns in a slice
+   numcols(m, n)(A : slice(m,n)): upto(A`colhi - A`col0)
+    = (A`colhi - A`col0)
+
+   fullslice(m, n : nat)(A : matrix(m, n)): slice(m, n) = 
+     (# M := A,
+        row0 := 0, rowhi := m,
+	col0 := 0, colhi := n
+     #)
+
+   CONVERSION+ fullslice
+
+   choptop(m, n: nat)(AA : slice(m, n), i : upto(numrows(m, n)(AA)))
+   : slice(m, n)
+   = AA WITH [`rowhi := AA`row0 + i]
+
+   chopbot(m, n: nat)(AA : slice(m, n), i : upto(numrows(m,n)(AA)))
+   : slice(m, n)
+   = AA WITH [row0 := AA`row0 + i]
+
+   diceleft(m, n: nat)(AA : slice(m, n), j : upto(numcols(m, n)(AA)))
+   : slice(m, n)
+   = AA WITH [`colhi := AA`col0 + j]
+
+   diceright(m, n: nat)(AA : slice(m, n), j : upto(numcols(m, n)(AA)))
+   : slice(m, n)
+   = AA WITH [`col0 := AA`col0 + j]
+
+   stack_chop: LEMMA
+    (FORALL (AA: slice(m, n)), (i : upto(numrows(m, n)(AA))): 
+     stack(i, numrows(m, n)(AA) - i, numcols(m, n)(AA))(slice2matrix(m, n)(choptop(m, n)(AA, i)),
+                                                        slice2matrix(m, n)(chopbot(m, n)(AA, i)))
+     = slice2matrix(m, n)(AA))
+
+   concat_chop: LEMMA
+    (FORALL (AA: slice(m, n)), (j : upto(numcols(m, n)(AA))): 
+     concat(numrows(m, n)(AA), j, numcols(m, n)(AA) - j)(slice2matrix(m, n)(diceleft(m, n)(AA, j)),
+                                                        slice2matrix(m, n)(diceright(m, n)(AA, j)))
+     = slice2matrix(m, n)(AA))
+
+   % mmult(l, m, n: nat, A : matrix(l, m), B : matrix(m, n))
+   test1: _TEST_
+     mmult(3, 3, 3, I(3), I(3)) = I(3)
+   
+
+  END matrix

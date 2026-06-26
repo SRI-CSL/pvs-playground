@@ -1,0 +1,363 @@
+utf8_spec: THEORY
+BEGIN
+
+  % This theory uses the ltedpeg library context in ../parsing/ltedpeg.
+  %
+  % The Unicode Standard, chapter 3, Table 3-7 gives the well-formed
+  % UTF-8 byte sequences.  RFC 3629 gives the same language in ABNF:
+  %
+  %   UTF8-tail = %x80-BF
+  %   UTF8-1    = %x00-7F
+  %   UTF8-2    = %xC2-DF UTF8-tail
+  %   UTF8-3    = %xE0 %xA0-BF UTF8-tail
+  %             / %xE1-EC 2(UTF8-tail)
+  %             / %xED %x80-9F UTF8-tail
+  %             / %xEE-EF 2(UTF8-tail)
+  %   UTF8-4    = %xF0 %x90-BF 2(UTF8-tail)
+  %             / %xF1-F3 3(UTF8-tail)
+  %             / %xF4 %x80-8F 2(UTF8-tail)
+  %   UTF8-char = UTF8-1 / UTF8-2 / UTF8-3 / UTF8-4
+
+  ltedpeg_lib: LIBRARY = "../parsing/ltedpeg"
+
+  IMPORTING ltedpeg_lib@ltedpegproof
+
+  b: VAR byte
+  s: VAR bytestring
+
+  byte_between?(b, lo: byte, hi: byte): bool = lo <= b AND b <= hi
+
+  utf8_tail?(b): bool = byte_between?(b, 0x80, 0xBF)
+  utf8_tail_a0_bf?(b): bool = byte_between?(b, 0xA0, 0xBF)
+  utf8_tail_80_9f?(b): bool = byte_between?(b, 0x80, 0x9F)
+  utf8_tail_90_bf?(b): bool = byte_between?(b, 0x90, 0xBF)
+  utf8_tail_80_8f?(b): bool = byte_between?(b, 0x80, 0x8F)
+
+  utf8_1_lead?(b): bool = b <= 0x7F
+  utf8_2_lead?(b): bool = byte_between?(b, 0xC2, 0xDF)
+  utf8_e0_lead?(b): bool = b = 0xE0
+  utf8_e1_ec_lead?(b): bool = byte_between?(b, 0xE1, 0xEC)
+  utf8_ed_lead?(b): bool = b = 0xED
+  utf8_ee_ef_lead?(b): bool = byte_between?(b, 0xEE, 0xEF)
+  utf8_f0_lead?(b): bool = b = 0xF0
+  utf8_f1_f3_lead?(b): bool = byte_between?(b, 0xF1, 0xF3)
+  utf8_f4_lead?(b): bool = b = 0xF4
+
+  byte_at?(s, (pos: upto(s`length)), offset: nat, p: [byte -> bool]): bool =
+    offset < s`length - pos AND p(get(s, pos + offset))
+
+  utf8_abnf_1_at?(s, (pos: upto(s`length))): bool =
+    byte_at?(s, pos, 0, utf8_1_lead?)
+
+  utf8_abnf_2_at?(s, (pos: upto(s`length))): bool =
+    s`length - pos >= 2 AND
+      byte_at?(s, pos, 0, utf8_2_lead?) AND
+      byte_at?(s, pos, 1, utf8_tail?)
+
+  utf8_abnf_3_e0_at?(s, (pos: upto(s`length))): bool =
+    s`length - pos >= 3 AND
+      byte_at?(s, pos, 0, utf8_e0_lead?) AND
+      byte_at?(s, pos, 1, utf8_tail_a0_bf?) AND
+      byte_at?(s, pos, 2, utf8_tail?)
+
+  utf8_abnf_3_e1_ec_at?(s, (pos: upto(s`length))): bool =
+    s`length - pos >= 3 AND
+      byte_at?(s, pos, 0, utf8_e1_ec_lead?) AND
+      byte_at?(s, pos, 1, utf8_tail?) AND
+      byte_at?(s, pos, 2, utf8_tail?)
+
+  utf8_abnf_3_ed_at?(s, (pos: upto(s`length))): bool =
+    s`length - pos >= 3 AND
+      byte_at?(s, pos, 0, utf8_ed_lead?) AND
+      byte_at?(s, pos, 1, utf8_tail_80_9f?) AND
+      byte_at?(s, pos, 2, utf8_tail?)
+
+  utf8_abnf_3_ee_ef_at?(s, (pos: upto(s`length))): bool =
+    s`length - pos >= 3 AND
+      byte_at?(s, pos, 0, utf8_ee_ef_lead?) AND
+      byte_at?(s, pos, 1, utf8_tail?) AND
+      byte_at?(s, pos, 2, utf8_tail?)
+
+  utf8_abnf_4_f0_at?(s, (pos: upto(s`length))): bool =
+    s`length - pos >= 4 AND
+      byte_at?(s, pos, 0, utf8_f0_lead?) AND
+      byte_at?(s, pos, 1, utf8_tail_90_bf?) AND
+      byte_at?(s, pos, 2, utf8_tail?) AND
+      byte_at?(s, pos, 3, utf8_tail?)
+
+  utf8_abnf_4_f1_f3_at?(s, (pos: upto(s`length))): bool =
+    s`length - pos >= 4 AND
+      byte_at?(s, pos, 0, utf8_f1_f3_lead?) AND
+      byte_at?(s, pos, 1, utf8_tail?) AND
+      byte_at?(s, pos, 2, utf8_tail?) AND
+      byte_at?(s, pos, 3, utf8_tail?)
+
+  utf8_abnf_4_f4_at?(s, (pos: upto(s`length))): bool =
+    s`length - pos >= 4 AND
+      byte_at?(s, pos, 0, utf8_f4_lead?) AND
+      byte_at?(s, pos, 1, utf8_tail_80_8f?) AND
+      byte_at?(s, pos, 2, utf8_tail?) AND
+      byte_at?(s, pos, 3, utf8_tail?)
+
+  utf8_abnf_char_span(s, (pos: upto(s`length))): uint32 =
+    COND
+      utf8_abnf_1_at?(s, pos) -> 1,
+      utf8_abnf_2_at?(s, pos) -> 2,
+      utf8_abnf_3_e0_at?(s, pos) OR
+        utf8_abnf_3_e1_ec_at?(s, pos) OR
+        utf8_abnf_3_ed_at?(s, pos) OR
+        utf8_abnf_3_ee_ef_at?(s, pos) -> 3,
+      utf8_abnf_4_f0_at?(s, pos) OR
+        utf8_abnf_4_f1_f3_at?(s, pos) OR
+        utf8_abnf_4_f4_at?(s, pos) -> 4,
+      ELSE -> 0
+    ENDCOND
+
+  utf8_abnf_char_guard(s, (pos: upto(s`length))): uint32 =
+    LET n = utf8_abnf_char_span(s, pos) IN
+      IF n = 0 THEN 0 ELSE n + 1 ENDIF
+
+  utf8_scalar_value?(cp: uint32): bool =
+    cp <= 0x10FFFF AND NOT (0xD800 <= cp AND cp <= 0xDFFF)
+
+  byte_or_zero(s, (pos: upto(s`length)), offset: nat): byte =
+    IF offset < s`length - pos THEN get(s, pos + offset) ELSE 0 ENDIF
+
+  utf8_minus_or_zero(b, lo: byte): uint32 =
+    IF lo <= b THEN u8minus(b, lo) ELSE 0 ENDIF
+
+  utf8_tail_value(b): uint32 = utf8_minus_or_zero(b, 0x80)
+
+  utf8_decode_2(s, (pos: upto(s`length))): uint32 =
+    u32plus(u32times(utf8_minus_or_zero(byte_or_zero(s, pos, 0), 0xC0), 64),
+            utf8_tail_value(byte_or_zero(s, pos, 1)))
+
+  utf8_decode_3(s, (pos: upto(s`length))): uint32 =
+    u32plus(u32times(utf8_minus_or_zero(byte_or_zero(s, pos, 0), 0xE0), 4096),
+      u32plus(u32times(utf8_tail_value(byte_or_zero(s, pos, 1)), 64),
+              utf8_tail_value(byte_or_zero(s, pos, 2))))
+
+  utf8_decode_4(s, (pos: upto(s`length))): uint32 =
+    u32plus(u32times(utf8_minus_or_zero(byte_or_zero(s, pos, 0), 0xF0), 262144),
+      u32plus(u32times(utf8_tail_value(byte_or_zero(s, pos, 1)), 4096),
+        u32plus(u32times(utf8_tail_value(byte_or_zero(s, pos, 2)), 64),
+                utf8_tail_value(byte_or_zero(s, pos, 3)))))
+
+  utf8_abnf_codepoint(s, (pos: upto(s`length))): uint32 =
+    COND
+      utf8_abnf_1_at?(s, pos) -> byte_or_zero(s, pos, 0),
+      utf8_abnf_2_at?(s, pos) -> utf8_decode_2(s, pos),
+      utf8_abnf_3_e0_at?(s, pos) OR
+        utf8_abnf_3_e1_ec_at?(s, pos) OR
+        utf8_abnf_3_ed_at?(s, pos) OR
+        utf8_abnf_3_ee_ef_at?(s, pos) -> utf8_decode_3(s, pos),
+      utf8_abnf_4_f0_at?(s, pos) OR
+        utf8_abnf_4_f1_f3_at?(s, pos) OR
+        utf8_abnf_4_f4_at?(s, pos) -> utf8_decode_4(s, pos),
+      ELSE -> 0
+    ENDCOND
+
+  utf8_abnf_string_rec(s, (pos: upto(s`length))): RECURSIVE bool =
+    IF pos = s`length THEN
+      TRUE
+    ELSE
+      LET n = utf8_abnf_char_span(s, pos) IN
+        n > 0 AND n <= s`length - pos AND
+          utf8_abnf_string_rec(s, pos + n)
+    ENDIF
+  MEASURE s`length - pos
+
+  utf8_abnf_string?(s): bool = utf8_abnf_string_rec(s, 0)
+
+  % A compact DPEG stream recognizer using the ABNF guard above.
+  utf8_abnf_stream_grammar: dpeg_grammar =
+    (# length := 3,
+       seq := [: fail,
+                 skip,
+                 glte(utf8_abnf_char_guard, 2, 1) :] #)
+
+  utf8_stream_root: below(3) = 2
+
+  % Direct DPEG encoding of Table 3-7 for one UTF8-char.
+  %
+  % 0  fail
+  % 1  skip
+  % 2  UTF8-1
+  % 3  one UTF8-tail, then accept
+  % 4  UTF8-2 / UTF8-1
+  % 5  E0 second byte, then tail
+  % 6  E0 alternative / shorter alternatives
+  % 7  two UTF8-tails, then accept
+  % 8  E1-EC alternative / shorter alternatives
+  % 9  ED second byte, then tail
+  % 10 ED alternative / shorter alternatives
+  % 11 EE-EF alternative / shorter alternatives
+  % 12 F0 second byte, then two tails
+  % 13 F0 alternative / shorter alternatives
+  % 14 three UTF8-tails, then accept
+  % 15 F1-F3 alternative / shorter alternatives
+  % 16 F4 second byte, then two tails
+  % 17 F4 alternative / all shorter alternatives
+  utf8_table37_char_grammar: dpeg_grammar =
+    (# length := 18,
+       seq := [: fail,
+                 skip,
+                 glte(mk_guard(utf8_1_lead?), 1, 0),
+                 glte(mk_guard(utf8_tail?), 1, 0),
+                 glte(mk_guard(utf8_2_lead?), 3, 2),
+                 glte(mk_guard(utf8_tail_a0_bf?), 3, 0),
+                 glte(mk_guard(utf8_e0_lead?), 5, 4),
+                 glte(mk_guard(utf8_tail?), 3, 0),
+                 glte(mk_guard(utf8_e1_ec_lead?), 7, 6),
+                 glte(mk_guard(utf8_tail_80_9f?), 3, 0),
+                 glte(mk_guard(utf8_ed_lead?), 9, 8),
+                 glte(mk_guard(utf8_ee_ef_lead?), 7, 10),
+                 glte(mk_guard(utf8_tail_90_bf?), 7, 0),
+                 glte(mk_guard(utf8_f0_lead?), 12, 11),
+                 glte(mk_guard(utf8_tail?), 7, 0),
+                 glte(mk_guard(utf8_f1_f3_lead?), 14, 13),
+                 glte(mk_guard(utf8_tail_80_8f?), 7, 0),
+                 glte(mk_guard(utf8_f4_lead?), 16, 15) :] #)
+
+  utf8_table37_char_root: below(18) = 17
+
+  utf8_table37_char_guard(s, (pos: upto(s`length))): uint32 =
+    dpeg_parse(utf8_table37_char_grammar, utf8_table37_char_root, s, 0, pos)
+
+  % A stream recognizer built out of the explicit Table 3-7 character grammar.
+  utf8_table37_stream_grammar: dpeg_grammar =
+    (# length := 3,
+       seq := [: fail,
+                 skip,
+                 glte(utf8_table37_char_guard, 2, 1) :] #)
+
+  utf8_table37_accepts?(s): bool =
+    dpeg_parse(utf8_table37_stream_grammar, utf8_stream_root, s, 0, 0) =
+      s`length + 1
+
+  utf8_abnf_accepts?(s): bool =
+    dpeg_parse(utf8_abnf_stream_grammar, utf8_stream_root, s, 0, 0) =
+      s`length + 1
+
+  utf8_lang_root: non_terminal = 0
+
+  utf8_lang(n: non_terminal): prepeg =
+    IF n = utf8_lang_root
+    THEN any(utf8_table37_stream_grammar)
+    ELSE failure
+    ENDIF
+
+  utf8_lang_table: lang_spec =
+    (LET tbl: ARRAY[non_terminal -> prepeg] = utf8_lang IN tbl)
+
+  utf8_ltedpeg_accepts?(s): bool =
+    LET e = doparse(utf8_lang_table, s, utf8_lang_root) IN
+      good?(e) AND span(e) = s`length
+
+  % Proof hooks.  These are the useful statements to prove next:
+  % 1. the byte-level ABNF predicate and explicit DPEG char grammar coincide;
+  % 2. the two stream recognizers coincide;
+  % 3. the ltedpeg parse/proof machinery accepts exactly the ABNF language;
+  % 4. any accepted byte stream decodes only scalar values, excluding surrogates.
+
+  % Informal proof argument:
+  % Proceed by case analysis on the first byte at pos.  The first-byte
+  % ranges in Table 3-7 are pairwise disjoint: 0x00-0x7F, 0xC2-0xDF,
+  % 0xE0, 0xE1-0xEC, 0xED, 0xEE-0xEF, 0xF0, 0xF1-0xF3, and 0xF4.
+  % For each case, expand the corresponding DPEG path.  Each glte either
+  % consumes exactly one byte through mk_guard or falls through to the next
+  % lower-priority alternative.  The successful DPEG paths consume exactly
+  % the same continuation-byte ranges as the ABNF predicate, and all failed
+  % prefixes eventually reach fail.  Since the alternatives are disjoint,
+  % no accepted byte sequence can be assigned two different spans.
+  utf8_table37_char_abnf_equiv: THEOREM
+    FORALL s, (pos: upto(s`length)):
+      utf8_table37_char_guard(s, pos) = utf8_abnf_char_guard(s, pos)
+
+  % Informal proof argument:
+  % Use induction on the remaining input length, s`length - pos, with the
+  % previous character-level equivalence as the step lemma.  At the end of
+  % input, both recognizers accept the empty suffix.  Otherwise, the stream
+  % DPEG consumes one well-formed character and recurs exactly when the ABNF
+  % string predicate obtains a positive span and recurs at pos + span.  If
+  % the first character is ill-formed, both views stop: the DPEG can only
+  % accept a strict prefix, and full acceptance fails because the final span
+  % is not s`length.
+  utf8_table37_stream_abnf_equiv: THEOREM
+    FORALL s: utf8_table37_accepts?(s) IFF utf8_abnf_string?(s)
+
+  % Informal proof argument:
+  % Both stream grammars have the same looping shape:
+  % glte(character_guard, root, skip).  The only difference is the guard.
+  % Rewrite the explicit Table 3-7 guard using
+  % utf8_table37_char_abnf_equiv, then the two dpeg_parse executions are
+  % lockstep-identical at every position and accumulated span.
+  utf8_table37_stream_guard_equiv: THEOREM
+    FORALL s: utf8_table37_accepts?(s) IFF utf8_abnf_accepts?(s)
+
+  % Informal proof argument:
+  % The ltedpeg language table has a single root production,
+  % any(utf8_table37_stream_grammar).  By the definition of good_parsetree?
+  % and doparse for any(d), ltedpeg acceptance at root 0 is exactly the
+  % success result of dpeg_parse on that embedded DPEG grammar.  Combine
+  % that unfolding with utf8_table37_stream_abnf_equiv to replace DPEG
+  % acceptance by the ABNF string predicate.
+  utf8_ltedpeg_abnf_equiv: THEOREM
+    FORALL s: utf8_ltedpeg_accepts?(s) IFF utf8_abnf_string?(s)
+
+  % Informal proof argument:
+  % Split on the Table 3-7 row that gave the positive span.  The row-specific
+  % lead-byte and second-byte restrictions are exactly the standard UTF-8
+  % shortest-form and upper-bound restrictions:
+  % C2-DF excludes overlong two-byte encodings, E0 A0-BF excludes overlong
+  % three-byte encodings, ED 80-9F excludes surrogate code points,
+  % F0 90-BF excludes overlong four-byte encodings, and F4 80-8F enforces
+  % the U+10FFFF maximum.  Expanding utf8_abnf_codepoint under each case
+  % gives a value inside the scalar-value interval and outside D800-DFFF.
+  utf8_scalar_value_property: THEOREM
+    FORALL s, (pos: upto(s`length)):
+      utf8_abnf_char_span(s, pos) > 0 IMPLIES
+        utf8_scalar_value?(utf8_abnf_codepoint(s, pos))
+
+  % Smoke tests for the recognizers.  The numeric parse result is
+  % failure = 0, success(span) = span + 1.
+
+  ascii_A: bytestring = (# length := 1, seq := [: 0x41 :] #)
+  copyright_sign: bytestring = (# length := 2, seq := [: 0xC2, 0xA9 :] #)
+  euro_sign: bytestring = (# length := 3, seq := [: 0xE2, 0x82, 0xAC :] #)
+  max_scalar_utf8: bytestring =
+    (# length := 4, seq := [: 0xF4, 0x8F, 0xBF, 0xBF :] #)
+  overlong_slash: bytestring = (# length := 2, seq := [: 0xC0, 0xAF :] #)
+  surrogate_utf8: bytestring = (# length := 3, seq := [: 0xED, 0xA0, 0x80 :] #)
+
+  test_table37_ascii: _TEST_
+    dpeg_parse(utf8_table37_char_grammar, utf8_table37_char_root,
+               ascii_A, 0, 0) = 2
+
+  test_table37_two_byte: _TEST_
+    dpeg_parse(utf8_table37_char_grammar, utf8_table37_char_root,
+               copyright_sign, 0, 0) = 3
+
+  test_table37_three_byte: _TEST_
+    dpeg_parse(utf8_table37_char_grammar, utf8_table37_char_root,
+               euro_sign, 0, 0) = 4
+
+  test_table37_four_byte: _TEST_
+    dpeg_parse(utf8_table37_char_grammar, utf8_table37_char_root,
+               max_scalar_utf8, 0, 0) = 5
+
+  test_table37_reject_overlong: _TEST_
+    dpeg_parse(utf8_table37_char_grammar, utf8_table37_char_root,
+               overlong_slash, 0, 0) = 0
+
+  test_table37_reject_surrogate: _TEST_
+    dpeg_parse(utf8_table37_char_grammar, utf8_table37_char_root,
+               surrogate_utf8, 0, 0) = 0
+
+  test_table37_accepts_four_byte: _TEST_
+    utf8_table37_accepts?(max_scalar_utf8)
+
+  test_table37_does_not_accept_overlong: _TEST_
+    NOT utf8_table37_accepts?(overlong_slash)
+
+END utf8_spec

@@ -1,0 +1,102 @@
+name: PVS2C demos
+
+on:
+  push:
+    paths:
+      - ".gitmodules"
+      - ".github/workflows/pvs2c-demos.yml"
+      - "scripts/ci/**"
+      - "pvs2c-demos/**"
+  pull_request:
+    paths:
+      - ".gitmodules"
+      - ".github/workflows/pvs2c-demos.yml"
+      - "scripts/ci/**"
+      - "pvs2c-demos/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pvs2c-demos:
+    name: Build PVS and run PVS2C demos
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+
+    env:
+      PVS_REPO: https://github.com/SRI-CSL/PVS.git
+      PVS_REF: dev
+      PVS_LOCATION: ${{ github.workspace }}/.ci/PVS
+      NASALIB_REPO: https://github.com/nasa/pvslib.git
+      NASALIB_REF: master
+      PVS_LIBRARY_PATH: ${{ github.workspace }}/.ci/nasalib
+
+    steps:
+      - name: Check out demos
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Ubuntu dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            ca-certificates \
+            curl \
+            emacs-nox \
+            git \
+            libgmp-dev \
+            sbcl \
+            unzip
+
+      - name: Check out SRI-CSL/PVS
+        run: |
+          mkdir -p "$(dirname "$PVS_LOCATION")"
+          git clone --depth 1 --branch "$PVS_REF" "$PVS_REPO" "$PVS_LOCATION"
+          git -C "$PVS_LOCATION" rev-parse HEAD
+
+      - name: Check out NASALib
+        run: |
+          mkdir -p "$(dirname "$PVS_LIBRARY_PATH")"
+          git clone --depth 1 --branch "$NASALIB_REF" "$NASALIB_REPO" "$PVS_LIBRARY_PATH"
+          git -C "$PVS_LIBRARY_PATH" rev-parse HEAD
+          test -d "$PVS_LIBRARY_PATH/algebra"
+
+      - name: Install Quicklisp for SBCL
+        run: |
+          curl -fsSL https://beta.quicklisp.org/quicklisp.lisp -o /tmp/quicklisp.lisp
+          sbcl --noinform --non-interactive \
+            --load /tmp/quicklisp.lisp \
+            --eval '(quicklisp-quickstart:install)' \
+            --eval '(ql-util:without-prompting (ql:add-to-init-file))'
+          sbcl --noinform --non-interactive \
+            --eval '(require :asdf)' \
+            --eval '(ql:quickload (list :babel :clack :websocket-driver :hunchentoot :anaphora :lparallel :cl-json :cffi) :silent t)' \
+            --eval '(uiop:quit)'
+
+      - name: Build PVS
+        working-directory: ${{ env.PVS_LOCATION }}
+        run: |
+          ./configure
+          make
+          ./pvs -raw -E '(progn (format t "PVS is ready~%") (finish-output) (uiop:quit))' < /dev/null
+
+      - name: Discover, compile, and run generated _TEST_ binaries
+        run: |
+          scripts/ci/run_pvs2c_tests.py --clean-generated --demo-root pvs2c-demos
+
+      - name: Run demo drivers
+        run: |
+          make -C pvs2c-demos run-aes run-hmac run-sha256 run-utf8_decoder
+
+      - name: Upload PVS2C logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pvs2c-demo-logs
+          path: |
+            pvs2c-demos/build/ci-pvs2c-tests/**
+            pvs2c-demos/**/build/*.log
+          if-no-files-found: ignore

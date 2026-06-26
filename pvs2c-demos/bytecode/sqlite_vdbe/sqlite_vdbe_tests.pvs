@@ -1,0 +1,118 @@
+sqlite_vdbe_tests: THEORY
+BEGIN
+
+  IMPORTING sqlite_vdbe
+
+  example_db: database =
+    (# main_table :=
+       (# length := 3,
+          seq := [:
+            row2(sql_int(-7), sql_text("neg")),
+            row2(sql_int(3), sql_text("small")),
+            row2(sql_int(11), sql_text("big"))
+          :] #) #)
+
+  % EXPLAIN SELECT 1 + 2 * 3;
+  arithmetic_program: program =
+    (# length := 9,
+       seq := [:
+         instr(op_init, 0, 4, 0, p4_none, 0),
+         instr(op_add, 3, 2, 1, p4_none, 0),
+         instr(op_result_row, 1, 1, 0, p4_none, 0),
+         instr(op_halt, 0, 0, 0, p4_none, 0),
+         instr(op_integer, 1, 2, 0, p4_none, 0),
+         instr(op_integer, 2, 4, 0, p4_none, 0),
+         instr(op_integer, 3, 5, 0, p4_none, 0),
+         instr(op_multiply, 5, 4, 3, p4_none, 0),
+         instr(op_goto, 0, 1, 0, p4_none, 0)
+       :] #)
+
+  % EXPLAIN SELECT abs(x) FROM t;
+  abs_program: program =
+    (# length := 10,
+       seq := [:
+         instr(op_init, 0, 8, 0, p4_none, 0),
+         instr(op_open_read, 0, 2, 0, p4_none, 0),
+         instr(op_rewind, 0, 7, 0, p4_none, 0),
+         instr(op_column, 0, 0, 2, p4_none, 0),
+         instr(op_function, 0, 2, 1, p4_abs, 0),
+         instr(op_result_row, 1, 1, 0, p4_none, 0),
+         instr(op_next, 0, 3, 0, p4_none, 1),
+         instr(op_halt, 0, 0, 0, p4_none, 0),
+         instr(op_transaction, 0, 0, 1, p4_none, 1),
+         instr(op_goto, 0, 1, 0, p4_none, 0)
+       :] #)
+
+  % EXPLAIN SELECT x, name FROM t WHERE x > 5;
+  filter_program: program =
+    (# length := 13,
+       seq := [:
+         instr(op_init, 0, 10, 0, p4_none, 0),
+         instr(op_open_read, 0, 2, 0, p4_none, 0),
+         instr(op_rewind, 0, 9, 0, p4_none, 0),
+         instr(op_column, 0, 0, 1, p4_none, 0),
+         instr(op_le, 2, 8, 1, p4_binary, 84),
+         instr(op_column, 0, 0, 3, p4_none, 0),
+         instr(op_column, 0, 1, 4, p4_none, 0),
+         instr(op_result_row, 3, 2, 0, p4_none, 0),
+         instr(op_next, 0, 3, 0, p4_none, 1),
+         instr(op_halt, 0, 0, 0, p4_none, 0),
+         instr(op_transaction, 0, 0, 1, p4_none, 1),
+         instr(op_integer, 5, 2, 0, p4_none, 0),
+         instr(op_goto, 0, 1, 0, p4_none, 0)
+       :] #)
+
+  bad_column_program: program =
+    (# length := 2,
+       seq := [:
+         instr(op_column, 0, 0, 1, p4_none, 0),
+         instr(op_halt, 0, 0, 0, p4_none, 0)
+       :] #)
+
+  bad_result_program: program =
+    (# length := 2,
+       seq := [:
+         instr(op_result_row, 1, 1, 0, p4_none, 0),
+         instr(op_halt, 0, 0, 0, p4_none, 0)
+       :] #)
+
+  arithmetic_result: exec_result = run(example_db, arithmetic_program, 64)
+  abs_result: exec_result = run(example_db, abs_program, 128)
+  filter_result: exec_result = run(example_db, filter_program, 128)
+  bad_column_result: exec_result = run(example_db, bad_column_program, 8)
+  bad_result_result: exec_result = run(example_db, bad_result_program, 8)
+
+  arithmetic_value: int32 = result_int_or(arithmetic_result, 0, 0, -1)
+
+  abs_value0: int32 = result_int_or(abs_result, 0, 0, -1)
+  abs_value1: int32 = result_int_or(abs_result, 1, 0, -1)
+  abs_value2: int32 = result_int_or(abs_result, 2, 0, -1)
+
+  filter_x: int32 = result_int_or(filter_result, 0, 0, -1)
+  filter_name_is_big: bool = result_text_eq?(filter_result, 0, 1, "big")
+
+  test_arithmetic: _TEST_
+    arithmetic_result`status = halt_status AND
+    arithmetic_result`row_count = 1 AND
+    arithmetic_value = 7
+
+  test_abs_scan: _TEST_
+    abs_result`status = halt_status AND
+    abs_result`row_count = 3 AND
+    abs_value0 = 7 AND
+    abs_value1 = 3 AND
+    abs_value2 = 11
+
+  test_filtered_scan: _TEST_
+    filter_result`status = halt_status AND
+    filter_result`row_count = 1 AND
+    filter_x = 11 AND
+    filter_name_is_big
+
+  test_closed_cursor_traps: _TEST_
+    bad_column_result`status = trap_status
+
+  test_uninitialized_result_traps: _TEST_
+    bad_result_result`status = trap_status
+
+END sqlite_vdbe_tests

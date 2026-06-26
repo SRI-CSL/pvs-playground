@@ -1,0 +1,725 @@
+(|dfa|
+ (|offset_TCC1| 0
+  (|offset_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|offset| SUBTYPE "(number_fields.-)(dfa.i, 2)" "uint8" (17 39 17 44))))
+ (|dfaparse_TCC1| 0
+  (|dfaparse_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfaparse| SUBTYPE "(number_fields.-)(dfa.len, dfa.pos)" "nat"
+    (57 14 57 23))))
+ (|dfaparse_TCC2| 0
+  (|dfaparse_TCC2-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|dfaparse| SUBTYPE "(number_fields.-)(dfa.z`2, dfa.z`6)" "nat"
+    (57 14 57 23))))
+ (|dfaparse_TCC3| 0
+  (|dfaparse_TCC3-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfaparse| SUBTYPE "(number_fields.-)(dfa.len, dfa.pos)" "nat"
+    (57 14 57 23))))
+ (|dfaparse_TCC4| 0
+  (|dfaparse_TCC4-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|goodDfaResult?| CONST-DECL "bool" |dfa| NIL)) NIL
+   (|dfaparse| SUBTYPE "dfa.failed"
+    "(dfa.goodDfaResult?(dfa.len, dfa.startpos))" (38 12 38 18))))
+ (|dfaparse_TCC5| 0
+  (|dfaparse_TCC5-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfaparse| SUBTYPE "(number_fields.-)(dfa.pos, dfa.startpos)" "index"
+    (41 25 41 39))))
+ (|dfaparse_TCC6| 0
+  (|dfaparse_TCC6-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfaparse| SUBTYPE "(number_fields.+)(dfa.startpos, dfa.i)"
+    "below(dfa.len)" (43 14 43 26))))
+ (|dfaparse_TCC7| 0
+  (|dfaparse_TCC7-1| NIL 3972327396 ("" (GRIND) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|offset| CONST-DECL "uint8" |dfa| NIL) (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|dfa| TYPE-EQ-DECL NIL |dfa| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL))
+   NIL
+   (|dfaparse| SUBTYPE "dfa.str((number_fields.+)(dfa.startpos, dfa.i))" "byte"
+    (43 10 43 27))))
+ (|dfaparse_TCC8| 0
+  (|dfaparse_TCC8-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|goodDfaResult?| CONST-DECL "bool" |dfa| NIL)) NIL
+   (|dfaparse| SUBTYPE
+    "dfa.success((number_fields.-)(dfa.pos, dfa.startpos), (# length := (number_fields.-)(dfa.pos, dfa.startpos), seq := (LAMBDA (i: naturalnumbers.below((number_fields.-)(dfa.pos, dfa.startpos))): dfa.str((number_fields.+)(dfa.startpos, i))) #))"
+    "(dfa.goodDfaResult?(dfa.len, dfa.startpos))" (41 17 43 32))))
+ (|dfaparse_TCC9| 0
+  (|dfaparse_TCC9-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|dfa| TYPE-EQ-DECL NIL |dfa| NIL) (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|offset| CONST-DECL "uint8" |dfa| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|dfaparse| SUBTYPE "(number_fields.+)(dfa.pos, 1)"
+    "subrange(dfa.startpos, dfa.len)" (44 47 44 54))))
+ (|dfaparse_TCC10| 0
+  (|dfaparse_TCC10-1| NIL 3972327396 ("" (TERMINATION-TCC) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL) (< DEF-DECL "bool" |ordinals| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|dfa| TYPE-EQ-DECL NIL |dfa| NIL) (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|offset| CONST-DECL "uint8" |dfa| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|dfaparse| TERMINATION
+    "dfa.dfaparse(dfa.D, dfa.len, dfa.str, dfa.startpos, dfa.cur, (number_fields.+)(dfa.pos, 1))"
+    "NIL" (44 10 44 55))))
+ (|dfaparse_TCC11| 0
+  (|dfaparse_TCC11-1| NIL 3972327396 ("" (TERMINATION-TCC) NIL NIL)
+   ((|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|dfa| TYPE-EQ-DECL NIL |dfa| NIL) (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|offset| CONST-DECL "uint8" |dfa| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|dfaparse| TERMINATION
+    "dfa.dfaparse(dfa.D, dfa.len, dfa.str, dfa.startpos, dfa.newstate, dfa.pos)"
+    "NIL" (48 14 48 60))))
+ (|dfaparse_TCC12| 0
+  (|dfaparse_TCC12-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|dfa| TYPE-EQ-DECL NIL |dfa| NIL) (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|offset| CONST-DECL "uint8" |dfa| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|dfaparse| SUBTYPE "(number_fields.+)(dfa.pos, 1)"
+    "subrange(dfa.startpos, dfa.len)" (49 57 49 64))))
+ (|dfaparse_TCC13| 0
+  (|dfaparse_TCC13-1| NIL 3972327396 ("" (TERMINATION-TCC) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|dfa| TYPE-EQ-DECL NIL |dfa| NIL) (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|offset| CONST-DECL "uint8" |dfa| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|dfaparse| TERMINATION
+    "dfa.dfaparse(dfa.D, dfa.len, dfa.str, dfa.startpos, dfa.newstate, (number_fields.+)(dfa.pos, 1))"
+    "NIL" (49 15 49 65))))
+ (|dfaparse_TCC14| 0
+  (|dfaparse_TCC14-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|offset| CONST-DECL "uint8" |dfa| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|dfa| TYPE-EQ-DECL NIL |dfa| NIL) (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|dfaparse| SUBTYPE "(number_fields.-)(dfa.cur, 2)"
+    "below(dfa.offset(dfa.D`numstates))" (46 34 46 41))))
+ (|dfaparse_TCC15| 0
+  (|dfaparse_TCC15-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|goodDfaResult?| CONST-DECL "bool" |dfa| NIL)) NIL
+   (|dfaparse| SUBTYPE "dfa.failed"
+    "(dfa.goodDfaResult?(dfa.len, dfa.startpos))" (52 20 52 26))))
+ (|dfaparse_TCC16| 0
+  (|dfaparse_TCC16-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfaparse| SUBTYPE "(number_fields.-)(dfa.pos, dfa.startpos)" "index"
+    (53 48 53 62))))
+ (|dfaparse_TCC17| 0
+  (|dfaparse_TCC17-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfaparse| SUBTYPE "(number_fields.+)(dfa.startpos, dfa.i)"
+    "below(dfa.len)" (54 51 54 61))))
+ (|dfaparse_TCC18| 0
+  (|dfaparse_TCC18-1| NIL 3972327396 ("" (GRIND) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|offset| CONST-DECL "uint8" |dfa| NIL) (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|dfa| TYPE-EQ-DECL NIL |dfa| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL))
+   NIL
+   (|dfaparse| SUBTYPE "dfa.str((number_fields.+)(dfa.startpos, dfa.i))" "byte"
+    (54 47 54 62))))
+ (|dfaparse_TCC19| 0
+  (|dfaparse_TCC19-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|goodDfaResult?| CONST-DECL "bool" |dfa| NIL)) NIL
+   (|dfaparse| SUBTYPE
+    "dfa.success((number_fields.-)(dfa.pos, dfa.startpos), (# length := (number_fields.-)(dfa.pos, dfa.startpos), seq := (LAMBDA (i: naturalnumbers.below((number_fields.-)(dfa.pos, dfa.startpos))): dfa.str((number_fields.+)(dfa.startpos, i))) #))"
+    "(dfa.goodDfaResult?(dfa.len, dfa.startpos))" (53 40 54 67))))
+ (|dfaparse_TCC20| 0
+  (|dfaparse_TCC20-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|goodDfaResult?| CONST-DECL "bool" |dfa| NIL)) NIL
+   (|dfaparse| SUBTYPE "dfa.failed"
+    "(dfa.goodDfaResult?(dfa.len, dfa.startpos))" (55 6 55 12))))
+ (|DfaParse_TCC1| 0
+  (|DfaParse_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL (|DfaParse| SUBTYPE "2" "below(dfa.D`numstates)" (63 41 63 42))))
+ (|DfaParse_TCC2| 0
+  (|DfaParse_TCC2-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|DfaParse| SUBTYPE "dfa.startpos" "subrange(dfa.startpos, dfa.len)"
+    (63 44 63 52))))
+ (|digitstate2_TCC1| 0
+  (|digitstate2_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|digitstate2| SUBTYPE "dfa.b" "byte" (67 23 67 24))))
+ (|digitDfa_TCC1| 0
+  (|digitDfa_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|offset| CONST-DECL "uint8" |dfa| NIL)) NIL
+   (|digitDfa| SUBTYPE "[: digitstate2, digitstate3 :]"
+    "ARRAY[below(dfa.offset(4)) -> ARRAY[byte -> below(4)]]" (77 16 79 15))))
+ (|tokenstate1_TCC1| 0
+  (|tokenstate1_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|is_quote| CONST-DECL "bool" |stringutils| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL (|tokenstate1| SUBTYPE "dfa.X" "ARRAY[byte -> below(5)]" (88 9 88 10))))
+ (|tokenstate3_TCC1| 0
+  (|tokenstate3_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| TYPE-EQ-DECL NIL |dfa| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|tokenstate3| SUBTYPE "dfa.X" "ARRAY[byte -> below(5)]" (100 9 100 10))))
+ (|tokenDfa_TCC1| 0
+  (|tokenDfa_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|offset| CONST-DECL "uint8" |dfa| NIL)) NIL
+   (|tokenDfa| SUBTYPE "[: tokenstate1, tokenstate2, tokenstate3 :]"
+    "ARRAY[below(dfa.offset(5)) -> ARRAY[byte -> below(5)]]" (106 16 110 8))))
+ (|wspaceDfa_TCC1| 0
+  (|wspaceDfa_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|offset| CONST-DECL "uint8" |dfa| NIL)) NIL
+   (|wspaceDfa| SUBTYPE "[: wspacestate1 :]"
+    "ARRAY[below(dfa.offset(3)) -> ARRAY[byte -> below(3)]]" (122 16 123 6))))
+ (|stringDfa_TCC1| 0
+  (|stringDfa_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|offset| CONST-DECL "uint8" |dfa| NIL)) NIL
+   (|stringDfa| SUBTYPE
+    "[: string_start, string_in, string_escape, string_end :]"
+    "ARRAY[below(dfa.offset(6)) -> ARRAY[byte -> below(6)]]" (143 16 146 32))))
+ (|numberDfa_TCC1| 0
+  (|numberDfa_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|offset| CONST-DECL "uint8" |dfa| NIL)) NIL
+   (|numberDfa| SUBTYPE
+    "[: num_start, num_leading_minus, num_integer_part, num_decimal_point, num_frac_part, num_exponent_e, num_exponent_sign, num_exponent_part :]"
+    "ARRAY[below(dfa.offset(10)) -> ARRAY[byte -> below(10)]]"
+    (175 16 182 39))))
+ (|keywordDfa_TCC1| 0
+  (|keywordDfa_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|offset| CONST-DECL "uint8" |dfa| NIL)) NIL
+   (|keywordDfa| SUBTYPE
+    "[: key_start, key_t, key_tr, key_tru, key_true, key_f, key_fa, key_fal, key_fals, key_false, key_n, key_nu, key_nul, key_null :]"
+    "ARRAY[below(dfa.offset(16)) -> ARRAY[byte -> below(16)]]"
+    (209 16 213 18))))
+ (|lookup_dfa_TCC1| 0
+  (|lookup_dfa_TCC1-1| NIL 3972327396 ("" (EVAL-FORMULA) NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL (|lookup_dfa| SUBTYPE "\"wspaceDfa\"" "bstring" (219 16 219 25))))
+ (|lookup_dfa_TCC2| 0
+  (|lookup_dfa_TCC2-1| NIL 3972327396
+   ("" (SKEEP) (("" (HIDE 1) (("" (EVAL-FORMULA) NIL NIL)) NIL)) NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL (|lookup_dfa| SUBTYPE "\"tokenDfa\"" "bstring" (221 19 221 27))))
+ (|lookup_dfa_TCC3| 0
+  (|lookup_dfa_TCC3-1| NIL 3972327396
+   ("" (SKEEP) (("" (EVAL-FORMULA 3) NIL NIL)) NIL)
+   ((TRUE CONST-DECL "bool" |booleans| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   NIL (|lookup_dfa| SUBTYPE "\"digitDfa\"" "bstring" (223 19 223 27))))
+ (|lookup_dfa_TCC4| 0
+  (|lookup_dfa_TCC4-1| NIL 3972327396
+   ("" (SKEEP) (("" (EVAL-FORMULA 4) NIL NIL)) NIL)
+   ((TRUE CONST-DECL "bool" |booleans| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   NIL (|lookup_dfa| SUBTYPE "\"stringDfa\"" "bstring" (225 19 225 28))))
+ (|lookup_dfa_TCC5| 0
+  (|lookup_dfa_TCC5-1| NIL 3972327396
+   ("" (SKEEP) (("" (EVAL-FORMULA 5) NIL NIL)) NIL)
+   ((TRUE CONST-DECL "bool" |booleans| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   NIL (|lookup_dfa| SUBTYPE "\"numberDfa\"" "bstring" (227 19 227 28))))
+ (|lookup_dfa_TCC6| 0
+  (|lookup_dfa_TCC6-1| NIL 3972327396
+   ("" (SKEEP) (("" (EVAL-FORMULA 6) NIL NIL)) NIL)
+   ((TRUE CONST-DECL "bool" |booleans| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   NIL (|lookup_dfa| SUBTYPE "\"keywordDfa\"" "bstring" (229 19 229 29))))
+ (|testdfa_TCC1| 0
+  (|testdfa_TCC1-1| NIL 3972327396
+   ("" (GRIND) (("" (TYPEPRED "s!1`seq(x1!1)") (("" (GRIND) NIL NIL)) NIL))
+    NIL)
+   ((|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL))
+   NIL
+   (|testdfa| SUBTYPE "dfa.s`seq" "strings(dfa.s`length)" (236 34 236 39))))
+ (|testdfa_TCC2| 0
+  (|testdfa_TCC2-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL (|testdfa| SUBTYPE "0" "upto(dfa.s`length)" (236 41 236 42))))
+ (|dfaTest_token_1_TCC1| 0
+  (|dfaTest_token_1_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfaTest_token_1| SUBTYPE "\"foo\"" "bstring" (241 46 241 49))))
+ (|dfaTest_token_2_TCC1| 0
+  (|dfaTest_token_2_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfaTest_token_2| SUBTYPE "\"\\\\\\\\\\\"foo\\\\\\\\\\\" \"" "bstring"
+    (242 46 242 52))))
+ (|dfaTest_token_3_TCC1| 0
+  (|dfaTest_token_3_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfaTest_token_3| SUBTYPE "\"\\\\\\\\\\\"foo\"" "bstring"
+    (243 46 243 50))))
+ (|dfaTest_token_4_TCC1| 0
+  (|dfaTest_token_4_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfaTest_token_4| SUBTYPE "\"\\\\\\\\\\\"foo\\\\\\\\\\\"b\"" "bstring"
+    (244 46 244 52))))
+ (|dfatest_wspace_1_TCC1| 0
+  (|dfatest_wspace_1_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_wspace_1| SUBTYPE "\"   \"" "bstring" (248 48 248 51))))
+ (|dfatest_wspace_2_TCC1| 0
+  (|dfatest_wspace_2_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_wspace_2| SUBTYPE "\"\"" "bstring" (249 48 249 48))))
+ (|dfatest_number_1_TCC1| 0
+  (|dfatest_number_1_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_number_1| SUBTYPE "\"12\"" "bstring" (252 48 252 50))))
+ (|dfatest_number_2_TCC1| 0
+  (|dfatest_number_2_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_number_2| SUBTYPE "\"1.2\"" "bstring" (253 48 253 51))))
+ (|dfatest_number_3_TCC1| 0
+  (|dfatest_number_3_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_number_3| SUBTYPE "\".12\"" "bstring" (254 48 254 51))))
+ (|dfatest_number_4_TCC1| 0
+  (|dfatest_number_4_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_number_4| SUBTYPE "\"-12\"" "bstring" (255 48 255 51))))
+ (|dfatest_number_5_TCC1| 0
+  (|dfatest_number_5_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_number_5| SUBTYPE "\"12e2\"" "bstring" (256 48 256 52))))
+ (|dfatest_number_6_TCC1| 0
+  (|dfatest_number_6_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_number_6| SUBTYPE "\"-12.3e4\"" "bstring" (257 48 257 55))))
+ (|dfatest_number_7_TCC1| 0
+  (|dfatest_number_7_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_number_7| SUBTYPE "\"12e-3\"" "bstring" (258 48 258 53))))
+ (|dfatest_number_8_TCC1| 0
+  (|dfatest_number_8_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_number_8| SUBTYPE "\"1-2\"" "bstring" (259 48 259 51))))
+ (|dfatest_number_9_TCC1| 0
+  (|dfatest_number_9_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_number_9| SUBTYPE "\"12 \"" "bstring" (260 48 260 51))))
+ (|dfatest_number_10_TCC1| 0
+  (|dfatest_number_10_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_number_10| SUBTYPE "\"1.2 \"" "bstring" (261 49 261 53))))
+ (|dfatest_number_11_TCC1| 0
+  (|dfatest_number_11_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_number_11| SUBTYPE "\".12 \"" "bstring" (262 49 262 53))))
+ (|dfatest_number_12_TCC1| 0
+  (|dfatest_number_12_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_number_12| SUBTYPE "\"12e+3\"" "bstring" (263 49 263 54))))
+ (|dfatest_keyword_1_TCC1| 0
+  (|dfatest_keyword_1_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_keyword_1| SUBTYPE "\"true\"" "bstring" (265 50 265 54))))
+ (|dfatest_keyword_2_TCC1| 0
+  (|dfatest_keyword_2_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_keyword_2| SUBTYPE "\"TRUE\"" "bstring" (266 50 266 54))))
+ (|dfatest_keyword_3_TCC1| 0
+  (|dfatest_keyword_3_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_keyword_3| SUBTYPE "\"false\"" "bstring" (267 50 267 55))))
+ (|dfatest_keyword_4_TCC1| 0
+  (|dfatest_keyword_4_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_keyword_4| SUBTYPE "\"FALSE\"" "bstring" (268 50 268 55))))
+ (|dfatest_keyword_5_TCC1| 0
+  (|dfatest_keyword_5_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_keyword_5| SUBTYPE "\"True\"" "bstring" (269 50 269 54))))
+ (|dfatest_keyword_6_TCC1| 0
+  (|dfatest_keyword_6_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_keyword_6| SUBTYPE "\"truE\"" "bstring" (270 50 270 54))))
+ (|dfatest_keyword_7_TCC1| 0
+  (|dfatest_keyword_7_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_keyword_7| SUBTYPE "\"null\"" "bstring" (271 50 271 54))))
+ (|dfatest_keyword_8_TCC1| 0
+  (|dfatest_keyword_8_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_keyword_8| SUBTYPE "\" null\"" "bstring" (272 50 272 55))))
+ (|dfatest_keyword_9_TCC1| 0
+  (|dfatest_keyword_9_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_keyword_9| SUBTYPE "\"null \"" "bstring" (273 50 273 55))))
+ (|dfatest_string_1_TCC1| 0
+  (|dfatest_string_1_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_string_1| SUBTYPE "\"missing quotes\"" "bstring"
+    (275 48 275 62))))
+ (|dfatest_string_2_TCC1| 0
+  (|dfatest_string_2_TCC1-1| NIL 3972327396 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dfatest_string_2| SUBTYPE "\"\\\\\\\\\\\"having quotes\\\\\\\\\\\"\""
+    "bstring" (276 48 276 63)))))
+

@@ -1,0 +1,30 @@
+jsonnumber: THEORY
+BEGIN
+
+jsonnumber: DATATYPE
+  BEGIN
+   juint8(u8val : uint8): juint8?
+   juint16(u16val : uint16): juint16?
+   juint32(u32val : uint32): juint32?
+   juint64(u64val : uint64): juint64?
+   jint8(s8val : int8): jint8?
+   jint16(s16val : int16): jint16?
+   jint32(s32val : int32): jint32?
+   jint64(s64val : int64): jint64?
+   jdecimal(mantissa: int64, exponent: int64): jdecimal?
+  END jsonnumber
+
+  % Extracts a natural number from a jsonnumber, returning 0 on failure.
+  get_nat(jn: jsonnumber): nat =
+    CASES jn OF
+      juint8(v)  : v,
+      juint16(v) : v,
+      juint32(v) : v,
+      juint64(v) : v,
+      jint8(v)   : IF v >= 0 THEN v ELSE 0 ENDIF,
+      jint16(v)  : IF v >= 0 THEN v ELSE 0 ENDIF,
+      jint32(v)  : IF v >= 0 THEN v ELSE 0 ENDIF,
+      jint64(v)  : IF v >= 0 THEN v ELSE 0 ENDIF
+    ENDCASES
+
+END jsonnumber

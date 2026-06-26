@@ -1,0 +1,2963 @@
+(|dpeg|
+ (|good_result_TCC1| 0
+  (|good_result_TCC1-1| NIL 3971125832 ("" (SUBTYPE-TCC) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL (|good_result| SUBTYPE "dpeg.r" "(dpeg.success?)" (21 68 21 69))))
+ (|dpeg_expr_ord_defaxiom| 0
+  (|dpeg_expr_ord_defaxiom-1| NIL 3970946433 ("" (POSTPONE) NIL NIL) NIL
+   SHOSTAK))
+ (|dpeg_expr_fail_extensionality| 0
+  (|dpeg_expr_fail_extensionality-1| NIL 3970946433 ("" (POSTPONE) NIL NIL) NIL
+   SHOSTAK))
+ (|dpeg_expr_skip_extensionality| 0
+  (|dpeg_expr_skip_extensionality-1| NIL 3970946433 ("" (POSTPONE) NIL NIL) NIL
+   SHOSTAK))
+ (|dpeg_expr_glte_extensionality| 0
+  (|dpeg_expr_glte_extensionality-1| NIL 3970946433 ("" (POSTPONE) NIL NIL) NIL
+   SHOSTAK))
+ (|dpeg_expr_glte_eta| 0
+  (|dpeg_expr_glte_eta-1| NIL 3970946433 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|dpeg_expr_p_glte| 0
+  (|dpeg_expr_p_glte-1| NIL 3970946433 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|dpeg_expr_b_glte| 0
+  (|dpeg_expr_b_glte-1| NIL 3970946433 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|dpeg_expr_c_glte| 0
+  (|dpeg_expr_c_glte-1| NIL 3970946433 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|dpeg_expr_inclusive| 0
+  (|dpeg_expr_inclusive-1| NIL 3970946433 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|dpeg_expr_induction| 0
+  (|dpeg_expr_induction-1| NIL 3970946433 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|dpeg_expr_well_founded| 0
+  (|dpeg_expr_well_founded-1| NIL 3970946433 ("" (POSTPONE) NIL NIL) NIL
+   SHOSTAK))
+ (|matches_TCC1| 0
+  (|matches_TCC5-1| NIL 3970946433 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|matches| SUBTYPE "dpeg.r" "(dpeg.success?)" (21 68 21 69))))
+ (|matches_TCC2| 0
+  (|matches_TCC1-1| NIL 3970946433 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|matches| SUBTYPE "(number_fields.-)(dpeg.s`length, dpeg.pos)" "nat"
+    (111 19 111 33))))
+ (|matches_TCC3| 0
+  (|matches_TCC2-1| NIL 3970946433 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|matches| SUBTYPE "(number_fields.-)(dpeg.z1`1`length, dpeg.z1`2)" "nat"
+    (111 19 111 33))))
+ (|matches_TCC4| 0
+  (|matches_TCC3-1| NIL 3970946433 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|matches| SUBTYPE "(number_fields.-)(dpeg.s`length, dpeg.pos)" "nat"
+    (111 19 111 33))))
+ (|matches_TCC5| 0
+  (|matches_TCC4-1| NIL 3970946433 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|matches| SUBTYPE "dpeg.success(0)"
+    "good_result((number_fields.-)(dpeg.s`length, dpeg.pos))" (93 12 93 22))))
+ (|matches_TCC6| 0
+  (|matches_TCC10-1| NIL 3970946433 ("" (SUBTYPE-TCC) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL (|matches| SUBTYPE "dpeg.nt2" "below(dpeg.G`length)" (100 19 100 22))))
+ (|matches_TCC7| 0
+  (|matches_TCC8-1| NIL 3970946433 ("" (TERMINATION-TCC) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL) (< DEF-DECL "bool" |ordinals| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|matches| TERMINATION "dpeg.matches(dpeg.G, dpeg.nt2)(dpeg.s, dpeg.pos)"
+    "NIL" (100 8 100 31))))
+ (|matches_TCC8| 0
+  (|matches_TCC6-1| NIL 3970946433 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|matches| SUBTYPE
+    "(number_fields.-)((number_fields.+)(dpeg.pos, dpeg.i), 1)"
+    "upto(dpeg.s`length)" (104 39 104 50))))
+ (|matches_TCC9| 0
+  (|matches_TCC12-1| NIL 3970946433 ("" (TERMINATION-TCC) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|matches| TERMINATION
+    "dpeg.matches(dpeg.G, dpeg.nt1)(dpeg.s, (number_fields.-)((number_fields.+)(dpeg.pos, dpeg.i), 1))"
+    "NIL" (104 20 104 51))))
+ (|matches_TCC10| 0
+  (|matches_TCC10-1| NIL 3971141306
+   ("" (GRIND)
+    (("" (TYPEPRED "v!1(G!1, nt1!1)(s!1, p!1(s!1, pos!1) - 1 + pos!1)")
+      (("" (GRIND) (("" (TYPEPRED "s!1`length") (("" (GRIND) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|guard| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|good_result| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|span| ADT-ACCESSOR-DECL "[(success?) -> index]" |dpeg| NIL)
+    (|success?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|ordinal| NONEMPTY-TYPE-EQ-DECL NIL |ordinals| NIL)
+    (|ordinal?| DEF-DECL "bool" |ordinals| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|ordstruct| TYPE-DECL NIL |ordstruct_adt| NIL)
+    (|failure?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|result| TYPE-DECL NIL |dpeg| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL))
+   NIL
+   (|matches| SUBTYPE
+    "(number_fields.-)((number_fields.+)(dpeg.rspan, dpeg.i), 1)" "index"
+    (105 35 105 48))))
+ (|matches_TCC11| 0
+  (|matches_TCC11-1| NIL 3971490087
+   ("" (SUBTYPE-TCC)
+    (("" (TYPEPRED "v!1(G!1, nt1!1)(s!1, p!1(s!1, pos!1) - 1 + pos!1)")
+      (("" (TYPEPRED "s!1`length") (("" (GRIND) NIL NIL)) NIL)) NIL))
+    NIL)
+   ((|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|guard| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|good_result| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|span| ADT-ACCESSOR-DECL "[(success?) -> index]" |dpeg| NIL)
+    (|success?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|ordinal| NONEMPTY-TYPE-EQ-DECL NIL |ordinals| NIL)
+    (|ordinal?| DEF-DECL "bool" |ordinals| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|ordstruct| TYPE-DECL NIL |ordstruct_adt| NIL)
+    (|failure?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|result| TYPE-DECL NIL |dpeg| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   NIL
+   (|matches| SUBTYPE
+    "dpeg.success((number_fields.-)((number_fields.+)(dpeg.rspan, dpeg.i), 1))"
+    "good_result((number_fields.-)(dpeg.s`length, dpeg.pos))"
+    (105 27 105 49))))
+ (|result_sofar_TCC1| 0
+  (|result_sofar_TCC1-1| NIL 3971125832 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|result_sofar| SUBTYPE
+    "(number_fields.-)((number_fields.-)(exp2.exp2(28), 1), dpeg.sofar)"
+    "index" (113 47 113 63))))
+ (|result_sofar_TCC2| 0
+  (|result_sofar_TCC2-1| NIL 3971125832 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|result| TYPE-DECL NIL |dpeg| NIL)
+    (|failure?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|success?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|span| ADT-ACCESSOR-DECL "[(success?) -> index]" |dpeg| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|good_result| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   NIL
+   (|result_sofar| SUBTYPE "(number_fields.+)(dpeg.i, dpeg.sofar)" "index"
+    (116 27 116 36))))
+ (|encode_result_TCC1| 0
+  (|encode_result_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|encode_result| SUBTYPE "0" "upto((number_fields.+)(1, dpeg.maxspan))"
+    (121 17 121 18))))
+ (|encode_result_TCC2| 0
+  (|encode_result_TCC1-1| NIL 3971490087 ("" (SUBTYPE-TCC) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|encode_result| SUBTYPE "(number_fields.+)(dpeg.i, 1)"
+    "upto((number_fields.+)(1, dpeg.maxspan))" (122 19 122 24))))
+ (|decode_result_TCC1| 0
+  (|decode_result_TCC1-1| NIL 3971490087 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   NIL
+   (|decode_result| SUBTYPE "(number_fields.-)(dpeg.i, 1)" "index"
+    (126 41 126 46))))
+ (|dpeg_parse_TCC1| 0
+  (|dpeg_parse_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL))
+   NIL
+   (|dpeg_parse| SUBTYPE
+    "(number_fields.-)((number_fields.+)(dpeg.sofar, dpeg.s`length), dpeg.pos)"
+    "index" (130 59 130 126))))
+ (|dpeg_parse_TCC2| 0
+  (|dpeg_parse_TCC5-1| NIL 3970946433 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL (|dpeg_parse| SUBTYPE "dpeg.sofar" "index" (130 96 130 101))))
+ (|dpeg_parse_TCC3| 0
+  (|dpeg_parse_TCC7-1| NIL 3970974293 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dpeg_parse| SUBTYPE "dpeg.pos" "upto(dpeg.s`length)" (130 121 130 124))))
+ (|dpeg_parse_TCC4| 0
+  (|dpeg_parse_TCC2-1| NIL 3970946433
+   ("" (GRIND)
+    (("" (TYPEPRED "matches(G!1, nt!1)(s!1, pos!1)")
+      (("" (GRIND) (("" (TYPEPRED "s!1`length") (("" (GRIND) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|matches| DEF-DECL "good_result(s`length - pos)" |dpeg| NIL)
+    (|good_result| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|span| ADT-ACCESSOR-DECL "[(success?) -> index]" |dpeg| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|success?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|failure?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|result| TYPE-DECL NIL |dpeg| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL))
+   NIL
+   (|dpeg_parse| SUBTYPE "dpeg.matches(dpeg.G, dpeg.nt)(dpeg.s, dpeg.pos)"
+    "good_result((number_fields.-)((number_fields.-)(exp2.exp2(28), 1), dpeg.sofar))"
+    (130 103 130 125))))
+ (|dpeg_parse_TCC5| 0
+  (|dpeg_parse_TCC5-1| NIL 3978197036
+   ("" (GRIND)
+    (("" (TYPEPRED "matches(G!1, nt!1)(s!1, pos!1)") (("" (GROUND) NIL NIL))
+      NIL))
+    NIL)
+   ((|matches| DEF-DECL "good_result(s`length - pos)" |dpeg| NIL)
+    (|good_result| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|span| ADT-ACCESSOR-DECL "[(success?) -> index]" |dpeg| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|success?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|failure?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|result| TYPE-DECL NIL |dpeg| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|result_sofar| CONST-DECL "result" |dpeg| NIL))
+   NIL
+   (|dpeg_parse| SUBTYPE
+    "dpeg.result_sofar(dpeg.sofar, dpeg.matches(dpeg.G, dpeg.nt)(dpeg.s, dpeg.pos))"
+    "good_result((number_fields.-)((number_fields.+)(dpeg.sofar, dpeg.s`length), dpeg.pos))"
+    (130 83 130 126))))
+ (|dpeg_parse_TCC6| 0
+  (|dpeg_parse_TCC1-1| NIL 3970946433 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dpeg_parse| SUBTYPE "(number_fields.-)(dpeg.s`length, dpeg.pos)" "nat"
+    (147 19 147 33))))
+ (|dpeg_parse_TCC7| 0
+  (|dpeg_parse_TCC4-1| NIL 3970946433
+   ("" (SUBTYPE-TCC) (("" (GRIND) NIL NIL)) NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   NIL
+   (|dpeg_parse| SUBTYPE "(number_fields.-)(dpeg.z`3`length, dpeg.z`5)" "nat"
+    (147 19 147 33))))
+ (|dpeg_parse_TCC8| 0
+  (|dpeg_parse_TCC3-1| NIL 3970946433 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|dpeg_parse| SUBTYPE "(number_fields.-)(dpeg.s`length, dpeg.pos)" "nat"
+    (147 19 147 33))))
+ (|dpeg_parse_TCC9| 0
+  (|dpeg_parse_TCC6-1| NIL 3970946433
+   ("" (GRIND) (("" (TYPEPRED "s!1`length") (("" (GRIND) NIL NIL)) NIL)) NIL)
+   ((|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|matches| DEF-DECL "good_result(s`length - pos)" |dpeg| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|encode_result| CONST-DECL "upto(maxspan + 1)" |dpeg| NIL)
+    (|result_sofar| CONST-DECL "result" |dpeg| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL))
+   NIL
+   (|dpeg_parse| SUBTYPE "(number_fields.+)(dpeg.sofar, 1)"
+    "{i: naturalnumbers.upto((number_fields.+)((number_fields.-)(exp2.exp2(28), 1), 1)) | i = dpeg.encode_result((number_fields.-)((number_fields.+)(dpeg.sofar, dpeg.s`length), dpeg.pos), dpeg.result_sofar(dpeg.sofar, dpeg.matches(dpeg.G, dpeg.nt)(dpeg.s, dpeg.pos)))}"
+    (133 12 133 21))))
+ (|dpeg_parse_TCC10| 0
+  (|dpeg_parse_TCC12-1| NIL 3970946433 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|dpeg_parse| SUBTYPE "dpeg.nt2" "below(dpeg.G`length)" (139 25 139 28))))
+ (|dpeg_parse_TCC11| 0
+  (|dpeg_parse_TCC10-1| NIL 3970946433 ("" (TERMINATION-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL) (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|dpeg_parse| TERMINATION
+    "dpeg.dpeg_parse(dpeg.G, dpeg.nt2, dpeg.s, dpeg.sofar, dpeg.pos)" "NIL"
+    (139 11 139 44))))
+ (|dpeg_parse_TCC12| 0
+  (|dpeg_parse_TCC8-1| NIL 3970946433
+   ("" (GRIND)
+    (("1" (TYPEPRED "v!1(G!1, nt2!1, s!1, sofar!1, pos!1)")
+      (("1" (GRIND) NIL NIL)) NIL)
+     ("2" (TYPEPRED "v!1(G!1, nt2!1, s!1, sofar!1, pos!1)")
+      (("2" (GRIND) NIL NIL)) NIL))
+    NIL)
+   ((+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|good_result| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|span| ADT-ACCESSOR-DECL "[(success?) -> index]" |dpeg| NIL)
+    (|success?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|failure?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|result| TYPE-DECL NIL |dpeg| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|ordinal| NONEMPTY-TYPE-EQ-DECL NIL |ordinals| NIL)
+    (|ordinal?| DEF-DECL "bool" |ordinals| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|ordstruct| TYPE-DECL NIL |ordstruct_adt| NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|matches| DEF-DECL "good_result(s`length - pos)" |dpeg| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|encode_result| CONST-DECL "upto(maxspan + 1)" |dpeg| NIL)
+    (|result_sofar| CONST-DECL "result" |dpeg| NIL))
+   NIL
+   (|dpeg_parse| SUBTYPE
+    "dpeg.dpeg_parse(dpeg.G, dpeg.nt2, dpeg.s, dpeg.sofar, dpeg.pos)"
+    "{i: naturalnumbers.upto((number_fields.+)((number_fields.-)(exp2.exp2(28), 1), 1)) | i = dpeg.encode_result((number_fields.-)((number_fields.+)(dpeg.sofar, dpeg.s`length), dpeg.pos), dpeg.result_sofar(dpeg.sofar, dpeg.matches(dpeg.G, dpeg.nt)(dpeg.s, dpeg.pos)))}"
+    (139 11 139 44))))
+ (|dpeg_parse_TCC13| 0
+  (|dpeg_parse_TCC7-1| NIL 3970946433 ("" (GRIND) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL))
+   NIL
+   (|dpeg_parse| SUBTYPE
+    "(number_fields.-)((number_fields.+)(dpeg.sofar, dpeg.i), 1)"
+    "upto(dpeg.s`length)" (143 35 143 48))))
+ (|dpeg_parse_TCC14| 0
+  (|dpeg_parse_TCC9-1| NIL 3970946433 ("" (GRIND) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL))
+   NIL
+   (|dpeg_parse| SUBTYPE
+    "(number_fields.-)((number_fields.+)(dpeg.pos, dpeg.i), 1)"
+    "subrange((number_fields.-)((number_fields.+)(dpeg.i, dpeg.sofar), 1), dpeg.s`length)"
+    (143 50 143 61))))
+ (|dpeg_parse_TCC15| 0
+  (|dpeg_parse_TCC14-1| NIL 3970946433 ("" (TERMINATION-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   NIL
+   (|dpeg_parse| TERMINATION
+    "dpeg.dpeg_parse(dpeg.G, dpeg.nt1, dpeg.s, (number_fields.-)((number_fields.+)(dpeg.sofar, dpeg.i), 1), (number_fields.-)((number_fields.+)(dpeg.pos, dpeg.i), 1))"
+    "NIL" (143 13 143 62))))
+ (|dpeg_parse_TCC16| 0
+  (|dpeg_parse_TCC12-1| NIL 3970967344
+   ("" (SUBTYPE-TCC)
+    ((""
+      (TYPEPRED "v!1(G!1, nt1!1, s!1, p!1(s!1, pos!1) - 1 + sofar!1,
+          p!1(s!1, pos!1) - 1 + pos!1)")
+      (("" (GRIND) NIL NIL)) NIL))
+    NIL)
+   ((|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|guard| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|matches| DEF-DECL "good_result(s`length - pos)" |dpeg| NIL)
+    (|result_sofar| CONST-DECL "result" |dpeg| NIL)
+    (|encode_result| CONST-DECL "upto(maxspan + 1)" |dpeg| NIL)
+    (+ CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|good_result| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|span| ADT-ACCESSOR-DECL "[(success?) -> index]" |dpeg| NIL)
+    (|success?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|failure?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|result| TYPE-DECL NIL |dpeg| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|ordinal| NONEMPTY-TYPE-EQ-DECL NIL |ordinals| NIL)
+    (|ordinal?| DEF-DECL "bool" |ordinals| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|ordstruct| TYPE-DECL NIL |ordstruct_adt| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   NIL
+   (|dpeg_parse| SUBTYPE
+    "dpeg.dpeg_parse(dpeg.G, dpeg.nt1, dpeg.s, (number_fields.-)((number_fields.+)(dpeg.sofar, dpeg.i), 1), (number_fields.-)((number_fields.+)(dpeg.pos, dpeg.i), 1))"
+    "{i: naturalnumbers.upto((number_fields.+)((number_fields.-)(exp2.exp2(28), 1), 1)) | i = dpeg.encode_result((number_fields.-)((number_fields.+)(dpeg.sofar, dpeg.s`length), dpeg.pos), dpeg.result_sofar(dpeg.sofar, dpeg.matches(dpeg.G, dpeg.nt)(dpeg.s, dpeg.pos)))}"
+    (143 13 143 62))))
+ (|zreachable_TCC1| 0
+  (|zreachable_TCC1-1| NIL 3971136889 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   NIL
+   (|zreachable| SUBTYPE "dpeg.n2" "below(dpeg.G`length)" (152 57 152 59))))
+ (|zreachable_TCC2| 0
+  (|zreachable_TCC2-1| NIL 3971136889 ("" (TERMINATION-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL))
+   NIL
+   (|zreachable| TERMINATION "dpeg.zreachable(dpeg.G, dpeg.n2)" "NIL"
+    (152 43 152 60))))
+ (|skipzreachable_TCC1| 0
+  (|skipzreachable_TCC1-1| NIL 3971147242 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   NIL
+   (|skipzreachable| SUBTYPE "dpeg.n2" "below(dpeg.G`length)"
+    (160 52 160 54))))
+ (|skipzreachable_TCC2| 0
+  (|skipzreachable_TCC2-1| NIL 3971147242 ("" (TERMINATION-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL))
+   NIL
+   (|skipzreachable| TERMINATION "dpeg.skipzreachable(dpeg.G, dpeg.n2)" "NIL"
+    (160 34 160 55))))
+ (|nskipzreachable_nonempty_TCC1| 0
+  (|nskipzreachable_nonempty_TCC1-1| NIL 3971146672 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|aseq| TYPE-EQ-DECL NIL |array_sequences| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|result| TYPE-DECL NIL |dpeg| NIL)
+    (|failure?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|success?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|span| ADT-ACCESSOR-DECL "[(success?) -> index]" |dpeg| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|good_result| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   NIL
+   (|nskipzreachable_nonempty| SUBTYPE "dpeg.res" "(dpeg.success?)"
+    (172 58 172 61))))
+ (|nskipzreachable_nonempty| 0
+  (|nskipzreachable_nonempty-1| NIL 3971146672
+   ("" (MEASURE-INDUCT+ "lex2(s`length - pos, n)" ("G" "s" "n" "pos"))
+    (("1" (EXPAND "matches" +)
+      (("1" (APPLY (THEN (LIFT-IF) (GROUND)))
+        (("1" (EXPAND "skipzreachable" +) (("1" (PROPAX) NIL NIL)) NIL)
+         ("2" (GRIND) NIL NIL))
+        NIL))
+      NIL)
+     ("2" (GRIND) NIL NIL) ("3" (GRIND) NIL NIL) ("4" (GRIND) NIL NIL)
+     ("5" (TYPEPRED "x!1`4") (("5" (ASSERT) NIL NIL)) NIL)
+     ("6" (ASSERT) NIL NIL) ("7" (ASSERT) NIL NIL))
+    NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|c| ADT-ACCESSOR-DECL "[(glte?) -> index]" |dpeg| NIL)
+    (|glte?| ADT-RECOGNIZER-DECL "[dpeg_expr -> boolean]" |dpeg| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|result| TYPE-DECL NIL |dpeg| NIL)
+    (OR CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|failure?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|success?| ADT-RECOGNIZER-DECL "[result -> boolean]" |dpeg| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|span| ADT-ACCESSOR-DECL "[(success?) -> index]" |dpeg| NIL)
+    (|good_result| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (IMPLIES CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (= CONST-DECL "[T, T -> boolean]" |equalities| NIL)
+    (|matches| DEF-DECL "good_result(s`length - pos)" |dpeg| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|skipzreachable| DEF-DECL "bool" |dpeg| NIL)
+    (|well_founded_le| FORMULA-DECL NIL |ordinals| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|measure_induction| FORMULA-DECL NIL |measure_induction| NIL)
+    (|dpeg_grammar| TYPE-EQ-DECL NIL |dpeg| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|size| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |nat_types| NIL)
+    (|dpeg_expr| TYPE-DECL NIL |dpeg| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|ordstruct| TYPE-DECL NIL |ordstruct_adt| NIL)
+    (|ordinal?| DEF-DECL "bool" |ordinals| NIL)
+    (|ordinal| NONEMPTY-TYPE-EQ-DECL NIL |ordinals| NIL)
+    (|lex2| CONST-DECL "ordinal" |lex2| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (< DEF-DECL "bool" |ordinals| NIL)
+    (|well_founded?| CONST-DECL "bool" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL))
+   SHOSTAK))
+ (|wspace_grammar_TCC1| 0
+  (|wspace_grammar_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|whitespace| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|wspace_grammar| SUBTYPE "dpeg.mk_guard(stringutils.whitespace)" "guard"
+    (185 77 185 97))))
+ (|test_wspace1_TCC1| 0
+  (|test_wspace1_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|wspace_grammar| CONST-DECL "dpeg_grammar" |dpeg| NIL))
+   NIL
+   (|test_wspace1| SUBTYPE "2" "below(dpeg.wspace_grammar`length)"
+    (187 51 187 52))))
+ (|test_wspace1_TCC2| 0
+  (|test_wspace1_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_wspace1| SUBTYPE "\"\"" "bstring" (187 68 187 68))))
+ (|test_wspace1_TCC3| 0
+  (|test_wspace1_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_wspace1| SUBTYPE "0" "upto(bytestrings.mk_bytestring(\"\")`length)"
+    (187 73 187 74))))
+ (|test_wspace1_TCC4| 0
+  (|test_wspace1_TCC4-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_wspace1| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"\")`length)" (187 76 187 77))))
+ (|test_wspace1| 0
+  (|test_wspace1-1| NIL 3971742802 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_wspace2_TCC1| 0
+  (|test_wspace2_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_wspace2| SUBTYPE "\"a\"" "bstring" (188 68 188 69))))
+ (|test_wspace2_TCC2| 0
+  (|test_wspace2_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_wspace2| SUBTYPE "0" "upto(bytestrings.mk_bytestring(\"a\")`length)"
+    (188 74 188 75))))
+ (|test_wspace2_TCC3| 0
+  (|test_wspace2_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_wspace2| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"a\")`length)" (188 77 188 78))))
+ (|test_wspace2| 0
+  (|test_wspace2-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_wspace3_TCC1| 0
+  (|test_wspace3_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_wspace3| SUBTYPE "\"   \"" "bstring" (189 68 189 71))))
+ (|test_wspace3_TCC2| 0
+  (|test_wspace3_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_wspace3| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"   \")`length)" (189 76 189 77))))
+ (|test_wspace3_TCC3| 0
+  (|test_wspace3_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_wspace3| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"   \")`length)" (189 79 189 80))))
+ (|test_wspace3| 0
+  (|test_wspace3-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_wspace4_TCC1| 0
+  (|test_wspace4_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_wspace4| SUBTYPE "\"        99\"" "bstring" (190 68 190 78))))
+ (|test_wspace4_TCC2| 0
+  (|test_wspace4_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_wspace4| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"        99\")`length)" (190 83 190 84))))
+ (|test_wspace4_TCC3| 0
+  (|test_wspace4_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_wspace4| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"        99\")`length)"
+    (190 86 190 87))))
+ (|test_wspace4| 0
+  (|test_wspace4-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|numeral_grammar_TCC1| 0
+  (|numeral_grammar_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|digit| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|numeral_grammar| SUBTYPE "dpeg.mk_guard(stringutils.digit)" "guard"
+    (201 17 201 32))))
+ (|numeral_grammar_TCC2| 0
+  (|numeral_grammar_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|is_plus_minus| CONST-DECL "bool" |dpeg| NIL)
+    (|is_plus| CONST-DECL "bool" |stringutils| NIL)
+    (|is_minus| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|numeral_grammar| SUBTYPE "dpeg.mk_guard(dpeg.is_plus_minus)" "guard"
+    (203 17 203 40))))
+ (|numeral_grammar_TCC3| 0
+  (|numeral_grammar_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|is_eE| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|numeral_grammar| SUBTYPE "dpeg.mk_guard(stringutils.is_eE)" "guard"
+    (204 17 204 32))))
+ (|numeral_grammar_TCC4| 0
+  (|numeral_grammar_TCC4-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|is_dot| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|numeral_grammar| SUBTYPE "dpeg.mk_guard(stringutils.is_dot)" "guard"
+    (207 17 207 33))))
+ (|numeral_grammar_TCC5| 0
+  (|numeral_grammar_TCC5-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|is_minus| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|numeral_grammar| SUBTYPE "dpeg.mk_guard(stringutils.is_minus)" "guard"
+    (210 17 210 35))))
+ (|test_numeral1_TCC1| 0
+  (|test_numeral1_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|numeral_grammar| CONST-DECL "dpeg_grammar" |dpeg| NIL))
+   NIL
+   (|test_numeral1| SUBTYPE "12" "below(dpeg.numeral_grammar`length)"
+    (212 53 212 55))))
+ (|test_numeral1| 0
+  (|test_numeral1-1| NIL 3974181877 ("" (GRIND) (("" (POSTPONE) NIL NIL)) NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|dpeg_parse| DEF-DECL "{i: upto(exp2(28) - 1 + 1) |
+   i =
+    encode_result(s`length - pos + sofar,
+                  result_sofar(sofar, matches(G, nt)(s, pos)))}"
+     |dpeg| NIL)
+    (|digit| CONST-DECL "bool" |stringutils| NIL)
+    (|mk_guard| CONST-DECL "below(3)" |dpeg| NIL)
+    (|is_minus| CONST-DECL "bool" |stringutils| NIL)
+    (|nth| DEF-DECL "T" |list_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL)
+    (|numeral_grammar| CONST-DECL "dpeg_grammar" |dpeg| NIL))
+   SHOSTAK))
+ (|test_numeral2_TCC1| 0
+  (|test_numeral2_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_numeral2| SUBTYPE "\"0  \"" "bstring" (213 71 213 74))))
+ (|test_numeral2_TCC2| 0
+  (|test_numeral2_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_numeral2| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"0  \")`length)" (213 79 213 80))))
+ (|test_numeral2_TCC3| 0
+  (|test_numeral2_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_numeral2| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"0  \")`length)" (213 82 213 83))))
+ (|test_numeral2| 0
+  (|test_numeral2-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_numeral3_TCC1| 0
+  (|test_numeral3_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_numeral3| SUBTYPE "\"-0 \"" "bstring" (214 71 214 74))))
+ (|test_numeral3_TCC2| 0
+  (|test_numeral3_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_numeral3| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"-0 \")`length)" (214 79 214 80))))
+ (|test_numeral3_TCC3| 0
+  (|test_numeral3_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_numeral3| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"-0 \")`length)" (214 82 214 83))))
+ (|test_numeral3| 0
+  (|test_numeral3-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_numeral4_TCC1| 0
+  (|test_numeral4_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_numeral4| SUBTYPE "\"99.99 \"" "bstring" (215 71 215 77))))
+ (|test_numeral4_TCC2| 0
+  (|test_numeral4_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_numeral4| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"99.99 \")`length)" (215 82 215 83))))
+ (|test_numeral4_TCC3| 0
+  (|test_numeral4_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_numeral4| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"99.99 \")`length)"
+    (215 85 215 86))))
+ (|test_numeral4| 0
+  (|test_numeral4-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_numeral5_TCC1| 0
+  (|test_numeral5_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_numeral5| SUBTYPE "\"-99.99 \"" "bstring" (216 71 216 78))))
+ (|test_numeral5_TCC2| 0
+  (|test_numeral5_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_numeral5| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"-99.99 \")`length)" (216 83 216 84))))
+ (|test_numeral5_TCC3| 0
+  (|test_numeral5_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_numeral5| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"-99.99 \")`length)"
+    (216 86 216 87))))
+ (|test_numeral5| 0
+  (|test_numeral5-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_numeral6_TCC1| 0
+  (|test_numeral6_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_numeral6| SUBTYPE "\"99.e-7 \"" "bstring" (217 71 217 78))))
+ (|test_numeral6_TCC2| 0
+  (|test_numeral6_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_numeral6| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"99.e-7 \")`length)" (217 83 217 84))))
+ (|test_numeral6_TCC3| 0
+  (|test_numeral6_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_numeral6| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"99.e-7 \")`length)"
+    (217 86 217 87))))
+ (|test_numeral6| 0
+  (|test_numeral6-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_numeral7_TCC1| 0
+  (|test_numeral7_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_numeral7| SUBTYPE "\"99.9e9 \"" "bstring" (218 71 218 78))))
+ (|test_numeral7_TCC2| 0
+  (|test_numeral7_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_numeral7| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"99.9e9 \")`length)" (218 83 218 84))))
+ (|test_numeral7_TCC3| 0
+  (|test_numeral7_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_numeral7| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"99.9e9 \")`length)"
+    (218 86 218 87))))
+ (|test_numeral7| 0
+  (|test_numeral7-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_numeral8_TCC1| 0
+  (|test_numeral8_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_numeral8| SUBTYPE "\"-0.9e9 \"" "bstring" (219 71 219 78))))
+ (|test_numeral8_TCC2| 0
+  (|test_numeral8_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_numeral8| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"-0.9e9 \")`length)" (219 83 219 84))))
+ (|test_numeral8_TCC3| 0
+  (|test_numeral8_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_numeral8| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"-0.9e9 \")`length)"
+    (219 86 219 87))))
+ (|test_numeral8| 0
+  (|test_numeral8-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|key_true_guard_TCC1| 0
+  (|key_true_guard_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   NIL
+   (|key_true_guard| SUBTYPE "dpeg.i" "below(dpeg.s`length)" (222 42 222 43))))
+ (|key_true_guard_TCC2| 0
+  (|key_true_guard_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|is_t| CONST-DECL "bool" |stringutils| NIL))
+   NIL
+   (|key_true_guard| SUBTYPE "(number_fields.+)(dpeg.i, 1)"
+    "below(dpeg.s`length)" (222 61 222 64))))
+ (|key_true_guard_TCC3| 0
+  (|key_true_guard_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|is_t| CONST-DECL "bool" |stringutils| NIL)
+    (|is_r| CONST-DECL "bool" |stringutils| NIL))
+   NIL
+   (|key_true_guard| SUBTYPE "(number_fields.+)(dpeg.i, 2)"
+    "below(dpeg.s`length)" (222 82 222 85))))
+ (|key_true_guard_TCC4| 0
+  (|key_true_guard_TCC4-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|is_t| CONST-DECL "bool" |stringutils| NIL)
+    (|is_r| CONST-DECL "bool" |stringutils| NIL)
+    (|is_u| CONST-DECL "bool" |stringutils| NIL))
+   NIL
+   (|key_true_guard| SUBTYPE "(number_fields.+)(dpeg.i, 3)"
+    "below(dpeg.s`length)" (222 103 222 106))))
+ (|key_true_guard_TCC5| 0
+  (|key_true_guard_TCC5-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|key_true_guard| SUBTYPE "5" "below(5)" (223 10 223 11))))
+ (|key_false_guard_TCC1| 0
+  (|key_false_guard_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   NIL
+   (|key_false_guard| SUBTYPE "dpeg.i" "below(dpeg.s`length)"
+    (228 42 228 43))))
+ (|key_false_guard_TCC2| 0
+  (|key_false_guard_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|is_f| CONST-DECL "bool" |stringutils| NIL))
+   NIL
+   (|key_false_guard| SUBTYPE "(number_fields.+)(dpeg.i, 1)"
+    "below(dpeg.s`length)" (228 61 228 64))))
+ (|key_false_guard_TCC3| 0
+  (|key_false_guard_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|is_f| CONST-DECL "bool" |stringutils| NIL)
+    (|is_a| CONST-DECL "bool" |stringutils| NIL))
+   NIL
+   (|key_false_guard| SUBTYPE "(number_fields.+)(dpeg.i, 2)"
+    "below(dpeg.s`length)" (228 82 228 85))))
+ (|key_false_guard_TCC4| 0
+  (|key_false_guard_TCC4-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|is_f| CONST-DECL "bool" |stringutils| NIL)
+    (|is_a| CONST-DECL "bool" |stringutils| NIL)
+    (|is_l| CONST-DECL "bool" |stringutils| NIL))
+   NIL
+   (|key_false_guard| SUBTYPE "(number_fields.+)(dpeg.i, 3)"
+    "below(dpeg.s`length)" (228 103 228 106))))
+ (|key_false_guard_TCC5| 0
+  (|key_false_guard_TCC5-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|is_f| CONST-DECL "bool" |stringutils| NIL)
+    (|is_a| CONST-DECL "bool" |stringutils| NIL)
+    (|is_l| CONST-DECL "bool" |stringutils| NIL)
+    (|is_s| CONST-DECL "bool" |stringutils| NIL))
+   NIL
+   (|key_false_guard| SUBTYPE "(number_fields.+)(dpeg.i, 4)"
+    "below(dpeg.s`length)" (228 124 228 127))))
+ (|key_false_guard_TCC6| 0
+  (|key_false_guard_TCC6-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|key_false_guard| SUBTYPE "6" "below(6)" (229 10 229 11))))
+ (|key_null_guard_TCC1| 0
+  (|key_null_guard_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|is_n| CONST-DECL "bool" |stringutils| NIL))
+   NIL
+   (|key_null_guard| SUBTYPE "(number_fields.+)(dpeg.i, 1)"
+    "below(dpeg.s`length)" (234 62 234 65))))
+ (|key_null_guard_TCC2| 0
+  (|key_null_guard_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|is_n| CONST-DECL "bool" |stringutils| NIL)
+    (|is_u| CONST-DECL "bool" |stringutils| NIL))
+   NIL
+   (|key_null_guard| SUBTYPE "(number_fields.+)(dpeg.i, 2)"
+    "below(dpeg.s`length)" (234 83 234 86))))
+ (|key_null_guard_TCC3| 0
+  (|key_null_guard_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|is_n| CONST-DECL "bool" |stringutils| NIL)
+    (|is_u| CONST-DECL "bool" |stringutils| NIL)
+    (|is_l| CONST-DECL "bool" |stringutils| NIL))
+   NIL
+   (|key_null_guard| SUBTYPE "(number_fields.+)(dpeg.i, 3)"
+    "below(dpeg.s`length)" (234 104 234 107))))
+ (|key_null_guard_TCC4| 0
+  (|key_null_guard_TCC4-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|key_null_guard| SUBTYPE "5" "below(5)" (235 11 235 12))))
+ (|key_grammar_TCC1| 0
+  (|key_grammar_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|is_l| CONST-DECL "bool" |stringutils| NIL)
+    (|is_u| CONST-DECL "bool" |stringutils| NIL)
+    (|is_n| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL (|key_grammar| SUBTYPE "dpeg.key_null_guard" "guard" (240 81 240 95))))
+ (|key_grammar_TCC2| 0
+  (|key_grammar_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|is_e| CONST-DECL "bool" |stringutils| NIL)
+    (|is_s| CONST-DECL "bool" |stringutils| NIL)
+    (|is_l| CONST-DECL "bool" |stringutils| NIL)
+    (|is_a| CONST-DECL "bool" |stringutils| NIL)
+    (|is_f| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|key_grammar| SUBTYPE "dpeg.key_false_guard" "guard" (240 109 240 124))))
+ (|key_grammar_TCC3| 0
+  (|key_grammar_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|is_e| CONST-DECL "bool" |stringutils| NIL)
+    (|is_u| CONST-DECL "bool" |stringutils| NIL)
+    (|is_r| CONST-DECL "bool" |stringutils| NIL)
+    (|is_t| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|key_grammar| SUBTYPE "dpeg.key_true_guard" "guard" (240 138 240 152))))
+ (|test_key1_TCC1| 0
+  (|test_key1_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|key_grammar| CONST-DECL "dpeg_grammar" |dpeg| NIL))
+   NIL
+   (|test_key1| SUBTYPE "5" "below(dpeg.key_grammar`length)" (242 45 242 46))))
+ (|test_key1| 0
+  (|test_key1-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_key2_TCC1| 0
+  (|test_key2_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_key2| SUBTYPE "\"null \"" "bstring" (243 62 243 67))))
+ (|test_key2_TCC2| 0
+  (|test_key2_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_key2| SUBTYPE "0" "upto(bytestrings.mk_bytestring(\"null \")`length)"
+    (243 72 243 73))))
+ (|test_key2_TCC3| 0
+  (|test_key2_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_key2| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"null \")`length)"
+    (243 75 243 76))))
+ (|test_key2| 0
+  (|test_key2-1| NIL 3974181877 ("" (GRIND) (("" (POSTPONE) NIL NIL)) NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|dpeg_parse| DEF-DECL "{i: upto(exp2(28) - 1 + 1) |
+   i =
+    encode_result(s`length - pos + sofar,
+                  result_sofar(sofar, matches(G, nt)(s, pos)))}"
+     |dpeg| NIL)
+    (|mk_guard| CONST-DECL "below(3)" |dpeg| NIL)
+    (|whitespace| CONST-DECL "bool" |stringutils| NIL)
+    (|key_null_guard| CONST-DECL "below(5)" |dpeg| NIL)
+    (|is_n| CONST-DECL "bool" |stringutils| NIL)
+    (|key_false_guard| CONST-DECL "below(6)" |dpeg| NIL)
+    (|is_s| CONST-DECL "bool" |stringutils| NIL)
+    (|is_l| CONST-DECL "bool" |stringutils| NIL)
+    (|is_a| CONST-DECL "bool" |stringutils| NIL)
+    (|is_f| CONST-DECL "bool" |stringutils| NIL)
+    (|key_true_guard| CONST-DECL "below(5)" |dpeg| NIL)
+    (|is_e| CONST-DECL "bool" |stringutils| NIL)
+    (|is_u| CONST-DECL "bool" |stringutils| NIL)
+    (|is_r| CONST-DECL "bool" |stringutils| NIL)
+    (|is_t| CONST-DECL "bool" |stringutils| NIL)
+    (|nth| DEF-DECL "T" |list_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL)
+    (|key_grammar| CONST-DECL "dpeg_grammar" |dpeg| NIL))
+   SHOSTAK))
+ (|test_key3_TCC1| 0
+  (|test_key3_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_key3| SUBTYPE "\"true \"" "bstring" (244 62 244 67))))
+ (|test_key3_TCC2| 0
+  (|test_key3_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_key3| SUBTYPE "0" "upto(bytestrings.mk_bytestring(\"true \")`length)"
+    (244 72 244 73))))
+ (|test_key3_TCC3| 0
+  (|test_key3_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_key3| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"true \")`length)"
+    (244 75 244 76))))
+ (|test_key3| 0
+  (|test_key3-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_key4_TCC1| 0
+  (|test_key4_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_key4| SUBTYPE "\"  false \"" "bstring" (245 62 245 70))))
+ (|test_key4_TCC2| 0
+  (|test_key4_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_key4| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"  false \")`length)" (245 75 245 76))))
+ (|test_key4_TCC3| 0
+  (|test_key4_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_key4| SUBTYPE "2"
+    "subrange(0, bytestrings.mk_bytestring(\"  false \")`length)"
+    (245 78 245 79))))
+ (|test_key4| 0
+  (|test_key4-1| NIL 3974181877 ("" (GRIND) (("" (POSTPONE) NIL NIL)) NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|dpeg_parse| DEF-DECL "{i: upto(exp2(28) - 1 + 1) |
+   i =
+    encode_result(s`length - pos + sofar,
+                  result_sofar(sofar, matches(G, nt)(s, pos)))}"
+     |dpeg| NIL)
+    (|mk_guard| CONST-DECL "below(3)" |dpeg| NIL)
+    (|whitespace| CONST-DECL "bool" |stringutils| NIL)
+    (|key_false_guard| CONST-DECL "below(6)" |dpeg| NIL)
+    (|is_s| CONST-DECL "bool" |stringutils| NIL)
+    (|is_l| CONST-DECL "bool" |stringutils| NIL)
+    (|is_a| CONST-DECL "bool" |stringutils| NIL)
+    (|is_f| CONST-DECL "bool" |stringutils| NIL)
+    (|key_true_guard| CONST-DECL "below(5)" |dpeg| NIL)
+    (|is_e| CONST-DECL "bool" |stringutils| NIL)
+    (|is_u| CONST-DECL "bool" |stringutils| NIL)
+    (|is_r| CONST-DECL "bool" |stringutils| NIL)
+    (|is_t| CONST-DECL "bool" |stringutils| NIL)
+    (|nth| DEF-DECL "T" |list_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|length| DEF-DECL "nat" |list_props| NIL)
+    (|key_grammar| CONST-DECL "dpeg_grammar" |dpeg| NIL))
+   SHOSTAK))
+ (|test_key5_TCC1| 0
+  (|test_key5_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_key5| SUBTYPE "\"key \"" "bstring" (246 62 246 66))))
+ (|test_key5_TCC2| 0
+  (|test_key5_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_key5| SUBTYPE "0" "upto(bytestrings.mk_bytestring(\"key \")`length)"
+    (246 71 246 72))))
+ (|test_key5_TCC3| 0
+  (|test_key5_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_key5| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"key \")`length)"
+    (246 74 246 75))))
+ (|test_key5| 0
+  (|test_key5-1| NIL 3974181877 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|ebackslash_TCC1| 0
+  (|ebackslash_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   NIL (|ebackslash| SUBTYPE "dpeg.i" "below(dpeg.s`length)" (250 49 250 50))))
+ (|ebackslash_TCC2| 0
+  (|ebackslash_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|is_backslash| CONST-DECL "bool" |stringutils| NIL))
+   NIL
+   (|ebackslash| SUBTYPE "(number_fields.+)(dpeg.i, 1)" "below(dpeg.s`length)"
+    (250 76 250 79))))
+ (|string_grammar_TCC1| 0
+  (|string_grammar_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|any| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|string_grammar| SUBTYPE "dpeg.mk_guard(stringutils.any)" "guard"
+    (265 36 265 49))))
+ (|string_grammar_TCC2| 0
+  (|string_grammar_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|is_quote| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|string_grammar| SUBTYPE "dpeg.mk_guard(stringutils.is_quote)" "guard"
+    (266 15 266 33))))
+ (|string_grammar_TCC3| 0
+  (|string_grammar_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|escapable| CONST-DECL "bool" |stringutils| NIL)
+    (|is_t| CONST-DECL "bool" |stringutils| NIL)
+    (|is_r| CONST-DECL "bool" |stringutils| NIL)
+    (|is_n| CONST-DECL "bool" |stringutils| NIL)
+    (|is_f| CONST-DECL "bool" |stringutils| NIL)
+    (|is_b| CONST-DECL "bool" |stringutils| NIL)
+    (|is_slash| CONST-DECL "bool" |stringutils| NIL)
+    (|is_backslash| CONST-DECL "bool" |stringutils| NIL)
+    (|is_quote| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|string_grammar| SUBTYPE "dpeg.mk_guard(stringutils.escapable)" "guard"
+    (267 15 267 34))))
+ (|string_grammar_TCC4| 0
+  (|string_grammar_TCC4-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|is_backslash| CONST-DECL "bool" |stringutils| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   NIL
+   (|string_grammar| SUBTYPE "dpeg.mk_guard(stringutils.is_backslash)" "guard"
+    (268 15 268 37))))
+ (|test_string1_TCC1| 0
+  (|test_string1_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|string_grammar| CONST-DECL "dpeg_grammar" |dpeg| NIL))
+   NIL
+   (|test_string1| SUBTYPE "7" "below(dpeg.string_grammar`length)"
+    (271 51 271 52))))
+ (|test_string1| 0
+  (|test_string1-1| NIL 3974864808 ("" (GRIND) (("" (POSTPONE) NIL NIL)) NIL)
+   NIL SHOSTAK))
+ (|test_string1_1_TCC1| 0
+  (|test_string1_1_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_string1_1| SUBTYPE "\"\\\"\\\"\"" "bstring" (272 70 272 72))))
+ (|test_string1_1_TCC2| 0
+  (|test_string1_1_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_string1_1| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"\\\"\\\"\")`length)" (272 79 272 80))))
+ (|test_string1_1_TCC3| 0
+  (|test_string1_1_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_string1_1| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"\\\"\\\"\")`length)"
+    (272 82 272 83))))
+ (|test_string2_TCC1| 0
+  (|test_string2_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_string2| SUBTYPE "\"\\\"null\\\"\"" "bstring" (273 68 273 74))))
+ (|test_string2_TCC2| 0
+  (|test_string2_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_string2| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"\\\"null\\\"\")`length)"
+    (273 81 273 82))))
+ (|test_string2_TCC3| 0
+  (|test_string2_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_string2| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"\\\"null\\\"\")`length)"
+    (273 84 273 85))))
+ (|test_string2| 0
+  (|test_string2-1| NIL 3974865086 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_string3_TCC1| 0
+  (|test_string3_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_string3| SUBTYPE "\"\\\"strtning\\\\\\\" \"" "bstring"
+    (274 68 274 82))))
+ (|test_string3_TCC2| 0
+  (|test_string3_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_string3| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"\\\"strtning\\\\\\\" \")`length)"
+    (274 94 274 95))))
+ (|test_string3_TCC3| 0
+  (|test_string3_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_string3| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"\\\"strtning\\\\\\\" \")`length)"
+    (274 97 274 98))))
+ (|test_string3| 0
+  (|test_string3-1| NIL 3974865086 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_string3_1_TCC1| 0
+  (|test_string3_1_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_string3_1| SUBTYPE "\"\\\"strtning\\\\\\\"\\\" \"" "bstring"
+    (275 70 275 85))))
+ (|test_string3_1_TCC2| 0
+  (|test_string3_1_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_string3_1| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"\\\"strtning\\\\\\\"\\\" \")`length)"
+    (275 98 275 99))))
+ (|test_string3_1_TCC3| 0
+  (|test_string3_1_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_string3_1| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"\\\"strtning\\\\\\\"\\\" \")`length)"
+    (275 101 275 102))))
+ (|test_string4_TCC1| 0
+  (|test_string4_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_string4| SUBTYPE "\"\\\"false false\\\"\"" "bstring"
+    (276 68 276 81))))
+ (|test_string4_TCC2| 0
+  (|test_string4_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_string4| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"\\\"false false\\\"\")`length)"
+    (276 88 276 89))))
+ (|test_string4_TCC3| 0
+  (|test_string4_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_string4| SUBTYPE "2"
+    "subrange(0, bytestrings.mk_bytestring(\"\\\"false false\\\"\")`length)"
+    (276 91 276 92))))
+ (|test_string4| 0
+  (|test_string4-1| NIL 3974865086 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_string4_1_TCC1| 0
+  (|test_string4_1_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_string4_1| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"\\\"false false\\\"\")`length)"
+    (277 93 277 94))))
+ (|test_string5_TCC1| 0
+  (|test_string5_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_string5| SUBTYPE "\"\\\"\\\\\\\"\\\\\\\"\\\\key\\\" \"" "bstring"
+    (278 68 278 79))))
+ (|test_string5_TCC2| 0
+  (|test_string5_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_string5| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"\\\"\\\\\\\"\\\\\\\"\\\\key\\\" \")`length)"
+    (278 91 278 92))))
+ (|test_string5_TCC3| 0
+  (|test_string5_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_string5| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"\\\"\\\\\\\"\\\\\\\"\\\\key\\\" \")`length)"
+    (278 94 278 95))))
+ (|test_string5| 0
+  (|test_string5-1| NIL 3974865086 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|test_string5_1_TCC1| 0
+  (|test_string5_1_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_string5_1| SUBTYPE "\"\\\"\\\\\\\"\\\\\\\"
+key\\\" \""
+    "bstring" (279 70 279 82))))
+ (|test_string5_1_TCC2| 0
+  (|test_string5_1_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_string5_1| SUBTYPE "0" "upto(bytestrings.mk_bytestring
+         (\"\\\"\\\\\\\"\\\\\\\"
+key\\\" \")`length)"
+    (279 94 279 95))))
+ (|test_string5_1_TCC3| 0
+  (|test_string5_1_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_string5_1| SUBTYPE "0" "subrange(0,
+         bytestrings.mk_bytestring
+             (\"\\\"\\\\\\\"\\\\\\\"
+key\\\" \")`length)"
+    (279 97 279 98))))
+ (|test_string6_TCC1| 0
+  (|test_string6_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_string6| SUBTYPE "\"\\\"false false\\\"   \\\"true true\\\"  \""
+    "bstring" (280 68 280 97))))
+ (|test_string6_TCC2| 0
+  (|test_string6_TCC2-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL))
+   NIL
+   (|test_string6| SUBTYPE "0"
+    "upto(bytestrings.mk_bytestring(\"\\\"false false\\\"   \\\"true true\\\"  \")`length)"
+    (280 106 280 107))))
+ (|test_string6_TCC3| 0
+  (|test_string6_TCC3-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|list2finseq| CONST-DECL "finseq[T]" |list2finseq| NIL)
+    (|get| CONST-DECL "char" |gen_strings| NIL)
+    (|mk_bytestring| CONST-DECL "bytestring" |bytestrings| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   NIL
+   (|test_string6| SUBTYPE "0"
+    "subrange(0, bytestrings.mk_bytestring(\"\\\"false false\\\"   \\\"true true\\\"  \")`length)"
+    (280 109 280 110))))
+ (|test_string6_1_TCC1| 0
+  (|test_string6_1_TCC1-1| NIL 3978197036 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|test_string6_1| SUBTYPE "16"
+    "subrange(0, bytestrings.mk_bytestring(\"\\\"false false\\\"   \\\"true true\\\"  \")`length)"
+    (281 111 281 113)))))
+

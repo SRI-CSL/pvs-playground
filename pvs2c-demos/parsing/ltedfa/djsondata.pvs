@@ -1,0 +1,220 @@
+fmap[A, B: TYPE %, default_B: B
+     ]  : THEORY
+%finite maps map a finite subset of A to B.  
+  BEGIN
+   fmap: TYPE = [# domain : finite_set[A],
+                   map : [(domain) -> B]
+		   #]
+
+   % emptymap: fmap = (# domain := emptyset[A], map := (LAMBDA (x: (emptyset[A])): choose(fullset[B])% default_B
+   % ) #)
+
+   F, G : VAR fmap
+   x, y, z: VAR A
+   u, v, w: VAR B
+
+   defined?(F, x): bool = member(x, F`domain)
+
+   unsafe_apply(F, x): B = F`map(x)
+   % apply(F, x): lift[B] = IF defined?(F, x) THEN up(F`map(x)) ELSE bottom ENDIF
+     
+   add(x, u, (F | x ∉ F`domain)): fmap
+    = F WITH [`domain := add(x, F`domain),
+              `map(x) |-> u]
+
+END fmap
+
+
+djsonschema: THEORY
+BEGIN
+
+
+jsondata_verif  : DATATYPE
+%This datatype is used to construct json data as strings, key/value pairs,
+%dictionaries, numerals (uint and int), and arrays.
+  BEGIN
+   IMPORTING fmap
+   jstr(strval: bytestring): jstr?
+   jbool(boolval: boolean): jbool?
+   jnull: jnull?
+   jdict(contents : fmap[bytestring, jsondata_verif]): jdict?
+   jnumeral(val: int64, exp: int64): jnumeral?
+   jarray(arrval : aseq[jsondata_verif]): jarray?
+  END jsondata_verif
+
+
+  % IMPORTING jsondata, fmap
+
+  % no structural reasoning - p(x) at the leaf nodes of the datatype
+  djsonschematype: DATATYPE
+   BEGIN
+   djnulltype: djnulltype?
+   djstrtype(str_pred: PRED[bytestring]): djstrtype?
+   djbooltype(bool_pred: PRED[bool]): djbooltype?
+   djinttype(int_pred: PRED[int]): djinttype?
+   % djdicttype(required: [bytestring -> djsonschematype],
+   %            optional: [bytestring -> djsonschematype]): djdicttype?
+   djdicttype(required: fmap[bytestring, djsonschematype% , djnulltype
+   ],
+              optional: fmap[bytestring, djsonschematype% , djnulltype
+	      ]): djdicttype?   
+   djarraytype(min: uint32, max: uint32,
+               elemtype: djsonschematype): djarraytype?
+  END djsonschematype
+
+empty_schema_fmap: fmap[bytestring, djsonschematype] =
+  (# domain := emptyset[bytestring],
+     map := (LAMBDA (x: bytestring): djnulltype) #)
+
+  empty_data_fmap: fmap[bytestring, jsondata_verif] =
+  (# domain := emptyset[bytestring],
+     map := (LAMBDA (x: bytestring): jnull) #)
+
+END djsonschema
+
+
+djsondata[(IMPORTING djsonschema) S: djsonschematype]: THEORY
+
+BEGIN
+
+  IMPORTING djsonschema
+
+%   checknum(signed : bool, width: intwidth, number : uint64int): bool = 
+%     IF signed
+%      THEN -exp2(width - 1) <= number AND number < exp2(width - 1)
+%      ELSE 0 <= number AND number < exp2(width)
+%      ENDIF
+
+  % aseq_defined(x: aseq[(jpair?)], b: bytestring): bool =
+  %   EXISTS (i: below(x`length)): key(x) = b
+
+  % get_key_rec(x: aseq[(jpair?)], b: bytestring, i: below(x`length)): RECURSIVE jsondata =
+  %   IF (key(x`seq(i)) = b) THEN value(x`seq(i))
+  %   ELSE get_key_rec(x, b, i+1) ENDIF
+  % MEASURE x`length - i
+
+  % get_key(x: aseq[(jpair?)], b: bytestring): jsondata = get_key_rec(x, b, 0)
+    
+
+  x: VAR jsondata_verif
+  check(R: djsonschematype, x): RECURSIVE bool
+   = (CASES R OF
+       djnulltype: jnull?(x),
+       djstrtype(str_pred): jstr?(x) AND str_pred(strval(x)),
+       djbooltype(bool_pred): jbool?(x) AND bool_pred(boolval(x)),
+       djinttype(int_pred):
+         jnumeral?(x) AND int_pred(val(x)),
+       djdicttype(req, opt):
+          jdict?(x) AND %x must have the required keys with the right value type
+	  (FORALL (b: (req`domain)):
+	    check(unsafe_apply(req, b), unsafe_apply(contents(x), b)))
+	  AND
+	  (FORALL (b: (difference(contents(x)`domain, req`domain))):
+	    defined?(opt, b) AND
+	    check(unsafe_apply(opt, b), unsafe_apply(contents(x), b))),
+       djarraytype(min, max, elemtype): %The length must be between min and max 
+         jarray?(x) AND                 %and each array element must have the elemtype
+	 min <= arrval(x)`length  AND
+	 arrval(x)`length <= max AND
+	 (FORALL (i : below(arrval(x)`length)):
+	    check(elemtype, arrval(x)`seq(i)))
+    ENDCASES)
+    MEASURE R BY <<
+
+  wf_jsondata?(x): bool = check(S, x)
+  wf_jsondata: TYPE = (wf_jsondata?)
+
+END djsondata
+
+djsondata_prelude: THEORY
+BEGIN
+
+  IMPORTING djsondata, aseq_reduce
+
+  default_str_pred: PRED[bytestring] = (LAMBDA (b: bytestring): TRUE)
+  default_int_pred: PRED[int]        = (LAMBDA (b: int): TRUE)
+  default_bool_pred: PRED[bool]      = (LAMBDA (b: bool): TRUE)
+
+  jstrty: (djstrtype?) = djstrtype(default_str_pred)
+  jintty: (djinttype?) = djinttype(default_int_pred)
+  jboolty: (djbooltype?) = djbooltype(default_bool_pred)
+
+  min_min: uint32 = 0
+  max_max: uint32 = 4294967295
+
+  % json_to_schema(x): RECURSIVE djsonschematype =
+  %   IF NOT jdict?(x) THEN
+  %     djnulltype
+  %   ELSE
+  %     CASES apply(contents(x), mk_bytestring("object")) OF
+  %       bottom: djnulltype,
+  %       up(s): COND
+  %         s = "object" ->
+  %           LET required_result = apply(contents(x), mk_bytestring("required")),
+  %               required_value = IF up?(required_result) and jarray?(down(required_result)) THEN
+  %                 aseq_reduce(add, emptyset[bytestring])(arrval(down(required_result)))
+  %               ELSE
+  %                 emptyset[bytestring]
+  %               ENDIF,
+  %               prop_result = apply(contents(x), mk_bytestring("properties")),
+  %               required_fields = emptymap, % TODO - figure out how to iterate through fmap
+  %               optional_fields = emptymap
+  %               IN
+  %               djdicttype(required_fields, optional_fields),
+  %         s = "array" ->
+  %           LET item_value = apply(contents(x), mk_bytestring("items")),
+  %               min_result = apply(contents(x), mk_bytestring("minLength")),
+  %               min_value = IF up?(min_result) AND jnumeral?(down(min_result)) THEN val(down(min_result)) ELSE min_min ENDIF,
+  %               max_result = apply(contents(x), mk_bytestring("maxLength")),
+  %               max_value = IF up?(max_result) AND jnumeral?(down(max_result)) THEN val(down(max_result)) ELSE max_max ENDIF
+  %               IN
+  %               IF NOT up?(item_value) THEN
+  %                 djnulltype
+  %               ELSE
+  %                 djarraytype(min_value, max_value, json_to_schema(down(item_value)))
+  %               ENDIF,
+  %         s = "string" -> djstrtype(default_str_pred),
+  %         s = "integer" -> djinttype(default_int_pred),
+  %         s = "null" -> djnulltype,
+  %         s = "bool" -> djbooltype(default_bool_pred)
+  %       ENDCOND
+  %     ENDCASES
+  % MEASURE x BY <<
+
+END djsondata_prelude
+
+djsondata_test: THEORY
+BEGIN
+
+  IMPORTING djsondata_prelude
+
+  test_schema: djsonschematype =
+    djdicttype(add(mk_bytestring("name"), djstrtype(default_str_pred),% (LAMBDA (b: bytestring): b /= mk_bytestring(""))),
+               add(mk_bytestring("age"), djinttype(default_int_pred),
+	       empty_schema_fmap)),
+	       empty_schema_fmap)
+
+  test_schema2: djsonschematype =
+    djdicttype(add(mk_bytestring("name2"), djstrtype(default_str_pred), % (LAMBDA (b: bytestring): b /= mk_bytestring(""))),
+               add(mk_bytestring("age2"), djinttype(default_int_pred),
+	       empty_schema_fmap)),
+	       empty_schema_fmap)
+
+  IMPORTING djsondata[test_schema] AS source_data
+  wf_S: TYPE = source_data.wf_jsondata
+
+  IMPORTING djsondata[test_schema2] AS target_data
+  wf_T: TYPE = target_data.wf_jsondata
+
+  json_get_field(obj: jsondata_verif, key: bytestring): jsondata_verif =
+    unsafe_apply(contents(obj), key) % down(apply(contents(obj), key))
+
+  % { "name2": .name, "age2": .age }
+  transform(s: wf_S): wf_T =
+    LET name = json_get_field(s, "name"),
+        age = json_get_field(s, "age") IN
+     jdict(add("name2", name,
+           add("age2", age,
+	   empty_data_fmap)))
+
+END djsondata_test

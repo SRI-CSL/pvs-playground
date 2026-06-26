@@ -1,0 +1,558 @@
+sqlite_vdbe: THEORY
+BEGIN
+
+  IMPORTING bytestrings, array_sequences
+
+  % A deliberately small SQLite VDBE subset.  The instruction records below are
+  % the fields printed by SQLite EXPLAIN, with p4 normalized to a compact tag
+  % where this subset needs to inspect it.
+
+  max_registers: posnat = 16
+  max_cursors: posnat = 4
+  max_columns: posnat = 4
+  max_result_rows: posnat = 8
+  max_result_cols: posnat = 4
+
+  max_registers_u32: uint32 = 16
+  max_cursors_u32: uint32 = 4
+  max_columns_u32: uint32 = 4
+  max_result_rows_u8: uint8 = 8
+  max_result_cols_u32: uint32 = 4
+
+  running_status: uint8 = 0
+  halt_status: uint8 = 1
+  trap_status: uint8 = 2
+  fuel_status: uint8 = 3
+
+  op_init: uint8 = 0
+  op_add: uint8 = 1
+  op_multiply: uint8 = 2
+  op_integer: uint8 = 3
+  op_goto: uint8 = 4
+  op_result_row: uint8 = 5
+  op_halt: uint8 = 6
+  op_transaction: uint8 = 7
+  op_open_read: uint8 = 8
+  op_rewind: uint8 = 9
+  op_column: uint8 = 10
+  op_function: uint8 = 11
+  op_next: uint8 = 12
+  op_le: uint8 = 13
+  op_explain: uint8 = 14
+
+  p4_none: uint8 = 0
+  p4_abs: uint8 = 1
+  p4_binary: uint8 = 2
+
+  known_opcode?(op: uint8): bool =
+    op = op_init OR op = op_add OR op = op_multiply OR
+    op = op_integer OR op = op_goto OR op = op_result_row OR
+    op = op_halt OR op = op_transaction OR op = op_open_read OR
+    op = op_rewind OR op = op_column OR op = op_function OR
+    op = op_next OR op = op_le OR op = op_explain
+
+  instruction: TYPE =
+    [# opcode: (known_opcode?),
+       p1: uint32,
+       p2: uint32,
+       p3: uint32,
+       p4: uint8,
+       p5: uint32 #]
+
+  instr(op: (known_opcode?), p1: uint32, p2: uint32, p3: uint32,
+        p4: uint8, p5: uint32): instruction =
+    (# opcode := op, p1 := p1, p2 := p2, p3 := p3, p4 := p4, p5 := p5 #)
+
+  program: TYPE = aseq[instruction]
+
+  sql_value: DATATYPE
+  BEGIN
+    sql_null: sql_null?
+    sql_int(ival: int32): sql_int?
+    sql_text(tval: bytestring): sql_text?
+    sql_blob(bval: bytestring): sql_blob?
+  END sql_value
+
+  null_value: sql_value = sql_null
+
+  table_row: TYPE =
+    [# column_count: upto(max_columns),
+       cells: ARRAY[below(max_columns) -> sql_value] #]
+
+  empty_table_row: table_row =
+    (# column_count := 0,
+       cells := (LAMBDA (i: below(max_columns)): null_value) #)
+
+  row2(a: sql_value, b: sql_value): table_row =
+    empty_table_row WITH [`column_count := 2,
+                          `cells(0) := a,
+                          `cells(1) := b]
+
+  table_data: TYPE = aseq[table_row]
+
+  database: TYPE =
+    [# main_table: table_data #]
+
+  cursor_state: TYPE =
+    [# open: bool,
+       row: index #]
+
+  closed_cursor: cursor_state =
+    (# open := FALSE,
+       row := 0 #)
+
+  opened_cursor(row: index): cursor_state =
+    (# open := TRUE,
+       row := row #)
+
+  cursors_array: TYPE = ARRAY[below(max_cursors) -> cursor_state]
+
+  empty_cursors: cursors_array =
+    (LAMBDA (i: below(max_cursors)): closed_cursor)
+
+  reg_values: TYPE = ARRAY[below(max_registers) -> sql_value]
+  reg_init: TYPE = ARRAY[below(max_registers) -> bool]
+
+  register_file: TYPE =
+    [# values: reg_values,
+       initialized: reg_init #]
+
+  empty_registers: register_file =
+    (# values := (LAMBDA (i: below(max_registers)): null_value),
+       initialized := (LAMBDA (i: below(max_registers)): FALSE) #)
+
+  reg_valid?(r: uint32): bool = r < max_registers_u32
+  cursor_valid?(c: uint32): bool = c < max_cursors_u32
+
+  set_reg(regs: register_file, (r: (reg_valid?)), v: sql_value):
+    {out: register_file | out`initialized(r)} =
+    regs WITH [`values(r) := v,
+               `initialized(r) := TRUE]
+
+  reg_initialized?(regs: register_file, r: uint32): bool =
+    IF reg_valid?(r) THEN regs`initialized(r) ELSE FALSE ENDIF
+
+  int_reg?(regs: register_file, r: uint32): bool =
+    IF reg_valid?(r) THEN
+      regs`initialized(r) AND sql_int?(regs`values(r))
+    ELSE
+      FALSE
+    ENDIF
+
+  result_row: TYPE =
+    [# column_count: upto(max_result_cols),
+       cells: ARRAY[below(max_result_cols) -> sql_value] #]
+
+  empty_result_row: result_row =
+    (# column_count := 0,
+       cells := (LAMBDA (i: below(max_result_cols)): null_value) #)
+
+  result_buffer: TYPE =
+    [# used_rows: upto(max_result_rows),
+       rows: ARRAY[below(max_result_rows) -> result_row] #]
+
+  empty_results: result_buffer =
+    (# used_rows := 0,
+       rows := (LAMBDA (i: below(max_result_rows)): empty_result_row) #)
+
+  result_appendable?(out: result_buffer): bool =
+    out`used_rows < max_result_rows_u8
+
+  append_result(out: (result_appendable?), row: result_row):
+    {next: result_buffer | next`used_rows = out`used_rows + 1} =
+    out WITH [`used_rows := out`used_rows + 1,
+              `rows(out`used_rows) := row]
+
+  result_cell(regs: register_file, start: uint32, count: uint32,
+              (col: below(max_result_cols))): sql_value =
+    IF col < count AND start + col < max_registers_u32 THEN
+      regs`values(start + col)
+    ELSE
+      null_value
+    ENDIF
+
+  make_result_row(regs: register_file, start: uint32,
+                  (count: upto(max_result_cols))): result_row =
+    (# column_count := count,
+       cells := (LAMBDA (i: below(max_result_cols)):
+                   result_cell(regs, start, count, i)) #)
+
+  regs_initialized_range?(regs: register_file, start: uint32, count: uint32):
+    RECURSIVE bool =
+    IF count = 0 THEN
+      TRUE
+    ELSIF start < max_registers_u32 AND regs`initialized(start) THEN
+      regs_initialized_range?(regs, start + 1, count - 1)
+    ELSE
+      FALSE
+    ENDIF
+  MEASURE count
+
+  cursor_ready?(db: database, c: cursor_state): bool =
+    c`open AND c`row < db`main_table`length
+
+  cursor_well?(db: database, c: cursor_state): bool =
+    (NOT c`open) OR c`row <= db`main_table`length
+
+  machine_state(prog: program): TYPE =
+    [# pc: upto(prog`length),
+       registers: register_file,
+       cursors: cursors_array,
+       results: result_buffer,
+       status: uint8 #]
+
+  running?(prog: program)(st: machine_state(prog)): bool =
+    st`status = running_status AND st`pc < prog`length
+
+  exec_result: TYPE =
+    [# status: uint8,
+       final_pc: index,
+       row_count: upto(max_result_rows),
+       rows: ARRAY[below(max_result_rows) -> result_row] #]
+
+  well_state?(db: database, prog: program)(st: machine_state(prog)): bool =
+    st`pc <= prog`length AND
+    (FORALL (i: below(max_cursors)): cursor_well?(db, st`cursors(i))) AND
+    st`results`used_rows <= max_result_rows
+
+  init_state(prog: program): machine_state(prog) =
+    (# pc := 0,
+       registers := empty_registers,
+       cursors := empty_cursors,
+       results := empty_results,
+       status := running_status #)
+
+  result_of(prog: program, st: machine_state(prog)): exec_result =
+    (# status := st`status,
+       final_pc := st`pc,
+       row_count := st`results`used_rows,
+       rows := st`results`rows #)
+
+  trap(prog: program, st: machine_state(prog)): machine_state(prog) =
+    st WITH [`status := trap_status]
+
+  halt(prog: program, st: machine_state(prog)): machine_state(prog) =
+    st WITH [`status := halt_status,
+             `pc := prog`length]
+
+  fuel_result(prog: program, st: machine_state(prog)): exec_result =
+    (# status := fuel_status,
+       final_pc := st`pc,
+       row_count := st`results`used_rows,
+       rows := st`results`rows #)
+
+  set_pc(prog: program, st: machine_state(prog), target: uint32):
+    machine_state(prog) =
+    IF target <= prog`length THEN
+      st WITH [`pc := target]
+    ELSE
+      trap(prog, st)
+    ENDIF
+
+  advance(prog: program, st: machine_state(prog)): machine_state(prog) =
+    IF st`pc + 1 <= prog`length THEN
+      st WITH [`pc := st`pc + 1]
+    ELSE
+      trap(prog, st)
+    ENDIF
+
+  safe_i32_add?(x: int32, y: int32): bool =
+    mini32 <= x + y AND x + y <= maxi32
+
+  safe_i32_mul?(x: int32, y: int32): bool =
+    mini32 <= x * y AND x * y <= maxi32
+
+  safe_i32_abs?(x: int32): bool = x > mini32
+
+  i32_add(x: int32, (y: int32 | safe_i32_add?(x, y))): int32 = x + y
+
+  i32_mul(x: int32, (y: int32 | safe_i32_mul?(x, y))): int32 = x * y
+
+  i32_abs((x: int32 | safe_i32_abs?(x))): int32 =
+    IF x < 0 THEN -x ELSE x ENDIF
+
+  value_result: TYPE =
+    [# ok: bool,
+       value: sql_value #]
+
+  value_fail: value_result =
+    (# ok := FALSE,
+       value := null_value #)
+
+  value_ok(v: sql_value): value_result =
+    (# ok := TRUE,
+       value := v #)
+
+  add_values(lhs: sql_value, rhs: sql_value): value_result =
+    CASES lhs OF
+      sql_int(a):
+        CASES rhs OF
+          sql_int(b):
+            IF safe_i32_add?(a, b) THEN
+              value_ok(sql_int(i32_add(a, b)))
+            ELSE
+              value_fail
+            ENDIF,
+          sql_null: value_fail,
+          sql_text(s): value_fail,
+          sql_blob(b): value_fail
+        ENDCASES,
+      sql_null: value_fail,
+      sql_text(s): value_fail,
+      sql_blob(b): value_fail
+    ENDCASES
+
+  multiply_values(lhs: sql_value, rhs: sql_value): value_result =
+    CASES lhs OF
+      sql_int(a):
+        CASES rhs OF
+          sql_int(b):
+            IF safe_i32_mul?(a, b) THEN
+              value_ok(sql_int(i32_mul(a, b)))
+            ELSE
+              value_fail
+            ENDIF,
+          sql_null: value_fail,
+          sql_text(s): value_fail,
+          sql_blob(b): value_fail
+        ENDCASES,
+      sql_null: value_fail,
+      sql_text(s): value_fail,
+      sql_blob(b): value_fail
+    ENDCASES
+
+  abs_value(v: sql_value): value_result =
+    CASES v OF
+      sql_int(a):
+        IF safe_i32_abs?(a) THEN
+          value_ok(sql_int(i32_abs(a)))
+        ELSE
+          value_fail
+        ENDIF,
+      sql_null: value_fail,
+      sql_text(s): value_fail,
+      sql_blob(b): value_fail
+    ENDCASES
+
+  le_values(lhs: sql_value, rhs: sql_value): value_result =
+    CASES lhs OF
+      sql_int(a):
+        CASES rhs OF
+          sql_int(b): value_ok(sql_int(IF a <= b THEN 1 ELSE 0 ENDIF)),
+          sql_null: value_fail,
+          sql_text(s): value_fail,
+          sql_blob(b): value_fail
+        ENDCASES,
+      sql_null: value_fail,
+      sql_text(s): value_fail,
+      sql_blob(b): value_fail
+    ENDCASES
+
+  exec_integer(prog: program, st: machine_state(prog), ins: instruction):
+    machine_state(prog) =
+    IF reg_valid?(ins`p2) AND ins`p1 <= 2147483647 THEN
+      advance(prog,
+              st WITH [`registers := set_reg(st`registers,
+                                             ins`p2,
+                                             sql_int(ins`p1))])
+    ELSE
+      trap(prog, st)
+    ENDIF
+
+  exec_binary(prog: program, st: machine_state(prog), ins: instruction,
+              multiply?: bool): machine_state(prog) =
+    IF int_reg?(st`registers, ins`p1) AND
+       int_reg?(st`registers, ins`p2) AND
+       reg_valid?(ins`p3) THEN
+      LET lhs = st`registers`values(ins`p1),
+          rhs = st`registers`values(ins`p2),
+          res = IF multiply? THEN multiply_values(lhs, rhs)
+                ELSE add_values(lhs, rhs) ENDIF
+      IN
+        IF res`ok THEN
+          advance(prog,
+                  st WITH [`registers := set_reg(st`registers,
+                                                 ins`p3,
+                                                 res`value)])
+        ELSE
+          trap(prog, st)
+        ENDIF
+    ELSE
+      trap(prog, st)
+    ENDIF
+
+  exec_open_read(db: database, prog: program, st: machine_state(prog),
+                 ins: instruction): machine_state(prog) =
+    IF cursor_valid?(ins`p1) THEN
+      advance(prog,
+              st WITH [`cursors(ins`p1) := opened_cursor(0)])
+    ELSE
+      trap(prog, st)
+    ENDIF
+
+  exec_rewind(db: database, prog: program, st: machine_state(prog),
+              ins: instruction): machine_state(prog) =
+    IF cursor_valid?(ins`p1) AND st`cursors(ins`p1)`open THEN
+      IF db`main_table`length = 0 THEN
+        set_pc(prog, st, ins`p2)
+      ELSE
+        advance(prog,
+                st WITH [`cursors(ins`p1) := opened_cursor(0)])
+      ENDIF
+    ELSE
+      trap(prog, st)
+    ENDIF
+
+  exec_column(db: database, prog: program, st: machine_state(prog),
+              ins: instruction): machine_state(prog) =
+    IF cursor_valid?(ins`p1) AND reg_valid?(ins`p3) AND
+       cursor_ready?(db, st`cursors(ins`p1)) THEN
+      LET c = st`cursors(ins`p1),
+          row = db`main_table`seq(c`row)
+      IN
+        IF ins`p2 < row`column_count THEN
+          advance(prog,
+                  st WITH [`registers := set_reg(st`registers,
+                                                 ins`p3,
+                                                 row`cells(ins`p2))])
+        ELSE
+          trap(prog, st)
+        ENDIF
+    ELSE
+      trap(prog, st)
+    ENDIF
+
+  exec_function(prog: program, st: machine_state(prog), ins: instruction):
+    machine_state(prog) =
+    IF ins`p4 = p4_abs AND int_reg?(st`registers, ins`p2) AND
+       reg_valid?(ins`p3) THEN
+      LET res = abs_value(st`registers`values(ins`p2)) IN
+        IF res`ok THEN
+          advance(prog,
+                  st WITH [`registers := set_reg(st`registers,
+                                                 ins`p3,
+                                                 res`value)])
+        ELSE
+          trap(prog, st)
+        ENDIF
+    ELSE
+      trap(prog, st)
+    ENDIF
+
+  exec_result_row(prog: program, st: machine_state(prog), ins: instruction):
+    machine_state(prog) =
+    IF ins`p2 <= max_result_cols_u32 AND
+       ins`p1 + ins`p2 <= max_registers_u32 AND
+       regs_initialized_range?(st`registers, ins`p1, ins`p2) AND
+       result_appendable?(st`results) THEN
+      LET row = make_result_row(st`registers, ins`p1, ins`p2),
+          out = append_result(st`results, row)
+      IN
+        advance(prog, st WITH [`results := out])
+    ELSE
+      trap(prog, st)
+    ENDIF
+
+  exec_next(db: database, prog: program, st: machine_state(prog),
+            ins: instruction): machine_state(prog) =
+    IF cursor_valid?(ins`p1) AND st`cursors(ins`p1)`open THEN
+      LET c = st`cursors(ins`p1),
+          next_row = c`row + 1,
+          next_c = opened_cursor(next_row),
+          st1 = st WITH [`cursors(ins`p1) := next_c]
+      IN
+        IF next_row < db`main_table`length THEN
+          set_pc(prog, st1, ins`p2)
+        ELSE
+          advance(prog, st1)
+        ENDIF
+    ELSE
+      trap(prog, st)
+    ENDIF
+
+  exec_le(prog: program, st: machine_state(prog), ins: instruction):
+    machine_state(prog) =
+    IF int_reg?(st`registers, ins`p3) AND
+       int_reg?(st`registers, ins`p1) THEN
+      LET res = le_values(st`registers`values(ins`p3),
+                          st`registers`values(ins`p1))
+      IN
+        IF res`ok AND sql_int?(res`value) THEN
+          IF ival(res`value) = 1 THEN
+            set_pc(prog, st, ins`p2)
+          ELSE
+            advance(prog, st)
+          ENDIF
+        ELSE
+          trap(prog, st)
+        ENDIF
+    ELSE
+      trap(prog, st)
+    ENDIF
+
+  step(db: database, prog: program, st: (running?(prog))):
+    machine_state(prog) =
+    LET ins = prog`seq(st`pc),
+        op = ins`opcode
+    IN
+      COND
+        op = op_init -> set_pc(prog, st, ins`p2),
+        op = op_goto -> set_pc(prog, st, ins`p2),
+        op = op_halt -> halt(prog, st),
+        op = op_transaction -> advance(prog, st),
+        op = op_explain -> advance(prog, st),
+        op = op_integer -> exec_integer(prog, st, ins),
+        op = op_add -> exec_binary(prog, st, ins, FALSE),
+        op = op_multiply -> exec_binary(prog, st, ins, TRUE),
+        op = op_open_read -> exec_open_read(db, prog, st, ins),
+        op = op_rewind -> exec_rewind(db, prog, st, ins),
+        op = op_column -> exec_column(db, prog, st, ins),
+        op = op_function -> exec_function(prog, st, ins),
+        op = op_result_row -> exec_result_row(prog, st, ins),
+        op = op_next -> exec_next(db, prog, st, ins),
+        op = op_le -> exec_le(prog, st, ins),
+        ELSE -> trap(prog, st)
+      ENDCOND
+
+  run_rec(db: database, prog: program, fuel: uint32, st: machine_state(prog)):
+    RECURSIVE exec_result =
+    IF st`status /= running_status OR st`pc >= prog`length THEN
+      result_of(prog, st)
+    ELSIF fuel = 0 THEN
+      fuel_result(prog, st)
+    ELSE
+      run_rec(db, prog, fuel - 1, step(db, prog, st))
+    ENDIF
+  MEASURE fuel
+
+  run(db: database, prog: program, fuel: uint32): exec_result =
+    run_rec(db, prog, fuel, init_state(prog))
+
+  result_value(out: exec_result, row: uint32, col: uint32): sql_value =
+    IF row < out`row_count AND col < out`rows(row)`column_count THEN
+      out`rows(row)`cells(col)
+    ELSE
+      null_value
+    ENDIF
+
+  result_int_or(out: exec_result, row: uint32, col: uint32,
+                fallback: int32): int32 =
+    LET v = result_value(out, row, col) IN
+      CASES v OF
+        sql_int(i): i,
+        sql_null: fallback,
+        sql_text(s): fallback,
+        sql_blob(b): fallback
+      ENDCASES
+
+  result_text_eq?(out: exec_result, row: uint32, col: uint32,
+                  expected: bytestring): bool =
+    LET v = result_value(out, row, col) IN
+      CASES v OF
+        sql_text(s): s = expected,
+        sql_null: FALSE,
+        sql_int(i): FALSE,
+        sql_blob(b): FALSE
+      ENDCASES
+
+END sqlite_vdbe

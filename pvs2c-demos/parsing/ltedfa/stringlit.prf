@@ -1,0 +1,11 @@
+(|stringlit|
+ (|foo_TCC1| 0
+  (|foo_TCC1-1| NIL 3970770978 ("" (EVAL-FORMULA) NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   NIL (|foo| SUBTYPE "\"foo\"" "bstring" (10 23 10 26)))))
+

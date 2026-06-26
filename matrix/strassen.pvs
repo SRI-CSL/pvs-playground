@@ -1,0 +1,80 @@
+strassen: THEORY
+BEGIN
+
+  IMPORTING matrix
+
+  k, n: VAR below(28) % nat
+
+  % dim(k) is the side length 2^k.
+  dim(k): RECURSIVE index =
+    IF k = 0 THEN 1 ELSE 2 * dim(k - 1) ENDIF
+    MEASURE k
+
+  % matrix defines addition but not subtraction, which Strassen needs.
+  msub(n)(A, B: sqmatrix(n)): sqmatrix(n) =
+    (LAMBDA (i: below(n)):
+      (LAMBDA (j: below(n)): A(i)(j) - B(i)(j)))
+
+  tl(n)(A: sqmatrix(2 * n)): sqmatrix(n) =
+    topleft(2 * n, 2 * n)(n, n)(A)
+
+  tr(n)(A: sqmatrix(2 * n)): sqmatrix(n) =
+    topright(2 * n, 2 * n)(n, n)(A)
+
+  bl(n)(A: sqmatrix(2 * n)): sqmatrix(n) =
+    botleft(2 * n, 2 * n)(n, n)(A)
+
+  br(n)(A: sqmatrix(2 * n)): sqmatrix(n) =
+    botright(2 * n, 2 * n)(n, n)(A)
+
+  join4(n)(C11, C12, C21, C22: sqmatrix(n)): sqmatrix(2 * n) =
+    stack(n, n, 2 * n)
+      (concat(n, n, n)(C11, C12),
+       concat(n, n, n)(C21, C22))
+
+  % Recursive Strassen multiplication for square matrices whose side length is 2^k.
+  strassen(k)(A: sqmatrix(dim(k)), B: sqmatrix(dim(k))): RECURSIVE sqmatrix(dim(k)) =
+    IF k = 0 THEN
+      (LET A1: sqmatrix(1) = A,
+           B1: sqmatrix(1) = B
+       IN mmult(1, 1, 1, A1, B1))
+    ELSE
+      (LET h = dim(k - 1) IN
+       (LET A2: sqmatrix(2 * h) = A,
+            B2: sqmatrix(2 * h) = B
+        IN
+          (LET A11 = tl(h)(A2),
+               A12 = tr(h)(A2),
+               A21 = bl(h)(A2),
+               A22 = br(h)(A2),
+               B11 = tl(h)(B2),
+               B12 = tr(h)(B2),
+               B21 = bl(h)(B2),
+               B22 = br(h)(B2),
+               M1 = strassen(k - 1)(madd(h, h)(A11, A22), madd(h, h)(B11, B22)),
+               M2 = strassen(k - 1)(madd(h, h)(A21, A22), B11),
+               M3 = strassen(k - 1)(A11, msub(h)(B12, B22)),
+               M4 = strassen(k - 1)(A22, msub(h)(B21, B11)),
+               M5 = strassen(k - 1)(madd(h, h)(A11, A12), B22),
+               M6 = strassen(k - 1)(msub(h)(A21, A11), madd(h, h)(B11, B12)),
+               M7 = strassen(k - 1)(msub(h)(A12, A22), madd(h, h)(B21, B22)),
+               C11 = msub(h)(madd(h, h)(madd(h, h)(M1, M4), M7), M5),
+               C12 = madd(h, h)(M3, M5),
+               C21 = madd(h, h)(M2, M4),
+               C22 = madd(h, h)(msub(h)(madd(h, h)(M1, M3), M2), M6),
+               C: sqmatrix(dim(k)) = join4(h)(C11, C12, C21, C22)
+           IN C)))
+    ENDIF
+    MEASURE k
+
+  strassen_correct: CONJECTURE
+    FORALL k, (A: sqmatrix(dim(k))), (B: sqmatrix(dim(k))):
+      strassen(k)(A, B) = mmult(dim(k), dim(k), dim(k), A, B)
+
+  strassen_id_2: _TEST_
+    strassen(1)(I(dim(1)), I(dim(1))) = I(dim(1))
+
+  strassen_id_4: _TEST_
+    strassen(2)(I(dim(2)), I(dim(2))) = I(dim(2))
+
+END strassen

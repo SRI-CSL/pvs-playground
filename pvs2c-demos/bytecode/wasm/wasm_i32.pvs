@@ -1,0 +1,520 @@
+wasm_i32: THEORY
+BEGIN
+
+  IMPORTING bytestrings
+
+  % This is a deliberately small WebAssembly Core subset for i32 function
+  % bodies.  It executes real Wasm instruction bytes, but only accepts the
+  % instructions below, one-byte immediates, empty block result types, and i32
+  % locals.  Those restrictions make the stack and control invariants visible in
+  % the PVS type structure without turning the demo into a complete Wasm engine.
+
+  max_stack: posnat = 64
+  max_locals: posnat = 32
+  max_control: posnat = 16
+  max_stack_u8: uint8 = 64
+  max_locals_u8: uint8 = 32
+  max_control_u8: uint8 = 16
+
+  running_status: uint8 = 0
+  halt_status: uint8 = 1
+  trap_status: uint8 = 2
+  fuel_status: uint8 = 3
+
+  block_kind: uint8 = 0
+  loop_kind: uint8 = 1
+
+  op_unreachable: byte = 0x00
+  op_block: byte = 0x02
+  op_loop: byte = 0x03
+  op_br: byte = 0x0C
+  op_br_if: byte = 0x0D
+  op_return: byte = 0x0F
+  op_end: byte = 0x0B
+  op_local_get: byte = 0x20
+  op_local_set: byte = 0x21
+  op_local_tee: byte = 0x22
+  op_i32_const: byte = 0x41
+  op_i32_eqz: byte = 0x45
+  op_i32_eq: byte = 0x46
+  op_i32_ne: byte = 0x47
+  op_i32_add: byte = 0x6A
+  op_i32_sub: byte = 0x6B
+  op_i32_mul: byte = 0x6C
+
+  blocktype_empty: byte = 0x40
+  valtype_i32: byte = 0x7F
+
+  opcode_has_imm?(op: byte): bool =
+    op = op_block OR op = op_loop OR op = op_br OR op = op_br_if OR
+    op = op_local_get OR op = op_local_set OR op = op_local_tee OR
+    op = op_i32_const
+
+  valid_opcode?(op: byte): bool =
+    op = op_unreachable OR op = op_block OR op = op_loop OR
+    op = op_br OR op = op_br_if OR op = op_return OR op = op_end OR
+    op = op_local_get OR op = op_local_set OR op = op_local_tee OR
+    op = op_i32_const OR op = op_i32_eqz OR op = op_i32_eq OR
+    op = op_i32_ne OR op = op_i32_add OR op = op_i32_sub OR
+    op = op_i32_mul
+
+  value_stack: TYPE =
+    [# height: upto(max_stack),
+       values: ARRAY[below(max_stack) -> uint32] #]
+
+  empty_stack: value_stack =
+    (# height := 0,
+       values := (LAMBDA (i: below(max_stack)): 0) #)
+
+  pushable?(s: value_stack): bool = s`height < max_stack_u8
+
+  nonempty?(s: value_stack): bool = s`height > 0
+
+  stack_height(s: value_stack): upto(max_stack) = s`height
+
+  push(s: (pushable?), v: uint32):
+    {t: value_stack | t`height = s`height + 1} =
+    s WITH [`height := s`height + 1,
+            `values(s`height) := v]
+
+  pop_result(s: (nonempty?)): TYPE =
+    [# value: uint32,
+       rest: {t: value_stack | t`height = s`height - 1} #]
+
+  pop(s: (nonempty?)): pop_result(s) =
+    (# value := s`values(s`height - 1),
+       rest := s WITH [`height := s`height - 1] #)
+
+  top(s: (nonempty?)): uint32 = s`values(s`height - 1)
+
+  frame_kind?(k: uint8): bool = k = block_kind OR k = loop_kind
+
+  control_frame: TYPE =
+    [# kind: (frame_kind?),
+       body_pc: index,
+       end_pc: index #]
+
+  zero_frame: control_frame =
+    (# kind := block_kind,
+       body_pc := 0,
+       end_pc := 0 #)
+
+  control_stack: TYPE =
+    [# depth: upto(max_control),
+       frames: ARRAY[below(max_control) -> control_frame] #]
+
+  empty_control: control_stack =
+    (# depth := 0,
+       frames := (LAMBDA (i: below(max_control)): zero_frame) #)
+
+  control_pushable?(cs: control_stack): bool = cs`depth < max_control_u8
+
+  control_nonempty?(cs: control_stack): bool = cs`depth > 0
+
+  push_control(cs: (control_pushable?), f: control_frame):
+    {out: control_stack | out`depth = cs`depth + 1} =
+    cs WITH [`depth := cs`depth + 1,
+             `frames(cs`depth) := f]
+
+  pop_control(cs: (control_nonempty?)):
+    {out: control_stack | out`depth = cs`depth - 1} =
+    cs WITH [`depth := cs`depth - 1]
+
+  branch_frame(cs: (control_nonempty?), (depth: below(cs`depth))): control_frame =
+    cs`frames(cs`depth - 1 - depth)
+
+  branch_keep_depth(cs: (control_nonempty?), (depth: below(cs`depth)),
+                    f: control_frame): upto(max_control) =
+    IF f`kind = loop_kind THEN
+      cs`depth - depth
+    ELSE
+      cs`depth - depth - 1
+    ENDIF
+
+  locals_array: TYPE = ARRAY[below(max_locals) -> uint32]
+
+  empty_locals: locals_array = (LAMBDA (i: below(max_locals)): 0)
+
+  machine_state(body: bytestring): TYPE =
+    [# pc: upto(length(body)),
+       locals_count: upto(max_locals),
+       locals: locals_array,
+       stack: value_stack,
+       controls: control_stack,
+       status: uint8,
+       result: uint32 #]
+
+  running?(body: bytestring)(st: machine_state(body)): bool =
+    st`status = running_status AND st`pc < length(body)
+
+  exec_result: TYPE =
+    [# status: uint8,
+       value: uint32,
+       final_pc: index,
+       final_stack_height: upto(max_stack) #]
+
+  trap(body: bytestring, st: machine_state(body)): machine_state(body) =
+    st WITH [`status := trap_status]
+
+  halt(body: bytestring, st: machine_state(body), v: uint32): machine_state(body) =
+    st WITH [`status := halt_status,
+             `result := v,
+             `pc := length(body)]
+
+  set_pc(body: bytestring, st: machine_state(body), target: index):
+    machine_state(body) =
+    IF target <= length(body) THEN
+      st WITH [`pc := target]
+    ELSE
+      trap(body, st)
+    ENDIF
+
+  advance(body: bytestring, st: machine_state(body), n: nat): machine_state(body) =
+    IF st`pc + n <= length(body) THEN
+      st WITH [`pc := st`pc + n]
+    ELSE
+      trap(body, st)
+    ENDIF
+
+  result_of(body: bytestring, st: machine_state(body)): exec_result =
+    (# status := st`status,
+       value := st`result,
+       final_pc := st`pc,
+       final_stack_height := st`stack`height #)
+
+  fuel_result(body: bytestring, st: machine_state(body)): exec_result =
+    (# status := fuel_status,
+       value := st`result,
+       final_pc := st`pc,
+       final_stack_height := st`stack`height #)
+
+  scan_result: TYPE =
+    [# found: bool,
+       pc: index #]
+
+  scan_missing: scan_result = (# found := FALSE, pc := 0 #)
+
+  next_scan_pc(body: bytestring, (i: below(length(body)))): upto(length(body)) =
+    IF opcode_has_imm?(get(body, i)) AND i + 1 < length(body) THEN
+      i + 2
+    ELSE
+      i + 1
+    ENDIF
+
+  scan_end_rec(body: bytestring, i: upto(length(body)), depth: nat):
+    RECURSIVE scan_result =
+    IF i = length(body) THEN
+      scan_missing
+    ELSE
+      LET op = get(body, i) IN
+        IF op = op_end THEN
+          IF depth = 0 THEN
+            (# found := TRUE, pc := i #)
+          ELSE
+            scan_end_rec(body, i + 1, depth - 1)
+          ENDIF
+        ELSIF op = op_block OR op = op_loop THEN
+          scan_end_rec(body, next_scan_pc(body, i), depth + 1)
+        ELSE
+          scan_end_rec(body, next_scan_pc(body, i), depth)
+        ENDIF
+    ENDIF
+  MEASURE length(body) - i
+
+  find_matching_end(body: bytestring, (pc: below(length(body)))): scan_result =
+    IF (get(body, pc) = op_block OR get(body, pc) = op_loop) AND
+       pc + 1 < length(body) THEN
+      scan_end_rec(body, pc + 2, 0)
+    ELSE
+      scan_missing
+    ENDIF
+
+  valid_frame?(body: bytestring)(f: control_frame): bool =
+    f`body_pc <= length(body) AND
+    f`end_pc < length(body) AND
+    (f`kind = block_kind OR f`kind = loop_kind)
+
+  well_control?(body: bytestring)(cs: control_stack): bool =
+    FORALL (i: below(cs`depth)): valid_frame?(body)(cs`frames(i))
+
+  well_state?(body: bytestring)(st: machine_state(body)): bool =
+    well_control?(body)(st`controls) AND
+       st`locals_count <= max_locals AND
+    st`stack`height <= max_stack
+
+  make_frame(body: bytestring, kind: (frame_kind?), body_pc: index,
+             end_pc: index): control_frame =
+    (# kind := kind,
+       body_pc := body_pc,
+       end_pc := end_pc #)
+
+  branch_to(body: bytestring, st: machine_state(body),
+            (depth: below(st`controls`depth))): machine_state(body) =
+    LET f = branch_frame(st`controls, depth) IN	    
+    IF f`end_pc >= body`length
+    THEN trap(body, st)
+    ELSE
+    LET keep = branch_keep_depth(st`controls, depth, f),
+        target = IF f`kind = loop_kind
+		 THEN f`body_pc
+		 ELSE f`end_pc + 1 ENDIF,
+        next_controls = st`controls WITH [`depth := keep],
+        jumped = st WITH [`controls := next_controls]
+    IN
+      set_pc(body, jumped, target)
+    ENDIF
+
+  enter_control(body: bytestring, st: machine_state(body), kind: (frame_kind?)):
+    machine_state(body) =
+    IF st`pc + 1 < length(body) AND get(body, st`pc + 1) = blocktype_empty AND
+       control_pushable?(st`controls) THEN
+      LET scan = find_matching_end(body, st`pc),
+          body_pc = st`pc + 2
+      IN
+        IF scan`found AND body_pc <= length(body) THEN
+          LET f = make_frame(body, kind, body_pc, scan`pc),
+              cs = push_control(st`controls, f)
+          IN
+            st WITH [`pc := body_pc, `controls := cs]
+        ELSE
+          trap(body, st)
+        ENDIF
+    ELSE
+      trap(body, st)
+    ENDIF
+
+  finish_end(body: bytestring, st: machine_state(body)): machine_state(body) =
+    IF st`controls`depth > 0 THEN
+      LET cs = pop_control(st`controls) IN
+        advance(body, st WITH [`controls := cs], 1)
+    ELSIF st`stack`height > 0 THEN
+      halt(body, st, top(st`stack))
+    ELSE
+      trap(body, st)
+    ENDIF
+
+  local_valid?(body: bytestring, st: machine_state(body), ix: byte): bool =
+    ix < st`locals_count AND ix < max_locals_u8
+
+  get_local(body: bytestring, st: machine_state(body), ix: byte):
+    machine_state(body) =
+    IF local_valid?(body, st, ix) AND pushable?(st`stack) THEN
+      advance(body, st WITH [`stack := push(st`stack, st`locals(ix))], 2)
+    ELSE
+      trap(body, st)
+    ENDIF
+
+  set_local(body: bytestring, st: machine_state(body), ix: byte):
+    machine_state(body) =
+    IF local_valid?(body, st, ix) AND st`stack`height > 0 THEN
+      LET p = pop(st`stack) IN
+        advance(body,
+                st WITH [`stack := p`rest,
+                         `locals(ix) := p`value],
+                2)
+    ELSE
+      trap(body, st)
+    ENDIF
+
+  tee_local(body: bytestring, st: machine_state(body), ix: byte):
+    machine_state(body) =
+    IF local_valid?(body, st, ix) AND st`stack`height > 0 THEN
+      advance(body, st WITH [`locals(ix) := top(st`stack)], 2)
+    ELSE
+      trap(body, st)
+    ENDIF
+
+  push_const(body: bytestring, st: machine_state(body), imm: byte):
+    machine_state(body) =
+    IF pushable?(st`stack) THEN
+      advance(body, st WITH [`stack := push(st`stack, imm)], 2)
+    ELSE
+      trap(body, st)
+    ENDIF
+
+  bool32(b: bool): uint32 = IF b THEN 1 ELSE 0 ENDIF
+
+  unary_eqz(body: bytestring, st: machine_state(body)): machine_state(body) =
+    IF st`stack`height > 0 THEN
+      LET p = pop(st`stack),
+          s = push(p`rest, bool32(p`value = 0))
+      IN
+        advance(body, st WITH [`stack := s], 1)
+    ELSE
+      trap(body, st)
+    ENDIF
+
+  binary_i32(body: bytestring, st: machine_state(body), op: byte):
+    machine_state(body) =
+    IF st`stack`height > 1 THEN
+      LET p2 = pop(st`stack),
+          rhs = p2`value,
+          p1 = pop(p2`rest),
+          lhs = p1`value,
+          value =
+            COND
+              op = op_i32_add -> u32plus(lhs, rhs),
+              op = op_i32_sub -> u32minus(lhs, rhs),
+              op = op_i32_mul -> u32times(lhs, rhs),
+              op = op_i32_eq -> bool32(lhs = rhs),
+              ELSE -> bool32(lhs /= rhs)
+            ENDCOND,
+          s = push(p1`rest, value)
+      IN
+        advance(body, st WITH [`stack := s], 1)
+    ELSE
+      trap(body, st)
+    ENDIF
+
+  branch_instruction(body: bytestring, st: machine_state(body), depth: byte):
+    machine_state(body) =
+    IF st`controls`depth > 0 AND depth < st`controls`depth THEN
+      branch_to(body, st, depth)
+    ELSE
+      trap(body, st)
+    ENDIF
+
+  branch_if_instruction(body: bytestring, st: machine_state(body), depth: byte):
+    machine_state(body) =
+    IF st`stack`height > 0 THEN
+      LET p = pop(st`stack),
+          st1 = st WITH [`stack := p`rest]
+      IN
+        IF p`value = 0 THEN
+          advance(body, st1, 2)
+        ELSE
+          branch_instruction(body, st1, depth)
+        ENDIF
+    ELSE
+      trap(body, st)
+    ENDIF
+
+  return_instruction(body: bytestring, st: machine_state(body)): machine_state(body) =
+    IF st`stack`height > 0 THEN halt(body, st, top(st`stack)) ELSE trap(body, st) ENDIF
+
+  step(body: bytestring, st: (running?(body))): machine_state(body) =
+    LET op = get(body, st`pc) IN
+      IF op = op_unreachable THEN
+        trap(body, st)
+      ELSIF op = op_block THEN
+        enter_control(body, st, block_kind)
+      ELSIF op = op_loop THEN
+        enter_control(body, st, loop_kind)
+      ELSIF op = op_end THEN
+        finish_end(body, st)
+      ELSIF op = op_return THEN
+        return_instruction(body, st)
+      ELSIF opcode_has_imm?(op) AND st`pc + 1 < length(body) THEN
+        LET imm = get(body, st`pc + 1) IN
+          COND
+            op = op_br -> branch_instruction(body, st, imm),
+            op = op_br_if -> branch_if_instruction(body, st, imm),
+            op = op_local_get -> get_local(body, st, imm),
+            op = op_local_set -> set_local(body, st, imm),
+            op = op_local_tee -> tee_local(body, st, imm),
+            op = op_i32_const -> push_const(body, st, imm),
+            ELSE -> trap(body, st)
+          ENDCOND
+      ELSIF op = op_i32_eqz THEN
+        unary_eqz(body, st)
+      ELSIF op = op_i32_add OR op = op_i32_sub OR op = op_i32_mul OR
+            op = op_i32_eq OR op = op_i32_ne THEN
+        binary_i32(body, st, op)
+      ELSE
+        trap(body, st)
+      ENDIF
+
+  body_parse(body: bytestring): TYPE =
+    [# ok: bool,
+       code_pc: upto(body`length),
+       local_count: upto(max_locals) #]
+
+  parse_fail(body: bytestring): body_parse(body) =
+    (# ok := FALSE, code_pc := 0, local_count := 0 #)
+
+  parse_locals_rec(body: bytestring, i: upto(length(body)),
+                   groups: nat, total: upto(max_locals)):
+    RECURSIVE body_parse(body) =
+    IF groups = 0 THEN
+      (# ok := TRUE, code_pc := i, local_count := total #)
+    ELSIF i + 1 < length(body) AND get(body, i + 1) = valtype_i32 AND
+          total + get(body, i) <= max_locals_u8 THEN
+      parse_locals_rec(body, i + 2, groups - 1, total + get(body, i))
+    ELSE
+      parse_fail(body)
+    ENDIF
+  MEASURE groups
+
+  parse_body(body: bytestring): body_parse(body) =
+    IF length(body) = 0 THEN
+      parse_fail(body)
+    ELSE
+      LET groups = get(body, 0) IN
+        parse_locals_rec(body, 1, groups, 0)
+    ENDIF
+
+  init_state(body: bytestring, code_pc: upto(length(body)),
+             locals_count: upto(max_locals), locals: locals_array):
+    machine_state(body) =
+    (# pc := code_pc,
+       locals_count := locals_count,
+       locals := locals,
+       stack := empty_stack,
+       controls := empty_control,
+       status := running_status,
+       result := 0 #)
+
+  run_rec(body: bytestring, fuel: uint32, st: machine_state(body)):
+    RECURSIVE exec_result =
+    IF st`status /= running_status OR st`pc >= length(body) THEN
+      result_of(body, st)
+    ELSIF fuel = 0 THEN
+      fuel_result(body, st)
+    ELSE
+      run_rec(body, fuel - 1, step(body, st))
+    ENDIF
+  MEASURE fuel
+
+  invoke0(body: bytestring, fuel: uint32): exec_result =
+    LET parsed = parse_body(body) IN
+      IF parsed`ok THEN
+        run_rec(body, fuel,
+                init_state(body, parsed`code_pc, parsed`local_count, empty_locals))
+      ELSE
+        (# status := trap_status,
+           value := 0,
+           final_pc := 0,
+           final_stack_height := 0 #)
+      ENDIF
+
+  invoke1(body: bytestring, fuel: uint32, a0: uint32): exec_result =
+    LET parsed = parse_body(body),
+        total = parsed`local_count + 1
+    IN
+      IF parsed`ok AND total <= max_locals THEN
+        LET locals = empty_locals WITH [(0) := a0] IN
+          run_rec(body, fuel,
+                  init_state(body, parsed`code_pc, total, locals))
+      ELSE
+        (# status := trap_status,
+           value := 0,
+           final_pc := 0,
+           final_stack_height := 0 #)
+      ENDIF
+
+  invoke2(body: bytestring, fuel: uint32, a0: uint32, a1: uint32): exec_result =
+    LET parsed = parse_body(body),
+        total = parsed`local_count + 2
+    IN
+      IF parsed`ok AND total <= max_locals THEN
+        LET locals = empty_locals WITH [(0) := a0, (1) := a1] IN
+          run_rec(body, fuel,
+                  init_state(body, parsed`code_pc, total, locals))
+      ELSE
+        (# status := trap_status,
+           value := 0,
+           final_pc := 0,
+           final_stack_height := 0 #)
+      ENDIF
+
+END wasm_i32
