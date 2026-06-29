@@ -9,6 +9,8 @@ LDLIBS   := -lgmp -lpvs-prelude
 BINDIR   := pvs2c/bin
 LIBDIR   := pvs2c/lib
 SRCDIR   := pvs2c/src
+BUILDDIR := build
+GENERATEDDIR := pvs2c
 
 # ==========================================
 # 2. INCLUDE DYNAMIC FRAGMENTS
@@ -33,4 +35,4 @@ $(SRCDIR)/%.o: %.c | $(SRCDIR)
 # ==========================================
 clean:
 	@echo "--- Cleaning ---"
-	rm -rf $(BUILDDIR) $(BINDIR) $(LIBDIR)
+	rm -rf $(BUILDDIR) $(GENERATEDDIR)
