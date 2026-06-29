@@ -1,5 +1,5 @@
 PVS2C_TEST_RUNNER := python3 ../scripts/ci/run_pvs2c_tests.py --repo-root ..
-PVS2C_TEST_ARGS := $(if $(PVS_LOCATION),--pvs-location $(PVS_LOCATION))
+PVS2C_TEST_ARGS := $(if $(PVS_HOME),--pvs-location $(PVS_HOME))
 
 .PHONY: \
 	run-aes run-hmac run-sha256 run-utf8_decoder \

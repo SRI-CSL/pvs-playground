@@ -115,7 +115,7 @@ def ensure_pvs2c_bench(build_dir: Path) -> Path:
     if any(not path.exists() for path in required):
         run_command(["make", "all"])
 
-    pvs_location = Path(os.environ.get("PVS_LOCATION", str(Path.home() / "git/PVS")))
+    pvs_location = Path(os.environ.get("PVS_HOME", str(Path.home() / "git/PVS")))
     include_dir = pvs_location / "lib/pvs2c/include"
     prelude = pvs_location / "lib/pvs2c/lib/libpvs-prelude.a"
     out = build_dir / "pvs2c_utf8_bench"

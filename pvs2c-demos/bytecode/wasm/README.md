@@ -88,5 +88,5 @@ wasm_i32__invoke2(pvs_body, 128, 10, 20)
 After editing the table, run:
 
 ```sh
-make -C pvs2c-demos/bytecode/wasm run PVS_LOCATION=/path/to/PVS
+make -C pvs2c-demos/bytecode/wasm run PVS_HOME=/path/to/PVS
 ```

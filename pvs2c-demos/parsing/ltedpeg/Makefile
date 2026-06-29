@@ -2,10 +2,9 @@
 # 1. CONFIGURATION
 # ==========================================
 CC       := cc
-PVS_LOCATION ?= $(HOME)/git/PVS
-PVSPATH  ?= $(PVS_LOCATION)
-CFLAGS   := -w -O2 -foptimize-sibling-calls -fPIC -I$(PVSPATH)/lib/pvs2c/include -I pvs2c/include
-LDFLAGS  := -L$(PVSPATH)/lib/pvs2c/lib
+PVS_HOME ?= $(HOME)/git/PVS
+CFLAGS   := -w -O2 -foptimize-sibling-calls -fPIC -I$(PVS_HOME)/lib/pvs2c/include -I pvs2c/include
+LDFLAGS  := -L$(PVS_HOME)/lib/pvs2c/lib
 LDLIBS   := -lgmp -lpvs-prelude
 BINDIR   := pvs2c/bin
 LIBDIR   := pvs2c/lib
