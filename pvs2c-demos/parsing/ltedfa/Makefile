@@ -2,13 +2,15 @@
 # 1. CONFIGURATION
 # ==========================================
 CC       := cc
-PVSPATH  := /Users/e35480/git/PVS/
-CFLAGS   := -w -O2 -foptimize-sibling-calls -fPIC -I$(PVSPATH)/lib/pvs2c/include -I pvs2c/include
-LDFLAGS  := -L$(PVSPATH)/lib/pvs2c/lib
+PVS_HOME ?= $(HOME)/git/PVS
+CFLAGS   := -w -O2 -foptimize-sibling-calls -fPIC -I$(PVS_HOME)/lib/pvs2c/include -I pvs2c/include
+LDFLAGS  := -L$(PVS_HOME)/lib/pvs2c/lib
 LDLIBS   := -lgmp -lpvs-prelude
 BINDIR   := pvs2c/bin
 LIBDIR   := pvs2c/lib
 SRCDIR   := pvs2c/src
+BUILDDIR := build
+GENERATEDDIR := pvs2c
 
 # ==========================================
 # 2. INCLUDE DYNAMIC FRAGMENTS
@@ -33,4 +35,4 @@ $(SRCDIR)/%.o: %.c | $(SRCDIR)
 # ==========================================
 clean:
 	@echo "--- Cleaning ---"
-	rm -rf $(BUILDDIR) $(BINDIR) $(LIBDIR)
+	rm -rf $(BUILDDIR) $(GENERATEDDIR)

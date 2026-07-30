@@ -1,5 +1,5 @@
-PVS_LOCATION ?= $(HOME)/git/PVS
-PVS := $(PVS_LOCATION)/pvs
+PVS_HOME ?= $(HOME)/git/PVS
+PVS := $(PVS_HOME)/pvs
 
 NO_GENERATED_MK_GOALS := clean clean-% typecheck pvs2c compile-examples
 INCLUDE_GENERATED_MK := $(if $(MAKECMDGOALS),$(filter-out $(NO_GENERATED_MK_GOALS),$(MAKECMDGOALS)),all)
@@ -10,9 +10,9 @@ MAIN_THEORY := wasm_i32_tests
 
 CC ?= cc
 CFLAGS ?= -O2 -w -foptimize-sibling-calls -fPIC
-CPPFLAGS += -I$(PVS_LOCATION)/lib/pvs2c/include -Ipvs2c/include -include ../../pvs2c_compat.h
-LDFLAGS += -L$(PVS_LOCATION)/lib/pvs2c/lib
-LDLIBS += $(PVS_LOCATION)/lib/pvs2c/lib/libpvs-prelude.a -lgmp -lm
+CPPFLAGS += -I$(PVS_HOME)/lib/pvs2c/include -Ipvs2c/include -include ../../pvs2c_compat.h
+LDFLAGS += -L$(PVS_HOME)/lib/pvs2c/lib
+LDLIBS += $(PVS_HOME)/lib/pvs2c/lib/libpvs-prelude.a -lgmp -lm
 
 BUILD_DIR := build
 BINDIR := pvs2c/bin

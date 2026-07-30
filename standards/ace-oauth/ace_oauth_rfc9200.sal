@@ -1,0 +1,1384 @@
+ace_oauth_rfc9200: CONTEXT =
+BEGIN
+
+  % Executable finite-state abstraction of RFC 9200, "Authentication and
+  % Authorization for Constrained Environments Using the OAuth 2.0 Framework
+  % (ACE-OAuth)".  The model captures the ACE framework roles, discovery and
+  % AS Request Creation Hints, token/introspection/authz-info endpoints,
+  % proof-of-possession access tokens, profile selection, protected-resource
+  % access, token/key expiration, and the security obligations that can be
+  % represented as finite-state properties.
+  %
+  % Abstractions:
+  % - Concrete CoAP/HTTP syntax, CBOR byte encodings, CWT/JWT/COSE/JOSE crypto,
+  %   and profile-specific protocols are represented by finite predicates.
+  % - Scope is a small ordered lattice [0..3], where <= means "no broader than".
+  % - Two resource servers and two clients are enough to model audience and
+  %   client/token/key binding obligations.
+
+  Client: TYPE = {client_a, client_b};
+  ResourceServer: TYPE = {rs_a, rs_b};
+  AuthorizationServer: TYPE = {as_main, as_other};
+
+  Transport: TYPE = {coap_transport, http_transport, other_transport};
+  Encoding: TYPE = {cbor_encoding, json_encoding, opaque_encoding};
+  ContentFormat: TYPE = {
+    format_none,
+    format_ace_cbor,
+    format_cwt,
+    format_octet_stream,
+    format_oscore,
+    format_json
+  };
+  HttpMethod: TYPE = {method_get, method_post, method_put, method_delete, method_other};
+
+  GrantType: TYPE = {
+    grant_missing_implies_client_credentials,
+    grant_authorization_code,
+    grant_password,
+    grant_client_credentials,
+    grant_refresh_token,
+    grant_device_code,
+    grant_extension
+  };
+
+  TokenType: TYPE = {token_pop, token_bearer};
+  TokenFormat: TYPE = {token_cwt, token_jwt, token_reference};
+  TokenStatus: TYPE = {token_none, token_issued, token_stored, token_expired, token_rejected};
+  RefreshStatus: TYPE = {refresh_none, refresh_valid, refresh_rejected};
+  KeyType: TYPE = {key_symmetric, key_asymmetric};
+  Audience: TYPE = {aud_rs_a, aud_rs_b, aud_group};
+  Scope: TYPE = [0..3];
+
+  ProfileId: TYPE = {profile_coap_dtls, profile_coap_oscore, profile_combined, profile_none};
+  ProfileEncoding: TYPE = {profile_cbor_id, profile_text_id};
+
+  ErrorCode: TYPE = {
+    err_none,
+    err_invalid_request,
+    err_invalid_client,
+    err_invalid_grant,
+    err_unauthorized_client,
+    err_unsupported_grant_type,
+    err_invalid_scope,
+    err_unsupported_pop_key,
+    err_incompatible_ace_profiles,
+    err_invalid_token,
+    err_insufficient_scope
+  };
+
+  ResponseCode: TYPE = {
+    code_none,
+    code_201_created,
+    code_400_bad_request,
+    code_401_unauthorized,
+    code_403_forbidden,
+    code_405_method_not_allowed
+  };
+
+  Event: TYPE = {
+    ev_idle,
+    ev_profile_defined,
+    ev_client_registered,
+    ev_rs_registered,
+    ev_initial_unauthorized_request,
+    ev_as_hints_sent,
+    ev_token_request_ok,
+    ev_token_request_ok_cnonce,
+    ev_token_error_unsupported_pop_key,
+    ev_token_error_incompatible_profiles,
+    ev_refresh_ok,
+    ev_refresh_reject_key_or_audience_change,
+    ev_introspection_ok_active,
+    ev_introspection_ok_inactive,
+    ev_introspection_invalid_credentials,
+    ev_introspection_forbidden,
+    ev_authz_info_post_ok,
+    ev_authz_info_bad_parse,
+    ev_authz_info_bad_wrapper,
+    ev_authz_info_bad_claims,
+    ev_resource_ok,
+    ev_resource_unauthorized,
+    ev_resource_forbidden,
+    ev_resource_method_not_allowed,
+    ev_token_expired,
+    ev_long_running_expired_error,
+    ev_key_expiry_unknown_reject,
+    ev_authz_info_method_reject,
+    ev_discovery_as_validated,
+    ev_error
+  };
+
+  security_ok?(encrypted: BOOLEAN,
+               integrity: BOOLEAN,
+               replay: BOOLEAN,
+               mutual_auth: BOOLEAN,
+               response_bound: BOOLEAN): BOOLEAN =
+    encrypted AND integrity AND replay AND mutual_auth AND response_bound;
+
+  audience_matches_rs?(aud: Audience, rs: ResourceServer): BOOLEAN =
+    (aud = aud_group) OR
+    (aud = aud_rs_a AND rs = rs_a) OR
+    (aud = aud_rs_b AND rs = rs_b);
+
+  token_endpoint_success?(e: Event): BOOLEAN =
+    (e = ev_token_request_ok) OR
+    (e = ev_token_request_ok_cnonce) OR
+    (e = ev_refresh_ok);
+
+  token_endpoint_error?(e: Event): BOOLEAN =
+    (e = ev_token_error_unsupported_pop_key) OR
+    (e = ev_token_error_incompatible_profiles) OR
+    (e = ev_refresh_reject_key_or_audience_change);
+
+  introspection_event?(e: Event): BOOLEAN =
+    (e = ev_introspection_ok_active) OR
+    (e = ev_introspection_ok_inactive) OR
+    (e = ev_introspection_invalid_credentials) OR
+    (e = ev_introspection_forbidden);
+
+  introspection_success?(e: Event): BOOLEAN =
+    (e = ev_introspection_ok_active) OR (e = ev_introspection_ok_inactive);
+
+  authz_info_event?(e: Event): BOOLEAN =
+    (e = ev_authz_info_post_ok) OR
+    (e = ev_authz_info_bad_parse) OR
+    (e = ev_authz_info_bad_wrapper) OR
+    (e = ev_authz_info_bad_claims) OR
+    (e = ev_authz_info_method_reject);
+
+  resource_error_event?(e: Event): BOOLEAN =
+    (e = ev_resource_unauthorized) OR
+    (e = ev_resource_forbidden) OR
+    (e = ev_resource_method_not_allowed);
+
+  coap_payload_event?(e: Event): BOOLEAN =
+    token_endpoint_success?(e) OR
+    token_endpoint_error?(e) OR
+    introspection_success?(e) OR
+    (e = ev_introspection_invalid_credentials) OR
+    (e = ev_as_hints_sent);
+
+  ace: MODULE =
+  BEGIN
+    LOCAL profile_defined: BOOLEAN
+    LOCAL profile_id: ProfileId
+    LOCAL profile_id_encoding: ProfileEncoding
+    LOCAL profile_crs_protocol_specified: BOOLEAN
+    LOCAL profile_crs_security_specified: BOOLEAN
+    LOCAL profile_cas_security_specified: BOOLEAN
+    LOCAL profile_rsas_security_specified: BOOLEAN
+    LOCAL profile_pop_methods_specified: BOOLEAN
+    LOCAL profile_authz_info_specified: BOOLEAN
+    LOCAL profile_combination_requirements_documented: BOOLEAN
+
+    LOCAL client_registered: BOOLEAN
+    LOCAL rs_registered: BOOLEAN
+    LOCAL client: Client
+    LOCAL rs: ResourceServer
+    LOCAL as_for_rs: AuthorizationServer
+    LOCAL client_as_credentials: BOOLEAN
+    LOCAL rs_as_credentials: BOOLEAN
+    LOCAL as_authorized_for_rs: BOOLEAN
+    LOCAL client_validated_as_authority: BOOLEAN
+
+    LOCAL cnonce_required: BOOLEAN
+    LOCAL cnonce_stored_by_rs: BOOLEAN
+    LOCAL cnonce_in_token_request: BOOLEAN
+    LOCAL cnonce_in_access_token: BOOLEAN
+    LOCAL cnonce_fresh_for_rs: BOOLEAN
+
+    LOCAL access_status: TokenStatus
+    LOCAL access_client: Client
+    LOCAL access_rs: ResourceServer
+    LOCAL access_audience: Audience
+    LOCAL access_scope: Scope
+    LOCAL access_grant: GrantType
+    LOCAL access_token_type: TokenType
+    LOCAL access_format: TokenFormat
+    LOCAL access_pop_key_type: KeyType
+    LOCAL access_pop_key_bound: BOOLEAN
+    LOCAL access_symmetric_key_encrypted: BOOLEAN
+    LOCAL access_integrity_protected: BOOLEAN
+    LOCAL access_asymmetric_signature: BOOLEAN
+    LOCAL access_claims_obtained: BOOLEAN
+    LOCAL access_wrapper_valid: BOOLEAN
+    LOCAL access_issuer_authorized: BOOLEAN
+    LOCAL access_exp_ok: BOOLEAN
+    LOCAL access_aud_ok: BOOLEAN
+    LOCAL access_scope_recognized: BOOLEAN
+    LOCAL access_cti_present: BOOLEAN
+    LOCAL access_exi_present: BOOLEAN
+    LOCAL access_exi_sequence_ok: BOOLEAN
+
+    LOCAL refresh_status: RefreshStatus
+    LOCAL refresh_client: Client
+    LOCAL refresh_audience: Audience
+    LOCAL refresh_pop_key_type: KeyType
+    LOCAL refresh_scope: Scope
+
+    LOCAL rs_token_stored: BOOLEAN
+    LOCAL rs_stores_at_least_one_token: BOOLEAN
+    LOCAL client_pop_performed: BOOLEAN
+    LOCAL client_key_validity_known: BOOLEAN
+    LOCAL client_key_valid: BOOLEAN
+    LOCAL request_scope: Scope
+    LOCAL request_method_allowed_by_token: BOOLEAN
+    LOCAL request_sensitive_initial_payload: BOOLEAN
+
+    LOCAL last_event: Event
+    LOCAL last_transport: Transport
+    LOCAL last_encoding: Encoding
+    LOCAL last_content_format: ContentFormat
+    LOCAL last_method: HttpMethod
+    LOCAL last_response_code: ResponseCode
+    LOCAL last_error: ErrorCode
+    LOCAL last_error_abbreviated: BOOLEAN
+    LOCAL last_parameter_keys_abbreviated: BOOLEAN
+    LOCAL last_grant_type_abbreviated: BOOLEAN
+    LOCAL last_token_type_abbreviated: BOOLEAN
+    LOCAL last_profile_id_encoding: ProfileEncoding
+    LOCAL last_token_type_present: BOOLEAN
+    LOCAL last_token_type_default_pop: BOOLEAN
+    LOCAL last_profile_requested: BOOLEAN
+    LOCAL last_profile_present: BOOLEAN
+    LOCAL last_access_token_present: BOOLEAN
+    LOCAL last_refresh_token_sent_to_rs: BOOLEAN
+    LOCAL last_cas_encrypted: BOOLEAN
+    LOCAL last_cas_integrity: BOOLEAN
+    LOCAL last_cas_replay: BOOLEAN
+    LOCAL last_cas_mutual_auth: BOOLEAN
+    LOCAL last_cas_response_bound: BOOLEAN
+    LOCAL last_rsas_encrypted: BOOLEAN
+    LOCAL last_rsas_integrity: BOOLEAN
+    LOCAL last_rsas_replay: BOOLEAN
+    LOCAL last_rsas_mutual_auth: BOOLEAN
+    LOCAL last_rsas_response_bound: BOOLEAN
+    LOCAL last_crs_encrypted: BOOLEAN
+    LOCAL last_crs_integrity: BOOLEAN
+    LOCAL last_crs_replay: BOOLEAN
+    LOCAL last_crs_mutual_auth: BOOLEAN
+    LOCAL last_crs_response_bound: BOOLEAN
+    LOCAL last_client_authenticated_to_as: BOOLEAN
+    LOCAL last_as_authenticated_to_client: BOOLEAN
+    LOCAL last_rs_authenticated_to_as: BOOLEAN
+    LOCAL last_introspection_right: BOOLEAN
+    LOCAL last_introspection_active: BOOLEAN
+    LOCAL last_authz_info_token_parse_ok: BOOLEAN
+    LOCAL last_authz_info_protected_specified: BOOLEAN
+    LOCAL last_resource_requires_authorization: BOOLEAN
+    LOCAL last_client_authenticated_to_rs: BOOLEAN
+
+    INITIALIZATION
+      profile_defined = FALSE;
+      profile_id = profile_none;
+      profile_id_encoding = profile_cbor_id;
+      profile_crs_protocol_specified = FALSE;
+      profile_crs_security_specified = FALSE;
+      profile_cas_security_specified = FALSE;
+      profile_rsas_security_specified = FALSE;
+      profile_pop_methods_specified = FALSE;
+      profile_authz_info_specified = FALSE;
+      profile_combination_requirements_documented = FALSE;
+      client_registered = FALSE;
+      rs_registered = FALSE;
+      client = client_a;
+      rs = rs_a;
+      as_for_rs = as_main;
+      client_as_credentials = FALSE;
+      rs_as_credentials = FALSE;
+      as_authorized_for_rs = FALSE;
+      client_validated_as_authority = FALSE;
+      cnonce_required = FALSE;
+      cnonce_stored_by_rs = FALSE;
+      cnonce_in_token_request = FALSE;
+      cnonce_in_access_token = FALSE;
+      cnonce_fresh_for_rs = FALSE;
+      access_status = token_none;
+      access_client = client_a;
+      access_rs = rs_a;
+      access_audience = aud_rs_a;
+      access_scope = 0;
+      access_grant = grant_client_credentials;
+      access_token_type = token_pop;
+      access_format = token_cwt;
+      access_pop_key_type = key_symmetric;
+      access_pop_key_bound = FALSE;
+      access_symmetric_key_encrypted = TRUE;
+      access_integrity_protected = TRUE;
+      access_asymmetric_signature = FALSE;
+      access_claims_obtained = FALSE;
+      access_wrapper_valid = FALSE;
+      access_issuer_authorized = FALSE;
+      access_exp_ok = FALSE;
+      access_aud_ok = FALSE;
+      access_scope_recognized = FALSE;
+      access_cti_present = FALSE;
+      access_exi_present = FALSE;
+      access_exi_sequence_ok = TRUE;
+      refresh_status = refresh_none;
+      refresh_client = client_a;
+      refresh_audience = aud_rs_a;
+      refresh_pop_key_type = key_symmetric;
+      refresh_scope = 0;
+      rs_token_stored = FALSE;
+      rs_stores_at_least_one_token = TRUE;
+      client_pop_performed = FALSE;
+      client_key_validity_known = FALSE;
+      client_key_valid = FALSE;
+      request_scope = 0;
+      request_method_allowed_by_token = FALSE;
+      request_sensitive_initial_payload = FALSE;
+      last_event = ev_idle;
+      last_transport = coap_transport;
+      last_encoding = cbor_encoding;
+      last_content_format = format_none;
+      last_method = method_get;
+      last_response_code = code_none;
+      last_error = err_none;
+      last_error_abbreviated = FALSE;
+      last_parameter_keys_abbreviated = FALSE;
+      last_grant_type_abbreviated = FALSE;
+      last_token_type_abbreviated = FALSE;
+      last_profile_id_encoding = profile_cbor_id;
+      last_token_type_present = FALSE;
+      last_token_type_default_pop = TRUE;
+      last_profile_requested = FALSE;
+      last_profile_present = FALSE;
+      last_access_token_present = FALSE;
+      last_refresh_token_sent_to_rs = FALSE;
+      last_cas_encrypted = FALSE;
+      last_cas_integrity = FALSE;
+      last_cas_replay = FALSE;
+      last_cas_mutual_auth = FALSE;
+      last_cas_response_bound = FALSE;
+      last_rsas_encrypted = FALSE;
+      last_rsas_integrity = FALSE;
+      last_rsas_replay = FALSE;
+      last_rsas_mutual_auth = FALSE;
+      last_rsas_response_bound = FALSE;
+      last_crs_encrypted = FALSE;
+      last_crs_integrity = FALSE;
+      last_crs_replay = FALSE;
+      last_crs_mutual_auth = FALSE;
+      last_crs_response_bound = FALSE;
+      last_client_authenticated_to_as = FALSE;
+      last_as_authenticated_to_client = FALSE;
+      last_rs_authenticated_to_as = FALSE;
+      last_introspection_right = FALSE;
+      last_introspection_active = FALSE;
+      last_authz_info_token_parse_ok = FALSE;
+      last_authz_info_protected_specified = FALSE;
+      last_resource_requires_authorization = FALSE;
+      last_client_authenticated_to_rs = FALSE
+
+    TRANSITION
+      [
+        define_coap_dtls_profile:
+          NOT profile_defined
+          -->
+            profile_defined' = TRUE;
+            profile_id' = profile_coap_dtls;
+            profile_id_encoding' = profile_cbor_id;
+            profile_crs_protocol_specified' = TRUE;
+            profile_crs_security_specified' = TRUE;
+            profile_cas_security_specified' = TRUE;
+            profile_rsas_security_specified' = TRUE;
+            profile_pop_methods_specified' = TRUE;
+            profile_authz_info_specified' = TRUE;
+            profile_combination_requirements_documented' = TRUE;
+            last_event' = ev_profile_defined;
+            last_profile_id_encoding' = profile_cbor_id
+
+      []
+        define_coap_oscore_profile:
+          NOT profile_defined
+          -->
+            profile_defined' = TRUE;
+            profile_id' = profile_coap_oscore;
+            profile_id_encoding' = profile_cbor_id;
+            profile_crs_protocol_specified' = TRUE;
+            profile_crs_security_specified' = TRUE;
+            profile_cas_security_specified' = TRUE;
+            profile_rsas_security_specified' = TRUE;
+            profile_pop_methods_specified' = TRUE;
+            profile_authz_info_specified' = TRUE;
+            profile_combination_requirements_documented' = TRUE;
+            last_event' = ev_profile_defined;
+            last_profile_id_encoding' = profile_cbor_id
+
+      []
+        define_combined_profile:
+          NOT profile_defined
+          -->
+            profile_defined' = TRUE;
+            profile_id' = profile_combined;
+            profile_id_encoding' = profile_cbor_id;
+            profile_crs_protocol_specified' = TRUE;
+            profile_crs_security_specified' = TRUE;
+            profile_cas_security_specified' = TRUE;
+            profile_rsas_security_specified' = TRUE;
+            profile_pop_methods_specified' = TRUE;
+            profile_authz_info_specified' = TRUE;
+            profile_combination_requirements_documented' = TRUE;
+            last_event' = ev_profile_defined;
+            last_profile_id_encoding' = profile_cbor_id
+
+      []
+        register_client_with_as:
+          profile_defined AND NOT client_registered
+          -->
+            client_registered' = TRUE;
+            client' = client_a;
+            client_as_credentials' = TRUE;
+            last_event' = ev_client_registered
+
+      []
+        register_rs_with_as:
+          profile_defined AND NOT rs_registered
+          -->
+            rs_registered' = TRUE;
+            rs' = rs_a;
+            as_for_rs' = as_main;
+            rs_as_credentials' = TRUE;
+            as_authorized_for_rs' = TRUE;
+            last_event' = ev_rs_registered
+
+      []
+        discover_as_validated:
+          client_registered AND rs_registered
+          -->
+            client_validated_as_authority' = TRUE;
+            last_event' = ev_discovery_as_validated;
+            last_transport' = coap_transport;
+            last_error' = err_none
+
+      []
+        initial_unauthorized_request:
+          rs_registered
+          -->
+            last_event' = ev_initial_unauthorized_request;
+            last_resource_requires_authorization' = TRUE;
+            last_transport' = coap_transport;
+            last_method' = method_get;
+            last_response_code' = code_401_unauthorized;
+            last_error' = err_unauthorized_client;
+            request_sensitive_initial_payload' = FALSE;
+            last_crs_encrypted' = FALSE;
+            last_crs_integrity' = FALSE;
+            last_crs_replay' = FALSE;
+            last_crs_mutual_auth' = FALSE;
+            last_crs_response_bound' = FALSE
+
+      []
+        as_hints_with_cnonce:
+          rs_registered
+          -->
+            cnonce_required' = TRUE;
+            cnonce_stored_by_rs' = TRUE;
+            cnonce_fresh_for_rs' = TRUE;
+            last_event' = ev_as_hints_sent;
+            last_transport' = coap_transport;
+            last_encoding' = cbor_encoding;
+            last_content_format' = format_ace_cbor;
+            last_response_code' = code_401_unauthorized;
+            last_error' = err_unauthorized_client;
+            last_parameter_keys_abbreviated' = TRUE;
+            request_sensitive_initial_payload' = FALSE
+
+      []
+        token_request_ok_default_grant:
+          client_registered AND rs_registered AND as_authorized_for_rs AND
+          client_validated_as_authority AND NOT cnonce_required
+          -->
+            access_status' = token_issued;
+            access_client' = client;
+            access_rs' = rs;
+            access_audience' = aud_rs_a;
+            access_scope' = 2;
+            access_grant' = grant_missing_implies_client_credentials;
+            access_token_type' = token_pop;
+            access_format' = token_cwt;
+            access_pop_key_type' = key_symmetric;
+            access_pop_key_bound' = TRUE;
+            access_symmetric_key_encrypted' = TRUE;
+            access_integrity_protected' = TRUE;
+            access_asymmetric_signature' = FALSE;
+            access_claims_obtained' = TRUE;
+            access_wrapper_valid' = TRUE;
+            access_issuer_authorized' = TRUE;
+            access_exp_ok' = TRUE;
+            access_aud_ok' = TRUE;
+            access_scope_recognized' = TRUE;
+            access_cti_present' = TRUE;
+            access_exi_present' = FALSE;
+            access_exi_sequence_ok' = TRUE;
+            refresh_status' = refresh_valid;
+            refresh_client' = client;
+            refresh_audience' = aud_rs_a;
+            refresh_pop_key_type' = key_symmetric;
+            refresh_scope' = 2;
+            cnonce_in_token_request' = FALSE;
+            cnonce_in_access_token' = FALSE;
+            last_event' = ev_token_request_ok;
+            last_transport' = coap_transport;
+            last_encoding' = cbor_encoding;
+            last_content_format' = format_ace_cbor;
+            last_method' = method_post;
+            last_response_code' = code_201_created;
+            last_error' = err_none;
+            last_error_abbreviated' = FALSE;
+            last_parameter_keys_abbreviated' = TRUE;
+            last_grant_type_abbreviated' = TRUE;
+            last_token_type_abbreviated' = TRUE;
+            last_profile_id_encoding' = profile_cbor_id;
+            last_token_type_present' = FALSE;
+            last_token_type_default_pop' = TRUE;
+            last_profile_requested' = TRUE;
+            last_profile_present' = TRUE;
+            last_access_token_present' = TRUE;
+            last_cas_encrypted' = TRUE;
+            last_cas_integrity' = TRUE;
+            last_cas_replay' = TRUE;
+            last_cas_mutual_auth' = TRUE;
+            last_cas_response_bound' = TRUE;
+            last_client_authenticated_to_as' = TRUE;
+            last_as_authenticated_to_client' = TRUE
+
+      []
+        token_request_ok_with_cnonce:
+          client_registered AND rs_registered AND as_authorized_for_rs AND
+          client_validated_as_authority AND cnonce_required AND
+          cnonce_stored_by_rs
+          -->
+            access_status' = token_issued;
+            access_client' = client;
+            access_rs' = rs;
+            access_audience' = aud_rs_a;
+            access_scope' = 2;
+            access_grant' = grant_client_credentials;
+            access_token_type' = token_pop;
+            access_format' = token_cwt;
+            access_pop_key_type' = key_symmetric;
+            access_pop_key_bound' = TRUE;
+            access_symmetric_key_encrypted' = TRUE;
+            access_integrity_protected' = TRUE;
+            access_asymmetric_signature' = FALSE;
+            access_claims_obtained' = TRUE;
+            access_wrapper_valid' = TRUE;
+            access_issuer_authorized' = TRUE;
+            access_exp_ok' = TRUE;
+            access_aud_ok' = TRUE;
+            access_scope_recognized' = TRUE;
+            access_cti_present' = TRUE;
+            access_exi_present' = TRUE;
+            access_exi_sequence_ok' = TRUE;
+            refresh_status' = refresh_valid;
+            refresh_client' = client;
+            refresh_audience' = aud_rs_a;
+            refresh_pop_key_type' = key_symmetric;
+            refresh_scope' = 2;
+            cnonce_in_token_request' = TRUE;
+            cnonce_in_access_token' = TRUE;
+            cnonce_fresh_for_rs' = TRUE;
+            last_event' = ev_token_request_ok_cnonce;
+            last_transport' = coap_transport;
+            last_encoding' = cbor_encoding;
+            last_content_format' = format_ace_cbor;
+            last_method' = method_post;
+            last_response_code' = code_201_created;
+            last_error' = err_none;
+            last_error_abbreviated' = FALSE;
+            last_parameter_keys_abbreviated' = TRUE;
+            last_grant_type_abbreviated' = TRUE;
+            last_token_type_abbreviated' = TRUE;
+            last_profile_id_encoding' = profile_cbor_id;
+            last_token_type_present' = FALSE;
+            last_token_type_default_pop' = TRUE;
+            last_profile_requested' = TRUE;
+            last_profile_present' = TRUE;
+            last_access_token_present' = TRUE;
+            last_cas_encrypted' = TRUE;
+            last_cas_integrity' = TRUE;
+            last_cas_replay' = TRUE;
+            last_cas_mutual_auth' = TRUE;
+            last_cas_response_bound' = TRUE;
+            last_client_authenticated_to_as' = TRUE;
+            last_as_authenticated_to_client' = TRUE
+
+      []
+        token_request_group_asymmetric:
+          client_registered AND rs_registered AND as_authorized_for_rs AND
+          client_validated_as_authority
+          -->
+            access_status' = token_issued;
+            access_client' = client;
+            access_rs' = rs;
+            access_audience' = aud_group;
+            access_scope' = 1;
+            access_grant' = grant_client_credentials;
+            access_token_type' = token_pop;
+            access_format' = token_cwt;
+            access_pop_key_type' = key_asymmetric;
+            access_pop_key_bound' = TRUE;
+            access_symmetric_key_encrypted' = TRUE;
+            access_integrity_protected' = TRUE;
+            access_asymmetric_signature' = TRUE;
+            access_claims_obtained' = TRUE;
+            access_wrapper_valid' = TRUE;
+            access_issuer_authorized' = TRUE;
+            access_exp_ok' = TRUE;
+            access_aud_ok' = TRUE;
+            access_scope_recognized' = TRUE;
+            access_cti_present' = TRUE;
+            access_exi_present' = FALSE;
+            access_exi_sequence_ok' = TRUE;
+            refresh_status' = refresh_none;
+            last_event' = ev_token_request_ok;
+            last_transport' = coap_transport;
+            last_encoding' = cbor_encoding;
+            last_content_format' = format_ace_cbor;
+            last_method' = method_post;
+            last_response_code' = code_201_created;
+            last_error' = err_none;
+            last_parameter_keys_abbreviated' = TRUE;
+            last_grant_type_abbreviated' = TRUE;
+            last_token_type_abbreviated' = TRUE;
+            last_profile_id_encoding' = profile_cbor_id;
+            last_token_type_default_pop' = TRUE;
+            last_profile_requested' = FALSE;
+            last_profile_present' = FALSE;
+            last_access_token_present' = TRUE;
+            last_cas_encrypted' = TRUE;
+            last_cas_integrity' = TRUE;
+            last_cas_replay' = TRUE;
+            last_cas_mutual_auth' = TRUE;
+            last_cas_response_bound' = TRUE;
+            last_client_authenticated_to_as' = TRUE;
+            last_as_authenticated_to_client' = TRUE
+
+      []
+        token_error_unsupported_pop_key:
+          client_registered AND rs_registered
+          -->
+            last_event' = ev_token_error_unsupported_pop_key;
+            last_transport' = coap_transport;
+            last_encoding' = cbor_encoding;
+            last_content_format' = format_ace_cbor;
+            last_method' = method_post;
+            last_response_code' = code_400_bad_request;
+            last_error' = err_unsupported_pop_key;
+            last_error_abbreviated' = TRUE;
+            last_parameter_keys_abbreviated' = TRUE;
+            last_cas_encrypted' = TRUE;
+            last_cas_integrity' = TRUE;
+            last_cas_replay' = TRUE;
+            last_cas_mutual_auth' = TRUE;
+            last_cas_response_bound' = TRUE
+
+      []
+        token_error_incompatible_profiles:
+          client_registered AND rs_registered
+          -->
+            last_event' = ev_token_error_incompatible_profiles;
+            last_transport' = coap_transport;
+            last_encoding' = cbor_encoding;
+            last_content_format' = format_ace_cbor;
+            last_method' = method_post;
+            last_response_code' = code_400_bad_request;
+            last_error' = err_incompatible_ace_profiles;
+            last_error_abbreviated' = TRUE;
+            last_parameter_keys_abbreviated' = TRUE;
+            last_cas_encrypted' = TRUE;
+            last_cas_integrity' = TRUE;
+            last_cas_replay' = TRUE;
+            last_cas_mutual_auth' = TRUE;
+            last_cas_response_bound' = TRUE
+
+      []
+        refresh_ok_same_key_audience:
+          refresh_status = refresh_valid AND
+          client_validated_as_authority AND
+          refresh_scope >= 1
+          -->
+            access_status' = token_issued;
+            access_client' = refresh_client;
+            access_rs' = rs;
+            access_audience' = refresh_audience;
+            access_scope' = 1;
+            access_grant' = grant_refresh_token;
+            access_token_type' = token_pop;
+            access_format' = token_cwt;
+            access_pop_key_type' = refresh_pop_key_type;
+            access_pop_key_bound' = TRUE;
+            access_symmetric_key_encrypted' = TRUE;
+            access_integrity_protected' = TRUE;
+            access_asymmetric_signature' = refresh_audience = aud_group;
+            access_claims_obtained' = TRUE;
+            access_wrapper_valid' = TRUE;
+            access_issuer_authorized' = TRUE;
+            access_exp_ok' = TRUE;
+            access_aud_ok' = TRUE;
+            access_scope_recognized' = TRUE;
+            access_cti_present' = TRUE;
+            access_exi_present' = FALSE;
+            access_exi_sequence_ok' = TRUE;
+            last_event' = ev_refresh_ok;
+            last_transport' = coap_transport;
+            last_encoding' = cbor_encoding;
+            last_content_format' = format_ace_cbor;
+            last_method' = method_post;
+            last_response_code' = code_201_created;
+            last_error' = err_none;
+            last_parameter_keys_abbreviated' = TRUE;
+            last_grant_type_abbreviated' = TRUE;
+            last_token_type_abbreviated' = TRUE;
+            last_profile_id_encoding' = profile_cbor_id;
+            last_token_type_present' = FALSE;
+            last_token_type_default_pop' = TRUE;
+            last_profile_requested' = FALSE;
+            last_profile_present' = FALSE;
+            last_access_token_present' = TRUE;
+            last_cas_encrypted' = TRUE;
+            last_cas_integrity' = TRUE;
+            last_cas_replay' = TRUE;
+            last_cas_mutual_auth' = TRUE;
+            last_cas_response_bound' = TRUE;
+            last_client_authenticated_to_as' = TRUE;
+            last_as_authenticated_to_client' = TRUE
+
+      []
+        refresh_reject_key_or_audience_change:
+          refresh_status = refresh_valid
+          -->
+            last_event' = ev_refresh_reject_key_or_audience_change;
+            last_transport' = coap_transport;
+            last_encoding' = cbor_encoding;
+            last_content_format' = format_ace_cbor;
+            last_method' = method_post;
+            last_response_code' = code_400_bad_request;
+            last_error' = err_invalid_grant;
+            last_error_abbreviated' = TRUE;
+            last_parameter_keys_abbreviated' = TRUE;
+            refresh_status' = refresh_rejected;
+            last_cas_encrypted' = TRUE;
+            last_cas_integrity' = TRUE;
+            last_cas_replay' = TRUE;
+            last_cas_mutual_auth' = TRUE;
+            last_cas_response_bound' = TRUE
+
+      []
+        introspection_ok_active:
+          rs_registered AND access_status = token_issued AND rs_as_credentials
+          -->
+            last_event' = ev_introspection_ok_active;
+            last_transport' = coap_transport;
+            last_encoding' = cbor_encoding;
+            last_content_format' = format_ace_cbor;
+            last_method' = method_post;
+            last_response_code' = code_201_created;
+            last_error' = err_none;
+            last_error_abbreviated' = FALSE;
+            last_parameter_keys_abbreviated' = TRUE;
+            last_profile_present' = TRUE;
+            last_introspection_right' = TRUE;
+            last_introspection_active' = TRUE;
+            last_rsas_encrypted' = TRUE;
+            last_rsas_integrity' = TRUE;
+            last_rsas_replay' = TRUE;
+            last_rsas_mutual_auth' = TRUE;
+            last_rsas_response_bound' = TRUE;
+            last_rs_authenticated_to_as' = TRUE;
+            access_claims_obtained' = TRUE;
+            cnonce_fresh_for_rs' = cnonce_in_access_token
+
+      []
+        introspection_ok_inactive:
+          rs_registered AND rs_as_credentials
+          -->
+            last_event' = ev_introspection_ok_inactive;
+            last_transport' = coap_transport;
+            last_encoding' = cbor_encoding;
+            last_content_format' = format_ace_cbor;
+            last_method' = method_post;
+            last_response_code' = code_201_created;
+            last_error' = err_none;
+            last_parameter_keys_abbreviated' = TRUE;
+            last_introspection_right' = TRUE;
+            last_introspection_active' = FALSE;
+            last_rsas_encrypted' = TRUE;
+            last_rsas_integrity' = TRUE;
+            last_rsas_replay' = TRUE;
+            last_rsas_mutual_auth' = TRUE;
+            last_rsas_response_bound' = TRUE;
+            last_rs_authenticated_to_as' = TRUE
+
+      []
+        introspection_invalid_credentials:
+          rs_registered
+          -->
+            last_event' = ev_introspection_invalid_credentials;
+            last_transport' = coap_transport;
+            last_encoding' = cbor_encoding;
+            last_content_format' = format_ace_cbor;
+            last_method' = method_post;
+            last_response_code' = code_401_unauthorized;
+            last_error' = err_invalid_client;
+            last_error_abbreviated' = TRUE;
+            last_parameter_keys_abbreviated' = TRUE;
+            last_introspection_right' = FALSE;
+            last_introspection_active' = FALSE;
+            last_rs_authenticated_to_as' = FALSE
+
+      []
+        introspection_forbidden:
+          rs_registered AND rs_as_credentials
+          -->
+            last_event' = ev_introspection_forbidden;
+            last_transport' = coap_transport;
+            last_encoding' = cbor_encoding;
+            last_content_format' = format_none;
+            last_method' = method_post;
+            last_response_code' = code_403_forbidden;
+            last_error' = err_none;
+            last_introspection_right' = FALSE;
+            last_introspection_active' = FALSE;
+            last_rsas_encrypted' = TRUE;
+            last_rsas_integrity' = TRUE;
+            last_rsas_replay' = TRUE;
+            last_rsas_mutual_auth' = TRUE;
+            last_rsas_response_bound' = TRUE
+
+      []
+        authz_info_post_ok:
+          access_status = token_issued AND
+          access_integrity_protected AND access_wrapper_valid AND
+          access_issuer_authorized AND access_claims_obtained AND
+          access_exp_ok AND audience_matches_rs?(access_audience, rs) AND
+          access_scope_recognized AND
+          ((NOT cnonce_required) OR (cnonce_in_access_token AND cnonce_fresh_for_rs))
+          -->
+            access_status' = token_stored;
+            rs_token_stored' = TRUE;
+            rs_stores_at_least_one_token' = TRUE;
+            access_aud_ok' = TRUE;
+            last_event' = ev_authz_info_post_ok;
+            last_transport' = coap_transport;
+            last_encoding' = opaque_encoding;
+            last_content_format' = format_cwt;
+            last_method' = method_post;
+            last_response_code' = code_201_created;
+            last_error' = err_none;
+            last_access_token_present' = TRUE;
+            last_authz_info_token_parse_ok' = TRUE;
+            last_authz_info_protected_specified' = TRUE;
+            last_refresh_token_sent_to_rs' = FALSE
+
+      []
+        authz_info_bad_parse:
+          rs_registered
+          -->
+            last_event' = ev_authz_info_bad_parse;
+            last_transport' = coap_transport;
+            last_content_format' = format_octet_stream;
+            last_method' = method_post;
+            last_response_code' = code_400_bad_request;
+            last_error' = err_invalid_request;
+            last_authz_info_token_parse_ok' = FALSE;
+            last_authz_info_protected_specified' = TRUE;
+            access_status' = token_rejected
+
+      []
+        authz_info_bad_wrapper:
+          rs_registered
+          -->
+            last_event' = ev_authz_info_bad_wrapper;
+            last_transport' = coap_transport;
+            last_method' = method_post;
+            last_response_code' = code_401_unauthorized;
+            last_error' = err_invalid_token;
+            last_authz_info_token_parse_ok' = TRUE;
+            access_wrapper_valid' = FALSE;
+            access_status' = token_rejected
+
+      []
+        authz_info_bad_claims:
+          rs_registered
+          -->
+            last_event' = ev_authz_info_bad_claims;
+            last_transport' = coap_transport;
+            last_method' = method_post;
+            last_response_code' = code_403_forbidden;
+            last_error' = err_invalid_token;
+            last_authz_info_token_parse_ok' = TRUE;
+            access_status' = token_rejected
+
+      []
+        authz_info_method_reject:
+          rs_registered
+          -->
+            last_event' = ev_authz_info_method_reject;
+            last_transport' = coap_transport;
+            last_method' = method_get;
+            last_response_code' = code_405_method_not_allowed;
+            last_error' = err_invalid_request
+
+      []
+        resource_ok:
+          access_status = token_stored AND rs_token_stored AND
+          access_exp_ok AND client_key_validity_known AND client_key_valid AND
+          access_pop_key_bound AND client_pop_performed AND
+          access_scope >= 1 AND request_method_allowed_by_token
+          -->
+            last_event' = ev_resource_ok;
+            last_resource_requires_authorization' = TRUE;
+            last_response_code' = code_201_created;
+            last_error' = err_none;
+            last_crs_encrypted' = TRUE;
+            last_crs_integrity' = TRUE;
+            last_crs_replay' = TRUE;
+            last_crs_mutual_auth' = TRUE;
+            last_crs_response_bound' = TRUE;
+            last_client_authenticated_to_rs' = TRUE;
+            request_scope' = 1;
+            last_refresh_token_sent_to_rs' = FALSE
+
+      []
+        establish_crs_security:
+          access_status = token_stored AND rs_token_stored
+          -->
+            client_pop_performed' = TRUE;
+            client_key_validity_known' = TRUE;
+            client_key_valid' = TRUE;
+            request_method_allowed_by_token' = TRUE;
+            last_event' = ev_idle
+
+      []
+        resource_unauthorized_no_token_or_pop:
+          rs_registered
+          -->
+            last_event' = ev_resource_unauthorized;
+            last_resource_requires_authorization' = TRUE;
+            last_response_code' = code_401_unauthorized;
+            last_error' = err_unauthorized_client;
+            client_pop_performed' = FALSE
+
+      []
+        resource_forbidden_scope:
+          access_status = token_stored
+          -->
+            last_event' = ev_resource_forbidden;
+            last_resource_requires_authorization' = TRUE;
+            last_response_code' = code_403_forbidden;
+            last_error' = err_insufficient_scope;
+            request_scope' = 3
+
+      []
+        resource_method_not_allowed:
+          access_status = token_stored
+          -->
+            last_event' = ev_resource_method_not_allowed;
+            last_resource_requires_authorization' = TRUE;
+            last_response_code' = code_405_method_not_allowed;
+            last_error' = err_invalid_request;
+            request_method_allowed_by_token' = FALSE
+
+      []
+        expire_token:
+          access_status = token_stored
+          -->
+            access_status' = token_expired;
+            access_exp_ok' = FALSE;
+            last_event' = ev_token_expired
+
+      []
+        long_running_expired_error:
+          access_status = token_expired
+          -->
+            last_event' = ev_long_running_expired_error;
+            last_response_code' = code_401_unauthorized;
+            last_error' = err_invalid_token
+
+      []
+        key_expiry_unknown_reject:
+          access_status = token_issued
+          -->
+            client_key_validity_known' = FALSE;
+            client_key_valid' = FALSE;
+            last_event' = ev_key_expiry_unknown_reject;
+            last_error' = err_invalid_token;
+            last_response_code' = code_401_unauthorized
+
+      []
+        idle:
+          TRUE
+          -->
+            last_event' = ev_idle;
+            last_error' = err_none;
+            last_response_code' = code_none
+      ]
+  END;
+
+  % RFC 9200 Section 3, source lines 243-314: CoAP profiles use RESTful
+  % methods, CBOR is used for compact payloads, and self-contained ACE tokens
+  % are protected with COSE/CWT-style wrappers.
+  req_s3_coap_uses_cbor_payloads: THEOREM ace
+    |- G((coap_payload_event?(last_event) AND last_transport = coap_transport)
+         => last_encoding = cbor_encoding);
+
+  req_s3_cbor_parameters_abbreviated: THEOREM ace
+    |- G((coap_payload_event?(last_event) AND last_encoding = cbor_encoding)
+         => last_parameter_keys_abbreviated);
+
+  % RFC 9200 Section 3.1, source lines 335-384: access tokens are consumed by
+  % RSs, refresh tokens are only for ASs, and ACE assumes PoP access tokens by
+  % default unless stated otherwise.
+  req_s3_1_refresh_token_not_sent_to_rs: THEOREM ace
+    |- G((last_event = ev_authz_info_post_ok OR last_event = ev_resource_ok)
+         => NOT last_refresh_token_sent_to_rs);
+
+  req_s3_1_default_access_token_type_pop: THEOREM ace
+    |- G(token_endpoint_success?(last_event) AND NOT last_token_type_present
+         => last_token_type_default_pop AND access_token_type = token_pop);
+
+  req_s3_1_pop_token_has_bound_key: THEOREM ace
+    |- G(token_endpoint_success?(last_event) AND access_token_type = token_pop
+         => access_pop_key_bound);
+
+  req_s3_1_symmetric_pop_key_encrypted_if_in_token: THEOREM ace
+    |- G(token_endpoint_success?(last_event) AND access_pop_key_type = key_symmetric
+         => access_symmetric_key_encrypted);
+
+  % RFC 9200 Section 5, source lines 651-725: C-AS, RS-AS, and C-RS
+  % interactions require encryption, integrity, replay protection, mutual
+  % authentication, and response/request binding.
+  req_s5_profile_security_requirements_defined: THEOREM ace
+    |- G(profile_defined =>
+         (profile_crs_protocol_specified AND
+          profile_crs_security_specified AND
+          profile_cas_security_specified AND
+          profile_rsas_security_specified AND
+          profile_pop_methods_specified AND
+          profile_authz_info_specified));
+
+  req_s5_cas_success_security: THEOREM ace
+    |- G(token_endpoint_success?(last_event) =>
+         security_ok?(last_cas_encrypted,
+                      last_cas_integrity,
+                      last_cas_replay,
+                      last_cas_mutual_auth,
+                      last_cas_response_bound));
+
+  req_s5_rsas_introspection_security: THEOREM ace
+    |- G(introspection_success?(last_event) =>
+         security_ok?(last_rsas_encrypted,
+                      last_rsas_integrity,
+                      last_rsas_replay,
+                      last_rsas_mutual_auth,
+                      last_rsas_response_bound));
+
+  req_s5_crs_resource_security: THEOREM ace
+    |- G((last_event = ev_resource_ok) =>
+         security_ok?(last_crs_encrypted,
+                      last_crs_integrity,
+                      last_crs_replay,
+                      last_crs_mutual_auth,
+                      last_crs_response_bound));
+
+  req_s5_coap_content_format_ace_cbor: THEOREM ace
+    |- G((coap_payload_event?(last_event) AND last_encoding = cbor_encoding)
+         => last_content_format = format_ace_cbor);
+
+  % RFC 9200 Sections 5.1-5.2, source lines 733-772: the client validates that
+  % the AS is authorized for the RS; unauthorized resource requests are denied.
+  req_s5_1_client_validates_as_authority_before_token_success: THEOREM ace
+    |- G(token_endpoint_success?(last_event) => client_validated_as_authority);
+
+  req_s5_2_unauthorized_request_denied: THEOREM ace
+    |- G((last_event = ev_initial_unauthorized_request) =>
+         (last_response_code = code_401_unauthorized AND
+          last_error = err_unauthorized_client));
+
+  req_s5_2_authz_info_not_resource_protected: THEOREM ace
+    |- G((last_event = ev_authz_info_post_ok) => last_method = method_post);
+
+  % RFC 9200 Section 5.3.1, source lines 890-913: RS stores cnonce freshness
+  % information, client copies the cnonce to the token request, AS copies it
+  % into the token, and RS rejects missing/stale cnonce tokens.
+  req_s5_3_1_cnonce_rs_stores_freshness: THEOREM ace
+    |- G((last_event = ev_as_hints_sent AND cnonce_required) => cnonce_stored_by_rs);
+
+  req_s5_3_1_cnonce_client_copies_to_token_request: THEOREM ace
+    |- G((last_event = ev_token_request_ok_cnonce) => cnonce_in_token_request);
+
+  req_s5_3_1_cnonce_as_copies_to_access_token: THEOREM ace
+    |- G((last_event = ev_token_request_ok_cnonce) => cnonce_in_access_token);
+
+  req_s5_3_1_cnonce_rs_accepts_only_fresh_token: THEOREM ace
+    |- G((last_event = ev_authz_info_post_ok AND cnonce_required)
+         => (cnonce_in_access_token AND cnonce_fresh_for_rs));
+
+  % RFC 9200 Sections 5.5-5.8.1, source lines 944-1055: client authentication
+  % at the AS is mandatory, AS authentication is specified by profiles, token
+  % requests are POSTs, and missing grant_type implies client_credentials.
+  req_s5_5_client_authenticated_for_token_request: THEOREM ace
+    |- G(token_endpoint_success?(last_event) => last_client_authenticated_to_as);
+
+  req_s5_6_as_authenticated_to_client: THEOREM ace
+    |- G(token_endpoint_success?(last_event) => last_as_authenticated_to_client);
+
+  req_s5_8_1_token_request_is_post: THEOREM ace
+    |- G(token_endpoint_success?(last_event) => last_method = method_post);
+
+  req_s5_8_1_missing_grant_implies_client_credentials: THEOREM ace
+    |- G((last_event = ev_token_request_ok AND
+          access_grant = grant_missing_implies_client_credentials)
+         => access_token_type = token_pop);
+
+  req_s5_8_1_cnonce_required_when_hint_given: THEOREM ace
+    |- G((last_event = ev_token_request_ok_cnonce AND cnonce_required)
+         => cnonce_in_token_request);
+
+  req_s5_8_1_refresh_no_key_or_audience_change: THEOREM ace
+    |- G((last_event = ev_refresh_ok) =>
+         (access_audience = refresh_audience AND
+          access_pop_key_type = refresh_pop_key_type AND
+          access_scope <= refresh_scope));
+
+  % RFC 9200 Sections 5.8.2-5.8.5, source lines 1148-1400: successful token
+  % responses contain Access Information, optionally include ace_profile when
+  % requested, use PoP defaults, and use CBOR abbreviations under CBOR.
+  req_s5_8_2_success_response_created: THEOREM ace
+    |- G(token_endpoint_success?(last_event) => last_response_code = code_201_created);
+
+  req_s5_8_2_success_response_has_access_token: THEOREM ace
+    |- G(token_endpoint_success?(last_event) => last_access_token_present);
+
+  req_s5_8_2_profile_returned_when_requested: THEOREM ace
+    |- G(token_endpoint_success?(last_event) AND last_profile_requested
+         => last_profile_present);
+
+  req_s5_8_3_unsupported_pop_key_error: THEOREM ace
+    |- G((last_event = ev_token_error_unsupported_pop_key) =>
+         (last_response_code = code_400_bad_request AND
+          last_error = err_unsupported_pop_key));
+
+  req_s5_8_3_incompatible_profiles_error: THEOREM ace
+    |- G((last_event = ev_token_error_incompatible_profiles) =>
+         (last_response_code = code_400_bad_request AND
+          last_error = err_incompatible_ace_profiles));
+
+  req_s5_8_3_cbor_error_codes_abbreviated: THEOREM ace
+    |- G((token_endpoint_error?(last_event) AND last_encoding = cbor_encoding)
+         => last_error_abbreviated);
+
+  req_s5_8_4_grant_type_cbor_abbreviated: THEOREM ace
+    |- G((token_endpoint_success?(last_event) AND last_encoding = cbor_encoding)
+         => last_grant_type_abbreviated);
+
+  req_s5_8_4_token_type_cbor_abbreviated: THEOREM ace
+    |- G((token_endpoint_success?(last_event) AND last_encoding = cbor_encoding)
+         => last_token_type_abbreviated);
+
+  req_s5_8_4_profile_cbor_identifier_not_textual: THEOREM ace
+    |- G((token_endpoint_success?(last_event) AND last_encoding = cbor_encoding)
+         => last_profile_id_encoding = profile_cbor_id);
+
+  % RFC 9200 Section 5.9, source lines 1468-1632: introspection uses protected,
+  % mutually authenticated POSTs, CBOR maps under CoAP, active=false for
+  % inactive tokens, and specified error codes for invalid credentials/rights.
+  req_s5_9_introspection_post: THEOREM ace
+    |- G(introspection_event?(last_event) => last_method = method_post);
+
+  req_s5_9_introspection_mutual_auth: THEOREM ace
+    |- G(introspection_success?(last_event) =>
+         (last_rs_authenticated_to_as AND last_rsas_mutual_auth));
+
+  req_s5_9_inactive_token_is_not_error: THEOREM ace
+    |- G((last_event = ev_introspection_ok_inactive) =>
+         (last_error = err_none AND NOT last_introspection_active));
+
+  req_s5_9_invalid_credentials_unauthorized: THEOREM ace
+    |- G((last_event = ev_introspection_invalid_credentials) =>
+         (last_response_code = code_401_unauthorized AND
+          last_error = err_invalid_client));
+
+  req_s5_9_forbidden_has_no_error_payload: THEOREM ace
+    |- G((last_event = ev_introspection_forbidden) =>
+         (last_response_code = code_403_forbidden AND
+          last_content_format = format_none));
+
+  % RFC 9200 Sections 5.10-5.10.1.1, source lines 1687-1859: the AS includes
+  % cnonce claims when requested; clients POST access tokens to authz-info; RSs
+  % verify tokens before storing, discard malformed/invalid tokens, and store at
+  % least one verified token.
+  req_s5_10_cnonce_claim_included_when_requested: THEOREM ace
+    |- G((last_event = ev_token_request_ok_cnonce AND cnonce_in_token_request)
+         => cnonce_in_access_token);
+
+  req_s5_10_1_authz_info_post_only_success: THEOREM ace
+    |- G((last_event = ev_authz_info_post_ok) => last_method = method_post);
+
+  req_s5_10_1_authz_info_valid_token_created: THEOREM ace
+    |- G((last_event = ev_authz_info_post_ok) =>
+         (last_response_code = code_201_created AND
+          access_status = token_stored AND
+          rs_token_stored));
+
+  req_s5_10_1_rs_stores_at_least_one_token: THEOREM ace
+    |- G((last_event = ev_authz_info_post_ok) => rs_stores_at_least_one_token);
+
+  req_s5_10_1_bad_parse_bad_request: THEOREM ace
+    |- G((last_event = ev_authz_info_bad_parse) =>
+         (last_response_code = code_400_bad_request AND
+          access_status = token_rejected));
+
+  req_s5_10_1_bad_wrapper_unauthorized: THEOREM ace
+    |- G((last_event = ev_authz_info_bad_wrapper) =>
+         (last_response_code = code_401_unauthorized AND
+          access_status = token_rejected));
+
+  req_s5_10_1_bad_claims_rejected: THEOREM ace
+    |- G((last_event = ev_authz_info_bad_claims) =>
+         (access_status = token_rejected AND last_error = err_invalid_token));
+
+  req_s5_10_1_verify_before_store: THEOREM ace
+    |- G((last_event = ev_authz_info_post_ok) =>
+         (access_integrity_protected AND
+          access_wrapper_valid AND
+          access_issuer_authorized AND
+          access_claims_obtained AND
+          access_exp_ok AND
+          access_aud_ok AND
+          access_scope_recognized));
+
+  req_s5_10_1_self_contained_integrity_protected: THEOREM ace
+    |- G((last_event = ev_authz_info_post_ok AND
+          (access_format = token_cwt OR access_format = token_jwt))
+         => access_integrity_protected);
+
+  % RFC 9200 Sections 5.10.1.2-5.10.2, source lines 1876-1907: authz-info
+  % rejects unsafe methods; protected resource requests require stored tokens,
+  % valid keys, PoP, scope, and method authorization.
+  req_s5_10_1_2_authz_info_disallows_get_put_delete: THEOREM ace
+    |- G((last_event = ev_authz_info_method_reject) =>
+         (last_method = method_get OR
+          last_method = method_put OR
+          last_method = method_delete) AND
+         last_response_code = code_405_method_not_allowed);
+
+  req_s5_10_2_client_checks_key_validity: THEOREM ace
+    |- G((last_event = ev_resource_ok) =>
+         (client_key_validity_known AND client_key_valid));
+
+  req_s5_10_2_resource_requires_token_and_pop: THEOREM ace
+    |- G((last_event = ev_resource_ok) =>
+         (access_status = token_stored AND
+          rs_token_stored AND
+          client_pop_performed AND
+          access_pop_key_bound));
+
+  req_s5_10_2_unauthorized_without_token_or_pop: THEOREM ace
+    |- G((last_event = ev_resource_unauthorized) =>
+         last_response_code = code_401_unauthorized);
+
+  req_s5_10_2_forbidden_when_scope_missing: THEOREM ace
+    |- G((last_event = ev_resource_forbidden) =>
+         (last_response_code = code_403_forbidden AND
+          last_error = err_insufficient_scope));
+
+  req_s5_10_2_method_not_allowed_when_action_missing: THEOREM ace
+    |- G((last_event = ev_resource_method_not_allowed) =>
+         last_response_code = code_405_method_not_allowed);
+
+  % RFC 9200 Sections 5.10.3-5.10.4, source lines 1932-2016: exi tokens carry
+  % cti/sequence state, long-running expired requests get 4.01, and clients
+  % that cannot determine token/key expiration do not use the token.
+  req_s5_10_3_exi_requires_cti_and_sequence: THEOREM ace
+    |- G((access_exi_present AND
+          (access_status = token_issued OR
+           access_status = token_stored OR
+           access_status = token_expired))
+         => (access_cti_present AND access_exi_sequence_ok));
+
+  req_s5_10_3_long_running_expired_unauthorized: THEOREM ace
+    |- G((last_event = ev_long_running_expired_error) =>
+         last_response_code = code_401_unauthorized);
+
+  req_s5_10_4_unknown_key_expiry_not_used: THEOREM ace
+    |- G((last_event = ev_key_expiry_unknown_reject) =>
+         (NOT client_key_validity_known AND NOT client_key_valid));
+
+  % RFC 9200 Sections 6.1-6.5, source lines 2035-2192: tokens are integrity
+  % protected, symmetric keys inside tokens are encrypted, multirecipient
+  % audience tokens use asymmetric signatures, credentials are not shared beyond
+  % two parties, and all AS communications use confidentiality protection.
+  req_s6_1_token_integrity_applied: THEOREM ace
+    |- G(token_endpoint_success?(last_event) => access_integrity_protected);
+
+  req_s6_1_group_audience_asymmetric_signature: THEOREM ace
+    |- G(token_endpoint_success?(last_event) AND access_audience = aud_group
+         => access_asymmetric_signature);
+
+  req_s6_2_as_communication_confidential: THEOREM ace
+    |- G((token_endpoint_success?(last_event) OR introspection_success?(last_event))
+         => (last_cas_encrypted OR last_rsas_encrypted));
+
+  req_s6_3_long_term_credentials_not_shared_beyond_pair: THEOREM ace
+    |- G((client_as_credentials => client_registered) AND
+         (rs_as_credentials => rs_registered));
+
+  req_s6_4_unprotected_hints_not_trusted_without_as_validation: THEOREM ace
+    |- G(token_endpoint_success?(last_event) => client_validated_as_authority);
+
+  req_s6_5_cas_minimal_security: THEOREM ace
+    |- G(token_endpoint_success?(last_event) =>
+         security_ok?(last_cas_encrypted,
+                      last_cas_integrity,
+                      last_cas_replay,
+                      last_cas_mutual_auth,
+                      last_cas_response_bound));
+
+  req_s6_5_rsas_minimal_security: THEOREM ace
+    |- G(introspection_success?(last_event) =>
+         security_ok?(last_rsas_encrypted,
+                      last_rsas_integrity,
+                      last_rsas_replay,
+                      last_rsas_mutual_auth,
+                      last_rsas_response_bound));
+
+  req_s6_5_crs_minimal_security_after_token: THEOREM ace
+    |- G((last_event = ev_resource_ok) =>
+         security_ok?(last_crs_encrypted,
+                      last_crs_integrity,
+                      last_crs_replay,
+                      last_crs_mutual_auth,
+                      last_crs_response_bound));
+
+  % RFC 9200 Sections 6.7-6.10 and Appendix C, source lines 2235-2267,
+  % 2328-2360, and 3409-3459: combined profiles document how security
+  % requirements remain satisfied; initial unauthorized requests carry no
+  % sensitive payload; RSs configured for introspection do not allow access if
+  % introspection cannot be reached; profiles specify the required components.
+  req_s6_7_combined_profile_documents_security: THEOREM ace
+    |- G(profile_id = profile_combined => profile_combination_requirements_documented);
+
+  req_s6_8_initial_request_no_sensitive_payload: THEOREM ace
+    |- G((last_event = ev_initial_unauthorized_request OR last_event = ev_as_hints_sent)
+         => NOT request_sensitive_initial_payload);
+
+  req_s6_10_introspection_failure_not_access: THEOREM ace
+    |- G((last_event = ev_introspection_invalid_credentials OR
+          last_event = ev_introspection_forbidden)
+         => NOT last_introspection_active);
+
+  req_app_c_profile_specifies_identifier_and_security: THEOREM ace
+    |- G(profile_defined =>
+         (profile_id /= profile_none AND
+          profile_id_encoding = profile_cbor_id AND
+          profile_crs_protocol_specified AND
+          profile_crs_security_specified AND
+          profile_pop_methods_specified AND
+          profile_authz_info_specified));
+
+END

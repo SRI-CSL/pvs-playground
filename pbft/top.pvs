@@ -1,0 +1,18 @@
+
+
+top  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+  % ASSUMING
+   % assuming declarations
+  % ENDASSUMING
+
+
+  IMPORTING pbft_quorums
+  IMPORTING pbft_protocol 
+
+  END top
+
+

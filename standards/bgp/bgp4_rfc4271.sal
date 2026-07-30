@@ -1,0 +1,1794 @@
+bgp4_rfc4271: CONTEXT =
+BEGIN
+
+  % Executable finite-state abstraction of RFC 4271, "A Border Gateway
+  % Protocol 4 (BGP-4)".  The model covers BGP message formats, OPEN
+  % negotiation, UPDATE/path-attribute processing, NOTIFICATION/error
+  % handling, the peer finite-state machine, route selection and
+  % advertisement, timers, and the TCP MD5 security support requirement.
+  %
+  % Abstractions:
+  % - Concrete IPv4 prefixes, byte encodings, AS_PATH segments, timers, TCP
+  %   streams, and policy databases are represented by finite predicates.
+  % - One abstract peer session and one abstract NLRI equivalence class are
+  %   enough to model the local safety obligations in RFC 4271.
+  % - Route preference and tie-breaking are represented by boolean facts that
+  %   record whether the prescribed checks have been applied.
+
+  BgpState: TYPE = {idle, connect, active, opensent, openconfirm, established};
+  PeerKind: TYPE = {peer_ibgp, peer_ebgp};
+  MessageType: TYPE = {msg_open, msg_update, msg_notification, msg_keepalive, msg_route_refresh, msg_unknown};
+
+  ErrorCode: TYPE = {
+    err_none,
+    err_message_header,
+    err_open_message,
+    err_update_message,
+    err_hold_timer_expired,
+    err_fsm,
+    err_cease
+  };
+
+  ErrorSubcode: TYPE = {
+    sub_none,
+    sub_connection_not_synchronized,
+    sub_bad_message_length,
+    sub_bad_message_type,
+    sub_unsupported_version_number,
+    sub_bad_peer_as,
+    sub_bad_bgp_identifier,
+    sub_unsupported_optional_parameter,
+    sub_unacceptable_hold_time,
+    sub_malformed_attribute_list,
+    sub_unrecognized_well_known_attribute,
+    sub_missing_well_known_attribute,
+    sub_attribute_flags_error,
+    sub_attribute_length_error,
+    sub_invalid_origin_attribute,
+    sub_invalid_next_hop_attribute,
+    sub_optional_attribute_error,
+    sub_invalid_network_field,
+    sub_malformed_as_path
+  };
+
+  Event: TYPE = {
+    ev_idle,
+    ev_manual_start,
+    ev_passive_start,
+    ev_incoming_fsm_instantiated,
+    ev_tcp_success,
+    ev_open_accepted,
+    ev_keepalive_received,
+    ev_keepalive_sent,
+    ev_update_received,
+    ev_update_withdrawn,
+    ev_update_replace,
+    ev_update_no_nlri_valid,
+    ev_route_selected,
+    ev_route_unresolvable,
+    ev_route_disseminated,
+    ev_adj_rib_out_withdrawn,
+    ev_update_send,
+    ev_header_bad_marker,
+    ev_header_bad_length,
+    ev_header_bad_type,
+    ev_open_bad_version,
+    ev_open_bad_peer_as,
+    ev_open_bad_hold_time,
+    ev_open_bad_bgp_identifier,
+    ev_open_unsupported_optional,
+    ev_open_malformed_optional,
+    ev_update_attr_lengths_too_large,
+    ev_update_attr_flags_error,
+    ev_update_attr_length_error,
+    ev_update_missing_well_known,
+    ev_update_unrecognized_well_known,
+    ev_update_invalid_origin,
+    ev_update_invalid_next_hop,
+    ev_update_semantic_next_hop,
+    ev_update_malformed_as_path,
+    ev_update_optional_attr_error,
+    ev_update_duplicate_attr,
+    ev_update_invalid_nlri,
+    ev_update_semantic_prefix,
+    ev_hold_timer_expired,
+    ev_fsm_error,
+    ev_cease,
+    ev_collision_resolved,
+    ev_connection_closed,
+    ev_notification_received,
+    ev_originated_route,
+    ev_med_removed,
+    ev_aggregate_route,
+    ev_timer_jittered,
+    ev_security_support_checked,
+    ev_version_negotiation_checked
+  };
+
+  header_error?(c: ErrorCode): BOOLEAN = c = err_message_header;
+
+  update_syntax_error?(e: Event): BOOLEAN =
+    (e = ev_update_attr_lengths_too_large) OR
+    (e = ev_update_attr_flags_error) OR
+    (e = ev_update_attr_length_error) OR
+    (e = ev_update_missing_well_known) OR
+    (e = ev_update_unrecognized_well_known) OR
+    (e = ev_update_invalid_origin) OR
+    (e = ev_update_invalid_next_hop) OR
+    (e = ev_update_malformed_as_path) OR
+    (e = ev_update_optional_attr_error) OR
+    (e = ev_update_duplicate_attr) OR
+    (e = ev_update_invalid_nlri);
+
+  non_idle?(s: BgpState): BOOLEAN =
+    (s = connect) OR (s = active) OR (s = opensent) OR
+    (s = openconfirm) OR (s = established);
+
+  bgp: MODULE =
+  BEGIN
+    LOCAL state: BgpState
+    LOCAL peer_kind: PeerKind
+    LOCAL tcp_connected: BOOLEAN
+    LOCAL listening_on_tcp_179: BOOLEAN
+    LOCAL tcp_port_179_supported: BOOLEAN
+    LOCAL resources_allocated: BOOLEAN
+    LOCAL connect_retry_timer_running: BOOLEAN
+    LOCAL connect_retry_counter_zero: BOOLEAN
+    LOCAL hold_timer_running: BOOLEAN
+    LOCAL keepalive_timer_running: BOOLEAN
+    LOCAL hold_time_zero: BOOLEAN
+    LOCAL hold_time_negotiated: BOOLEAN
+    LOCAL open_sent: BOOLEAN
+    LOCAL keepalive_sent: BOOLEAN
+    LOCAL notification_sent: BOOLEAN
+    LOCAL connection_closed: BOOLEAN
+    LOCAL routes_deleted: BOOLEAN
+    LOCAL adj_rib_in_cleared: BOOLEAN
+    LOCAL loc_rib_invalidated: BOOLEAN
+    LOCAL best_routes_recalculated: BOOLEAN
+    LOCAL one_fsm_per_configured_peer: BOOLEAN
+    LOCAL one_tcp_connection_per_fsm: BOOLEAN
+    LOCAL incoming_fsm_instantiated: BOOLEAN
+    LOCAL collision_detected: BOOLEAN
+    LOCAL retained_higher_identifier_connection: BOOLEAN
+
+    LOCAL last_event: Event
+    LOCAL last_message_type: MessageType
+    LOCAL last_error: ErrorCode
+    LOCAL last_subcode: ErrorSubcode
+    LOCAL last_notification_data_present: BOOLEAN
+    LOCAL last_data_contains_erroneous_length: BOOLEAN
+    LOCAL last_data_contains_erroneous_type: BOOLEAN
+    LOCAL last_data_contains_erroneous_attribute: BOOLEAN
+    LOCAL last_data_contains_missing_attr_code: BOOLEAN
+    LOCAL last_data_contains_supported_version: BOOLEAN
+
+    LOCAL message_marker_all_ones: BOOLEAN
+    LOCAL message_length_min_19: BOOLEAN
+    LOCAL message_length_max_4096: BOOLEAN
+    LOCAL message_length_smallest_required: BOOLEAN
+    LOCAL message_type_recognized: BOOLEAN
+    LOCAL open_message_first_after_tcp: BOOLEAN
+    LOCAL open_version_four: BOOLEAN
+    LOCAL open_hold_time_zero_or_ge_three: BOOLEAN
+    LOCAL open_hold_time_rejected_one_or_two: BOOLEAN
+    LOCAL open_uses_negotiated_hold_time: BOOLEAN
+    LOCAL open_bgp_identifier_valid: BOOLEAN
+    LOCAL open_peer_as_acceptable: BOOLEAN
+    LOCAL optional_parameter_recognized: BOOLEAN
+    LOCAL optional_parameter_well_formed: BOOLEAN
+    LOCAL keepalive_length_19: BOOLEAN
+    LOCAL keepalive_not_more_frequent_than_one_per_second: BOOLEAN
+    LOCAL periodic_keepalive_suppressed_for_zero_hold: BOOLEAN
+    LOCAL notification_length_min_21: BOOLEAN
+    LOCAL notification_closes_connection_immediately: BOOLEAN
+
+    LOCAL update_received_in_established: BOOLEAN
+    LOCAL update_has_nlri: BOOLEAN
+    LOCAL update_has_withdrawn: BOOLEAN
+    LOCAL update_has_single_path_attribute_set: BOOLEAN
+    LOCAL path_attrs_apply_to_all_nlri: BOOLEAN
+    LOCAL duplicate_prefix_processed_as_withdraw_ignored: BOOLEAN
+    LOCAL correct_attrs_no_nlri_valid: BOOLEAN
+    LOCAL adj_rib_in_has_route: BOOLEAN
+    LOCAL loc_rib_has_route: BOOLEAN
+    LOCAL adj_rib_out_has_route: BOOLEAN
+    LOCAL routing_table_has_route: BOOLEAN
+    LOCAL withdrawn_removed_from_adj_rib_in: BOOLEAN
+    LOCAL replacement_replaces_older_route: BOOLEAN
+    LOCAL decision_process_run: BOOLEAN
+    LOCAL phase1_done: BOOLEAN
+    LOCAL phase2_done: BOOLEAN
+    LOCAL phase3_done: BOOLEAN
+    LOCAL route_feasible: BOOLEAN
+    LOCAL route_unfeasible: BOOLEAN
+    LOCAL route_eligible: BOOLEAN
+    LOCAL route_ineligible: BOOLEAN
+    LOCAL route_selected_highest_preference: BOOLEAN
+    LOCAL preference_independent_of_other_routes: BOOLEAN
+    LOCAL next_hop_resolvable: BOOLEAN
+    LOCAL would_be_unresolvable_if_installed: BOOLEAN
+    LOCAL as_loop_detected: BOOLEAN
+    LOCAL immediate_next_hop_determined: BOOLEAN
+    LOCAL forwarding_next_hop_resolved: BOOLEAN
+    LOCAL unresolvable_route_removed_from_loc_rib: BOOLEAN
+    LOCAL unresolvable_route_kept_in_adj_rib_in: BOOLEAN
+    LOCAL tie_break_order_applied: BOOLEAN
+    LOCAL policy_allows_adj_rib_out: BOOLEAN
+    LOCAL route_advertised: BOOLEAN
+    LOCAL advertised_route_used_by_speaker: BOOLEAN
+    LOCAL internal_route_redistributed_to_internal: BOOLEAN
+    LOCAL replacement_absent: BOOLEAN
+    LOCAL update_sent_for_unfeasible: BOOLEAN
+    LOCAL no_reachable_route_advertised: BOOLEAN
+    LOCAL min_route_advertisement_interval_respected: BOOLEAN
+    LOCAL route_too_large_not_advertised: BOOLEAN
+
+    LOCAL well_known_attrs_recognized: BOOLEAN
+    LOCAL mandatory_attrs_present: BOOLEAN
+    LOCAL origin_present: BOOLEAN
+    LOCAL as_path_present: BOOLEAN
+    LOCAL next_hop_present: BOOLEAN
+    LOCAL well_known_transitive_bit_set: BOOLEAN
+    LOCAL partial_bit_legal: BOOLEAN
+    LOCAL lower_flag_bits_zero_when_sent: BOOLEAN
+    LOCAL lower_flag_bits_ignored_when_received: BOOLEAN
+    LOCAL well_known_attrs_passed: BOOLEAN
+    LOCAL unknown_transitive_accepted: BOOLEAN
+    LOCAL unknown_transitive_passed: BOOLEAN
+    LOCAL partial_bit_set: BOOLEAN
+    LOCAL recognized_transitive_partial_preserved: BOOLEAN
+    LOCAL unknown_nontransitive_ignored: BOOLEAN
+    LOCAL unknown_nontransitive_passed: BOOLEAN
+    LOCAL out_of_order_attrs_handled: BOOLEAN
+    LOCAL origin_value_valid: BOOLEAN
+    LOCAL as_path_syntax_ok: BOOLEAN
+    LOCAL next_hop_syntax_ok: BOOLEAN
+    LOCAL next_hop_semantics_ok: BOOLEAN
+    LOCAL local_pref_included_to_internal: BOOLEAN
+    LOCAL local_pref_sent_to_external: BOOLEAN
+    LOCAL local_pref_ignored_from_external: BOOLEAN
+    LOCAL higher_local_pref_preferred: BOOLEAN
+    LOCAL as_path_modified_for_internal: BOOLEAN
+    LOCAL as_path_prepended_for_external: BOOLEAN
+    LOCAL originated_ebgp_as_path_has_own_as: BOOLEAN
+    LOCAL originated_ibgp_as_path_empty: BOOLEAN
+    LOCAL third_party_next_hop_disable_supported: BOOLEAN
+    LOCAL originated_route_uses_peer_next_hop: BOOLEAN
+    LOCAL installed_route_uses_self_next_hop: BOOLEAN
+    LOCAL med_propagated_to_other_neighboring_as: BOOLEAN
+    LOCAL med_removal_supported: BOOLEAN
+    LOCAL med_removed_before_decision: BOOLEAN
+    LOCAL med_altered_before_decision: BOOLEAN
+    LOCAL atomic_aggregate_present: BOOLEAN
+    LOCAL atomic_aggregate_removed: BOOLEAN
+    LOCAL atomic_more_specific_made: BOOLEAN
+    LOCAL aggregator_has_own_as_and_address: BOOLEAN
+
+    LOCAL semantic_error_logged: BOOLEAN
+    LOCAL route_ignored: BOOLEAN
+    LOCAL prefix_ignored: BOOLEAN
+    LOCAL optional_attr_discarded: BOOLEAN
+    LOCAL fatal_error_present: BOOLEAN
+
+    LOCAL overlapping_routes_considered: BOOLEAN
+    LOCAL overlapping_routes_same_next_hop: BOOLEAN
+    LOCAL overlapping_routes_installed_or_aggregated: BOOLEAN
+    LOCAL different_med_routes_aggregated: BOOLEAN
+    LOCAL atomic_aggregate_carried_into_aggregate: BOOLEAN
+    LOCAL input_aggregator_attrs_carried: BOOLEAN
+
+    LOCAL hold_timer_configurable_per_peer: BOOLEAN
+    LOCAL jitter_applied_to_relevant_timers: BOOLEAN
+    LOCAL jitter_default_factor_075_to_100: BOOLEAN
+    LOCAL new_random_each_timer_set: BOOLEAN
+    LOCAL tcp_md5_supported: BOOLEAN
+    LOCAL tcp_md5_per_peer_activatable: BOOLEAN
+    LOCAL future_versions_retain_open_notification_format: BOOLEAN
+
+    INITIALIZATION
+      state = idle;
+      peer_kind = peer_ebgp;
+      tcp_connected = FALSE;
+      listening_on_tcp_179 = FALSE;
+      tcp_port_179_supported = TRUE;
+      resources_allocated = FALSE;
+      connect_retry_timer_running = FALSE;
+      connect_retry_counter_zero = TRUE;
+      hold_timer_running = FALSE;
+      keepalive_timer_running = FALSE;
+      hold_time_zero = FALSE;
+      hold_time_negotiated = FALSE;
+      open_sent = FALSE;
+      keepalive_sent = FALSE;
+      notification_sent = FALSE;
+      connection_closed = FALSE;
+      routes_deleted = FALSE;
+      adj_rib_in_cleared = FALSE;
+      loc_rib_invalidated = FALSE;
+      best_routes_recalculated = FALSE;
+      one_fsm_per_configured_peer = TRUE;
+      one_tcp_connection_per_fsm = TRUE;
+      incoming_fsm_instantiated = FALSE;
+      collision_detected = FALSE;
+      retained_higher_identifier_connection = FALSE;
+      last_event = ev_idle;
+      last_message_type = msg_unknown;
+      last_error = err_none;
+      last_subcode = sub_none;
+      last_notification_data_present = FALSE;
+      last_data_contains_erroneous_length = FALSE;
+      last_data_contains_erroneous_type = FALSE;
+      last_data_contains_erroneous_attribute = FALSE;
+      last_data_contains_missing_attr_code = FALSE;
+      last_data_contains_supported_version = FALSE;
+      message_marker_all_ones = TRUE;
+      message_length_min_19 = TRUE;
+      message_length_max_4096 = TRUE;
+      message_length_smallest_required = TRUE;
+      message_type_recognized = TRUE;
+      open_message_first_after_tcp = FALSE;
+      open_version_four = TRUE;
+      open_hold_time_zero_or_ge_three = TRUE;
+      open_hold_time_rejected_one_or_two = FALSE;
+      open_uses_negotiated_hold_time = FALSE;
+      open_bgp_identifier_valid = TRUE;
+      open_peer_as_acceptable = TRUE;
+      optional_parameter_recognized = TRUE;
+      optional_parameter_well_formed = TRUE;
+      keepalive_length_19 = TRUE;
+      keepalive_not_more_frequent_than_one_per_second = TRUE;
+      periodic_keepalive_suppressed_for_zero_hold = FALSE;
+      notification_length_min_21 = TRUE;
+      notification_closes_connection_immediately = FALSE;
+      update_received_in_established = FALSE;
+      update_has_nlri = FALSE;
+      update_has_withdrawn = FALSE;
+      update_has_single_path_attribute_set = TRUE;
+      path_attrs_apply_to_all_nlri = TRUE;
+      duplicate_prefix_processed_as_withdraw_ignored = TRUE;
+      correct_attrs_no_nlri_valid = FALSE;
+      adj_rib_in_has_route = FALSE;
+      loc_rib_has_route = FALSE;
+      adj_rib_out_has_route = FALSE;
+      routing_table_has_route = FALSE;
+      withdrawn_removed_from_adj_rib_in = FALSE;
+      replacement_replaces_older_route = FALSE;
+      decision_process_run = FALSE;
+      phase1_done = FALSE;
+      phase2_done = FALSE;
+      phase3_done = FALSE;
+      route_feasible = FALSE;
+      route_unfeasible = FALSE;
+      route_eligible = FALSE;
+      route_ineligible = FALSE;
+      route_selected_highest_preference = FALSE;
+      preference_independent_of_other_routes = TRUE;
+      next_hop_resolvable = TRUE;
+      would_be_unresolvable_if_installed = FALSE;
+      as_loop_detected = FALSE;
+      immediate_next_hop_determined = FALSE;
+      forwarding_next_hop_resolved = FALSE;
+      unresolvable_route_removed_from_loc_rib = FALSE;
+      unresolvable_route_kept_in_adj_rib_in = FALSE;
+      tie_break_order_applied = FALSE;
+      policy_allows_adj_rib_out = TRUE;
+      route_advertised = FALSE;
+      advertised_route_used_by_speaker = FALSE;
+      internal_route_redistributed_to_internal = FALSE;
+      replacement_absent = FALSE;
+      update_sent_for_unfeasible = FALSE;
+      no_reachable_route_advertised = FALSE;
+      min_route_advertisement_interval_respected = TRUE;
+      route_too_large_not_advertised = FALSE;
+      well_known_attrs_recognized = TRUE;
+      mandatory_attrs_present = TRUE;
+      origin_present = TRUE;
+      as_path_present = TRUE;
+      next_hop_present = TRUE;
+      well_known_transitive_bit_set = TRUE;
+      partial_bit_legal = TRUE;
+      lower_flag_bits_zero_when_sent = TRUE;
+      lower_flag_bits_ignored_when_received = TRUE;
+      well_known_attrs_passed = TRUE;
+      unknown_transitive_accepted = TRUE;
+      unknown_transitive_passed = TRUE;
+      partial_bit_set = TRUE;
+      recognized_transitive_partial_preserved = TRUE;
+      unknown_nontransitive_ignored = TRUE;
+      unknown_nontransitive_passed = FALSE;
+      out_of_order_attrs_handled = TRUE;
+      origin_value_valid = TRUE;
+      as_path_syntax_ok = TRUE;
+      next_hop_syntax_ok = TRUE;
+      next_hop_semantics_ok = TRUE;
+      local_pref_included_to_internal = TRUE;
+      local_pref_sent_to_external = FALSE;
+      local_pref_ignored_from_external = TRUE;
+      higher_local_pref_preferred = TRUE;
+      as_path_modified_for_internal = FALSE;
+      as_path_prepended_for_external = TRUE;
+      originated_ebgp_as_path_has_own_as = TRUE;
+      originated_ibgp_as_path_empty = TRUE;
+      third_party_next_hop_disable_supported = TRUE;
+      originated_route_uses_peer_next_hop = FALSE;
+      installed_route_uses_self_next_hop = FALSE;
+      med_propagated_to_other_neighboring_as = FALSE;
+      med_removal_supported = TRUE;
+      med_removed_before_decision = FALSE;
+      med_altered_before_decision = FALSE;
+      atomic_aggregate_present = FALSE;
+      atomic_aggregate_removed = FALSE;
+      atomic_more_specific_made = FALSE;
+      aggregator_has_own_as_and_address = TRUE;
+      semantic_error_logged = FALSE;
+      route_ignored = FALSE;
+      prefix_ignored = FALSE;
+      optional_attr_discarded = FALSE;
+      fatal_error_present = FALSE;
+      overlapping_routes_considered = FALSE;
+      overlapping_routes_same_next_hop = TRUE;
+      overlapping_routes_installed_or_aggregated = FALSE;
+      different_med_routes_aggregated = FALSE;
+      atomic_aggregate_carried_into_aggregate = FALSE;
+      input_aggregator_attrs_carried = FALSE;
+      hold_timer_configurable_per_peer = TRUE;
+      jitter_applied_to_relevant_timers = FALSE;
+      jitter_default_factor_075_to_100 = TRUE;
+      new_random_each_timer_set = FALSE;
+      tcp_md5_supported = TRUE;
+      tcp_md5_per_peer_activatable = TRUE;
+      future_versions_retain_open_notification_format = TRUE
+
+    TRANSITION
+      [
+        manual_start:
+          state = idle
+          -->
+            state' = connect;
+            last_event' = ev_manual_start;
+            resources_allocated' = TRUE;
+            connect_retry_counter_zero' = TRUE;
+            connect_retry_timer_running' = TRUE;
+            listening_on_tcp_179' = TRUE;
+            tcp_port_179_supported' = TRUE;
+            connection_closed' = FALSE;
+            notification_sent' = FALSE
+
+      []
+        passive_start:
+          state = idle
+          -->
+            state' = active;
+            last_event' = ev_passive_start;
+            resources_allocated' = TRUE;
+            connect_retry_counter_zero' = TRUE;
+            connect_retry_timer_running' = TRUE;
+            listening_on_tcp_179' = TRUE;
+            tcp_port_179_supported' = TRUE;
+            connection_closed' = FALSE;
+            notification_sent' = FALSE
+
+      []
+        tcp_success_sends_open:
+          (state = connect OR state = active)
+          -->
+            state' = opensent;
+            last_event' = ev_tcp_success;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            connect_retry_timer_running' = FALSE;
+            open_sent' = TRUE;
+            open_message_first_after_tcp' = TRUE;
+            hold_timer_running' = TRUE;
+            hold_time_zero' = FALSE;
+            last_message_type' = msg_open;
+            message_marker_all_ones' = TRUE;
+            message_length_min_19' = TRUE;
+            message_length_max_4096' = TRUE;
+            message_length_smallest_required' = TRUE;
+            message_type_recognized' = TRUE
+
+      []
+        open_accepted:
+          state = opensent
+          -->
+            state' = openconfirm;
+            last_event' = ev_open_accepted;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            keepalive_sent' = TRUE;
+            last_message_type' = msg_keepalive;
+            hold_time_zero' = FALSE;
+            hold_time_negotiated' = TRUE;
+            open_version_four' = TRUE;
+            open_hold_time_zero_or_ge_three' = TRUE;
+            open_uses_negotiated_hold_time' = TRUE;
+            open_bgp_identifier_valid' = TRUE;
+            open_peer_as_acceptable' = TRUE;
+            message_marker_all_ones' = TRUE;
+            message_length_min_19' = TRUE;
+            message_length_max_4096' = TRUE;
+            message_length_smallest_required' = TRUE;
+            message_type_recognized' = TRUE;
+            keepalive_length_19' = TRUE;
+            keepalive_timer_running' = TRUE;
+            hold_timer_running' = TRUE;
+            peer_kind' IN {peer_ibgp, peer_ebgp}
+
+      []
+        keepalive_confirms_open:
+          state = openconfirm
+          -->
+            state' = established;
+            last_event' = ev_keepalive_received;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            hold_timer_running' = TRUE;
+            last_message_type' = msg_keepalive
+
+      []
+        established_keepalive_sent:
+          state = established AND NOT hold_time_zero
+          -->
+            state' = established;
+            last_event' = ev_keepalive_sent;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            keepalive_sent' = TRUE;
+            keepalive_length_19' = TRUE;
+            keepalive_not_more_frequent_than_one_per_second' = TRUE;
+            message_marker_all_ones' = TRUE;
+            message_length_min_19' = TRUE;
+            message_length_max_4096' = TRUE;
+            message_length_smallest_required' = TRUE;
+            message_type_recognized' = TRUE;
+            keepalive_timer_running' = TRUE;
+            hold_timer_running' = TRUE;
+            last_message_type' = msg_keepalive
+
+      []
+        zero_hold_suppresses_periodic_keepalive:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_keepalive_sent;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            hold_time_zero' = TRUE;
+            keepalive_sent' = FALSE;
+            periodic_keepalive_suppressed_for_zero_hold' = TRUE;
+            keepalive_timer_running' = FALSE;
+            hold_timer_running' = FALSE;
+            last_message_type' = msg_keepalive
+
+      []
+        receive_valid_update:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_update_received;
+            last_message_type' = msg_update;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            update_received_in_established' = TRUE;
+            update_has_nlri' = TRUE;
+            update_has_withdrawn' = FALSE;
+            message_marker_all_ones' = TRUE;
+            message_length_min_19' = TRUE;
+            message_length_max_4096' = TRUE;
+            message_length_smallest_required' = TRUE;
+            message_type_recognized' = TRUE;
+            update_has_single_path_attribute_set' = TRUE;
+            path_attrs_apply_to_all_nlri' = TRUE;
+            well_known_attrs_recognized' = TRUE;
+            mandatory_attrs_present' = TRUE;
+            origin_present' = TRUE;
+            as_path_present' = TRUE;
+            next_hop_present' = TRUE;
+            adj_rib_in_has_route' = TRUE;
+            route_feasible' = TRUE;
+            route_unfeasible' = FALSE;
+            decision_process_run' = TRUE;
+            phase1_done' = TRUE;
+            preference_independent_of_other_routes' = TRUE;
+            hold_timer_running' = NOT hold_time_zero
+
+      []
+        receive_withdrawn_update:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_update_withdrawn;
+            last_message_type' = msg_update;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            update_received_in_established' = TRUE;
+            update_has_withdrawn' = TRUE;
+            update_has_nlri' = FALSE;
+            adj_rib_in_has_route' = FALSE;
+            withdrawn_removed_from_adj_rib_in' = TRUE;
+            route_unfeasible' = TRUE;
+            decision_process_run' = TRUE;
+            phase1_done' = TRUE;
+            hold_timer_running' = NOT hold_time_zero
+
+      []
+        receive_replacement_update:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_update_replace;
+            last_message_type' = msg_update;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            update_received_in_established' = TRUE;
+            update_has_nlri' = TRUE;
+            adj_rib_in_has_route' = TRUE;
+            replacement_replaces_older_route' = TRUE;
+            route_feasible' = TRUE;
+            decision_process_run' = TRUE;
+            phase1_done' = TRUE;
+            hold_timer_running' = NOT hold_time_zero
+
+      []
+        update_correct_attrs_no_nlri:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_update_no_nlri_valid;
+            last_message_type' = msg_update;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            update_received_in_established' = TRUE;
+            update_has_nlri' = FALSE;
+            correct_attrs_no_nlri_valid' = TRUE;
+            last_error' = err_none;
+            notification_sent' = FALSE;
+            connection_closed' = FALSE
+
+      []
+        route_selected:
+          state = established AND adj_rib_in_has_route
+          -->
+            state' = established;
+            last_event' = ev_route_selected;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            phase1_done' = TRUE;
+            phase2_done' = TRUE;
+            decision_process_run' = TRUE;
+            route_eligible' = TRUE;
+            route_ineligible' = FALSE;
+            next_hop_resolvable' = TRUE;
+            would_be_unresolvable_if_installed' = FALSE;
+            as_loop_detected' = FALSE;
+            loc_rib_has_route' = TRUE;
+            routing_table_has_route' = TRUE;
+            route_selected_highest_preference' = TRUE;
+            immediate_next_hop_determined' = TRUE;
+            forwarding_next_hop_resolved' = TRUE;
+            tie_break_order_applied' = TRUE
+
+      []
+        route_unresolvable:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_route_unresolvable;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            next_hop_resolvable' = FALSE;
+            route_eligible' = FALSE;
+            route_ineligible' = TRUE;
+            loc_rib_has_route' = FALSE;
+            routing_table_has_route' = FALSE;
+            unresolvable_route_removed_from_loc_rib' = TRUE;
+            unresolvable_route_kept_in_adj_rib_in' = TRUE;
+            decision_process_run' = TRUE
+
+      []
+        disseminate_route:
+          state = established AND loc_rib_has_route
+          -->
+            state' = established;
+            last_event' = ev_route_disseminated;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            phase3_done' = TRUE;
+            policy_allows_adj_rib_out' = TRUE;
+            adj_rib_out_has_route' = TRUE;
+            route_advertised' = TRUE;
+            advertised_route_used_by_speaker' = TRUE;
+            no_reachable_route_advertised' = FALSE;
+            min_route_advertisement_interval_respected' = TRUE
+
+      []
+        withdraw_from_adj_rib_out:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_adj_rib_out_withdrawn;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            phase3_done' = TRUE;
+            policy_allows_adj_rib_out' = FALSE;
+            adj_rib_out_has_route' = FALSE;
+            update_sent_for_unfeasible' = TRUE
+
+      []
+        update_send_process:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_update_send;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            last_message_type' = msg_update;
+            message_marker_all_ones' = TRUE;
+            message_length_min_19' = TRUE;
+            message_length_max_4096' = TRUE;
+            message_length_smallest_required' = TRUE;
+            message_type_recognized' = TRUE;
+            min_route_advertisement_interval_respected' = TRUE;
+            route_too_large_not_advertised' = TRUE;
+            internal_route_redistributed_to_internal' = FALSE;
+            replacement_absent' = TRUE;
+            update_sent_for_unfeasible' = TRUE;
+            no_reachable_route_advertised' = FALSE
+
+      []
+        header_bad_marker:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_header_bad_marker;
+            last_error' = err_message_header;
+            last_subcode' = sub_connection_not_synchronized;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            message_marker_all_ones' = FALSE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        header_bad_length:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_header_bad_length;
+            last_error' = err_message_header;
+            last_subcode' = sub_bad_message_length;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            message_length_min_19' = FALSE;
+            last_notification_data_present' = TRUE;
+            last_data_contains_erroneous_length' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        header_bad_type:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_header_bad_type;
+            last_error' = err_message_header;
+            last_subcode' = sub_bad_message_type;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            message_type_recognized' = FALSE;
+            last_notification_data_present' = TRUE;
+            last_data_contains_erroneous_type' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        open_bad_version:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_open_bad_version;
+            last_error' = err_open_message;
+            last_subcode' = sub_unsupported_version_number;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            open_version_four' = FALSE;
+            last_notification_data_present' = TRUE;
+            last_data_contains_supported_version' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        open_bad_peer_as:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_open_bad_peer_as;
+            last_error' = err_open_message;
+            last_subcode' = sub_bad_peer_as;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            open_peer_as_acceptable' = FALSE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        open_bad_hold_time:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_open_bad_hold_time;
+            last_error' = err_open_message;
+            last_subcode' = sub_unacceptable_hold_time;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            open_hold_time_zero_or_ge_three' = FALSE;
+            open_hold_time_rejected_one_or_two' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        open_bad_identifier:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_open_bad_bgp_identifier;
+            last_error' = err_open_message;
+            last_subcode' = sub_bad_bgp_identifier;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            open_bgp_identifier_valid' = FALSE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        open_unsupported_optional:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_open_unsupported_optional;
+            last_error' = err_open_message;
+            last_subcode' = sub_unsupported_optional_parameter;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            optional_parameter_recognized' = FALSE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        open_malformed_optional:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_open_malformed_optional;
+            last_error' = err_open_message;
+            last_subcode' = sub_none;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            optional_parameter_well_formed' = FALSE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        update_attr_lengths_too_large:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_update_attr_lengths_too_large;
+            last_error' = err_update_message;
+            last_subcode' = sub_malformed_attribute_list;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            routes_deleted' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        update_attr_flags_error:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_update_attr_flags_error;
+            last_error' = err_update_message;
+            last_subcode' = sub_attribute_flags_error;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            last_notification_data_present' = TRUE;
+            last_data_contains_erroneous_attribute' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        update_attr_length_error:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_update_attr_length_error;
+            last_error' = err_update_message;
+            last_subcode' = sub_attribute_length_error;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            last_notification_data_present' = TRUE;
+            last_data_contains_erroneous_attribute' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        update_missing_well_known:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_update_missing_well_known;
+            last_error' = err_update_message;
+            last_subcode' = sub_missing_well_known_attribute;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            mandatory_attrs_present' = FALSE;
+            last_notification_data_present' = TRUE;
+            last_data_contains_missing_attr_code' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        update_unrecognized_well_known:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_update_unrecognized_well_known;
+            last_error' = err_update_message;
+            last_subcode' = sub_unrecognized_well_known_attribute;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            well_known_attrs_recognized' = FALSE;
+            last_notification_data_present' = TRUE;
+            last_data_contains_erroneous_attribute' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        update_invalid_origin:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_update_invalid_origin;
+            last_error' = err_update_message;
+            last_subcode' = sub_invalid_origin_attribute;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            origin_value_valid' = FALSE;
+            last_notification_data_present' = TRUE;
+            last_data_contains_erroneous_attribute' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        update_invalid_next_hop:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_update_invalid_next_hop;
+            last_error' = err_update_message;
+            last_subcode' = sub_invalid_next_hop_attribute;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            next_hop_syntax_ok' = FALSE;
+            last_notification_data_present' = TRUE;
+            last_data_contains_erroneous_attribute' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        update_semantic_next_hop:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_update_semantic_next_hop;
+            last_error' = err_none;
+            notification_sent' = FALSE;
+            connection_closed' = FALSE;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            next_hop_semantics_ok' = FALSE;
+            semantic_error_logged' = TRUE;
+            route_ignored' = TRUE
+
+      []
+        update_malformed_as_path:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_update_malformed_as_path;
+            last_error' = err_update_message;
+            last_subcode' = sub_malformed_as_path;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            as_path_syntax_ok' = FALSE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        update_optional_attr_error:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_update_optional_attr_error;
+            last_error' = err_update_message;
+            last_subcode' = sub_optional_attribute_error;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            optional_attr_discarded' = TRUE;
+            last_notification_data_present' = TRUE;
+            last_data_contains_erroneous_attribute' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        update_duplicate_attr:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_update_duplicate_attr;
+            last_error' = err_update_message;
+            last_subcode' = sub_malformed_attribute_list;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            last_notification_data_present' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        update_invalid_nlri:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_update_invalid_nlri;
+            last_error' = err_update_message;
+            last_subcode' = sub_invalid_network_field;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        update_semantic_prefix:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_update_semantic_prefix;
+            last_error' = err_none;
+            notification_sent' = FALSE;
+            connection_closed' = FALSE;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            semantic_error_logged' = TRUE;
+            prefix_ignored' = TRUE
+
+      []
+        hold_timer_expired:
+          non_idle?(state)
+          -->
+            state' = idle;
+            last_event' = ev_hold_timer_expired;
+            last_error' = err_hold_timer_expired;
+            last_subcode' = sub_none;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            routes_deleted' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        fsm_error:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_fsm_error;
+            last_error' = err_fsm;
+            last_subcode' = sub_none;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        cease_without_fatal_error:
+          TRUE
+          -->
+            state' = idle;
+            last_event' = ev_cease;
+            last_error' = err_cease;
+            last_subcode' = sub_none;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            fatal_error_present' = FALSE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        collision_resolution:
+          state = opensent OR state = openconfirm OR state = established
+          -->
+            state' = idle;
+            last_event' = ev_collision_resolved;
+            last_error' = err_cease;
+            notification_sent' = TRUE;
+            connection_closed' = TRUE;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            collision_detected' = TRUE;
+            retained_higher_identifier_connection' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        notification_received:
+          non_idle?(state)
+          -->
+            state' = idle;
+            last_event' = ev_notification_received;
+            last_message_type' = msg_notification;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            connection_closed' = TRUE;
+            routes_deleted' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        close_connection:
+          non_idle?(state)
+          -->
+            state' = idle;
+            last_event' = ev_connection_closed;
+            tcp_connected' = FALSE;
+            resources_allocated' = FALSE;
+            connection_closed' = TRUE;
+            routes_deleted' = TRUE;
+            adj_rib_in_cleared' = TRUE;
+            loc_rib_invalidated' = TRUE;
+            best_routes_recalculated' = TRUE
+
+      []
+        originate_route:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_originated_route;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            originated_ebgp_as_path_has_own_as' = TRUE;
+            originated_ibgp_as_path_empty' = TRUE;
+            originated_route_uses_peer_next_hop' = FALSE;
+            installed_route_uses_self_next_hop' = FALSE;
+            third_party_next_hop_disable_supported' = TRUE
+
+      []
+        remove_med:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_med_removed;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            med_removal_supported' = TRUE;
+            med_removed_before_decision' = TRUE;
+            med_altered_before_decision' = TRUE;
+            med_propagated_to_other_neighboring_as' = FALSE
+
+      []
+        aggregate_route:
+          state = established
+          -->
+            state' = established;
+            last_event' = ev_aggregate_route;
+            tcp_connected' = TRUE;
+            resources_allocated' = TRUE;
+            overlapping_routes_considered' = TRUE;
+            overlapping_routes_same_next_hop' = TRUE;
+            overlapping_routes_installed_or_aggregated' = TRUE;
+            different_med_routes_aggregated' = FALSE;
+            atomic_aggregate_present' = TRUE;
+            atomic_aggregate_carried_into_aggregate' = TRUE;
+            atomic_aggregate_removed' = FALSE;
+            atomic_more_specific_made' = FALSE;
+            input_aggregator_attrs_carried' = FALSE;
+            aggregator_has_own_as_and_address' = TRUE
+
+      []
+        timer_jitter:
+          TRUE
+          -->
+            last_event' = ev_timer_jittered;
+            hold_timer_configurable_per_peer' = TRUE;
+            jitter_applied_to_relevant_timers' = TRUE;
+            jitter_default_factor_075_to_100' = TRUE;
+            new_random_each_timer_set' = TRUE
+
+      []
+        security_support:
+          TRUE
+          -->
+            last_event' = ev_security_support_checked;
+            tcp_md5_supported' = TRUE;
+            tcp_md5_per_peer_activatable' = TRUE
+
+      []
+        version_negotiation_support:
+          TRUE
+          -->
+            last_event' = ev_version_negotiation_checked;
+            future_versions_retain_open_notification_format' = TRUE
+
+      []
+        incoming_connection_instantiates_fsm:
+          TRUE
+          -->
+            last_event' = ev_incoming_fsm_instantiated;
+            incoming_fsm_instantiated' = TRUE;
+            one_fsm_per_configured_peer' = TRUE;
+            one_tcp_connection_per_fsm' = TRUE;
+            listening_on_tcp_179' = TRUE;
+            tcp_port_179_supported' = TRUE
+      ]
+
+  END;
+
+  % RFC 4271 Section 3, source lines 419-424: BGP uses TCP and listens on
+  % TCP port 179.
+  req_s3_tcp_port_179_supported: THEOREM bgp
+    |- G(tcp_port_179_supported);
+
+  req_s3_connection_errors_notify_and_close: THEOREM bgp
+    |- G((last_event = ev_header_bad_marker OR
+          last_event = ev_header_bad_length OR
+          last_event = ev_header_bad_type OR
+          last_event = ev_open_bad_version OR
+          last_event = ev_update_invalid_nlri)
+         => (notification_sent AND connection_closed));
+
+  % RFC 4271 Sections 3.1-3.2, source lines 500-552: routes are advertised
+  % in UPDATEs; withdrawals and replacement routes update Adj-RIB-In, Loc-RIB
+  % contains selected routes, and each Loc-RIB next-hop is resolvable.
+  req_s3_1_withdraw_removes_adj_rib_in: THEOREM bgp
+    |- G((last_event = ev_update_withdrawn) =>
+         (withdrawn_removed_from_adj_rib_in AND NOT adj_rib_in_has_route));
+
+  req_s3_1_replacement_replaces_older_route: THEOREM bgp
+    |- G((last_event = ev_update_replace) =>
+         (replacement_replaces_older_route AND adj_rib_in_has_route));
+
+  req_s3_2_loc_rib_next_hop_resolvable: THEOREM bgp
+    |- G(loc_rib_has_route => next_hop_resolvable);
+
+  req_s3_2_adj_rib_out_advertised_by_update: THEOREM bgp
+    |- G(adj_rib_out_has_route => route_advertised);
+
+  % RFC 4271 Sections 4 and 4.1, source lines 590-656: message size limits,
+  % fixed marker, length bounds, and recognized message types.
+  req_s4_max_message_size_supported: THEOREM bgp
+    |- G(message_length_max_4096);
+
+  req_s4_min_message_size_19: THEOREM bgp
+    |- G((last_event = ev_tcp_success OR
+          last_event = ev_open_accepted OR
+          (last_event = ev_keepalive_sent AND keepalive_sent) OR
+          last_event = ev_update_received OR
+          last_event = ev_update_send)
+         => message_length_min_19);
+
+  req_s4_1_marker_all_ones_when_valid: THEOREM bgp
+    |- G((last_event = ev_tcp_success OR
+          last_event = ev_open_accepted OR
+          last_event = ev_update_received)
+         => message_marker_all_ones);
+
+  req_s4_1_length_valid_when_not_error: THEOREM bgp
+    |- G((last_event = ev_tcp_success OR
+          last_event = ev_open_accepted OR
+          (last_event = ev_keepalive_sent AND keepalive_sent) OR
+          last_event = ev_update_received OR
+          last_event = ev_update_send)
+         =>
+         (message_length_min_19 AND message_length_max_4096 AND
+          message_length_smallest_required));
+
+  req_s4_1_type_recognized_when_not_error: THEOREM bgp
+    |- G((last_event = ev_tcp_success OR
+          last_event = ev_open_accepted OR
+          (last_event = ev_keepalive_sent AND keepalive_sent) OR
+          last_event = ev_update_received OR
+          last_event = ev_update_send)
+         => message_type_recognized);
+
+  % RFC 4271 Sections 4.2-4.5, source lines 679-1274: OPEN version and hold
+  % time negotiation, KEEPALIVE limits, and NOTIFICATION close semantics.
+  req_s4_2_tcp_success_sends_open_first: THEOREM bgp
+    |- G((last_event = ev_tcp_success) =>
+         (last_message_type = msg_open AND open_sent AND open_message_first_after_tcp));
+
+  req_s4_2_open_version_four: THEOREM bgp
+    |- G((last_event = ev_open_accepted) => open_version_four);
+
+  req_s4_2_hold_time_zero_or_at_least_three: THEOREM bgp
+    |- G((last_event = ev_open_accepted) =>
+         (open_hold_time_zero_or_ge_three AND open_uses_negotiated_hold_time));
+
+  req_s4_2_hold_time_one_or_two_rejected: THEOREM bgp
+    |- G((last_event = ev_open_bad_hold_time) => open_hold_time_rejected_one_or_two);
+
+  req_s4_4_keepalive_rate_limited: THEOREM bgp
+    |- G((last_event = ev_keepalive_sent AND keepalive_sent) =>
+         keepalive_not_more_frequent_than_one_per_second);
+
+  req_s4_4_zero_hold_suppresses_periodic_keepalive: THEOREM bgp
+    |- G((last_event = ev_keepalive_sent AND hold_time_zero) =>
+         periodic_keepalive_suppressed_for_zero_hold AND NOT keepalive_sent);
+
+  req_s4_4_keepalive_length_19: THEOREM bgp
+    |- G((last_event = ev_keepalive_sent AND keepalive_sent) => keepalive_length_19);
+
+  req_s4_5_notification_closes_connection: THEOREM bgp
+    |- G(notification_sent =>
+         (connection_closed OR last_event = ev_update_semantic_next_hop OR
+          last_event = ev_update_semantic_prefix));
+
+  req_s4_5_notification_min_length: THEOREM bgp
+    |- G(notification_length_min_21);
+
+  % RFC 4271 Sections 5 and 5.1, source lines 1277-1651: well-known and
+  % optional path attributes, AS_PATH, NEXT_HOP, MED, LOCAL_PREF,
+  % ATOMIC_AGGREGATE, and AGGREGATOR obligations.
+  req_s5_well_known_attributes_recognized: THEOREM bgp
+    |- G((last_event = ev_update_received) => well_known_attrs_recognized);
+
+  req_s5_mandatory_attrs_present_with_nlri: THEOREM bgp
+    |- G((last_event = ev_update_received AND update_has_nlri) =>
+         (mandatory_attrs_present AND origin_present AND as_path_present AND next_hop_present));
+
+  req_s5_well_known_attrs_passed: THEOREM bgp
+    |- G(well_known_attrs_passed);
+
+  req_s5_unrecognized_transitive_passed_partial: THEOREM bgp
+    |- G(unknown_transitive_accepted =>
+         (unknown_transitive_passed AND partial_bit_set));
+
+  req_s5_partial_bit_preserved: THEOREM bgp
+    |- G(recognized_transitive_partial_preserved);
+
+  req_s5_unrecognized_nontransitive_ignored: THEOREM bgp
+    |- G(unknown_nontransitive_ignored AND NOT unknown_nontransitive_passed);
+
+  req_s5_out_of_order_attrs_handled: THEOREM bgp
+    |- G(out_of_order_attrs_handled);
+
+  req_s5_attr_flags_constraints: THEOREM bgp
+    |- G(well_known_transitive_bit_set AND partial_bit_legal AND
+         lower_flag_bits_zero_when_sent AND lower_flag_bits_ignored_when_received);
+
+  req_s5_1_2_as_path_internal_not_modified: THEOREM bgp
+    |- G(NOT as_path_modified_for_internal);
+
+  req_s5_1_2_as_path_external_prepended: THEOREM bgp
+    |- G(as_path_prepended_for_external);
+
+  req_s5_1_2_originated_as_path_rules: THEOREM bgp
+    |- G((last_event = ev_originated_route) =>
+         (originated_ebgp_as_path_has_own_as AND originated_ibgp_as_path_empty));
+
+  req_s5_1_3_next_hop_disable_third_party_supported: THEOREM bgp
+    |- G(third_party_next_hop_disable_supported);
+
+  req_s5_1_3_no_peer_or_self_next_hop: THEOREM bgp
+    |- G((last_event = ev_originated_route) =>
+         (NOT originated_route_uses_peer_next_hop AND NOT installed_route_uses_self_next_hop));
+
+  req_s5_1_4_med_not_propagated_to_other_neighbor_as: THEOREM bgp
+    |- G(NOT med_propagated_to_other_neighboring_as);
+
+  req_s5_1_4_med_removal_supported: THEOREM bgp
+    |- G(med_removal_supported);
+
+  req_s5_1_4_med_changed_before_decision: THEOREM bgp
+    |- G((last_event = ev_med_removed) =>
+         (med_removed_before_decision AND med_altered_before_decision));
+
+  req_s5_1_5_local_pref_internal_only: THEOREM bgp
+    |- G(local_pref_included_to_internal AND NOT local_pref_sent_to_external);
+
+  req_s5_1_5_external_local_pref_ignored: THEOREM bgp
+    |- G(local_pref_ignored_from_external);
+
+  req_s5_1_5_higher_local_pref_preferred: THEOREM bgp
+    |- G(higher_local_pref_preferred);
+
+  req_s5_1_6_atomic_not_removed_or_deaggregated: THEOREM bgp
+    |- G(atomic_aggregate_present =>
+         (NOT atomic_aggregate_removed AND NOT atomic_more_specific_made));
+
+  req_s5_1_7_aggregator_contains_own_as_address: THEOREM bgp
+    |- G(aggregator_has_own_as_and_address);
+
+  % RFC 4271 Sections 6.1-6.8, source lines 1653-1997: errors produce the
+  % specified NOTIFICATION code/subcode/data and close behavior, with explicit
+  % exceptions for semantic NEXT_HOP/prefix errors.
+  req_s6_error_closes_and_clears_connection: THEOREM bgp
+    |- G((last_event = ev_header_bad_marker OR
+          last_event = ev_header_bad_length OR
+          last_event = ev_header_bad_type OR
+          last_event = ev_open_bad_version OR
+          last_event = ev_open_bad_peer_as OR
+          last_event = ev_open_bad_hold_time OR
+          last_event = ev_open_bad_bgp_identifier OR
+          last_event = ev_open_unsupported_optional OR
+          last_event = ev_open_malformed_optional OR
+          update_syntax_error?(last_event) OR
+          last_event = ev_hold_timer_expired OR
+          last_event = ev_fsm_error OR
+          last_event = ev_cease OR
+          last_event = ev_collision_resolved)
+         =>
+         (NOT tcp_connected AND NOT resources_allocated));
+
+  req_s6_close_clears_ribs_and_recalculates: THEOREM bgp
+    |- G(connection_closed =>
+         (adj_rib_in_cleared OR last_event = ev_cease OR last_event = ev_fsm_error) AND
+         (loc_rib_invalidated OR last_event = ev_cease OR last_event = ev_fsm_error) AND
+         (best_routes_recalculated OR last_event = ev_cease OR last_event = ev_fsm_error));
+
+  req_s6_1_header_errors_use_header_code: THEOREM bgp
+    |- G((last_event = ev_header_bad_marker OR
+          last_event = ev_header_bad_length OR
+          last_event = ev_header_bad_type)
+         => last_error = err_message_header);
+
+  req_s6_1_bad_marker_subcode: THEOREM bgp
+    |- G((last_event = ev_header_bad_marker) =>
+         last_subcode = sub_connection_not_synchronized);
+
+  req_s6_1_bad_length_data: THEOREM bgp
+    |- G((last_event = ev_header_bad_length) =>
+         (last_subcode = sub_bad_message_length AND last_data_contains_erroneous_length));
+
+  req_s6_1_bad_type_data: THEOREM bgp
+    |- G((last_event = ev_header_bad_type) =>
+         (last_subcode = sub_bad_message_type AND last_data_contains_erroneous_type));
+
+  req_s6_2_open_errors_use_open_code: THEOREM bgp
+    |- G((last_event = ev_open_bad_version OR
+          last_event = ev_open_bad_peer_as OR
+          last_event = ev_open_bad_hold_time OR
+          last_event = ev_open_bad_bgp_identifier OR
+          last_event = ev_open_unsupported_optional OR
+          last_event = ev_open_malformed_optional)
+         => last_error = err_open_message);
+
+  req_s6_2_bad_version_data: THEOREM bgp
+    |- G((last_event = ev_open_bad_version) =>
+         (last_subcode = sub_unsupported_version_number AND
+          last_data_contains_supported_version));
+
+  req_s6_2_bad_peer_as_subcode: THEOREM bgp
+    |- G((last_event = ev_open_bad_peer_as) => last_subcode = sub_bad_peer_as);
+
+  req_s6_2_bad_hold_time_subcode: THEOREM bgp
+    |- G((last_event = ev_open_bad_hold_time) =>
+         last_subcode = sub_unacceptable_hold_time);
+
+  req_s6_2_bad_identifier_subcode: THEOREM bgp
+    |- G((last_event = ev_open_bad_bgp_identifier) =>
+         last_subcode = sub_bad_bgp_identifier);
+
+  req_s6_2_optional_errors: THEOREM bgp
+    |- G(((last_event = ev_open_unsupported_optional) =>
+          last_subcode = sub_unsupported_optional_parameter) AND
+         ((last_event = ev_open_malformed_optional) =>
+          last_subcode = sub_none));
+
+  req_s6_3_update_syntax_errors_use_update_code: THEOREM bgp
+    |- G(update_syntax_error?(last_event) => last_error = err_update_message);
+
+  req_s6_3_attr_lengths_too_large_malformed_list: THEOREM bgp
+    |- G((last_event = ev_update_attr_lengths_too_large) =>
+         last_subcode = sub_malformed_attribute_list);
+
+  req_s6_3_attr_flags_error_data: THEOREM bgp
+    |- G((last_event = ev_update_attr_flags_error) =>
+         (last_subcode = sub_attribute_flags_error AND
+          last_data_contains_erroneous_attribute));
+
+  req_s6_3_attr_length_error_data: THEOREM bgp
+    |- G((last_event = ev_update_attr_length_error) =>
+         (last_subcode = sub_attribute_length_error AND
+          last_data_contains_erroneous_attribute));
+
+  req_s6_3_missing_well_known_data: THEOREM bgp
+    |- G((last_event = ev_update_missing_well_known) =>
+         (last_subcode = sub_missing_well_known_attribute AND
+          last_data_contains_missing_attr_code));
+
+  req_s6_3_unrecognized_well_known_data: THEOREM bgp
+    |- G((last_event = ev_update_unrecognized_well_known) =>
+         (last_subcode = sub_unrecognized_well_known_attribute AND
+          last_data_contains_erroneous_attribute));
+
+  req_s6_3_invalid_origin_data: THEOREM bgp
+    |- G((last_event = ev_update_invalid_origin) =>
+         (last_subcode = sub_invalid_origin_attribute AND
+          last_data_contains_erroneous_attribute));
+
+  req_s6_3_invalid_next_hop_syntax_data: THEOREM bgp
+    |- G((last_event = ev_update_invalid_next_hop) =>
+         (last_subcode = sub_invalid_next_hop_attribute AND
+          last_data_contains_erroneous_attribute));
+
+  req_s6_3_semantic_next_hop_no_close: THEOREM bgp
+    |- G((last_event = ev_update_semantic_next_hop) =>
+         (semantic_error_logged AND route_ignored AND
+          NOT notification_sent AND NOT connection_closed));
+
+  req_s6_3_malformed_as_path: THEOREM bgp
+    |- G((last_event = ev_update_malformed_as_path) =>
+         last_subcode = sub_malformed_as_path);
+
+  req_s6_3_optional_attr_error_discards: THEOREM bgp
+    |- G((last_event = ev_update_optional_attr_error) =>
+         (optional_attr_discarded AND
+          last_subcode = sub_optional_attribute_error AND
+          last_data_contains_erroneous_attribute));
+
+  req_s6_3_duplicate_attr_malformed_list: THEOREM bgp
+    |- G((last_event = ev_update_duplicate_attr) =>
+         last_subcode = sub_malformed_attribute_list);
+
+  req_s6_3_invalid_nlri_subcode: THEOREM bgp
+    |- G((last_event = ev_update_invalid_nlri) =>
+         last_subcode = sub_invalid_network_field);
+
+  req_s6_3_semantic_prefix_logged_ignored: THEOREM bgp
+    |- G((last_event = ev_update_semantic_prefix) =>
+         (semantic_error_logged AND prefix_ignored AND
+          NOT notification_sent AND NOT connection_closed));
+
+  req_s6_3_correct_attrs_no_nlri_valid: THEOREM bgp
+    |- G((last_event = ev_update_no_nlri_valid) =>
+         (correct_attrs_no_nlri_valid AND last_error = err_none));
+
+  req_s6_5_hold_timer_expired_notification: THEOREM bgp
+    |- G((last_event = ev_hold_timer_expired) =>
+         (last_error = err_hold_timer_expired AND notification_sent AND connection_closed));
+
+  req_s6_6_fsm_error_notification: THEOREM bgp
+    |- G((last_event = ev_fsm_error) =>
+         (last_error = err_fsm AND notification_sent AND connection_closed));
+
+  req_s6_7_cease_not_for_fatal_errors: THEOREM bgp
+    |- G((last_event = ev_cease) =>
+         (last_error = err_cease AND notification_sent AND NOT fatal_error_present));
+
+  req_s6_8_collision_closes_one_connection: THEOREM bgp
+    |- G((last_event = ev_collision_resolved) =>
+         (collision_detected AND retained_higher_identifier_connection AND
+          notification_sent AND connection_closed AND last_error = err_cease));
+
+  % RFC 4271 Section 7, source lines 2000-2016: future BGP versions retain
+  % OPEN and NOTIFICATION formats for version negotiation.
+  req_s7_future_versions_retain_formats: THEOREM bgp
+    |- G(future_versions_retain_open_notification_format);
+
+  % RFC 4271 Section 8, source lines 2823-4161: peer FSM structure and state
+  % transitions through Idle, Connect/Active, OpenSent, OpenConfirm, and
+  % Established.
+  req_s8_2_1_separate_fsm_per_peer: THEOREM bgp
+    |- G(one_fsm_per_configured_peer AND one_tcp_connection_per_fsm);
+
+  req_s8_2_1_incoming_connection_instantiates_fsm: THEOREM bgp
+    |- G((last_event = ev_incoming_fsm_instantiated) =>
+         (listening_on_tcp_179 AND incoming_fsm_instantiated));
+
+  req_s8_idle_has_no_connection_resources: THEOREM bgp
+    |- G((state = idle AND last_event = ev_idle) =>
+         (NOT tcp_connected AND NOT resources_allocated));
+
+  req_s8_manual_start_to_connect: THEOREM bgp
+    |- G((last_event = ev_manual_start) =>
+         (state = connect AND resources_allocated AND
+          connect_retry_counter_zero AND connect_retry_timer_running AND
+          listening_on_tcp_179));
+
+  req_s8_passive_start_to_active: THEOREM bgp
+    |- G((last_event = ev_passive_start AND resources_allocated) =>
+         (state = active AND connect_retry_counter_zero AND
+          connect_retry_timer_running AND listening_on_tcp_179));
+
+  req_s8_tcp_success_to_opensent: THEOREM bgp
+    |- G((last_event = ev_tcp_success) =>
+         (state = opensent AND tcp_connected AND open_sent AND hold_timer_running));
+
+  req_s8_valid_open_to_openconfirm: THEOREM bgp
+    |- G((last_event = ev_open_accepted) =>
+         (state = openconfirm AND keepalive_sent AND hold_time_negotiated));
+
+  req_s8_keepalive_to_established: THEOREM bgp
+    |- G((last_event = ev_keepalive_received) =>
+         (state = established AND tcp_connected AND resources_allocated));
+
+  req_s8_established_can_exchange_update_keepalive: THEOREM bgp
+    |- G((state = established) => (tcp_connected AND resources_allocated));
+
+  req_s8_established_update_error_to_idle: THEOREM bgp
+    |- G(update_syntax_error?(last_event) =>
+         (state = idle AND notification_sent AND connection_closed));
+
+  % RFC 4271 Section 9, source lines 4162-4945: UPDATE handling, Decision
+  % Process phases, route dissemination, rate limiting, overlapping routes,
+  % and aggregation.
+  req_s9_update_only_processed_in_established: THEOREM bgp
+    |- G((last_event = ev_update_received OR
+          last_event = ev_update_withdrawn OR
+          last_event = ev_update_replace OR
+          last_event = ev_update_no_nlri_valid)
+         => update_received_in_established);
+
+  req_s9_update_changes_run_decision: THEOREM bgp
+    |- G((last_event = ev_update_received OR
+          last_event = ev_update_withdrawn OR
+          last_event = ev_update_replace)
+         => decision_process_run);
+
+  req_s9_1_phase1_preference_independent: THEOREM bgp
+    |- G(preference_independent_of_other_routes);
+
+  req_s9_1_2_unresolvable_excluded: THEOREM bgp
+    |- G((last_event = ev_route_unresolvable) =>
+         (route_ineligible AND NOT route_eligible));
+
+  req_s9_1_2_as_loop_not_selected: THEOREM bgp
+    |- G(as_loop_detected => NOT route_eligible);
+
+  req_s9_1_2_selected_installed_loc_rib: THEOREM bgp
+    |- G((last_event = ev_route_selected) =>
+         (phase2_done AND loc_rib_has_route AND route_selected_highest_preference));
+
+  req_s9_1_2_immediate_next_hop_determined: THEOREM bgp
+    |- G((last_event = ev_route_selected) =>
+         (immediate_next_hop_determined AND forwarding_next_hop_resolved));
+
+  req_s9_1_2_unresolvable_removed_from_loc_rib: THEOREM bgp
+    |- G((last_event = ev_route_unresolvable) =>
+         (unresolvable_route_removed_from_loc_rib AND
+          unresolvable_route_kept_in_adj_rib_in));
+
+  req_s9_1_2_2_tie_break_order_applied: THEOREM bgp
+    |- G((last_event = ev_route_selected) => tie_break_order_applied);
+
+  req_s9_1_3_adj_rib_out_policy_required: THEOREM bgp
+    |- G(adj_rib_out_has_route => policy_allows_adj_rib_out);
+
+  req_s9_1_3_policy_exclusion_withdraws_previous: THEOREM bgp
+    |- G((last_event = ev_adj_rib_out_withdrawn) =>
+         (NOT adj_rib_out_has_route AND update_sent_for_unfeasible));
+
+  req_s9_1_4_overlapping_routes_considered: THEOREM bgp
+    |- G((last_event = ev_aggregate_route) =>
+         (overlapping_routes_considered AND overlapping_routes_same_next_hop AND
+          overlapping_routes_installed_or_aggregated));
+
+  req_s9_2_internal_route_not_redistributed_internal: THEOREM bgp
+    |- G(NOT internal_route_redistributed_to_internal);
+
+  req_s9_2_unfeasible_advertised_if_no_replacement: THEOREM bgp
+    |- G((last_event = ev_update_send AND replacement_absent) =>
+         update_sent_for_unfeasible);
+
+  req_s9_2_no_reachable_route_not_advertised: THEOREM bgp
+    |- G(NOT no_reachable_route_advertised);
+
+  req_s9_2_route_too_large_not_advertised: THEOREM bgp
+    |- G((last_event = ev_update_send) => route_too_large_not_advertised);
+
+  req_s9_2_1_min_route_advertisement_interval: THEOREM bgp
+    |- G(min_route_advertisement_interval_respected);
+
+  req_s9_2_2_2_different_med_not_aggregated: THEOREM bgp
+    |- G(NOT different_med_routes_aggregated);
+
+  req_s9_2_2_2_atomic_carried_into_aggregate: THEOREM bgp
+    |- G((last_event = ev_aggregate_route AND atomic_aggregate_present) =>
+         atomic_aggregate_carried_into_aggregate);
+
+  req_s9_2_2_2_input_aggregator_not_carried: THEOREM bgp
+    |- G(NOT input_aggregator_attrs_carried);
+
+  % RFC 4271 Section 10, source lines 4991-5050: timer configurability and
+  % jitter.
+  req_s10_hold_timer_configurable_per_peer: THEOREM bgp
+    |- G(hold_timer_configurable_per_peer);
+
+  req_s10_jitter_applied_with_default_range: THEOREM bgp
+    |- G((last_event = ev_timer_jittered) =>
+         (jitter_applied_to_relevant_timers AND
+          jitter_default_factor_075_to_100 AND
+          new_random_each_timer_set));
+
+  % RFC 4271 Appendix E and Security Considerations, source lines 5262 and
+  % 5415-5435: compliant implementations support TCP MD5 and allow per-peer
+  % activation.
+  req_app_e_tcp_md5_supported: THEOREM bgp
+    |- G(tcp_md5_supported);
+
+  req_security_tcp_md5_per_peer_activation: THEOREM bgp
+    |- G(tcp_md5_per_peer_activatable);
+
+END

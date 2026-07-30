@@ -1,7 +1,7 @@
 jslt_helpers: THEORY
 BEGIN
 
-% jsltlib: LIBRARY = "/Users/e35480/projects/CHALO/fhir-fly/lte/"
+% jsltlib: LIBRARY = "."
 
 IMPORTING jsondata
 

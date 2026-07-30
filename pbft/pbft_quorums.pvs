@@ -1,0 +1,75 @@
+pbft_quorums[f: nat]: THEORY
+BEGIN
+
+  n: posnat = 3 * f + 1
+  replica: TYPE = below(n)
+  replica_set: TYPE = finite_set[replica]
+
+  IMPORTING finite_sets@finite_sets_below[n]
+
+  replica_is_finite_type: LEMMA is_finite_type[replica]
+
+  faulty: replica_set
+
+  fault_bound: AXIOM card(faulty) <= f
+
+  correct(r: replica): bool = NOT faulty(r)
+
+  A, B, C: VAR replica_set
+  r: VAR replica
+
+  quorum_2f_plus_1?(A): bool = card(A) >= 2 * f + 1
+  quorum_f_plus_1?(A): bool = card(A) >= f + 1
+
+  correct_part(A): replica_set = difference(A, faulty)
+
+  difference_own_intersection:
+    LEMMA difference(A, intersection(A, B)) = difference(A, B)
+
+  one_more_than_faults_is_positive: LEMMA f + 1 > f
+
+  all_faulty_card_bound:
+    LEMMA (FORALL r: A(r) IMPLIES faulty(r)) IMPLIES card(A) <= f
+
+  quorum_not_all_faulty:
+    LEMMA quorum_f_plus_1?(A) IMPLIES
+      NOT (FORALL r: A(r) IMPLIES faulty(r))
+
+  not_all_faulty_has_correct:
+    LEMMA NOT (FORALL r: A(r) IMPLIES faulty(r)) IMPLIES
+      EXISTS r: A(r) AND correct(r)
+
+  quorum_contains_correct:
+    THEOREM quorum_f_plus_1?(A) IMPLIES
+      EXISTS r: A(r) AND correct(r)
+
+  large_quorum_is_small:
+    LEMMA quorum_2f_plus_1?(A) IMPLIES quorum_f_plus_1?(A)
+
+  large_quorum_contains_correct:
+    THEOREM quorum_2f_plus_1?(A) IMPLIES
+      EXISTS r: A(r) AND correct(r)
+
+  quorum_has_f_plus_1_correct:
+    THEOREM quorum_2f_plus_1?(A) IMPLIES
+      card(correct_part(A)) >= f + 1
+
+  large_quorums_overlap:
+    THEOREM quorum_2f_plus_1?(A) AND quorum_2f_plus_1?(B) IMPLIES
+      card(intersection(A, B)) >= f + 1
+
+  large_quorums_overlap_correct:
+    THEOREM quorum_2f_plus_1?(A) AND quorum_2f_plus_1?(B) IMPLIES
+      EXISTS r: A(r) AND B(r) AND correct(r)
+
+  small_large_quorums_overlap:
+    THEOREM quorum_f_plus_1?(A) AND quorum_2f_plus_1?(B) IMPLIES
+      EXISTS r: A(r) AND B(r)
+
+  correct_small_large_quorums_overlap:
+    THEOREM quorum_f_plus_1?(A) AND
+            (FORALL r: A(r) IMPLIES correct(r)) AND
+            quorum_2f_plus_1?(B)
+      IMPLIES EXISTS r: A(r) AND B(r) AND correct(r)
+
+END pbft_quorums

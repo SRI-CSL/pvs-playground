@@ -1,0 +1,122 @@
+pbft_protocol[f: nat,
+              Request, Digest, Result, State: NONEMPTY_TYPE]: THEORY
+BEGIN
+
+  IMPORTING pbft_quorums[f]
+
+  view: TYPE = nat
+  seqno: TYPE = nat
+  timestamp: TYPE = nat
+
+  d, d1, d2: VAR Digest
+  v, v1, v2: VAR view
+  s, s1, s2: VAR seqno
+  t: VAR timestamp
+  r, i, j: VAR replica
+  Q, Q1, Q2, C, G, V: VAR replica_set
+
+  checkpoint_vote(r, s, d): bool
+  valid_reply(t, d): bool
+
+  prepare_value: [replica, view, seqno -> Digest]
+  prepare_vote(r, v, s, d): bool =
+    faulty(r) OR d = prepare_value(r, v, s)
+
+  prepared_certificate(v, s, d, Q): bool =
+    quorum_2f_plus_1?(Q) AND
+    (FORALL r: Q(r) IMPLIES prepare_vote(r, v, s, d))
+
+  prepared(v, s, d): bool =
+    EXISTS Q: prepared_certificate(v, s, d, Q)
+
+  commit_vote(r, v, s, d): bool =
+    faulty(r) OR prepared(v, s, d)
+
+  reply_vote(r, t, d): bool =
+    faulty(r) OR valid_reply(t, d)
+
+  commit_certificate(v, s, d, C): bool =
+    quorum_2f_plus_1?(C) AND
+    (FORALL r: C(r) IMPLIES commit_vote(r, v, s, d))
+
+  committed(v, s, d): bool =
+    EXISTS G:
+      quorum_f_plus_1?(G) AND
+      (FORALL r: G(r) IMPLIES correct(r)) AND
+      (FORALL r: G(r) IMPLIES prepared(v, s, d))
+
+  committed_local(v, s, d): bool =
+    prepared(v, s, d) AND
+    EXISTS C: commit_certificate(v, s, d, C)
+
+  stable_checkpoint(s, d): bool =
+    EXISTS C:
+      quorum_2f_plus_1?(C) AND
+      (FORALL r: C(r) IMPLIES checkpoint_vote(r, s, d))
+
+  client_reply_certificate(t, d, C): bool =
+    quorum_f_plus_1?(C) AND
+    (FORALL r: C(r) IMPLIES reply_vote(r, t, d))
+
+  carries_prepared(r, v1, v2, s, d): bool
+  stable_above(r, v2, s): bool
+
+  view_change_carries_prepared:
+    AXIOM correct(r) AND prepared(v1, s, d)
+      IMPLIES carries_prepared(r, v1, v2, s, d) OR stable_above(r, v2, s)
+
+  prepared_certificate_member:
+    LEMMA prepared_certificate(v, s, d, Q) AND Q(r) AND correct(r)
+      IMPLIES d = prepare_value(r, v, s)
+
+  prepared_certificate_unique:
+    THEOREM prepared_certificate(v, s, d1, Q1) AND
+            prepared_certificate(v, s, d2, Q2)
+      IMPLIES d1 = d2
+
+  prepared_unique_same_view:
+    THEOREM prepared(v, s, d1) AND prepared(v, s, d2)
+      IMPLIES d1 = d2
+
+  committed_local_implies_committed:
+    THEOREM committed_local(v, s, d) IMPLIES committed(v, s, d)
+
+  committed_unique_per_slot:
+    THEOREM committed(v, s, d1) AND committed(v, s, d2)
+      IMPLIES d1 = d2
+
+  view_change_preserves_committed:
+    THEOREM committed(v1, s, d) AND quorum_2f_plus_1?(V)
+      IMPLIES
+        EXISTS r:
+          V(r) AND correct(r) AND prepared(v1, s, d) AND
+          (carries_prepared(r, v1, v2, s, d) OR stable_above(r, v2, s))
+
+  stable_checkpoint_has_correct_voter:
+    THEOREM stable_checkpoint(s, d) IMPLIES
+      EXISTS r: correct(r) AND checkpoint_vote(r, s, d)
+
+  client_certificate_valid:
+    THEOREM client_reply_certificate(t, d, C) IMPLIES valid_reply(t, d)
+
+  transition: TYPE = [# next_state: State, response: Result #]
+  execute: [State, Request -> transition]
+
+  schedule: TYPE = [nat -> Request]
+  init: VAR State
+  reqs1, reqs2: VAR schedule
+  k: VAR nat
+
+  run_state(init, reqs1, k): RECURSIVE State =
+    IF k = 0 THEN
+      init
+    ELSE
+      execute(run_state(init, reqs1, k - 1), reqs1(k - 1))`next_state
+    ENDIF
+    MEASURE k
+
+  deterministic_replay:
+    THEOREM (FORALL (m: below(k)): reqs1(m) = reqs2(m))
+      IMPLIES run_state(init, reqs1, k) = run_state(init, reqs2, k)
+
+END pbft_protocol
