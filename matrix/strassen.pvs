@@ -3,10 +3,10 @@ BEGIN
 
   IMPORTING matrix
 
-  k, n: VAR below(28) % nat
+  k, n: VAR index
 
   % dim(k) is the side length 2^k.
-  dim(k): RECURSIVE index =
+  dim(k): RECURSIVE upto(exp2(k)) =
     IF k = 0 THEN 1 ELSE 2 * dim(k - 1) ENDIF
     MEASURE k
 
@@ -15,25 +15,27 @@ BEGIN
     (LAMBDA (i: below(n)):
       (LAMBDA (j: below(n)): A(i)(j) - B(i)(j)))
 
-  tl(n)(A: sqmatrix(2 * n)): sqmatrix(n) =
+  twice_exp: JUDGEMENT FORALL (n : below(k)): 2 * n HAS_TYPE below(exp2(k+1))
+
+  tl(n : below(exp2(27)))(A: sqmatrix(2 * n)): sqmatrix(n) =
     topleft(2 * n, 2 * n)(n, n)(A)
 
-  tr(n)(A: sqmatrix(2 * n)): sqmatrix(n) =
+  tr(n : below(exp2(27)))(A: sqmatrix(2 * n)): sqmatrix(n) =
     topright(2 * n, 2 * n)(n, n)(A)
 
-  bl(n)(A: sqmatrix(2 * n)): sqmatrix(n) =
+  bl(n : below(exp2(27)))(A: sqmatrix(2 * n)): sqmatrix(n) =
     botleft(2 * n, 2 * n)(n, n)(A)
 
-  br(n)(A: sqmatrix(2 * n)): sqmatrix(n) =
+  br(n : below(exp2(27)))(A: sqmatrix(2 * n)): sqmatrix(n) =
     botright(2 * n, 2 * n)(n, n)(A)
 
-  join4(n)(C11, C12, C21, C22: sqmatrix(n)): sqmatrix(2 * n) =
+  join4(n : below(exp2(27)))(C11, C12, C21, C22: sqmatrix(n)): sqmatrix(2 * n) =
     stack(n, n, 2 * n)
       (concat(n, n, n)(C11, C12),
        concat(n, n, n)(C21, C22))
 
   % Recursive Strassen multiplication for square matrices whose side length is 2^k.
-  strassen(k)(A: sqmatrix(dim(k)), B: sqmatrix(dim(k))): RECURSIVE sqmatrix(dim(k)) =
+  strassen(k : below(27))(A: sqmatrix(dim(k)), B: sqmatrix(dim(k))): RECURSIVE sqmatrix(dim(k)) =
     IF k = 0 THEN
       (LET A1: sqmatrix(1) = A,
            B1: sqmatrix(1) = B
@@ -68,7 +70,7 @@ BEGIN
     MEASURE k
 
   strassen_correct: CONJECTURE
-    FORALL k, (A: sqmatrix(dim(k))), (B: sqmatrix(dim(k))):
+    FORALL (k : below(27)), (A: sqmatrix(dim(k))), (B: sqmatrix(dim(k))):
       strassen(k)(A, B) = mmult(dim(k), dim(k), dim(k), A, B)
 
   strassen_id_2: _TEST_

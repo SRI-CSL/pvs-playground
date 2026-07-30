@@ -1,0 +1,49 @@
+BasicSALModule  % [ parameters ]
+		: THEORY
+
+  BEGIN
+
+   state, input, output, local, global: TYPE
+
+   I: [state -> input]
+   O: [state -> output]
+   L: [state -> local]
+   Y: [state -> global]
+
+   s, s1, s2 : VAR state
+   inp : VAR input
+
+   Initpred?(P: PRED[state]): bool
+    = ∀ (inp : input): ∃ s: I(s) = inp ∧ P(s)
+
+   Init : (Initpred?)
+
+   Transtype: TYPE = (reflexive?[state])
+
+   N, N1, N2: VAR Transtype
+
+   Transpred?(N): bool
+    = (∀ s1, inp: ∃ s2: N(s1, s2) ∧ I(s2) = inp)
+
+   Trans: (Transpred?)
+
+   P: VAR PRED[state]
+
+   prelift(P)(s1, s2): bool
+    = P(s1)
+
+   postlift(P)(s1, s2): bool
+    = P(s2)
+
+   CONVERSION+ K_conversion
+   Invariant?(P : PRED[state]): bool
+    = (Init <= P) ∧ ((prelift(P) ∧ Trans) <= postlift(P))
+    
+
+   
+
+   
+
+
+
+  END BasicSALModule

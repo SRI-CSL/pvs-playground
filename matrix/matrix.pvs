@@ -3,7 +3,7 @@ matrix  % [ parameters ]
 
   BEGIN
 
-  l, m, n, m1, m2, n1, n2: VAR index
+  l, m, n, m1, m2, n1, n2, k: VAR index
 
   IMPORTING sigma
 
@@ -22,7 +22,7 @@ matrix  % [ parameters ]
    = (LAMBDA (i : below(m)):
        (LAMBDA (j : below(n)): A(i)(j) + B(i)(j)))
 
-   mmult(l, m, n: nat, A : matrix(l, m), B : matrix(m, n))
+   mmult(l, m, n, (A : matrix(l, m)), (B : matrix(m, n)))
     : matrix(l, n)
     = (LAMBDA (i: below(l)):
        (LAMBDA (j : below(n)):
@@ -68,24 +68,24 @@ matrix  % [ parameters ]
    = (FORALL (i, j : below(n)):
        j > i IMPLIES A(i)(j) = 0)
 
-   concat(m, n1, n2)(A1 : matrix(m, n1), A2 : matrix(m, n2)):
+   concat(m, n1, (n2 | n2 < maxsize - n1))(A1 : matrix(m, n1), A2 : matrix(m, n2)):
     matrix(m, n1 + n2)
    = (LAMBDA (i : below(m)):
        (LAMBDA (j : below(n1 + n2)):
           IF j < n1 THEN A1(i)(j) ELSE A2(i)(j - n1) ENDIF))
 
-   stack(m1, m2, n)(A1 : matrix(m1, n), A2 : matrix(m2, n)):
+   stack(m1, (m2 | m2 < maxsize - m1), n)(A1 : matrix(m1, n), A2 : matrix(m2, n)):
      matrix(m1 + m2, n)
    =  (LAMBDA (i : below(m1 + m2 )):
         IF i < m1 THEN A1(i) ELSE A2(i - m1) ENDIF)
 
    mmult_stack: LEMMA
-     (FORALL (m1, m2, n, k: nat), (A1 : matrix(m1, n)), (A2 : matrix(m2, n)), (B: matrix(n, k)):
+     (FORALL m1, (m2 | m2 < maxsize - m1), n, k, (A1 : matrix(m1, n)), (A2 : matrix(m2, n)), (B: matrix(n, k)):
        mmult(m1 + m2, n, k, stack(m1, m2, n)(A1, A2), B)
        = stack(m1, m2, k)(mmult(m1, n, k, A1, B), mmult(m2, n, k, A2, B)))
 
    mmult_concat_stack: LEMMA
-     (FORALL (m, n1, n2, k: nat), (A1 : matrix(m, n1)), (A2 : matrix(m, n2)), (B1 : matrix(n1, k)), (B2: matrix(n2, k)):
+     (FORALL m, n1, (n2 | n2 < maxsize - n1), k, (A1 : matrix(m, n1)), (A2 : matrix(m, n2)), (B1 : matrix(n1, k)), (B2: matrix(n2, k)):
        mmult(m, n1 + n2, k, concat(m, n1, n2)(A1, A2), stack(n1, n2, k)(B1, B2))
        = madd(m, k)(mmult(m, n1, k, A1, B1), mmult(m, n2, k, A2, B2)))
 
@@ -113,7 +113,7 @@ matrix  % [ parameters ]
 
 
 %A slice of a matrix has the start row0 and col0 and the uppper bounds rowhi and colhi.    
-   slice(m, n: nat): TYPE = [# M : matrix(m, n),
+   slice(m, n: index): TYPE = [# M : matrix(m, n),
                                row0 : upto(m),
                                col0 : upto(n),
 			       rowhi: subrange(row0, m),
@@ -129,7 +129,7 @@ matrix  % [ parameters ]
    numcols(m, n)(A : slice(m,n)): upto(A`colhi - A`col0)
     = (A`colhi - A`col0)
 
-   fullslice(m, n : nat)(A : matrix(m, n)): slice(m, n) = 
+   fullslice(m, n : index)(A : matrix(m, n)): slice(m, n) = 
      (# M := A,
         row0 := 0, rowhi := m,
 	col0 := 0, colhi := n
@@ -137,19 +137,19 @@ matrix  % [ parameters ]
 
    CONVERSION+ fullslice
 
-   choptop(m, n: nat)(AA : slice(m, n), i : upto(numrows(m, n)(AA)))
+   choptop(m, n: index)(AA : slice(m, n), i : upto(numrows(m, n)(AA)))
    : slice(m, n)
    = AA WITH [`rowhi := AA`row0 + i]
 
-   chopbot(m, n: nat)(AA : slice(m, n), i : upto(numrows(m,n)(AA)))
+   chopbot(m, n: index)(AA : slice(m, n), i : upto(numrows(m,n)(AA)))
    : slice(m, n)
    = AA WITH [row0 := AA`row0 + i]
 
-   diceleft(m, n: nat)(AA : slice(m, n), j : upto(numcols(m, n)(AA)))
+   diceleft(m, n: index)(AA : slice(m, n), j : upto(numcols(m, n)(AA)))
    : slice(m, n)
    = AA WITH [`colhi := AA`col0 + j]
 
-   diceright(m, n: nat)(AA : slice(m, n), j : upto(numcols(m, n)(AA)))
+   diceright(m, n: index)(AA : slice(m, n), j : upto(numcols(m, n)(AA)))
    : slice(m, n)
    = AA WITH [`col0 := AA`col0 + j]
 
