@@ -1,0 +1,200 @@
+cbdd_array_core[
+  nvars: {n: pos_uint32 | n <= 32},
+  max_nodes: {m: pos_uint32 | 3 <= m AND m <= maxsize},
+  unique_slots: {m: pos_uint32 | 1 <= m AND m <= maxsize},
+  cache_slots: {m: pos_uint32 | 1 <= m AND m <= maxsize}
+]: THEORY
+BEGIN
+  IMPORTING cbdd_naive_core[nvars, max_nodes]
+
+  cbdd: TYPE = nbdd
+  cvaluation: TYPE = nvaluation
+  ccube: TYPE = ncube
+  cperm: TYPE = nperm
+
+  f, g, h: VAR cbdd
+  sigma: VAR cvaluation
+  c: VAR ccube
+  p: VAR cperm
+  x: VAR vid
+  op: VAR binop
+
+  unique_key: TYPE =
+    [# top: vid,
+       low: node_id,
+       high: node_id #]
+
+  unique_entry: TYPE =
+    [# valid: bool,
+       key: unique_key,
+       result: node_id #]
+
+  empty_unique_entry: unique_entry =
+    (# valid := FALSE,
+       key := (# top := 0, low := false_id, high := true_id #),
+       result := false_id #)
+
+  unique_table: TYPE = ARRAY[below(unique_slots) -> unique_entry]
+  empty_unique_table: unique_table =
+    (LAMBDA (i: below(unique_slots)): empty_unique_entry)
+
+  cache_entry: TYPE =
+    [# valid: bool,
+       op: binop,
+       lhs: node_id,
+       rhs: node_id,
+       result: node_id #]
+
+  empty_cache_entry: cache_entry =
+    (# valid := FALSE,
+       op := bop_and,
+       lhs := false_id,
+       rhs := false_id,
+       result := false_id #)
+
+  cache_table: TYPE = ARRAY[below(cache_slots) -> cache_entry]
+  empty_cache_table: cache_table =
+    (LAMBDA (i: below(cache_slots)): empty_cache_entry)
+
+  state: TYPE =
+    [# next: used_count,
+       store: ARRAY[node_id -> node],
+       unique: unique_table,
+       cache: cache_table #]
+
+  empty_state: state =
+    (# next := 2,
+       store := empty_nodes,
+       unique := empty_unique_table,
+       cache := empty_cache_table #)
+
+  pack_cbdd(root: node_id, st: state, m: mask, o: order, inv: ARRAY[vid -> vid]): cbdd =
+    (# root := root,
+       used := st`next,
+       nodes := st`store,
+       support_mask := m,
+       ord := o,
+       inv := inv #)
+
+  current_level(f: cbdd, i: node_id): nat =
+    IF i < 2 THEN nvars ELSE f`inv(node_var(f, i)) ENDIF
+
+  select_low(f: cbdd, i: node_id, level: nat): node_id =
+    IF i < 2 THEN i
+    ELSIF current_level(f, i) = level THEN node_low(f, i)
+    ELSE i
+    ENDIF
+
+  select_high(f: cbdd, i: node_id, level: nat): node_id =
+    IF i < 2 THEN i
+    ELSIF current_level(f, i) = level THEN node_high(f, i)
+    ELSE i
+    ENDIF
+
+  unique_hash(x: vid, low, high: node_id): below(unique_slots) =
+    mod(x + low + high, unique_slots)
+
+  cache_hash(op: binop, lhs, rhs: node_id): below(cache_slots) =
+    mod(op + lhs + rhs, cache_slots)
+
+  unique_hit?(st: state, x: vid, low, high: node_id): bool =
+    LET slot = unique_hash(x, low, high),
+        entry = st`unique(slot)
+     IN entry`valid AND entry`key = (# top := x, low := low, high := high #)
+
+  cache_hit?(st: state, op: binop, lhs, rhs: node_id): bool =
+    LET slot = cache_hash(op, lhs, rhs),
+        entry = st`cache(slot)
+     IN entry`valid AND entry`op = op AND entry`lhs = lhs AND entry`rhs = rhs
+
+  cache_insert(st: state, op: binop, lhs, rhs, result: node_id): state =
+    LET slot = cache_hash(op, lhs, rhs),
+        entry = (# valid := TRUE,
+                   op := op,
+                   lhs := lhs,
+                   rhs := rhs,
+                   result := result #)
+     IN st WITH [`cache(slot) := entry]
+
+  mk_node_unique(st: state, x: vid, low, high: node_id): [state, node_id] =
+    IF low = high THEN (st, low)
+    ELSIF unique_hit?(st, x, low, high) THEN
+      (st, st`unique(unique_hash(x, low, high))`result)
+    ELSE
+      LET id: node_id = st`next,
+          nd = (# top := x, low := low, high := high #),
+          slot = unique_hash(x, low, high),
+          entry = (# valid := TRUE,
+                     key := (# top := x, low := low, high := high #),
+                     result := id #),
+          st1 = st WITH [`next := st`next + 1,
+                         `store(id) := nd,
+                         `unique(slot) := entry]
+       IN (st1, id)
+    ENDIF
+
+  terminal_result(op: binop, lhs, rhs: node_id): node_id =
+    IF bool_bin_eval(op, lhs = true_id, rhs = true_id) THEN true_id ELSE false_id ENDIF
+
+  apply_rec(f, g: cbdd, op: binop, lhs, rhs: node_id, st: state): RECURSIVE [state, node_id] =
+    IF cache_hit?(st, op, lhs, rhs) THEN
+      (st, st`cache(cache_hash(op, lhs, rhs))`result)
+    ELSIF lhs < 2 AND rhs < 2 THEN
+      (st, terminal_result(op, lhs, rhs))
+    ELSE
+      LET ll = current_level(f, lhs),
+          rl = current_level(g, rhs),
+          top_level = IF ll <= rl THEN ll ELSE rl ENDIF,
+          top_var = f`ord`seq(top_level),
+          lhs0 = select_low(f, lhs, top_level),
+          lhs1 = select_high(f, lhs, top_level),
+          rhs0 = select_low(g, rhs, top_level),
+          rhs1 = select_high(g, rhs, top_level),
+          (st1, low_id) = apply_rec(f, g, op, lhs0, rhs0, st),
+          (st2, high_id) = apply_rec(f, g, op, lhs1, rhs1, st1),
+          (st3, root_id) = mk_node_unique(st2, top_var, low_id, high_id)
+       IN (cache_insert(st3, op, lhs, rhs, root_id), root_id)
+    ENDIF
+  MEASURE lhs + rhs
+
+  apply_build(f, g: cbdd, op: binop): cbdd =
+    LET (st, root) = apply_rec(f, g, op, f`root, g`root, empty_state)
+     IN pack_cbdd(root, st, mask_union(f`support_mask, g`support_mask), f`ord, f`inv)
+
+  cbdd_false: cbdd = nbdd_false
+  cbdd_true: cbdd = nbdd_true
+  cbdd_ithvar(x): cbdd = nbdd_ithvar(x)
+  cbdd_nithvar(x): cbdd = nbdd_nithvar(x)
+
+  cbdd_not(f): cbdd = apply_build(f, cbdd_true, bop_xor)
+  cbdd_and(f, g): cbdd = apply_build(f, g, bop_and)
+  cbdd_or(f, g): cbdd = apply_build(f, g, bop_or)
+  cbdd_xor(f, g): cbdd = apply_build(f, g, bop_xor)
+  cbdd_imp(f, g): cbdd = apply_build(f, g, bop_imp)
+  cbdd_diff(f, g): cbdd = apply_build(f, g, bop_diff)
+
+  cbdd_xnor(f, g): cbdd = cbdd_not(cbdd_xor(f, g))
+  cbdd_nand(f, g): cbdd = cbdd_not(cbdd_and(f, g))
+  cbdd_nor(f, g): cbdd = cbdd_not(cbdd_or(f, g))
+  cbdd_invimp(f, g): cbdd = cbdd_imp(g, f)
+  cbdd_ite(f, g, h): cbdd = cbdd_or(cbdd_and(f, g), cbdd_and(cbdd_not(f), h))
+
+  cbdd_exists(c, f): cbdd = nbdd_exists(c, f)
+  cbdd_forall(c, f): cbdd = nbdd_forall(c, f)
+  cbdd_and_abstract(f, g, c): cbdd = nbdd_and_abstract(f, g, c)
+  cbdd_restrict(f, c): cbdd = nbdd_restrict(f, c)
+  cbdd_constrain(f, c): cbdd = nbdd_constrain(f, c)
+  cbdd_compose(f, x, g): cbdd = nbdd_compose(f, x, g)
+  cbdd_permute(f, p): cbdd = nbdd_permute(f, p)
+  cbdd_pick_sat(f: {f: cbdd | abdd_sat_id(f, f`root)}): cvaluation = nbdd_pick_sat(f)
+
+  cbdd_eval(f, sigma): bool = abdd_eval(f, sigma)
+  cbdd_denote(f): predicate = abdd_denote(f)
+  cbdd_support(f): varset = abdd_support(f)
+
+  cbdd_swap_adjacent(f, (i: nat | i + 1 < nvars)): cbdd =
+    nbdd_swap_adjacent(f, i)
+
+  cbdd_reverse_order(f): cbdd =
+    nbdd_reverse_order(f)
+END cbdd_array_core

@@ -1,0 +1,450 @@
+cbdd_array_opt[
+  nvars: {n: pos_uint32 | n <= 32},
+  max_nodes: {m: pos_uint32 | 3 <= m AND m <= maxsize},
+  unique_slots: {m: pos_uint32 | 1 <= m AND m <= maxsize},
+  cache_slots: {m: pos_uint32 | 1 <= m AND m <= maxsize}
+]: THEORY
+BEGIN
+  IMPORTING cbdd_array_core[nvars, max_nodes, unique_slots, cache_slots]
+
+  obdd: TYPE =
+    [# regular: cbdd,
+       complemented: bool #]
+
+  u, v, w, hi, lo, r: VAR obdd
+  x: VAR vid
+  c: VAR ccube
+  p: VAR cperm
+  sigma: VAR cvaluation
+
+  opt_eval(u, sigma): bool =
+    IF u`complemented THEN NOT cbdd_eval(u`regular, sigma) ELSE cbdd_eval(u`regular, sigma) ENDIF
+
+  opt_denote(u): predicate = { sigma | opt_eval(u, sigma) }
+  opt_support(u): varset = cbdd_support(u`regular)
+  opt_equal?(u, v): bool = u = v
+  opt_complements?(u, v): bool = u`regular = v`regular AND u`complemented /= v`complemented
+
+  opt_false?(u): bool =
+    (u`regular`root = false_id AND NOT u`complemented) OR
+    (u`regular`root = true_id AND u`complemented)
+
+  opt_true?(u): bool =
+    (u`regular`root = true_id AND NOT u`complemented) OR
+    (u`regular`root = false_id AND u`complemented)
+
+  opt_materialize(u): cbdd =
+    IF u`complemented THEN cbdd_not(u`regular) ELSE u`regular ENDIF
+
+  opt_false: obdd =
+    (# regular := cbdd_false,
+       complemented := FALSE #)
+
+  opt_true: obdd =
+    (# regular := cbdd_true,
+       complemented := FALSE #)
+
+  opt_var(x): obdd =
+    (# regular := cbdd_ithvar(x),
+       complemented := FALSE #)
+
+  opt_nvar(x): obdd =
+    (# regular := cbdd_nithvar(x),
+       complemented := FALSE #)
+
+  opt_not(u): obdd =
+    u WITH [`complemented := NOT u`complemented]
+
+  opt_and(u, v): obdd =
+    IF opt_false?(u) OR opt_false?(v) THEN opt_false
+    ELSIF opt_true?(u) THEN v
+    ELSIF opt_true?(v) THEN u
+    ELSIF opt_equal?(u, v) THEN u
+    ELSIF opt_complements?(u, v) THEN opt_false
+    ELSIF u`complemented AND v`complemented THEN
+      (# regular := cbdd_or(u`regular, v`regular),
+         complemented := TRUE #)
+    ELSIF u`complemented THEN
+      (# regular := cbdd_diff(v`regular, u`regular),
+         complemented := FALSE #)
+    ELSIF v`complemented THEN
+      (# regular := cbdd_diff(u`regular, v`regular),
+         complemented := FALSE #)
+    ELSE
+      (# regular := cbdd_and(u`regular, v`regular),
+         complemented := FALSE #)
+    ENDIF
+
+  opt_or(u, v): obdd =
+    IF opt_true?(u) OR opt_true?(v) THEN opt_true
+    ELSIF opt_false?(u) THEN v
+    ELSIF opt_false?(v) THEN u
+    ELSIF opt_equal?(u, v) THEN u
+    ELSIF opt_complements?(u, v) THEN opt_true
+    ELSIF u`complemented AND v`complemented THEN
+      (# regular := cbdd_and(u`regular, v`regular),
+         complemented := TRUE #)
+    ELSIF u`complemented THEN
+      (# regular := cbdd_imp(u`regular, v`regular),
+         complemented := FALSE #)
+    ELSIF v`complemented THEN
+      (# regular := cbdd_imp(v`regular, u`regular),
+         complemented := FALSE #)
+    ELSE
+      (# regular := cbdd_or(u`regular, v`regular),
+         complemented := FALSE #)
+    ENDIF
+
+  opt_xor(u, v): obdd =
+    IF opt_false?(u) THEN v
+    ELSIF opt_false?(v) THEN u
+    ELSIF opt_true?(u) THEN opt_not(v)
+    ELSIF opt_true?(v) THEN opt_not(u)
+    ELSIF opt_equal?(u, v) THEN opt_false
+    ELSIF opt_complements?(u, v) THEN opt_true
+    ELSE
+      (# regular := cbdd_xor(u`regular, v`regular),
+         complemented := u`complemented /= v`complemented #)
+    ENDIF
+
+  opt_xnor(u, v): obdd = opt_not(opt_xor(u, v))
+  opt_diff(u, v): obdd = opt_and(u, opt_not(v))
+
+  opt_imp(u, v): obdd =
+    IF u`complemented AND v`complemented THEN
+      (# regular := cbdd_imp(v`regular, u`regular),
+         complemented := FALSE #)
+    ELSIF u`complemented THEN
+      (# regular := cbdd_or(u`regular, v`regular),
+         complemented := FALSE #)
+    ELSIF v`complemented THEN
+      (# regular := cbdd_and(u`regular, v`regular),
+         complemented := TRUE #)
+    ELSE
+      (# regular := cbdd_imp(u`regular, v`regular),
+         complemented := FALSE #)
+    ENDIF
+
+  opt_invimp(u, v): obdd = opt_imp(v, u)
+  opt_nand(u, v): obdd = opt_not(opt_and(u, v))
+  opt_nor(u, v): obdd = opt_not(opt_or(u, v))
+  opt_ite(u, v, w): obdd = opt_or(opt_and(u, v), opt_and(opt_not(u), w))
+
+  opt_exists(c, u): obdd =
+    IF u`complemented THEN
+      (# regular := cbdd_forall(c, u`regular),
+         complemented := TRUE #)
+    ELSE
+      (# regular := cbdd_exists(c, u`regular),
+         complemented := FALSE #)
+    ENDIF
+
+  opt_forall(c, u): obdd =
+    IF u`complemented THEN
+      (# regular := cbdd_exists(c, u`regular),
+         complemented := TRUE #)
+    ELSE
+      (# regular := cbdd_forall(c, u`regular),
+         complemented := FALSE #)
+    ENDIF
+
+  opt_and_abstract(u, v, c): obdd =
+    (# regular := cbdd_and_abstract(opt_materialize(u), opt_materialize(v), c),
+       complemented := FALSE #)
+
+  opt_restrict(u, c): obdd =
+    (# regular := cbdd_restrict(opt_materialize(u), c),
+       complemented := FALSE #)
+
+  opt_constrain(u, c): obdd =
+    (# regular := cbdd_constrain(opt_materialize(u), c),
+       complemented := FALSE #)
+
+  opt_compose(u, x, v): obdd =
+    (# regular := cbdd_compose(opt_materialize(u), x, opt_materialize(v)),
+       complemented := FALSE #)
+
+  opt_permute(u, p): obdd =
+    (# regular := cbdd_permute(opt_materialize(u), p),
+       complemented := FALSE #)
+
+  hash_rank(u): uint32 = 2 * u`regular`root + IF u`complemented THEN 1 ELSE 0 ENDIF
+
+  rootseq: TYPE = [# length: size, seq: ARRAY[below[length] -> obdd] #]
+
+  opcode: TYPE = below(8)
+  op_and: opcode = 0
+  op_or: opcode = 1
+  op_xor: opcode = 2
+  op_diff: opcode = 3
+  op_imp: opcode = 4
+  op_invimp: opcode = 5
+  op_nand: opcode = 6
+  op_nor: opcode = 7
+
+  op: VAR opcode
+
+  binop_eval(op, u, v): obdd =
+    IF op = op_and THEN opt_and(u, v)
+    ELSIF op = op_or THEN opt_or(u, v)
+    ELSIF op = op_xor THEN opt_xor(u, v)
+    ELSIF op = op_diff THEN opt_diff(u, v)
+    ELSIF op = op_imp THEN opt_imp(u, v)
+    ELSIF op = op_invimp THEN opt_invimp(u, v)
+    ELSIF op = op_nand THEN opt_nand(u, v)
+    ELSE opt_nor(u, v)
+    ENDIF
+
+  unique_key: TYPE =
+    [# top: vid,
+       high: obdd,
+       low: obdd #]
+
+  unique_entry: TYPE =
+    [# valid: bool,
+       key: unique_key,
+       result: obdd #]
+
+  empty_unique_entry: unique_entry =
+    (# valid := FALSE,
+       key := (# top := 0, high := opt_false, low := opt_false #),
+       result := opt_false #)
+
+  unique_table: TYPE = ARRAY[below(unique_slots) -> unique_entry]
+  empty_unique_table: unique_table =
+    (LAMBDA (i: below(unique_slots)): empty_unique_entry)
+
+  cache_entry: TYPE =
+    [# valid: bool,
+       op: opcode,
+       lhs: obdd,
+       rhs: obdd,
+       result: obdd #]
+
+  empty_cache_entry: cache_entry =
+    (# valid := FALSE,
+       op := op_and,
+       lhs := opt_false,
+       rhs := opt_false,
+       result := opt_false #)
+
+  cache_table: TYPE = ARRAY[below(cache_slots) -> cache_entry]
+  empty_cache_table: cache_table =
+    (LAMBDA (i: below(cache_slots)): empty_cache_entry)
+
+  manager_rep: TYPE =
+    [# current_order: order,
+       inverse_level: ARRAY[vid -> vid],
+       roots: rootseq,
+       unique: unique_table,
+       cache: cache_table,
+       cache_lookups: uint32,
+       cache_hits: uint32,
+       cache_inserts: uint32,
+       unique_lookups: uint32,
+       unique_hits: uint32,
+       unique_inserts: uint32,
+       reorder_rounds: uint32 #]
+
+  manager_wf?(m: manager_rep): bool =
+    order_inverse_ok?(m`current_order, m`inverse_level)
+
+  manager: TYPE = (manager_wf?)
+  m, m1, m2: VAR manager
+  i: VAR nat
+  rs: VAR rootseq
+
+  roots_equiv?(rs1, rs2: rootseq): bool =
+    rs1`length = rs2`length AND
+    FORALL (k: nat | k < rs1`length):
+      root(rs1`seq(k)`regular) = root(rs2`seq(k)`regular) AND
+      rs1`seq(k)`complemented = rs2`seq(k)`complemented
+
+  managers_equiv?(m1, m2): bool = roots_equiv?(m1`roots, m2`roots)
+
+  opt_swap_adjacent(u, (i: nat | i + 1 < nvars)): obdd =
+    u WITH [`regular := cbdd_swap_adjacent(u`regular, i)]
+
+  opt_reverse(u): obdd =
+    u WITH [`regular := cbdd_reverse_order(u`regular)]
+
+  rootseq_swap_adjacent(rs, (i: nat | i + 1 < nvars)): rootseq =
+    (# length := rs`length,
+       seq := (LAMBDA (k: below(rs`length)): opt_swap_adjacent(rs`seq(k), i)) #)
+
+  rootseq_reverse(rs): rootseq =
+    (# length := rs`length,
+       seq := (LAMBDA (k: below(rs`length)): opt_reverse(rs`seq(k))) #)
+
+  swap_inverse(m, (i: nat | i + 1 < nvars)): ARRAY[vid -> vid] =
+    m`inverse_level WITH
+      [(m`current_order`seq(i)) := i + 1,
+       (m`current_order`seq(i + 1)) := i]
+
+  reverse_inverse(m): ARRAY[vid -> vid] =
+    (LAMBDA x: nvars - 1 - m`inverse_level(x))
+
+  bdd_size(u): uint32 = u`regular`used
+
+  root_cost_prefix(rs: rootseq, n: nat): RECURSIVE uint32 =
+    IF n = 0 THEN 0
+    ELSE root_cost_prefix(rs, n - 1) + bdd_size(rs`seq(n - 1))
+    ENDIF
+  MEASURE n
+
+  manager_cost(m): uint32 = root_cost_prefix(m`roots, m`roots`length)
+
+  unique_hash(x: vid, hi, lo: obdd): below(unique_slots) =
+    mod(x + hash_rank(hi) + hash_rank(lo), unique_slots)
+
+  cache_hash(op: opcode, u, v: obdd): below(cache_slots) =
+    mod(op + hash_rank(u) + hash_rank(v), cache_slots)
+
+  unique_hit?(m, x, hi, lo): bool =
+    LET slot = unique_hash(x, hi, lo),
+        entry = m`unique(slot)
+     IN entry`valid AND entry`key = (# top := x, high := hi, low := lo #)
+
+  cache_hit?(m, op, u, v): bool =
+    LET slot = cache_hash(op, u, v),
+        entry = m`cache(slot)
+     IN entry`valid AND entry`op = op AND entry`lhs = u AND entry`rhs = v
+
+  mk_node_exec(x, hi, lo): obdd =
+    IF opt_equal?(hi, lo) THEN hi
+    ELSE
+      LET high1 = IF hi`complemented THEN opt_not(hi) ELSE hi ENDIF,
+          low1 = IF hi`complemented THEN opt_not(lo) ELSE lo ENDIF
+       IN (# regular := cbdd_ite(cbdd_ithvar(x),
+                                 opt_materialize(high1),
+                                 opt_materialize(low1)),
+              complemented := hi`complemented #)
+    ENDIF
+
+  unique_insert(m, x, hi, lo, r): manager =
+    LET slot = unique_hash(x, hi, lo),
+        entry = (# valid := TRUE,
+                   key := (# top := x, high := hi, low := lo #),
+                   result := r #)
+     IN m WITH [`unique(slot) := entry,
+                `unique_inserts := m`unique_inserts + 1]
+
+  cache_insert(m, op, u, v, r): manager =
+    LET slot = cache_hash(op, u, v),
+        entry = (# valid := TRUE,
+                   op := op,
+                   lhs := u,
+                   rhs := v,
+                   result := r #)
+     IN m WITH [`cache(slot) := entry,
+                `cache_inserts := m`cache_inserts + 1]
+
+  mk_node_cached(m, x, hi, lo): [manager, obdd] =
+    LET m0 = m WITH [`unique_lookups := m`unique_lookups + 1]
+     IN IF opt_equal?(hi, lo) THEN (m0, hi)
+        ELSIF unique_hit?(m0, x, hi, lo) THEN
+          (m0 WITH [`unique_hits := m0`unique_hits + 1],
+           m0`unique(unique_hash(x, hi, lo))`result)
+        ELSE
+          LET r = mk_node_exec(x, hi, lo),
+              m1 = unique_insert(m0, x, hi, lo, r)
+           IN (m1, r)
+        ENDIF
+
+  cached_binop(m, op, u, v): [manager, obdd] =
+    LET m0 = m WITH [`cache_lookups := m`cache_lookups + 1]
+     IN IF cache_hit?(m0, op, u, v) THEN
+          (m0 WITH [`cache_hits := m0`cache_hits + 1],
+           m0`cache(cache_hash(op, u, v))`result)
+        ELSE
+          LET r = binop_eval(op, u, v),
+              m1 = cache_insert(m0, op, u, v, r)
+           IN (m1, r)
+        ENDIF
+
+  cached_relprod(m, u, v, c): [manager, obdd] =
+    LET (m1, uv) = cached_binop(m, op_and, u, v)
+     IN (m1, opt_exists(c, uv))
+
+  swap_manager(m, (i: nat | i + 1 < nvars)): manager =
+    (# current_order := abdd_swap_adjacent_order(m`current_order, i),
+       inverse_level := swap_inverse(m, i),
+       roots := rootseq_swap_adjacent(m`roots, i),
+       unique := empty_unique_table,
+       cache := empty_cache_table,
+       cache_lookups := m`cache_lookups,
+       cache_hits := m`cache_hits,
+       cache_inserts := m`cache_inserts,
+       unique_lookups := m`unique_lookups,
+       unique_hits := m`unique_hits,
+       unique_inserts := m`unique_inserts,
+       reorder_rounds := m`reorder_rounds + 1 #)
+
+  reverse_manager(m): manager =
+    (# current_order := abdd_reverse_order(m`current_order),
+       inverse_level := reverse_inverse(m),
+       roots := rootseq_reverse(m`roots),
+       unique := empty_unique_table,
+       cache := empty_cache_table,
+       cache_lookups := m`cache_lookups,
+       cache_hits := m`cache_hits,
+       cache_inserts := m`cache_inserts,
+       unique_lookups := m`unique_lookups,
+       unique_hits := m`unique_hits,
+       unique_inserts := m`unique_inserts,
+       reorder_rounds := m`reorder_rounds + 1 #)
+
+  sift_left(m: manager, i: nat): RECURSIVE manager =
+    IF i = 0 THEN m
+    ELSE
+      LET m1 = swap_manager(m, i - 1)
+       IN IF manager_cost(m1) <= manager_cost(m)
+            THEN sift_left(m1, i - 1)
+            ELSE m
+          ENDIF
+    ENDIF
+  MEASURE i
+
+  sift_right(m, (i: nat | i < nvars)): RECURSIVE manager =
+    IF i + 1 >= nvars THEN m
+    ELSE
+      LET m1 = swap_manager(m, i)
+       IN IF manager_cost(m1) <= manager_cost(m)
+            THEN sift_right(m1, i + 1)
+            ELSE m
+          ENDIF
+    ENDIF
+  MEASURE nvars - i
+
+  sift_var(m, (i: nat | i < nvars)): manager =
+    LET left_best = sift_left(m, i),
+        right_best = sift_right(m, i)
+     IN IF manager_cost(left_best) <= manager_cost(right_best)
+          THEN left_best
+          ELSE right_best
+        ENDIF
+
+  dynamic_reorder_var(m, x): manager =
+    sift_var(m, m`inverse_level(x))
+
+  opt_pick_sat(f: {f: obdd | NOT opt_false?(f)}): cvaluation =
+    cbdd_pick_sat(opt_materialize(f))
+
+  opt_not_correct: LEMMA
+    opt_denote(opt_not(u)) = complement(opt_denote(u))
+
+  opt_and_correct: LEMMA
+    opt_denote(opt_and(u, v)) = intersection(opt_denote(u), opt_denote(v))
+
+  opt_or_correct: LEMMA
+    opt_denote(opt_or(u, v)) = union(opt_denote(u), opt_denote(v))
+
+  swap_manager_preserves_roots: LEMMA
+    managers_equiv?(swap_manager(m, i), m)
+
+  reverse_manager_preserves_roots: LEMMA
+    managers_equiv?(reverse_manager(m), m)
+
+  sift_var_not_worse: LEMMA
+    manager_cost(sift_var(m, i)) <= manager_cost(m)
+END cbdd_array_opt

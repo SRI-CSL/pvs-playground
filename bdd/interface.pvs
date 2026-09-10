@@ -1,0 +1,254 @@
+bdd_interface: THEORY
+BEGIN
+  bddvar, valuation, cube, perm, bdd: TYPE+
+
+  IMPORTING sets_lemmas[valuation], finite_sets[bddvar], sets_lemmas[bddvar]
+
+  predicate: TYPE = set[valuation]
+  varset: TYPE = finite_set[bddvar]
+
+  sigma, tau, rho: VAR valuation
+  x, y, z: VAR bddvar
+  b: VAR bool
+  f, g, h: VAR bdd
+  c, d: VAR cube
+  p: VAR perm
+
+  read_var(sigma, x): bool
+  update_var(sigma, x, b): valuation
+
+  valuation_extensionality: AXIOM
+    (FORALL x: read_var(sigma, x) = read_var(tau, x)) IMPLIES sigma = tau
+
+  update_var_same: AXIOM
+    read_var(update_var(sigma, x, b), x) = b
+
+  update_var_other: AXIOM
+    x /= y IMPLIES read_var(update_var(sigma, x, b), y) = read_var(sigma, y)
+
+  cube_support(c): varset
+  cube_value(c, (x: bddvar | cube_support(c)(x))): bool
+
+  cube_denote(c): predicate =
+    { sigma |
+        FORALL (x: bddvar | cube_support(c)(x)):
+          read_var(sigma, x) = cube_value(c, x) }
+
+  cube_empty: cube
+  cube_insert(c, (x: bddvar | NOT cube_support(c)(x)), b): cube
+
+  cube_support_empty: AXIOM
+    cube_support(cube_empty) = emptyset[bddvar]
+
+  cube_support_insert: AXIOM
+    FORALL (x: bddvar | NOT cube_support(c)(x)):
+      cube_support(cube_insert(c, x, b)) = add(x, cube_support(c))
+
+  cube_value_insert_same: AXIOM
+    FORALL (x: bddvar | NOT cube_support(c)(x)):
+      cube_value(cube_insert(c, x, b), x) = b
+
+  cube_value_insert_other: AXIOM
+    FORALL (x: bddvar | NOT cube_support(c)(x)):
+      (FORALL (y: bddvar | cube_support(c)(y)):
+         cube_value(cube_insert(c, x, b), y) = cube_value(c, y))
+
+  cube_var(x): cube = cube_insert(cube_empty, x, TRUE)
+  cube_nvar(x): cube = cube_insert(cube_empty, x, FALSE)
+
+  force_cube(c, sigma): valuation
+
+  force_cube_on_support: AXIOM
+    FORALL (x: bddvar | cube_support(c)(x)):
+      read_var(force_cube(c, sigma), x) = cube_value(c, x)
+
+  force_cube_off_support: AXIOM
+    FORALL x: NOT cube_support(c)(x) IMPLIES
+      read_var(force_cube(c, sigma), x) = read_var(sigma, x)
+
+  same_outside(S: set[bddvar], sigma, tau): bool =
+    FORALL x: NOT S(x) IMPLIES read_var(sigma, x) = read_var(tau, x)
+
+  denote(f): predicate
+  support(f): varset
+
+  support_sound: AXIOM
+    same_outside(support(f), sigma, tau) IMPLIES
+      denote(f)(sigma) = denote(f)(tau)
+
+  bdd_false, bdd_true: bdd
+  ithvar(x): bdd
+  nithvar(x): bdd
+
+  bdd_not(f): bdd
+  bdd_and(f, g): bdd
+  bdd_or(f, g): bdd
+  bdd_xor(f, g): bdd
+  bdd_xnor(f, g): bdd
+  bdd_nand(f, g): bdd
+  bdd_nor(f, g): bdd
+  bdd_imp(f, g): bdd
+  bdd_invimp(f, g): bdd
+  bdd_diff(f, g): bdd
+  bdd_ite(f, g, h): bdd
+  bdd_exists(c, f): bdd
+  bdd_forall(c, f): bdd
+  bdd_and_abstract(f, g, c): bdd
+  bdd_restrict(f, c): bdd
+  bdd_constrain(f, c): bdd
+  bdd_compose(f, x, g): bdd
+
+  permute_var(p, x): bddvar
+  inverse_perm(p): perm
+  permute_valuation(p, sigma): valuation
+  bdd_permute(f, p): bdd
+
+  perm_inverse_left: AXIOM
+    FORALL x: permute_var(inverse_perm(p), permute_var(p, x)) = x
+
+  perm_inverse_right: AXIOM
+    FORALL x: permute_var(p, permute_var(inverse_perm(p), x)) = x
+
+  permute_read: AXIOM
+    FORALL x: read_var(permute_valuation(p, sigma), x) =
+      read_var(sigma, permute_var(p, x))
+
+  denote_false: AXIOM denote(bdd_false) = emptyset[valuation]
+  denote_true: AXIOM denote(bdd_true) = fullset[valuation]
+
+  denote_ithvar: AXIOM
+    denote(ithvar(x)) = { sigma | read_var(sigma, x) }
+
+  denote_nithvar: AXIOM
+    denote(nithvar(x)) = { sigma | NOT read_var(sigma, x) }
+
+  denote_not: AXIOM
+    denote(bdd_not(f)) = complement(denote(f))
+
+  denote_and: AXIOM
+    denote(bdd_and(f, g)) = intersection(denote(f), denote(g))
+
+  denote_or: AXIOM
+    denote(bdd_or(f, g)) = union(denote(f), denote(g))
+
+  denote_xor: AXIOM
+    denote(bdd_xor(f, g)) =
+      union(intersection(denote(f), complement(denote(g))),
+            intersection(complement(denote(f)), denote(g)))
+
+  denote_xnor: AXIOM
+    denote(bdd_xnor(f, g)) = complement(denote(bdd_xor(f, g)))
+
+  denote_nand: AXIOM
+    denote(bdd_nand(f, g)) = complement(denote(bdd_and(f, g)))
+
+  denote_nor: AXIOM
+    denote(bdd_nor(f, g)) = complement(denote(bdd_or(f, g)))
+
+  denote_imp: AXIOM
+    denote(bdd_imp(f, g)) = union(complement(denote(f)), denote(g))
+
+  denote_invimp: AXIOM
+    denote(bdd_invimp(f, g)) = union(denote(f), complement(denote(g)))
+
+  denote_diff: AXIOM
+    denote(bdd_diff(f, g)) = difference(denote(f), denote(g))
+
+  denote_ite: AXIOM
+    denote(bdd_ite(f, g, h)) =
+      union(intersection(denote(f), denote(g)),
+            intersection(complement(denote(f)), denote(h)))
+
+  denote_exists: AXIOM
+    denote(bdd_exists(c, f)) =
+      { sigma |
+          EXISTS tau:
+            same_outside(cube_support(c), sigma, tau) AND denote(f)(tau) }
+
+  denote_forall: AXIOM
+    denote(bdd_forall(c, f)) =
+      { sigma |
+          FORALL tau:
+            same_outside(cube_support(c), sigma, tau) IMPLIES denote(f)(tau) }
+
+  denote_and_abstract: AXIOM
+    denote(bdd_and_abstract(f, g, c)) =
+      denote(bdd_exists(c, bdd_and(f, g)))
+
+  denote_restrict: AXIOM
+    denote(bdd_restrict(f, c)) =
+      { sigma | denote(f)(force_cube(c, sigma)) }
+
+  denote_constrain: AXIOM
+    denote(bdd_constrain(f, c)) =
+      { sigma | denote(f)(force_cube(c, sigma)) }
+
+  denote_compose: AXIOM
+    denote(bdd_compose(f, x, g)) =
+      { sigma |
+          denote(f)(update_var(sigma, x, denote(g)(sigma))) }
+
+  denote_permute: AXIOM
+    denote(bdd_permute(f, p)) =
+      { sigma | denote(f)(permute_valuation(p, sigma)) }
+
+  support_false_axiom: AXIOM support(bdd_false) = emptyset[bddvar]
+  support_true_axiom: AXIOM support(bdd_true) = emptyset[bddvar]
+  support_ithvar_axiom: AXIOM support(ithvar(x)) = singleton(x)
+  support_nithvar_axiom: AXIOM support(nithvar(x)) = singleton(x)
+  support_not_axiom: AXIOM support(bdd_not(f)) = support(f)
+
+  support_and_axiom: AXIOM
+    subset?(support(bdd_and(f, g)), union(support(f), support(g)))
+
+  support_or_axiom: AXIOM
+    subset?(support(bdd_or(f, g)), union(support(f), support(g)))
+
+  support_xor_axiom: AXIOM
+    subset?(support(bdd_xor(f, g)), union(support(f), support(g)))
+
+  eval(f, sigma): bool = denote(f)(sigma)
+  equiv?(f, g): bool = denote(f) = denote(g)
+  sat?(f): bool = nonempty?(denote(f))
+  valid?(f): bool = full?(denote(f))
+  sf: VAR { f: bdd | sat?(f) }
+
+  pick_sat(f: { f: bdd | sat?(f) }): valuation
+
+  pick_sat_correct: AXIOM
+    eval(sf, pick_sat(sf))
+
+  cube_force_models: LEMMA
+    cube_denote(c)(force_cube(c, sigma))
+
+  support_irrelevance: LEMMA
+    same_outside(support(f), sigma, tau) IMPLIES
+      eval(f, sigma) = eval(f, tau)
+
+  bdd_and_commutative: LEMMA
+    equiv?(bdd_and(f, g), bdd_and(g, f))
+
+  bdd_or_commutative: LEMMA
+    equiv?(bdd_or(f, g), bdd_or(g, f))
+
+  bdd_xor_commutative: LEMMA
+    equiv?(bdd_xor(f, g), bdd_xor(g, f))
+
+  bdd_ite_expansion: LEMMA
+    equiv?(bdd_ite(f, g, h),
+           bdd_or(bdd_and(f, g), bdd_and(bdd_not(f), h)))
+
+  bdd_and_abstract_characterization: LEMMA
+    equiv?(bdd_and_abstract(f, g, c), bdd_exists(c, bdd_and(f, g)))
+
+  restrict_on_cube: LEMMA
+    cube_denote(c)(sigma) IMPLIES
+      eval(bdd_restrict(f, c), sigma) = eval(f, sigma)
+
+  constrain_on_cube: LEMMA
+    cube_denote(c)(sigma) IMPLIES
+      eval(bdd_constrain(f, c), sigma) = eval(f, sigma)
+
+  valid_not_sat_not: LEMMA
+    valid?(f) IFF NOT sat?(bdd_not(f))
+END bdd_interface

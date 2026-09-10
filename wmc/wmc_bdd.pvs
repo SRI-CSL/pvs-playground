@@ -1,0 +1,459 @@
+% PVSio views of the existing result. No instrumentation or checker calls are
+% inserted into the kernel. Trace phases below are replayed AFTER the run.
+wmc_output[N: posnat, (IMPORTING nat_types[N]) edge: (total?[below[N],below[N]]),
+  representation: TYPE+, (IMPORTING wmc_sets[N,edge,representation]) algebra: set_algebra]: THEORY
+BEGIN
+  IMPORTING wmc_kernel[N,edge,representation,algebra]
+  states: list[state] = finseq2list[state]((# length:=N, seq:=identity[state] #))
+  members(p: state_pred): list[state] = filter(states,p)
+  show_region(x: region): string = format("~a",members(den(x)))
+  stage_sizes(h: list[region]): list[nat] = map[region,nat](cardinality,h)
+  show_trace(o: result): void =
+    CASES o OF temporal_result(e,u,i,g,v,h,c):
+      LET batches:nat=ndiv(length(c),2) IN
+      println(format("  trace: ~a~a; discovery visited=~d, batches=~d",
+        {| IF e THEN "E" ELSE "A" ENDIF, IF u THEN "U" ELSE "R" ENDIF,
+           cardinality(v), batches |})) &
+      println(format("  trace: pruning sizes=~a (last is fixed point)",stage_sizes(h)))
+    ELSE println("  trace: Boolean/next/local result (no outer temporal phase)") ENDCASES
+  summarize(label: string, o: result): void =
+    println(label+IF vacant(bad(o)) THEN ": HOLDS" ELSE ": FAILS" ENDIF) &
+    println(format("  queried=~d, satisfying=~d, failing=~d",
+      {| cardinality(query(o)),cardinality(good(o)),cardinality(bad(o)) |})) &
+    println("  satisfying roots: "+show_region(good(o))) &
+    println("  failing roots:    "+show_region(bad(o))) & show_trace(o)
+
+  % Explicit checker phase; never called by report_run or the WMC producer.
+  report_check(f: CTL, i: region, o: result): void =
+    println("[checker] compiling stored result into Emerson derivations") &
+    LET accepted=time_profiler(up?(check(f,i,o))) IN
+      println(IF accepted THEN "  ACCEPTED: positive and negative derivations produced"
+              ELSE "  REJECTED" ENDIF)
+  report_run(label: string, f: CTL, i: region): result =
+    prog(println("[wmc] "+label+": discovery/pruning (run timing excludes display)"),
+      LET o=time_profiler(f`run(i)) IN
+        prog(summarize(label,o),o))
+
+  % Breadth-first path reconstruction for DISPLAY, using the actual edge
+  % relation. Paths in the queue are reversed. Termination counts unvisited
+  % vertices, then queue length; neither parameter is a depth/fuel bound.
+  route: TYPE = (cons?[state])
+  path_search(todo: list[route], unseen: finite_set[state],
+              allowed, target: state_pred): RECURSIVE list[state] =
+    CASES todo OF null: null, cons(p,rest): LET s=car(p) IN
+      IF target(s) THEN reverse(p)
+      ELSIF NOT unseen(s) THEN path_search(rest,unseen,allowed,target)
+      ELSE LET next=members(LAMBDA (t:state): edge(s,t) AND allowed(t) AND unseen(t)) IN
+        path_search(append(rest,map[state,route](LAMBDA (t:state): cons(t,p),next)),
+                    remove(s,unseen),allowed,target)
+      ENDIF ENDCASES MEASURE lex2(card(unseen),length(todo)) BY <
+  path_to(roots, allowed, target: state_pred): list[state] =
+    path_search(map[state,route](LAMBDA (s:state): (: s :),
+      members(LAMBDA (s:state): roots(s) AND allowed(s))),
+      list2set(states),allowed,target)
+  valid_path(p: list[state]): RECURSIVE bool =
+    CASES p OF null: FALSE, cons(s,rest): CASES rest OF null: TRUE,
+      cons(t,tail): edge(s,t) AND valid_path(rest) ENDCASES ENDCASES
+    MEASURE length(p)
+  ends_at(p: list[state], s:state): RECURSIVE bool = CASES p OF
+    null: FALSE, cons(t,rest): IF null?(rest) THEN t=s ELSE ends_at(rest,s) ENDIF
+    ENDCASES MEASURE length(p)
+  valid_lasso(prefix,cycle: list[state], roots,allowed,invariant:state_pred): bool =
+    cons?(prefix) AND cons?(cycle) AND cons?(cdr(cycle)) AND
+    roots(car(prefix)) AND ends_at(prefix,car(cycle)) AND ends_at(cycle,car(cycle)) AND
+    valid_path(prefix) AND valid_path(cycle) AND every(allowed)(prefix) AND every(invariant)(cycle)
+  show_path(p: list[state], describe: [state -> string]): void =
+    println(format("  ~{~a~^ -> ~}",{| map[state,string](describe,p) |}))
+  safety_example(o: result, violation: state_pred, describe: [state -> string]): void =
+    prog(println("[counterexample] searching for a safety violation"),
+      LET p=time_profiler(path_to(den(bad(o)),LAMBDA (s:state): TRUE,violation)) IN
+      IF null?(p) THEN println("  no path found") ELSE
+        show_path(p,describe) & println("  initial/edges/violation validation: "+
+          (den(bad(o))(car(p)) AND valid_path(p) AND
+           some_prefix(LAMBDA (s:state): violation(s) AND ends_at(p,s),N))) ENDIF)
+
+  % Prefix to a reachable anchor, then a nonempty cycle in a WMC-computed
+  % EG region. A general CTL counterexample can branch; this view handles
+  % safety paths and existential lassos, not arbitrary CTL proof trees.
+  find_lasso(anchors: list[state], roots, allowed, invariant: state_pred):
+    RECURSIVE [list[state],list[state]] = CASES anchors OF null: (null,null),
+      cons(s,rest): LET prefix=path_to(roots,allowed,LAMBDA (t:state): t=s),
+        cycle=path_to(LAMBDA (t:state): edge(s,t),invariant,LAMBDA (t:state): t=s) IN
+      IF cons?(prefix) AND cons?(cycle) THEN (prefix,cons(s,cycle))
+      ELSE find_lasso(rest,roots,allowed,invariant) ENDIF ENDCASES MEASURE length(anchors)
+  liveness_example(o: result, allowed, invariant: region, describe: [state -> string]): void =
+    prog(println("[counterexample] extracting prefix and repeating cycle"),
+      LET (prefix,cycle)=time_profiler(find_lasso(members(den(invariant)),den(bad(o)),den(allowed),den(invariant))) IN
+      IF null?(cycle) THEN println("  no lasso found") ELSE
+        println("  prefix:") & show_path(prefix,describe) &
+        println("  cycle (repeat forever):") & show_path(cycle,describe) &
+        println("  initial/edges/loop/invariant validation: "+
+          valid_lasso(prefix,cycle,den(bad(o)),den(allowed),den(invariant))) ENDIF)
+END wmc_output
+
+% BDD execution adapter. The WMC algorithm and Emerson checker are inherited.
+% Levels: 0 = exhaustive Shannon construction; 1 = array apply with local
+% unique/computed tables; 2 = complemented roots and Boolean shortcuts.
+% The library's outstanding TCCs are NOT discharged by this adapter.
+wmc_bdd_sets[N: posnat, (IMPORTING nat_types[N]) edge: (total?[below[N],below[N]]),
+  bits: {b: pos_uint32 | b <= 32 AND 2^b+1 <= maxsize AND N <= 2^b},
+  level: below(3)]: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  % Full Shannon tree: 2^bits-1 decision nodes plus two terminals.
+  % The 17-slot tables match the package examples; neither size is fuel.
+  capacity: {m: pos_uint32 | 3 <= m AND m <= maxsize} = 2^bits+1
+  IMPORTING bdd@cbdd_array_opt[bits, capacity, 17, 17]
+  st: TYPE = below[N]
+  predicate_set: TYPE = [st -> bool]
+  x,y: VAR predicate_set
+  u,v: VAR obdd
+
+  valuation_of(s: st): cvaluation = LAMBDA (i: vid):
+    odd?(ndiv(s, 2^(bits-1-i)))
+  number(sigma: cvaluation, k: upto(bits)): RECURSIVE nat =
+    IF k=0 THEN 0 ELSE 2*number(sigma,k-1) + IF sigma(k-1) THEN 1 ELSE 0 ENDIF ENDIF
+    MEASURE k
+  bdd_den(u): predicate_set = LAMBDA (s: st): opt_eval(u,valuation_of(s))
+
+  bnot(u): obdd = IF level=0 THEN
+    (# regular := nbdd_not(opt_materialize(u)), complemented := FALSE #)
+    ELSIF level=1 THEN
+    (# regular := cbdd_not(opt_materialize(u)), complemented := FALSE #)
+    ELSE opt_not(u) ENDIF
+  band(u,v): obdd = IF level=0 THEN
+    (# regular := nbdd_and(opt_materialize(u),opt_materialize(v)), complemented := FALSE #)
+    ELSIF level=1 THEN
+    (# regular := cbdd_and(opt_materialize(u),opt_materialize(v)), complemented := FALSE #)
+    ELSE opt_and(u,v) ENDIF
+  bor(u,v): obdd = IF level=0 THEN
+    (# regular := nbdd_or(opt_materialize(u),opt_materialize(v)), complemented := FALSE #)
+    ELSIF level=1 THEN
+    (# regular := cbdd_or(opt_materialize(u),opt_materialize(v)), complemented := FALSE #)
+    ELSE opt_or(u,v) ENDIF
+
+  % Complete Shannon expansion. Decrease is the number of unassigned bits.
+  build(x: predicate_set, k: upto(bits), sigma: cvaluation): RECURSIVE obdd =
+    IF k=bits THEN LET s=number(sigma,bits) IN
+      IF s<N AND x(s) THEN opt_true ELSE opt_false ENDIF
+    ELSE LET lo=build(x,k+1,sigma WITH [(k):=FALSE]),
+             hi=build(x,k+1,sigma WITH [(k):=TRUE]) IN
+      bor(band(opt_nvar(k),lo),band(opt_var(k),hi))
+    ENDIF MEASURE bits-k
+  encode(x): obdd = build(x,0,default_valuation)
+  % Encoding is a model/input boundary operation. All WMC regions are obdd.
+  valid_codes: obdd = encode(LAMBDA (s:st): TRUE)
+  bdd_difference(u,v): obdd = band(u,bnot(v))
+  bdd_vacant: [obdd -> bool] = LET mask=valid_codes IN
+    LAMBDA (u:obdd): opt_false?(band(u,mask))
+  bdd_included: [obdd,obdd -> bool] = LET is_empty=bdd_vacant IN
+    LAMBDA (u,v:obdd): is_empty(bdd_difference(u,v))
+  bdd_same: [obdd,obdd -> bool] = LET subset=bdd_included IN
+    LAMBDA (u,v:obdd): subset(u,v) AND subset(v,u)
+
+  % Materialized transition rows are built once when the image functions
+  % are constructed, then retained by their closures. No predicate encoding
+  % occurs in image_rows or any Boolean operation.
+  rows: TYPE = [st -> obdd]
+  transition_rows(backwards: bool): rows =
+    list2finseq[obdd](finseq2list[obdd]((# length:=N,
+      seq:=(LAMBDA (k:st): encode(LAMBDA (s:st):
+        IF backwards THEN edge(s,k) ELSE edge(k,s) ENDIF)) #)))`seq
+  image_rows(u: obdd, row: rows, k: upto(N)): RECURSIVE obdd =
+    IF k=0 THEN opt_false ELSE
+      LET rest=image_rows(u,row,k-1) IN
+      IF opt_eval(u,valuation_of(k-1)) THEN bor(rest,row(k-1)) ELSE rest ENDIF
+    ENDIF MEASURE k
+  bdd_forward: [obdd -> obdd] = LET row=transition_rows(FALSE) IN
+    LAMBDA (u:obdd): image_rows(u,row,N)
+  bdd_pre_e: [obdd -> obdd] = LET row=transition_rows(TRUE) IN
+    LAMBDA (u:obdd): image_rows(u,row,N)
+  bdd_pre_a: [obdd -> obdd] = LET row=transition_rows(TRUE) IN
+    LAMBDA (u:obdd): bnot(image_rows(bnot(u),row,N))
+
+  % Exact representation-to-semantics obligations, never assumptions.
+  copy_contract: LEMMA bdd_den(encode(x))=x
+  meet_contract: LEMMA bdd_den(band(u,v))=(LAMBDA (s:st): bdd_den(u)(s) AND bdd_den(v)(s))
+  join_contract: LEMMA bdd_den(bor(u,v))=(LAMBDA (s:st): bdd_den(u)(s) OR bdd_den(v)(s))
+  complement_contract: LEMMA bdd_den(bnot(u))=(LAMBDA (s:st): NOT bdd_den(u)(s))
+  difference_contract: LEMMA bdd_den(bdd_difference(u,v))=(LAMBDA (s:st): bdd_den(u)(s) AND NOT bdd_den(v)(s))
+  forward_contract: LEMMA bdd_den(bdd_forward(u))=(LAMBDA (t:st): EXISTS (s:st): bdd_den(u)(s) AND edge(s,t))
+  pre_e_contract: LEMMA bdd_den(bdd_pre_e(u))=(LAMBDA (s:st): EXISTS (t:st): edge(s,t) AND bdd_den(u)(t))
+  pre_a_contract: LEMMA bdd_den(bdd_pre_a(u))=(LAMBDA (s:st): FORALL (t:st): edge(s,t) IMPLIES bdd_den(u)(t))
+END wmc_bdd_sets
+
+wmc_bdd[N: posnat, (IMPORTING nat_types[N]) edge: (total?[below[N],below[N]]),
+  bits: {b: pos_uint32 | b <= 32 AND 2^b+1 <= maxsize AND N <= 2^b}, level: below(3)]: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  IMPORTING wmc_bdd_sets[N,edge,bits,level]
+  IMPORTING wmc_sets[N,edge,obdd]
+  bdd_sets: set_algebra =
+    (# den:=bdd_den, set_empty:=opt_false, set_universe:=valid_codes,
+       set_copy:=identity[obdd], set_meet:=band, set_join:=bor,
+       set_complement:=bnot, set_difference:=bdd_difference,
+       set_pre_e:=bdd_pre_e, set_pre_a:=bdd_pre_a, set_forward:=bdd_forward,
+       set_included:=bdd_included, set_same:=bdd_same, set_vacant:=bdd_vacant #)
+  IMPORTING wmc_kernel[N,edge,obdd,bdd_sets], wmc_output[N,edge,obdd,bdd_sets]
+END wmc_bdd
+
+% The same four-state fixture and CTL queries at every BDD level.
+wmc_bdd_tests[level: below(3)]: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  step(s,t: below(4)): bool =
+    IF s=0 THEN t=1 OR t=2 ELSIF s=1 THEN t=1 ELSE t=3 ENDIF
+  IMPORTING wmc_bdd[4,step,2,level]
+  target: region = encode(LAMBDA (s:below(4)): s=1)
+  initial: region = encode(LAMBDA (s:below(4)): s=0 OR s=1)
+  query_ctl: CTL = af(atom(target))
+  answer: result = query_ctl`run(initial)
+  demo: void = LET o=report_run("AF target",query_ctl,initial) IN
+    CASES o OF temporal_result(e,u,i,g,v,h,c):
+      liveness_example(o,final_stage(h),final_stage(h),LAMBDA (s:state): format("~d",s))
+    ELSE println("  expected a temporal result") ENDCASES
+  demo_check: void = LET o=report_run("AF target",query_ctl,initial) IN report_check(query_ctl,initial,o)
+  shortest_path_test: _TEST_ path_to(LAMBDA (s:state): s=0,
+    LAMBDA (s:state): TRUE,LAMBDA (s:state): s=3)=(: 0,2,3 :)
+  unreachable_path_test: _TEST_ null?(path_to(LAMBDA (s:state): s=1,
+    LAMBDA (s:state): TRUE,LAMBDA (s:state): s=0))
+  lasso_test: _TEST_ LET inv=LAMBDA (s:state): s/=1,
+    roots=LAMBDA (s:state): s=0,
+    (p,c)=find_lasso(members(inv),roots,inv,inv) IN valid_lasso(p,c,roots,inv,inv)
+  reject_bad_edge_test: _TEST_ NOT valid_path((: 0,3 :))
+  reject_open_cycle_test: _TEST_ NOT valid_lasso((: 0,2 :),(: 2,3 :),
+    LAMBDA (s:state): s=0,LAMBDA (s:state): s/=1,LAMBDA (s:state): s/=1)
+  partition: bool = same(good(answer),target)
+  proof_acceptance: bool = up?(check(query_ctl,initial,answer))
+  nested: bool = same(good(ag(ef(atom(target)))`run(universe)),target)
+  encode_only: bool = bdd_same(encode(bdd_den(target)),target)
+  primitive_meet: bool = LET r=band(opt_var(0),opt_var(1)) IN bdd_den(r)(3) AND NOT bdd_den(r)(0)
+END wmc_bdd_tests
+
+wmc_bdd_naive: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  IMPORTING wmc_bdd_tests[0]
+  partition_test: _TEST_ partition
+  proof_test: _TEST_ proof_acceptance
+  nested_test: _TEST_ nested
+  encode_test: _TEST_ encode_only
+  primitive_test: _TEST_ primitive_meet
+END wmc_bdd_naive
+
+wmc_bdd_arrays: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  IMPORTING wmc_bdd_tests[1]
+  partition_test: _TEST_ partition
+  proof_test: _TEST_ proof_acceptance
+  nested_test: _TEST_ nested
+  encode_test: _TEST_ encode_only
+  primitive_test: _TEST_ primitive_meet
+END wmc_bdd_arrays
+
+wmc_bdd_shortcuts: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  IMPORTING wmc_bdd_tests[2]
+  partition_test: _TEST_ partition
+  proof_test: _TEST_ proof_acceptance
+  nested_test: _TEST_ nested
+  encode_test: _TEST_ encode_only
+  primitive_test: _TEST_ primitive_meet
+END wmc_bdd_shortcuts
+
+
+wmc_bdd_native: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  step(s,t: below(4)): bool = s=t
+  IMPORTING wmc_bdd_sets[4,step,2,2]
+  manager_for(u,v: obdd): manager =
+    (# current_order:=id_order, inverse_level:=id_inverse,
+       roots:=(# length:=2, seq:=(LAMBDA (k:below(2)): IF k=0 THEN u ELSE v ENDIF) #),
+       unique:=empty_unique_table, cache:=empty_cache_table,
+       cache_lookups:=0, cache_hits:=0, cache_inserts:=0,
+       unique_lookups:=0, unique_hits:=0, unique_inserts:=0, reorder_rounds:=0 #)
+  % Finite observations, not evaluation of the package's support predicate.
+  demo: void = println("[BDD primitives] complemented roots and cached apply") &
+    LET u=opt_var(0), v=opt_var(1),
+        (m1,r1)=time_profiler(cached_binop(manager_for(u,v),op_and,u,v)),
+        (m2,r2)=time_profiler(cached_binop(m1,op_and,u,v)) IN
+    println(format("  first AND: nodes=~d, cache lookups=~d, hits=~d",
+      {| bdd_size(r1),cache_lookups(m1),cache_hits(m1) |})) &
+    println(format("  repeated AND: nodes=~d, cache lookups=~d, hits=~d",
+      {| bdd_size(r2),cache_lookups(m2),cache_hits(m2) |})) &
+    println("[BDD reordering] root storage cost before/after") &
+    LET m=manager_for(u,v), reordered=time_profiler(dynamic_reorder_var(m,0)) IN
+      println(format("  ~d -> ~d",{| manager_cost(m),manager_cost(reordered) |}))
+  native_shortcuts_test: _TEST_
+    bdd_den(opt_and(opt_var(0),opt_var(1)))(3)
+  native_complement_test: _TEST_
+    bdd_den(opt_not(opt_var(0)))(0) AND NOT bdd_den(opt_not(opt_var(0)))(3)
+  manager_cache_test: _TEST_
+    LET u=opt_var(0), v=opt_var(1),
+        (m1,r1)=cached_binop(manager_for(u,v),op_and,u,v),
+        (m2,r2)=cached_binop(m1,op_and,u,v) IN
+      cache_hits(m2)=1 AND bdd_den(r1)(3) AND bdd_den(r2)(3)
+  manager_reorder_test: _TEST_
+    LET m=manager_for(opt_var(0),opt_var(1)), r=dynamic_reorder_var(m,0) IN
+      manager_cost(r)<=manager_cost(m) AND
+      (FORALL (s:below(4)): bdd_den(roots(r)`seq(0))(s)=bdd_den(roots(m)`seq(0))(s))
+END wmc_bdd_native
+
+wmc_bdd_closure: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  IMPORTING wmc_tests, wmc_output[4,step,pred,closure_sets]
+  demo: void = LET o=report_run("closure: AF target",af(a),roots) IN
+    liveness_example(o,avoid,avoid,LAMBDA (s:state): format("~d",s))
+  demo_check: void = LET o=report_run("closure: AF target",af(a),roots) IN report_check(af(a),roots,o)
+  partition_test: _TEST_ same(good(af_result),target)
+  proof_test: _TEST_ up?(check(af(a),roots,af_result))
+  nested_test: _TEST_ same(good(ag(ef(a))`run(universe)),target)
+END wmc_bdd_closure
+
+% A sixteen-state cycle exercises multiple discovery and pruning iterations.
+wmc_bdd_ring[level: below(3)]: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  step(s,t: below(16)): bool = t=(IF s=15 THEN 0 ELSE s+1 ENDIF)
+  IMPORTING wmc_bdd[16,step,4,level]
+  goal: CTL = af(atom(encode(LAMBDA (s:below(16)): s=0)))
+  demo: void = LET o=report_run("16-state ring: AF zero",goal,universe) IN skip
+  demo_check: void = LET o=report_run("16-state ring: AF zero",goal,universe) IN report_check(goal,universe,o)
+  reaches: bool = same(good(goal`run(universe)),universe)
+  accepts: bool = up?(check(goal,universe,goal`run(universe)))
+END wmc_bdd_ring
+
+wmc_bdd_ring_naive: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  IMPORTING wmc_bdd_ring[0]
+  reaches_test: _TEST_ reaches
+  proof_test: _TEST_ accepts
+END wmc_bdd_ring_naive
+
+wmc_bdd_ring_arrays: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  IMPORTING wmc_bdd_ring[1]
+  reaches_test: _TEST_ reaches
+  proof_test: _TEST_ accepts
+END wmc_bdd_ring_arrays
+
+wmc_bdd_ring_closure: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  step(s,t: below(16)): bool = t=(IF s=15 THEN 0 ELSE s+1 ENDIF)
+  IMPORTING wmc[16,step], wmc_output[16,step,pred,closure_sets]
+  goal: CTL = af(atom(LAMBDA (s:below(16)): s=0))
+  demo: void = LET o=report_run("closure ring: AF zero",goal,universe) IN skip
+  demo_check: void = LET o=report_run("closure ring: AF zero",goal,universe) IN report_check(goal,universe,o)
+  reaches_test: _TEST_ same(good(goal`run(universe)),universe)
+  proof_test: _TEST_ up?(check(goal,universe,goal`run(universe)))
+END wmc_bdd_ring_closure
+
+% Executable counterexamples to upstream contracts, not correctness tests.
+wmc_bdd_contract_audit: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  IMPORTING wmc_bdd_native
+  demo_audit: void = println("[contract audit] concrete counterexamples to package contracts") &
+    LET u=opt_var(0), sigma=default_valuation, tau=abdd_update_var(sigma,0,TRUE) IN
+      println(format("  support mask says valuations agree outside support: ~a; values: ~a vs ~a",
+        {| same_outside_mask(u`regular`support_mask,sigma,tau),opt_eval(u,sigma),opt_eval(u,tau) |})) &
+    LET u=opt_true, m=cache_insert(manager_for(u,u),op_and,u,u,opt_false),
+        (m1,r)=cached_binop(m,op_and,u,u) IN
+      println(format("  injected false AND(true,true) cache entry: result=~a, expected=TRUE",
+        opt_eval(r,default_valuation)))
+  support_counterexample_test: _TEST_
+    LET u=opt_var(0), sigma=default_valuation,
+        tau=abdd_update_var(sigma,0,TRUE) IN
+      same_outside_mask(u`regular`support_mask,sigma,tau) AND
+      opt_eval(u,sigma)/=opt_eval(u,tau)
+  cache_invariant_counterexample_test: _TEST_
+    LET u=opt_true, m=cache_insert(manager_for(u,u),op_and,u,u,opt_false),
+        (m1,r)=cached_binop(m,op_and,u,u) IN
+      opt_false?(r) AND opt_eval(opt_true,default_valuation)
+END wmc_bdd_contract_audit
+
+% The SAL transcription is shared verbatim with the closure example.
+wmc_bdd_peterson[level: below(3)]: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  IMPORTING peterson_model, wmc_bdd[36,step,6,level]
+  initial: region = encode(LAMBDA (s:state):
+    decode(s)`pc1=sleeping AND decode(s)`pc2=sleeping)
+  at(p:process,l:PC): CTL = atom(encode(LAMBDA (s:state): position(p,decode(s))=l))
+  mutex: CTL = ag(neg(conj(at(0,critical),at(1,critical))))
+  response(p:process): CTL = ag(disj(neg(at(p,trying)),af(at(p,critical))))
+  possible_entry(p:process): CTL = ag(ef(at(p,critical)))
+  recurrence(p:process): CTL = ag(af(at(p,critical)))
+  invalid: CTL = ag(neg(conj(at(0,trying),at(1,critical))))
+  backend: string = IF level=0 THEN "naive BDD" ELSIF level=1 THEN "array BDD"
+                    ELSE "complemented/shortcut BDD" ENDIF
+  describe(s:state): string = LET c=decode(s) IN
+    format("~d[~a,~a; x=~a,~a]",{| s,c`pc1,c`pc2,c`x1,c`x2 |})
+  show_property(label:string,f:CTL): void =
+    LET o=report_run(backend+": "+label,f,initial) IN skip
+  show_safety: void = LET o=report_run(backend+": invalid safety",invalid,initial) IN
+    safety_example(o,LAMBDA (s:state): position(0,decode(s))=trying AND
+                   position(1,decode(s))=critical,describe)
+  show_recurrence(p:process): void =
+    LET o=report_run(backend+format(": AG AF critical(~d)",p),recurrence(p),initial) IN
+    prog(println("[diagnostic WMC] EG not-critical: region for lasso extraction"),
+      LET avoid=time_profiler(eg(neg(at(p,critical)))`run(universe)) IN
+        liveness_example(o,universe,good(avoid),describe))
+  demo: void = println("Peterson / "+backend) &
+    show_property("mutual exclusion",mutex) &
+    show_property("request-response(0)",response(0)) &
+    show_property("request-response(1)",response(1)) &
+    show_property("AG EF critical(0)",possible_entry(0)) &
+    show_property("AG EF critical(1)",possible_entry(1)) &
+    show_safety & show_recurrence(0) & show_recurrence(1)
+  demo_check: void = LET o=report_run(backend+": mutual exclusion",mutex,initial) IN
+    report_check(mutex,initial,o)
+  evaluate(f:CTL): result = f`run(initial)
+  verdict(f:CTL): bool = same(good(evaluate(f)),initial)
+  accepts(f:CTL): bool = up?(check(f,initial,evaluate(f)))
+  mutex_test: _TEST_ verdict(mutex)
+  response0_test: _TEST_ verdict(response(0))
+  response1_test: _TEST_ verdict(response(1))
+  possible_entry0_test: _TEST_ verdict(possible_entry(0))
+  possible_entry1_test: _TEST_ verdict(possible_entry(1))
+  recurrence0_test: _TEST_ NOT verdict(recurrence(0))
+  recurrence1_test: _TEST_ NOT verdict(recurrence(1))
+  invalid_test: _TEST_ NOT verdict(invalid)
+  mutex_evidence_test: _TEST_ accepts(mutex)
+  response0_evidence_test: _TEST_ accepts(response(0))
+  response1_evidence_test: _TEST_ accepts(response(1))
+  possible_entry0_evidence_test: _TEST_ accepts(possible_entry(0))
+  possible_entry1_evidence_test: _TEST_ accepts(possible_entry(1))
+  recurrence0_evidence_test: _TEST_ accepts(recurrence(0))
+  recurrence1_evidence_test: _TEST_ accepts(recurrence(1))
+  invalid_evidence_test: _TEST_ accepts(invalid)
+  tampered_evidence_test: _TEST_ LET o=evaluate(mutex) IN
+    temporal_result?(o) AND NOT up?(check(mutex,initial,
+      temporal_result(existential(o),is_until(o),query(o),empty,
+        visited(o),stages(o),children(o))))
+END wmc_bdd_peterson
+
+wmc_bdd_peterson_naive: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  IMPORTING wmc_bdd_peterson[0]
+END wmc_bdd_peterson_naive
+
+wmc_bdd_peterson_arrays: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  IMPORTING wmc_bdd_peterson[1]
+END wmc_bdd_peterson_arrays
+
+wmc_bdd_peterson_shortcuts: THEORY
+BEGIN
+  bdd: LIBRARY = "../bdd"
+  IMPORTING wmc_bdd_peterson[2]
+END wmc_bdd_peterson_shortcuts

@@ -1,0 +1,50 @@
+cbdd_naive_pkg[
+  nvars: {n: pos_uint32 | n <= 32},
+  max_nodes: {m: pos_uint32 | 3 <= m AND m <= maxsize}
+]: THEORY
+BEGIN
+  IMPORTING cbdd_naive_core[nvars, max_nodes]
+
+  IMPORTING bdd_interface{{
+    bddvar := vid,
+    valuation := nvaluation,
+    cube := ncube,
+    perm := nperm,
+    bdd := nbdd,
+    read_var := abdd_read_var,
+    update_var := abdd_update_var,
+    cube_support := abdd_cube_support,
+    cube_value := abdd_cube_value,
+    cube_empty := abdd_cube_empty,
+    cube_insert := abdd_cube_insert,
+    force_cube := abdd_force_cube,
+    denote := nbdd_denote,
+    support := nbdd_support,
+    bdd_false := nbdd_false,
+    bdd_true := nbdd_true,
+    ithvar := nbdd_ithvar,
+    nithvar := nbdd_nithvar,
+    bdd_not := nbdd_not,
+    bdd_and := nbdd_and,
+    bdd_or := nbdd_or,
+    bdd_xor := nbdd_xor,
+    bdd_xnor := nbdd_xnor,
+    bdd_nand := nbdd_nand,
+    bdd_nor := nbdd_nor,
+    bdd_imp := nbdd_imp,
+    bdd_invimp := nbdd_invimp,
+    bdd_diff := nbdd_diff,
+    bdd_ite := nbdd_ite,
+    bdd_exists := nbdd_exists,
+    bdd_forall := nbdd_forall,
+    bdd_and_abstract := nbdd_and_abstract,
+    bdd_restrict := nbdd_restrict,
+    bdd_constrain := nbdd_constrain,
+    bdd_compose := nbdd_compose,
+    permute_var := abdd_permute_var,
+    inverse_perm := abdd_inverse_perm,
+    permute_valuation := abdd_permute_valuation,
+    bdd_permute := nbdd_permute,
+    pick_sat := nbdd_pick_sat
+  }}
+END cbdd_naive_pkg

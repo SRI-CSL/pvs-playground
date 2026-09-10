@@ -1,0 +1,217 @@
+cbdd_naive_core[
+  nvars: {n: pos_uint32 | n <= 32},
+  max_nodes: {m: pos_uint32 | 3 <= m AND m <= maxsize}
+]: THEORY
+BEGIN
+  IMPORTING abstract_bdd_core[nvars, max_nodes]
+
+  nbdd: TYPE = bdd
+  nvaluation: TYPE = valuation
+  ncube: TYPE = cube
+  nperm: TYPE = perm
+
+  f, g, h: VAR nbdd
+  sigma: VAR nvaluation
+  c: VAR ncube
+  p: VAR nperm
+  x: VAR vid
+  b: VAR bool
+
+  cube_var(x): ncube = abdd_cube_insert(abdd_cube_empty, x, TRUE)
+  cube_nvar(x): ncube = abdd_cube_insert(abdd_cube_empty, x, FALSE)
+
+  id_perm: nperm =
+    (# forward := (LAMBDA (x: vid): x),
+       backward := (LAMBDA (x: vid): x) #)
+
+  builder: TYPE =
+    [# next: used_count,
+       store: ARRAY[node_id -> node] #]
+
+  empty_builder: builder =
+    (# next := 2,
+       store := empty_nodes #)
+
+  pack_bdd(root: node_id, bld: builder, m: mask, o: order, inv: ARRAY[vid -> vid]): nbdd =
+    (# root := root,
+       used := bld`next,
+       nodes := bld`store,
+       support_mask := m,
+       ord := o,
+       inv := inv #)
+
+  alloc_node(bld: builder, x: vid, low, high: node_id): [builder, node_id] =
+    IF low = high THEN (bld, low)
+    ELSE
+      LET id: node_id = bld`next,
+          nd = (# top := x, low := low, high := high #)
+       IN (bld WITH [`next := bld`next + 1,
+                     `store(id) := nd],
+           id)
+    ENDIF
+
+  binop: TYPE = below(5)
+  bop_and: binop = 0
+  bop_or: binop = 1
+  bop_xor: binop = 2
+  bop_imp: binop = 3
+  bop_diff: binop = 4
+
+  bool_bin_eval(op: binop, p, q: bool): bool =
+    IF op = bop_and THEN p AND q
+    ELSIF op = bop_or THEN p OR q
+    ELSIF op = bop_xor THEN (p AND NOT q) OR (NOT p AND q)
+    ELSIF op = bop_imp THEN (NOT p) OR q
+    ELSE p AND NOT q
+    ENDIF
+
+  umode: TYPE = below(3)
+  um_copy: umode = 0
+  um_restrict: umode = 1
+  um_permute: umode = 2
+
+  unary_leaf_eval(mode: umode, f: nbdd, c: ncube, p: nperm, sigma: nvaluation): bool =
+    IF mode = um_copy THEN abdd_eval(f, sigma)
+    ELSIF mode = um_restrict THEN abdd_eval(f, abdd_force_cube(c, sigma))
+    ELSE abdd_eval(f, abdd_permute_valuation(p, sigma))
+    ENDIF
+
+  build_unary_rec(o: order, level: nat, prefix: ncube,
+                  mode: umode, f: nbdd, c: ncube, p: nperm, bld: builder): RECURSIVE [builder, node_id] =
+    IF level = nvars THEN
+      IF unary_leaf_eval(mode, f, c, p, abdd_force_cube(prefix, default_valuation))
+         THEN (bld, true_id)
+         ELSE (bld, false_id)
+      ENDIF
+    ELSE
+      LET x = o`seq(level),
+          c0 = abdd_cube_insert(prefix, x, FALSE),
+          (b1, low_id) = build_unary_rec(o, level + 1, c0, mode, f, c, p, bld),
+          c1 = abdd_cube_insert(prefix, x, TRUE),
+          (b2, high_id) = build_unary_rec(o, level + 1, c1, mode, f, c, p, b1)
+       IN alloc_node(b2, x, low_id, high_id)
+    ENDIF
+  MEASURE nvars - level
+
+  build_bin_rec(o: order, level: nat, prefix: ncube,
+                f, g: nbdd, op: binop, bld: builder): RECURSIVE [builder, node_id] =
+    IF level = nvars THEN
+      IF bool_bin_eval(op,
+                       abdd_eval(f, abdd_force_cube(prefix, default_valuation)),
+                       abdd_eval(g, abdd_force_cube(prefix, default_valuation)))
+         THEN (bld, true_id)
+         ELSE (bld, false_id)
+      ENDIF
+    ELSE
+      LET x = o`seq(level),
+          c0 = abdd_cube_insert(prefix, x, FALSE),
+          (b1, low_id) = build_bin_rec(o, level + 1, c0, f, g, op, bld),
+          c1 = abdd_cube_insert(prefix, x, TRUE),
+          (b2, high_id) = build_bin_rec(o, level + 1, c1, f, g, op, b1)
+       IN alloc_node(b2, x, low_id, high_id)
+    ENDIF
+  MEASURE nvars - level
+
+  reorder_support(f: nbdd, o: order): mask = f`support_mask
+
+  nbdd_false: nbdd = abdd_false
+  nbdd_true: nbdd = abdd_true
+  nbdd_ithvar(x): nbdd = abdd_ithvar(x)
+  nbdd_nithvar(x): nbdd = abdd_nithvar(x)
+
+  nbdd_copy_with_order(f: nbdd, o: order, inv: ARRAY[vid -> vid]): nbdd =
+    LET (bld, root) = build_unary_rec(o, 0, abdd_cube_empty, um_copy, f, abdd_cube_empty, id_perm, empty_builder)
+     IN pack_bdd(root, bld, reorder_support(f, o), o, inv)
+
+  nbdd_and(f, g): nbdd =
+    LET (bld, root) = build_bin_rec(f`ord, 0, abdd_cube_empty, f, g, bop_and, empty_builder)
+     IN pack_bdd(root, bld, mask_union(f`support_mask, g`support_mask), f`ord, f`inv)
+
+  nbdd_or(f, g): nbdd =
+    LET (bld, root) = build_bin_rec(f`ord, 0, abdd_cube_empty, f, g, bop_or, empty_builder)
+     IN pack_bdd(root, bld, mask_union(f`support_mask, g`support_mask), f`ord, f`inv)
+
+  nbdd_xor(f, g): nbdd =
+    LET (bld, root) = build_bin_rec(f`ord, 0, abdd_cube_empty, f, g, bop_xor, empty_builder)
+     IN pack_bdd(root, bld, mask_union(f`support_mask, g`support_mask), f`ord, f`inv)
+
+  nbdd_imp(f, g): nbdd =
+    LET (bld, root) = build_bin_rec(f`ord, 0, abdd_cube_empty, f, g, bop_imp, empty_builder)
+     IN pack_bdd(root, bld, mask_union(f`support_mask, g`support_mask), f`ord, f`inv)
+
+  nbdd_diff(f, g): nbdd =
+    LET (bld, root) = build_bin_rec(f`ord, 0, abdd_cube_empty, f, g, bop_diff, empty_builder)
+     IN pack_bdd(root, bld, mask_union(f`support_mask, g`support_mask), f`ord, f`inv)
+
+  nbdd_not(f): nbdd = nbdd_xor(f, nbdd_true)
+  nbdd_xnor(f, g): nbdd = nbdd_not(nbdd_xor(f, g))
+  nbdd_nand(f, g): nbdd = nbdd_not(nbdd_and(f, g))
+  nbdd_nor(f, g): nbdd = nbdd_not(nbdd_or(f, g))
+  nbdd_invimp(f, g): nbdd = nbdd_imp(g, f)
+
+  nbdd_ite(f, g, h): nbdd =
+    nbdd_or(nbdd_and(f, g), nbdd_and(nbdd_not(f), h))
+
+  nbdd_restrict(f, c): nbdd =
+    LET (bld, root) = build_unary_rec(f`ord, 0, abdd_cube_empty, um_restrict, f, c, id_perm, empty_builder)
+     IN pack_bdd(root, bld, mask_diff(f`support_mask, c`support_mask), f`ord, f`inv)
+
+  nbdd_constrain(f, c): nbdd = nbdd_restrict(f, c)
+
+  mask_permute(m: mask, p: nperm): mask =
+    (LAMBDA x: m(abdd_permute_var(p, x)))
+
+  nbdd_permute(f, p): nbdd =
+    LET (bld, root) = build_unary_rec(f`ord, 0, abdd_cube_empty, um_permute, f, abdd_cube_empty, p, empty_builder)
+     IN pack_bdd(root, bld, mask_permute(f`support_mask, p), f`ord, f`inv)
+
+  nbdd_exists_rec(f: nbdd, c: ncube, level: nat): RECURSIVE nbdd =
+    IF level = nvars THEN f
+    ELSE
+      LET x = f`ord`seq(level)
+       IN IF c`support_mask(x)
+             THEN nbdd_exists_rec(nbdd_or(nbdd_restrict(f, cube_var(x)),
+                                          nbdd_restrict(f, cube_nvar(x))),
+                                  c, level + 1)
+             ELSE nbdd_exists_rec(f, c, level + 1)
+          ENDIF
+    ENDIF
+  MEASURE nvars - level
+
+  nbdd_forall_rec(f: nbdd, c: ncube, level: nat): RECURSIVE nbdd =
+    IF level = nvars THEN f
+    ELSE
+      LET x = f`ord`seq(level)
+       IN IF c`support_mask(x)
+             THEN nbdd_forall_rec(nbdd_and(nbdd_restrict(f, cube_var(x)),
+                                           nbdd_restrict(f, cube_nvar(x))),
+                                  c, level + 1)
+             ELSE nbdd_forall_rec(f, c, level + 1)
+          ENDIF
+    ENDIF
+  MEASURE nvars - level
+
+  nbdd_exists(c, f): nbdd = nbdd_exists_rec(f, c, 0)
+  nbdd_forall(c, f): nbdd = nbdd_forall_rec(f, c, 0)
+  nbdd_and_abstract(f, g, c): nbdd = nbdd_exists(c, nbdd_and(f, g))
+
+  nbdd_compose(f, x, g): nbdd =
+    nbdd_ite(g, nbdd_restrict(f, cube_var(x)), nbdd_restrict(f, cube_nvar(x)))
+
+  nbdd_swap_adjacent(f, (i: nat | i + 1 < nvars)): nbdd =
+    LET o = abdd_swap_adjacent_order(f`ord, i),
+        inv = f`inv WITH
+                [(f`ord`seq(i)) := i + 1,
+                 (f`ord`seq(i + 1)) := i]
+     IN nbdd_copy_with_order(f, o, inv)
+
+  nbdd_reverse_order(f): nbdd =
+    LET o = abdd_reverse_order(f`ord),
+        inv = (LAMBDA x: nvars - 1 - f`inv(x))
+     IN nbdd_copy_with_order(f, o, inv)
+
+  nbdd_eval(f, sigma): bool = abdd_eval(f, sigma)
+  nbdd_denote(f): predicate = abdd_denote(f)
+  nbdd_support(f): varset = abdd_support(f)
+  nbdd_pick_sat(f: {f: nbdd | abdd_sat_id(f, f`root)}): valuation = abdd_pick_sat(f)
+END cbdd_naive_core

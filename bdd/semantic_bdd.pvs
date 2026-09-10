@@ -1,0 +1,243 @@
+semantic_bdd_core[V: TYPE+]: THEORY
+BEGIN
+  IMPORTING finite_sets[V], sets_lemmas[[V -> bool]], sets_lemmas[V]
+
+  valuation: TYPE = [V -> bool]
+  predicate: TYPE = set[valuation]
+  varset: TYPE = finite_set[V]
+
+  sigma, tau: VAR valuation
+  x, y, z: VAR V
+  b: VAR bool
+
+  sbdd_read_var(sigma, x): bool = sigma(x)
+
+  sbdd_update_var(sigma, x, b): valuation = sigma WITH [(x) := b]
+
+  same_outside(S: set[V], sigma, tau): bool =
+    FORALL x: NOT S(x) IMPLIES sigma(x) = tau(x)
+
+  support_sound?(p: predicate, S: set[V]): bool =
+    FORALL sigma, tau:
+      same_outside(S, sigma, tau) IMPLIES p(sigma) = p(tau)
+
+  cube: TYPE =
+    [# vars: varset,
+       value: [(vars) -> bool] #]
+
+  c: VAR cube
+
+  sbdd_cube_support(c): varset = c`vars
+
+  sbdd_cube_value(c, (x: V | sbdd_cube_support(c)(x))): bool = c`value(x)
+
+  sbdd_cube_empty: cube =
+    (# vars := emptyset[V],
+       value := (LAMBDA (x: (emptyset[V])): TRUE) #)
+
+  sbdd_cube_insert(c, (x: V | NOT sbdd_cube_support(c)(x)), b): cube =
+    (# vars := add(x, sbdd_cube_support(c)),
+       value :=
+         (LAMBDA (y: (add(x, sbdd_cube_support(c)))):
+            IF y = x THEN b ELSE sbdd_cube_value(c, y) ENDIF) #)
+
+  sbdd_force_cube(c, sigma): valuation =
+    (LAMBDA x: IF sbdd_cube_support(c)(x) THEN sbdd_cube_value(c, x) ELSE sigma(x) ENDIF)
+
+  perm_rep: TYPE =
+    [# forward: [V -> V],
+       backward: [V -> V] #]
+
+  perm_wf?(p: perm_rep): bool =
+    FORALL x:
+      p`backward(p`forward(x)) = x AND
+      p`forward(p`backward(x)) = x
+
+  perm: TYPE = (perm_wf?)
+
+  p: VAR perm
+
+  sbdd_permute_var(p, x): V = p`forward(x)
+
+  sbdd_inverse_perm(p): perm =
+    (# forward := p`backward,
+       backward := p`forward #)
+
+  sbdd_permute_valuation(p, sigma): valuation =
+    (LAMBDA x: sigma(sbdd_permute_var(p, x)))
+
+  bdd_rep: TYPE =
+    [# den: predicate,
+       vars: varset #]
+
+  bdd_wf?(f: bdd_rep): bool = support_sound?(f`den, f`vars)
+
+  bdd: TYPE = (bdd_wf?)
+
+  f, g, h: VAR bdd
+
+  sbdd_denote(f): predicate = f`den
+  sbdd_support(f): varset = f`vars
+
+  sbdd_false: bdd =
+    (# den := emptyset[valuation],
+       vars := emptyset[V] #)
+
+  sbdd_true: bdd =
+    (# den := fullset[valuation],
+       vars := emptyset[V] #)
+
+  sbdd_ithvar(x): bdd =
+    (# den := { sigma | sigma(x) },
+       vars := singleton(x) #)
+
+  sbdd_nithvar(x): bdd =
+    (# den := { sigma | NOT sigma(x) },
+       vars := singleton(x) #)
+
+  sbdd_not(f): bdd =
+    (# den := complement(sbdd_denote(f)),
+       vars := sbdd_support(f) #)
+
+  sbdd_and(f, g): bdd =
+    (# den := intersection(sbdd_denote(f), sbdd_denote(g)),
+       vars := union(sbdd_support(f), sbdd_support(g)) #)
+
+  sbdd_or(f, g): bdd =
+    (# den := union(sbdd_denote(f), sbdd_denote(g)),
+       vars := union(sbdd_support(f), sbdd_support(g)) #)
+
+  sbdd_xor(f, g): bdd =
+    (# den := union(intersection(sbdd_denote(f), complement(sbdd_denote(g))),
+                    intersection(complement(sbdd_denote(f)), sbdd_denote(g))),
+       vars := union(sbdd_support(f), sbdd_support(g)) #)
+
+  sbdd_xnor(f, g): bdd =
+    (# den := complement(sbdd_denote(sbdd_xor(f, g))),
+       vars := union(sbdd_support(f), sbdd_support(g)) #)
+
+  sbdd_nand(f, g): bdd =
+    (# den := complement(sbdd_denote(sbdd_and(f, g))),
+       vars := union(sbdd_support(f), sbdd_support(g)) #)
+
+  sbdd_nor(f, g): bdd =
+    (# den := complement(sbdd_denote(sbdd_or(f, g))),
+       vars := union(sbdd_support(f), sbdd_support(g)) #)
+
+  sbdd_imp(f, g): bdd =
+    (# den := union(complement(sbdd_denote(f)), sbdd_denote(g)),
+       vars := union(sbdd_support(f), sbdd_support(g)) #)
+
+  sbdd_invimp(f, g): bdd =
+    (# den := union(sbdd_denote(f), complement(sbdd_denote(g))),
+       vars := union(sbdd_support(f), sbdd_support(g)) #)
+
+  sbdd_diff(f, g): bdd =
+    (# den := difference(sbdd_denote(f), sbdd_denote(g)),
+       vars := union(sbdd_support(f), sbdd_support(g)) #)
+
+  sbdd_ite(f, g, h): bdd =
+    (# den := union(intersection(sbdd_denote(f), sbdd_denote(g)),
+                    intersection(complement(sbdd_denote(f)), sbdd_denote(h))),
+       vars := union(sbdd_support(f), union(sbdd_support(g), sbdd_support(h))) #)
+
+  sbdd_exists(c, f): bdd =
+    (# den :=
+         { sigma |
+             EXISTS tau:
+               same_outside(sbdd_cube_support(c), sigma, tau) AND sbdd_denote(f)(tau) },
+       vars := difference(sbdd_support(f), sbdd_cube_support(c)) #)
+
+  sbdd_forall(c, f): bdd =
+    (# den :=
+         { sigma |
+             FORALL tau:
+               same_outside(sbdd_cube_support(c), sigma, tau) IMPLIES sbdd_denote(f)(tau) },
+       vars := difference(sbdd_support(f), sbdd_cube_support(c)) #)
+
+  sbdd_and_abstract(f, g, c): bdd =
+    (# den :=
+         { sigma |
+             EXISTS tau:
+               same_outside(sbdd_cube_support(c), sigma, tau) AND
+               sbdd_denote(f)(tau) AND sbdd_denote(g)(tau) },
+       vars := difference(union(sbdd_support(f), sbdd_support(g)), sbdd_cube_support(c)) #)
+
+  sbdd_restrict(f, c): bdd =
+    (# den := { sigma | sbdd_denote(f)(sbdd_force_cube(c, sigma)) },
+       vars := difference(sbdd_support(f), sbdd_cube_support(c)) #)
+
+  sbdd_constrain(f, c): bdd = sbdd_restrict(f, c)
+
+  sbdd_compose(f, x, g): bdd =
+    (# den := { sigma | sbdd_denote(f)(sbdd_update_var(sigma, x, sbdd_denote(g)(sigma))) },
+       vars := union(difference(sbdd_support(f), singleton(x)), sbdd_support(g)) #)
+
+  sbdd_permute(f, p): bdd =
+    (# den := { sigma | sbdd_denote(f)(sbdd_permute_valuation(p, sigma)) },
+       vars := image(LAMBDA (x: V): p`backward(x), sbdd_support(f)) #)
+
+  sbdd_pick_sat(f: { f: bdd | nonempty?(sbdd_denote(f)) }): valuation =
+    choose(sbdd_denote(f))
+END semantic_bdd_core
+
+
+semantic_bdd_pkg[V: TYPE+]: THEORY
+BEGIN
+  IMPORTING semantic_bdd_core[V]
+
+  sbdd_valuation: TYPE = valuation
+  sbdd_cube: TYPE = cube
+  sbdd_perm: TYPE = perm
+  sbdd_bdd: TYPE = bdd
+
+  sigma, tau: VAR sbdd_valuation
+  x, y: VAR V
+  b: VAR bool
+  c: VAR sbdd_cube
+  p: VAR sbdd_perm
+  f, g, h: VAR sbdd_bdd
+
+  IMPORTING bdd_interface{{
+    bddvar := V,
+    valuation := sbdd_valuation,
+    cube := sbdd_cube,
+    perm := sbdd_perm,
+    bdd := sbdd_bdd,
+    read_var := sbdd_read_var,
+    update_var := sbdd_update_var,
+    cube_support := sbdd_cube_support,
+    cube_value := sbdd_cube_value,
+    cube_empty := sbdd_cube_empty,
+    cube_insert := sbdd_cube_insert,
+    force_cube := sbdd_force_cube,
+    denote := sbdd_denote,
+    support := sbdd_support,
+    bdd_false := sbdd_false,
+    bdd_true := sbdd_true,
+    ithvar := sbdd_ithvar,
+    nithvar := sbdd_nithvar,
+    bdd_not := sbdd_not,
+    bdd_and := sbdd_and,
+    bdd_or := sbdd_or,
+    bdd_xor := sbdd_xor,
+    bdd_xnor := sbdd_xnor,
+    bdd_nand := sbdd_nand,
+    bdd_nor := sbdd_nor,
+    bdd_imp := sbdd_imp,
+    bdd_invimp := sbdd_invimp,
+    bdd_diff := sbdd_diff,
+    bdd_ite := sbdd_ite,
+    bdd_exists := sbdd_exists,
+    bdd_forall := sbdd_forall,
+    bdd_and_abstract := sbdd_and_abstract,
+    bdd_restrict := sbdd_restrict,
+    bdd_constrain := sbdd_constrain,
+    bdd_compose := sbdd_compose,
+    permute_var := sbdd_permute_var,
+    inverse_perm := sbdd_inverse_perm,
+    permute_valuation := sbdd_permute_valuation,
+    bdd_permute := sbdd_permute,
+    pick_sat := sbdd_pick_sat
+  }}
+END semantic_bdd_pkg

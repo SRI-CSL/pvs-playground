@@ -1,0 +1,712 @@
+(|cbdd_array_opt|
+ (|hash_rank_TCC1| 0
+  (|hash_rank_TCC1-1| NIL 3983463968
+   ("" (SKEEP :PREDS? T)
+    (("" (LIFT-IF)
+      (("" (GROUND)
+        (("1" (ALL-TYPEPREDS)
+          (("1" (ASSERT)
+            (("1" (GRIND :THEORIES ("real_props" "exp2")) NIL NIL)) NIL))
+          NIL)
+         ("2" (ALL-TYPEPREDS)
+          (("2" (GRIND :THEORIES ("real_props" "exp2")) NIL NIL)) NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|cbdd| TYPE-EQ-DECL NIL |cbdd_array_core| NIL)
+    (|bdd_wf?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|bdd_rep| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|used_count| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|mask| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|node| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|node_id| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|active?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|node_low| CONST-DECL "node_id" |abstract_bdd_core| NIL)
+    (|node_high| CONST-DECL "node_id" |abstract_bdd_core| NIL)
+    (|node_var| CONST-DECL "vid" |abstract_bdd_core| NIL)
+    (|local_ordered?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|structural_wf?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|false_id| CONST-DECL "node_id" |abstract_bdd_core| NIL)
+    (|true_id| CONST-DECL "node_id" |abstract_bdd_core| NIL)
+    (|abdd_read_var| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|abdd_eval_id| DEF-DECL "bool" |abstract_bdd_core| NIL)
+    (|abdd_eval| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|same_outside_mask| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|support_sound_mask?| CONST-DECL "bool" |abstract_bdd_core| NIL))
+   NIL
+   (|hash_rank| SUBTYPE
+    "(number_fields.+)(number_fields.*(2, cbdd_array_opt.u`regular`root), IF cbdd_array_opt.u`complemented THEN 1 ELSE 0 ENDIF)"
+    "uint32" (171 25 171 83))))
+ (|empty_unique_entry_TCC1| 0
+  (|empty_unique_entry_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL
+   NIL
+   (|empty_unique_entry| SUBTYPE "0" "vid[nvars, max_nodes]" (210 24 210 25))))
+ (|roots_equiv?_TCC1| 0
+  (|roots_equiv?_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|roots_equiv?| SUBTYPE "cbdd_array_opt.k" "below[rs2`length]"
+    (260 46 260 47))))
+ (|opt_swap_adjacent_TCC1| 0
+  (|opt_swap_adjacent_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|opt_swap_adjacent| SUBTYPE "cbdd_array_opt.i"
+    "{i: naturalnumbers.nat | reals.<((number_fields.+)(1, i), cbdd_array_opt.nvars)}"
+    (266 54 266 55))))
+ (|swap_inverse_TCC1| 0
+  (|swap_inverse_TCC1-1| NIL 3983463968
+   ("" (SKEEP :PREDS? T)
+    (("" (GRIND :THEORIES ("real_props" "exp2"))
+      (("" (ALL-TYPEPREDS) (("" (ASSERT) NIL NIL)) NIL)) NIL))
+    NIL)
+   ((|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order_complete?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|arrayseq| TYPE-EQ-DECL NIL |array_sequences| NIL))
+   NIL
+   (|swap_inverse| SUBTYPE "cbdd_array_opt.i" "below[m`current_order`length]"
+    (281 28 281 29))))
+ (|swap_inverse_TCC2| 0
+  (|swap_inverse_TCC2-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|swap_inverse| SUBTYPE "(number_fields.+)(cbdd_array_opt.i, 1)"
+    "vid[nvars, max_nodes]" (281 35 281 40))))
+ (|swap_inverse_TCC3| 0
+  (|swap_inverse_TCC3-1| NIL 3983463968
+   ("" (SKEEP :PREDS? T)
+    (("" (GRIND :THEORIES ("real_props" "exp2"))
+      (("" (ALL-TYPEPREDS) (("" (ASSERT) NIL NIL)) NIL)) NIL))
+    NIL)
+   ((|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order_complete?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|arrayseq| TYPE-EQ-DECL NIL |array_sequences| NIL))
+   NIL
+   (|swap_inverse| SUBTYPE "(number_fields.+)(cbdd_array_opt.i, 1)"
+    "below[m`current_order`length]" (282 28 282 33))))
+ (|swap_inverse_TCC4| 0
+  (|swap_inverse_TCC4-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|swap_inverse| SUBTYPE "cbdd_array_opt.i" "vid[nvars, max_nodes]"
+    (282 39 282 40))))
+ (|reverse_inverse_TCC1| 0
+  (|reverse_inverse_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL))
+   NIL
+   (|reverse_inverse| SUBTYPE
+    "(number_fields.-)((number_fields.-)(cbdd_array_opt.nvars, 1), cbdd_array_opt.m`inverse_level(cbdd_array_opt.x))"
+    "vid[nvars, max_nodes]" (285 15 285 45))))
+ (|bdd_size_TCC1| 0
+  (|bdd_size_TCC1-1| NIL 3983463968
+   ("" (SKEEP :PREDS? T) (("" (ALL-TYPEPREDS) (("" (ASSERT) NIL NIL)) NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|total_order?| CONST-DECL "bool" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|obdd| TYPE-EQ-DECL NIL |cbdd_array_opt| NIL)
+    (|cbdd| TYPE-EQ-DECL NIL |cbdd_array_core| NIL)
+    (|bdd_wf?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|bdd_rep| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|used_count| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|mask| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|node| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|node_id| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|nvars| FORMAL-CONST-DECL "{n: pos_uint32 | n <= 32}" |cbdd_array_opt|
+     NIL)
+    (|max_nodes| FORMAL-CONST-DECL "{m: pos_uint32 | 3 <= m AND m <= exp2(28)}"
+     |cbdd_array_opt| NIL)
+    (AND CONST-DECL "[bool, bool -> bool]" |booleans| NIL)
+    (|unique_slots| FORMAL-CONST-DECL
+     "{m: pos_uint32 | 1 <= m AND m <= exp2(28)}" |cbdd_array_opt| NIL)
+    (|cache_slots| FORMAL-CONST-DECL
+     "{m: pos_uint32 | 1 <= m AND m <= exp2(28)}" |cbdd_array_opt| NIL)
+    (|pos_uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "bool" |reals| NIL)
+    (- CONST-DECL "[numfield, numfield -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|even?| CONST-DECL "bool" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "bool" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "bool" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "bool" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "posnat" |exp2| NIL)
+    (|odd?| CONST-DECL "bool" |integers| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   NIL
+   (|bdd_size| SUBTYPE "cbdd_array_opt.u`regular`used" "uint32"
+    (287 24 287 38))))
+ (|root_cost_prefix_TCC1| 0
+  (|root_cost_prefix_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|root_cost_prefix| SUBTYPE "(number_fields.-)(cbdd_array_opt.n, 1)" "nat"
+    (291 30 291 35))))
+ (|root_cost_prefix_TCC2| 0
+  (|root_cost_prefix_TCC2-1| NIL 3983463968 ("" (TERMINATION-TCC) NIL NIL) NIL
+   NIL
+   (|root_cost_prefix| TERMINATION
+    "cbdd_array_opt.root_cost_prefix(cbdd_array_opt.rs, (number_fields.-)(cbdd_array_opt.n, 1))"
+    "NIL" (291 9 291 36))))
+ (|root_cost_prefix_TCC3| 0
+  (|root_cost_prefix_TCC3-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|root_cost_prefix| SUBTYPE "(number_fields.-)(cbdd_array_opt.n, 1)"
+    "below[rs`length]" (291 55 291 60))))
+ (|root_cost_prefix_TCC4| 0
+  (|root_cost_prefix_TCC4-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|root_cost_prefix| SUBTYPE
+    "(number_fields.+)(cbdd_array_opt.root_cost_prefix(cbdd_array_opt.rs, (number_fields.-)(cbdd_array_opt.n, 1)), cbdd_array_opt.bdd_size(cbdd_array_opt.rs`seq((number_fields.-)(cbdd_array_opt.n, 1))))"
+    "uint32" (291 9 291 62))))
+ (|unique_hash_TCC1| 0
+  (|unique_hash_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|unique_hash| SUBTYPE "cbdd_array_opt.unique_slots" "nonzero_integer"
+    (298 43 298 55))))
+ (|cache_hash_TCC1| 0
+  (|cache_hash_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|cache_hash| SUBTYPE "cbdd_array_opt.cache_slots" "nonzero_integer"
+    (301 42 301 53))))
+ (|unique_insert_TCC1| 0
+  (|unique_insert_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|unique_insert| SUBTYPE
+    "(number_fields.+)(cbdd_array_opt.m`unique_inserts, 1)" "uint32"
+    (330 35 330 55))))
+ (|unique_insert_TCC2| 0
+  (|unique_insert_TCC2-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL))
+   NIL
+   (|unique_insert| SUBTYPE
+    "cbdd_array_opt.m WITH [`unique(cbdd_array_opt.slot) := cbdd_array_opt.entry, `unique_inserts := (number_fields.+)(cbdd_array_opt.m`unique_inserts, 1)]"
+    "manager" (329 8 330 56))))
+ (|cache_insert_TCC1| 0
+  (|cache_insert_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|cache_insert| SUBTYPE
+    "(number_fields.+)(cbdd_array_opt.m`cache_inserts, 1)" "uint32"
+    (340 34 340 53))))
+ (|cache_insert_TCC2| 0
+  (|cache_insert_TCC2-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL))
+   NIL
+   (|cache_insert| SUBTYPE
+    "cbdd_array_opt.m WITH [`cache(cbdd_array_opt.slot) := cbdd_array_opt.entry, `cache_inserts := (number_fields.+)(cbdd_array_opt.m`cache_inserts, 1)]"
+    "manager" (339 8 340 54))))
+ (|mk_node_cached_TCC1| 0
+  (|mk_node_cached_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|mk_node_cached| SUBTYPE
+    "(number_fields.+)(cbdd_array_opt.m`unique_lookups, 1)" "uint32"
+    (343 40 343 60))))
+ (|mk_node_cached_TCC2| 0
+  (|mk_node_cached_TCC2-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL))
+   NIL
+   (|mk_node_cached| SUBTYPE "cbdd_array_opt.m0" "manager" (344 36 344 38))))
+ (|mk_node_cached_TCC3| 0
+  (|mk_node_cached_TCC3-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL))
+   NIL
+   (|mk_node_cached| SUBTYPE "cbdd_array_opt.m0" "manager" (345 26 345 28))))
+ (|mk_node_cached_TCC4| 0
+  (|mk_node_cached_TCC4-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|mk_node_cached| SUBTYPE
+    "(number_fields.+)(cbdd_array_opt.m0`unique_hits, 1)" "uint32"
+    (346 36 346 54))))
+ (|mk_node_cached_TCC5| 0
+  (|mk_node_cached_TCC5-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL))
+   NIL
+   (|mk_node_cached| SUBTYPE
+    "cbdd_array_opt.m0 WITH [`unique_hits := (number_fields.+)(cbdd_array_opt.m0`unique_hits, 1)]"
+    "manager" (346 11 346 55))))
+ (|cached_binop_TCC1| 0
+  (|cached_binop_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|cached_binop| SUBTYPE
+    "(number_fields.+)(cbdd_array_opt.m`cache_lookups, 1)" "uint32"
+    (355 39 355 58))))
+ (|cached_binop_TCC2| 0
+  (|cached_binop_TCC2-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL))
+   NIL (|cached_binop| SUBTYPE "cbdd_array_opt.m0" "manager" (356 22 356 24))))
+ (|cached_binop_TCC3| 0
+  (|cached_binop_TCC3-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|cached_binop| SUBTYPE "(number_fields.+)(cbdd_array_opt.m0`cache_hits, 1)"
+    "uint32" (357 35 357 52))))
+ (|cached_binop_TCC4| 0
+  (|cached_binop_TCC4-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL))
+   NIL
+   (|cached_binop| SUBTYPE
+    "cbdd_array_opt.m0 WITH [`cache_hits := (number_fields.+)(cbdd_array_opt.m0`cache_hits, 1)]"
+    "manager" (357 11 357 53))))
+ (|swap_manager_TCC1| 0
+  (|swap_manager_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|swap_manager| SUBTYPE
+    "(number_fields.+)(cbdd_array_opt.m`reorder_rounds, 1)" "uint32"
+    (381 25 381 45))))
+ (|swap_manager_TCC2| 0
+  (|swap_manager_TCC2-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|swap_manager| SUBTYPE
+    "(# current_order := abstract_bdd_core[cbdd_array_opt.nvars, cbdd_array_opt.max_nodes].abdd_swap_adjacent_order(cbdd_array_opt.m`current_order, cbdd_array_opt.i), inverse_level := cbdd_array_opt.swap_inverse(cbdd_array_opt.m, cbdd_array_opt.i), roots := cbdd_array_opt.rootseq_swap_adjacent(cbdd_array_opt.m`roots, cbdd_array_opt.i), unique := cbdd_array_opt.empty_unique_table, cache := cbdd_array_opt.empty_cache_table, cache_lookups := cbdd_array_opt.m`cache_lookups, cache_hits := cbdd_array_opt.m`cache_hits, cache_inserts := cbdd_array_opt.m`cache_inserts, unique_lookups := cbdd_array_opt.m`unique_lookups, unique_hits := cbdd_array_opt.m`unique_hits, unique_inserts := cbdd_array_opt.m`unique_inserts, reorder_rounds := (number_fields.+)(cbdd_array_opt.m`reorder_rounds, 1) #)"
+    "manager" (370 4 381 48))))
+ (|reverse_manager_TCC1| 0
+  (|reverse_manager_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|reverse_manager| SUBTYPE
+    "(number_fields.+)(cbdd_array_opt.m`reorder_rounds, 1)" "uint32"
+    (395 25 395 45))))
+ (|reverse_manager_TCC2| 0
+  (|reverse_manager_TCC2-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|abdd_reverse_order| CONST-DECL "order" |abstract_bdd_core| NIL)
+    (|abdd_cube_empty| CONST-DECL "cube" |abstract_bdd_core| NIL)
+    (|um_copy| CONST-DECL "umode" |cbdd_naive_core| NIL)
+    (|id_perm| CONST-DECL "nperm" |cbdd_naive_core| NIL)
+    (|empty_builder| CONST-DECL "builder" |cbdd_naive_core| NIL)
+    (|reorder_support| CONST-DECL "mask" |cbdd_naive_core| NIL)
+    (|pack_bdd| CONST-DECL "nbdd" |cbdd_naive_core| NIL)
+    (|nbdd_copy_with_order| CONST-DECL "nbdd" |cbdd_naive_core| NIL)
+    (|nbdd_reverse_order| CONST-DECL "nbdd" |cbdd_naive_core| NIL)
+    (|cbdd_reverse_order| CONST-DECL "cbdd" |cbdd_array_core| NIL)
+    (|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL))
+   NIL
+   (|reverse_manager| SUBTYPE
+    "(# current_order := abstract_bdd_core[cbdd_array_opt.nvars, cbdd_array_opt.max_nodes].abdd_reverse_order(cbdd_array_opt.m`current_order), inverse_level := cbdd_array_opt.reverse_inverse(cbdd_array_opt.m), roots := cbdd_array_opt.rootseq_reverse(cbdd_array_opt.m`roots), unique := cbdd_array_opt.empty_unique_table, cache := cbdd_array_opt.empty_cache_table, cache_lookups := cbdd_array_opt.m`cache_lookups, cache_hits := cbdd_array_opt.m`cache_hits, cache_inserts := cbdd_array_opt.m`cache_inserts, unique_lookups := cbdd_array_opt.m`unique_lookups, unique_hits := cbdd_array_opt.m`unique_hits, unique_inserts := cbdd_array_opt.m`unique_inserts, reorder_rounds := (number_fields.+)(cbdd_array_opt.m`reorder_rounds, 1) #)"
+    "manager" (384 4 395 48))))
+ (|sift_left_TCC1| 0
+  (|sift_left_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|sift_left| SUBTYPE "(number_fields.-)(cbdd_array_opt.i, 1)"
+    "{i: naturalnumbers.nat | reals.<((number_fields.+)(i, 1), cbdd_array_opt.nvars)}"
+    (400 31 400 36))))
+ (|sift_right_TCC1| 0
+  (|sift_right_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|sift_right| SUBTYPE
+    "(number_fields.-)(cbdd_array_opt.nvars, cbdd_array_opt.i)" "naturalnumber"
+    (417 10 417 19))))
+ (|sift_right_TCC2| 0
+  (|sift_right_TCC2-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|cbdd_swap_adjacent| CONST-DECL "cbdd" |cbdd_array_core| NIL)
+    (|nbdd_swap_adjacent| CONST-DECL "nbdd" |cbdd_naive_core| NIL)
+    (|nbdd_copy_with_order| CONST-DECL "nbdd" |cbdd_naive_core| NIL)
+    (|pack_bdd| CONST-DECL "nbdd" |cbdd_naive_core| NIL)
+    (|reorder_support| CONST-DECL "mask" |cbdd_naive_core| NIL)
+    (|empty_builder| CONST-DECL "builder" |cbdd_naive_core| NIL)
+    (|id_perm| CONST-DECL "nperm" |cbdd_naive_core| NIL)
+    (|um_copy| CONST-DECL "umode" |cbdd_naive_core| NIL)
+    (|abdd_cube_empty| CONST-DECL "cube" |abstract_bdd_core| NIL)
+    (|abdd_swap_adjacent_order| CONST-DECL "order" |abstract_bdd_core| NIL)
+    (|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL))
+   NIL
+   (|sift_right| SUBTYPE "(number_fields.+)(cbdd_array_opt.i, 1)"
+    "{i: naturalnumbers.nat | reals.<(i, cbdd_array_opt.nvars)}"
+    (413 32 413 37))))
+ (|sift_right_TCC3| 0
+  (|sift_right_TCC3-1| NIL 3983463968 ("" (TERMINATION-TCC) NIL NIL)
+   ((|abdd_swap_adjacent_order| CONST-DECL "order" |abstract_bdd_core| NIL)
+    (|abdd_cube_empty| CONST-DECL "cube" |abstract_bdd_core| NIL)
+    (|um_copy| CONST-DECL "umode" |cbdd_naive_core| NIL)
+    (|id_perm| CONST-DECL "nperm" |cbdd_naive_core| NIL)
+    (|empty_builder| CONST-DECL "builder" |cbdd_naive_core| NIL)
+    (|abdd_cube_insert| CONST-DECL "cube" |abstract_bdd_core| NIL)
+    (|alloc_node| CONST-DECL "[builder, node_id]" |cbdd_naive_core| NIL)
+    (|build_unary_rec| DEF-DECL "[builder, node_id]" |cbdd_naive_core| NIL)
+    (|reorder_support| CONST-DECL "mask" |cbdd_naive_core| NIL)
+    (|pack_bdd| CONST-DECL "nbdd" |cbdd_naive_core| NIL)
+    (|nbdd_copy_with_order| CONST-DECL "nbdd" |cbdd_naive_core| NIL)
+    (|nbdd_swap_adjacent| CONST-DECL "nbdd" |cbdd_naive_core| NIL)
+    (|cbdd_swap_adjacent| CONST-DECL "cbdd" |cbdd_array_core| NIL))
+   NIL
+   (|sift_right| TERMINATION
+    "cbdd_array_opt.sift_right(cbdd_array_opt.m1, (number_fields.+)(cbdd_array_opt.i, 1))"
+    "NIL" (413 17 413 38))))
+ (|sift_right_TCC4| 0
+  (|sift_right_TCC4-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL)
+   ((|order_inverse_ok?| CONST-DECL "bool" |abstract_bdd_core| NIL)
+    (|vid| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL)
+    (|order| TYPE-EQ-DECL NIL |abstract_bdd_core| NIL))
+   NIL
+   (|sift_right| SUBTYPE "cbdd_array_opt.i"
+    "{i: naturalnumbers.nat | reals.<((number_fields.+)(i, 1), cbdd_array_opt.nvars)}"
+    (411 31 411 32))))
+ (|opt_pick_sat_TCC1| 0
+  (|opt_pick_sat_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|opt_pick_sat| SUBTYPE "cbdd_array_opt.opt_materialize(cbdd_array_opt.f)"
+    "{f: cbdd_array_core[cbdd_array_opt.nvars, cbdd_array_opt.max_nodes, cbdd_array_opt.unique_slots, cbdd_array_opt.cache_slots].cbdd | abstract_bdd_core[cbdd_array_opt.nvars, cbdd_array_opt.max_nodes].abdd_sat_id(f, f`root)}"
+    (431 18 431 36))))
+ (|swap_manager_preserves_roots_TCC1| 0
+  (|swap_manager_preserves_roots_TCC1-1| NIL 3983463968
+   ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|swap_manager_preserves_roots| SUBTYPE "cbdd_array_opt.i"
+    "{i: naturalnumbers.nat | reals.<((number_fields.+)(i, 1), cbdd_array_opt.nvars)}"
+    (443 36 443 37))))
+ (|sift_var_not_worse_TCC1| 0
+  (|sift_var_not_worse_TCC1-1| NIL 3983463968 ("" (SUBTYPE-TCC) NIL NIL) NIL
+   NIL
+   (|sift_var_not_worse| SUBTYPE "cbdd_array_opt.i"
+    "{i: naturalnumbers.nat | reals.<(i, cbdd_array_opt.nvars)}"
+    (449 29 449 30)))))
+(|cbdd_array_opt_pkg|
+ (|IMP_bdd_interface_TCC1| 0
+  (|IMP_bdd_interface_TCC1-1| NIL 3983463977 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| SUBTYPE
+    "cbdd_array_opt[cbdd_array_opt_pkg.nvars, cbdd_array_opt_pkg.max_nodes, cbdd_array_opt_pkg.unique_slots, cbdd_array_opt_pkg.cache_slots].opt_pick_sat"
+    "[{f: obdd[cbdd_array_opt_pkg.nvars, cbdd_array_opt_pkg.max_nodes, cbdd_array_opt_pkg.unique_slots, cbdd_array_opt_pkg.cache_slots] | bdd_interface.sat?(f)} -> cvaluation[nvars, max_nodes, unique_slots, cache_slots]]"
+    (502 16 502 28))))
+ (|IMP_bdd_interface_bddvar_nonempty_TCC1| 0
+  (|IMP_bdd_interface_bddvar_nonempty_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "bddvar_nonempty: AXIOM EXISTS (bddvar1: bdd_interface.bddvar): booleans.TRUE;"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_perm_nonempty_TCC1| 0
+  (|IMP_bdd_interface_perm_nonempty_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "perm_nonempty: AXIOM EXISTS (perm1: bdd_interface.perm): booleans.TRUE;"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_valuation_extensionality_TCC1| 0
+  (|IMP_bdd_interface_valuation_extensionality_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "valuation_extensionality: AXIOM booleans.IMPLIES((FORALL x: bdd_interface.read_var(bdd_interface.sigma, bdd_interface.x) = bdd_interface.read_var(bdd_interface.tau, bdd_interface.x)), bdd_interface.sigma = bdd_interface.tau)"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_update_var_same_TCC1| 0
+  (|IMP_bdd_interface_update_var_same_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "update_var_same: AXIOM bdd_interface.read_var(bdd_interface.update_var(bdd_interface.sigma, bdd_interface.x, bdd_interface.b), bdd_interface.x) = bdd_interface.b"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_update_var_other_TCC1| 0
+  (|IMP_bdd_interface_update_var_other_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "update_var_other: AXIOM booleans.IMPLIES(bdd_interface.x /= bdd_interface.y, bdd_interface.read_var(bdd_interface.update_var(bdd_interface.sigma, bdd_interface.x, bdd_interface.b), bdd_interface.y) = bdd_interface.read_var(bdd_interface.sigma, bdd_interface.y))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_cube_support_empty_TCC1| 0
+  (|IMP_bdd_interface_cube_support_empty_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "cube_support_empty: AXIOM bdd_interface.cube_support(bdd_interface.cube_empty) = sets[bdd_interface.bddvar].emptyset"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_cube_support_insert_TCC1| 0
+  (|IMP_bdd_interface_cube_support_insert_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "cube_support_insert: AXIOM FORALL (x: bdd_interface.bddvar | (booleans.NOT)(bdd_interface.cube_support(bdd_interface.c)(x))): bdd_interface.cube_support(bdd_interface.cube_insert(bdd_interface.c, x, bdd_interface.b)) = sets[bdd_interface.bddvar].add(x, bdd_interface.cube_support(bdd_interface.c))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_cube_value_insert_same_TCC1| 0
+  (|IMP_bdd_interface_cube_value_insert_same_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "cube_value_insert_same: AXIOM FORALL (x: bdd_interface.bddvar | (booleans.NOT)(bdd_interface.cube_support(bdd_interface.c)(x))): bdd_interface.cube_value(bdd_interface.cube_insert(bdd_interface.c, x, bdd_interface.b), x) = bdd_interface.b"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_cube_value_insert_other_TCC1| 0
+  (|IMP_bdd_interface_cube_value_insert_other_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "cube_value_insert_other: AXIOM FORALL (x: bdd_interface.bddvar | (booleans.NOT)(bdd_interface.cube_support(bdd_interface.c)(x))): FORALL (y: bdd_interface.bddvar | bdd_interface.cube_support(bdd_interface.c)(y)): bdd_interface.cube_value(bdd_interface.cube_insert(bdd_interface.c, x, bdd_interface.b), y) = bdd_interface.cube_value(bdd_interface.c, y)"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_force_cube_on_support_TCC1| 0
+  (|IMP_bdd_interface_force_cube_on_support_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "force_cube_on_support: AXIOM FORALL (x: bdd_interface.bddvar | bdd_interface.cube_support(bdd_interface.c)(x)): bdd_interface.read_var(bdd_interface.force_cube(bdd_interface.c, bdd_interface.sigma), x) = bdd_interface.cube_value(bdd_interface.c, x)"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_force_cube_off_support_TCC1| 0
+  (|IMP_bdd_interface_force_cube_off_support_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "force_cube_off_support: AXIOM FORALL x: booleans.IMPLIES((booleans.NOT)(bdd_interface.cube_support(bdd_interface.c)(bdd_interface.x)), bdd_interface.read_var(bdd_interface.force_cube(bdd_interface.c, bdd_interface.sigma), bdd_interface.x) = bdd_interface.read_var(bdd_interface.sigma, bdd_interface.x))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_support_sound_TCC1| 0
+  (|IMP_bdd_interface_support_sound_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "support_sound: AXIOM booleans.IMPLIES(bdd_interface.same_outside(bdd_interface.support(bdd_interface.f), bdd_interface.sigma, bdd_interface.tau), bdd_interface.denote(bdd_interface.f)(bdd_interface.sigma) = bdd_interface.denote(bdd_interface.f)(bdd_interface.tau))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_perm_inverse_left_TCC1| 0
+  (|IMP_bdd_interface_perm_inverse_left_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "perm_inverse_left: AXIOM FORALL x: bdd_interface.permute_var(bdd_interface.inverse_perm(bdd_interface.p), bdd_interface.permute_var(bdd_interface.p, bdd_interface.x)) = bdd_interface.x"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_perm_inverse_right_TCC1| 0
+  (|IMP_bdd_interface_perm_inverse_right_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "perm_inverse_right: AXIOM FORALL x: bdd_interface.permute_var(bdd_interface.p, bdd_interface.permute_var(bdd_interface.inverse_perm(bdd_interface.p), bdd_interface.x)) = bdd_interface.x"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_permute_read_TCC1| 0
+  (|IMP_bdd_interface_permute_read_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "permute_read: AXIOM FORALL x: bdd_interface.read_var(bdd_interface.permute_valuation(bdd_interface.p, bdd_interface.sigma), bdd_interface.x) = bdd_interface.read_var(bdd_interface.sigma, bdd_interface.permute_var(bdd_interface.p, bdd_interface.x))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_false_TCC1| 0
+  (|IMP_bdd_interface_denote_false_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_false: AXIOM bdd_interface.denote(bdd_interface.bdd_false) = sets[bdd_interface.valuation].emptyset"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_true_TCC1| 0
+  (|IMP_bdd_interface_denote_true_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_true: AXIOM bdd_interface.denote(bdd_interface.bdd_true) = sets[bdd_interface.valuation].fullset"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_ithvar_TCC1| 0
+  (|IMP_bdd_interface_denote_ithvar_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_ithvar: AXIOM bdd_interface.denote(bdd_interface.ithvar(bdd_interface.x)) = {sigma | bdd_interface.read_var(bdd_interface.sigma, bdd_interface.x)}"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_nithvar_TCC1| 0
+  (|IMP_bdd_interface_denote_nithvar_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_nithvar: AXIOM bdd_interface.denote(bdd_interface.nithvar(bdd_interface.x)) = {sigma | (booleans.NOT)(bdd_interface.read_var(bdd_interface.sigma, bdd_interface.x))}"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_not_TCC1| 0
+  (|IMP_bdd_interface_denote_not_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_not: AXIOM bdd_interface.denote(bdd_interface.bdd_not(bdd_interface.f)) = sets[bdd_interface.valuation].complement(bdd_interface.denote(bdd_interface.f))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_and_TCC1| 0
+  (|IMP_bdd_interface_denote_and_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_and: AXIOM bdd_interface.denote(bdd_interface.bdd_and(bdd_interface.f, bdd_interface.g)) = sets[bdd_interface.valuation].intersection(bdd_interface.denote(bdd_interface.f), bdd_interface.denote(bdd_interface.g))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_or_TCC1| 0
+  (|IMP_bdd_interface_denote_or_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_or: AXIOM bdd_interface.denote(bdd_interface.bdd_or(bdd_interface.f, bdd_interface.g)) = sets[bdd_interface.valuation].union(bdd_interface.denote(bdd_interface.f), bdd_interface.denote(bdd_interface.g))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_xor_TCC1| 0
+  (|IMP_bdd_interface_denote_xor_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_xor: AXIOM bdd_interface.denote(bdd_interface.bdd_xor(bdd_interface.f, bdd_interface.g)) = sets[bdd_interface.valuation].union(sets[bdd_interface.valuation].intersection(bdd_interface.denote(bdd_interface.f), sets[bdd_interface.valuation].complement(bdd_interface.denote(bdd_interface.g))), sets[bdd_interface.valuation].intersection(sets[bdd_interface.valuation].complement(bdd_interface.denote(bdd_interface.f)), bdd_interface.denote(bdd_interface.g)))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_xnor_TCC1| 0
+  (|IMP_bdd_interface_denote_xnor_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_xnor: AXIOM bdd_interface.denote(bdd_interface.bdd_xnor(bdd_interface.f, bdd_interface.g)) = sets[bdd_interface.valuation].complement(bdd_interface.denote(bdd_interface.bdd_xor(bdd_interface.f, bdd_interface.g)))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_nand_TCC1| 0
+  (|IMP_bdd_interface_denote_nand_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_nand: AXIOM bdd_interface.denote(bdd_interface.bdd_nand(bdd_interface.f, bdd_interface.g)) = sets[bdd_interface.valuation].complement(bdd_interface.denote(bdd_interface.bdd_and(bdd_interface.f, bdd_interface.g)))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_nor_TCC1| 0
+  (|IMP_bdd_interface_denote_nor_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_nor: AXIOM bdd_interface.denote(bdd_interface.bdd_nor(bdd_interface.f, bdd_interface.g)) = sets[bdd_interface.valuation].complement(bdd_interface.denote(bdd_interface.bdd_or(bdd_interface.f, bdd_interface.g)))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_imp_TCC1| 0
+  (|IMP_bdd_interface_denote_imp_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_imp: AXIOM bdd_interface.denote(bdd_interface.bdd_imp(bdd_interface.f, bdd_interface.g)) = sets[bdd_interface.valuation].union(sets[bdd_interface.valuation].complement(bdd_interface.denote(bdd_interface.f)), bdd_interface.denote(bdd_interface.g))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_invimp_TCC1| 0
+  (|IMP_bdd_interface_denote_invimp_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_invimp: AXIOM bdd_interface.denote(bdd_interface.bdd_invimp(bdd_interface.f, bdd_interface.g)) = sets[bdd_interface.valuation].union(bdd_interface.denote(bdd_interface.f), sets[bdd_interface.valuation].complement(bdd_interface.denote(bdd_interface.g)))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_diff_TCC1| 0
+  (|IMP_bdd_interface_denote_diff_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_diff: AXIOM bdd_interface.denote(bdd_interface.bdd_diff(bdd_interface.f, bdd_interface.g)) = sets[bdd_interface.valuation].difference(bdd_interface.denote(bdd_interface.f), bdd_interface.denote(bdd_interface.g))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_ite_TCC1| 0
+  (|IMP_bdd_interface_denote_ite_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_ite: AXIOM bdd_interface.denote(bdd_interface.bdd_ite(bdd_interface.f, bdd_interface.g, bdd_interface.h)) = sets[bdd_interface.valuation].union(sets[bdd_interface.valuation].intersection(bdd_interface.denote(bdd_interface.f), bdd_interface.denote(bdd_interface.g)), sets[bdd_interface.valuation].intersection(sets[bdd_interface.valuation].complement(bdd_interface.denote(bdd_interface.f)), bdd_interface.denote(bdd_interface.h)))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_exists_TCC1| 0
+  (|IMP_bdd_interface_denote_exists_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_exists: AXIOM bdd_interface.denote(bdd_interface.bdd_exists(bdd_interface.c, bdd_interface.f)) = {sigma | EXISTS tau: booleans.AND(bdd_interface.same_outside(bdd_interface.cube_support(bdd_interface.c), bdd_interface.sigma, bdd_interface.tau), bdd_interface.denote(bdd_interface.f)(bdd_interface.tau))}"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_forall_TCC1| 0
+  (|IMP_bdd_interface_denote_forall_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_forall: AXIOM bdd_interface.denote(bdd_interface.bdd_forall(bdd_interface.c, bdd_interface.f)) = {sigma | FORALL tau: booleans.IMPLIES(bdd_interface.same_outside(bdd_interface.cube_support(bdd_interface.c), bdd_interface.sigma, bdd_interface.tau), bdd_interface.denote(bdd_interface.f)(bdd_interface.tau))}"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_and_abstract_TCC1| 0
+  (|IMP_bdd_interface_denote_and_abstract_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_and_abstract: AXIOM bdd_interface.denote(bdd_interface.bdd_and_abstract(bdd_interface.f, bdd_interface.g, bdd_interface.c)) = bdd_interface.denote(bdd_interface.bdd_exists(bdd_interface.c, bdd_interface.bdd_and(bdd_interface.f, bdd_interface.g)))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_restrict_TCC1| 0
+  (|IMP_bdd_interface_denote_restrict_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_restrict: AXIOM bdd_interface.denote(bdd_interface.bdd_restrict(bdd_interface.f, bdd_interface.c)) = {sigma | bdd_interface.denote(bdd_interface.f)(bdd_interface.force_cube(bdd_interface.c, bdd_interface.sigma))}"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_constrain_TCC1| 0
+  (|IMP_bdd_interface_denote_constrain_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_constrain: AXIOM bdd_interface.denote(bdd_interface.bdd_constrain(bdd_interface.f, bdd_interface.c)) = {sigma | bdd_interface.denote(bdd_interface.f)(bdd_interface.force_cube(bdd_interface.c, bdd_interface.sigma))}"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_compose_TCC1| 0
+  (|IMP_bdd_interface_denote_compose_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_compose: AXIOM bdd_interface.denote(bdd_interface.bdd_compose(bdd_interface.f, bdd_interface.x, bdd_interface.g)) = {sigma | bdd_interface.denote(bdd_interface.f)(bdd_interface.update_var(bdd_interface.sigma, bdd_interface.x, bdd_interface.denote(bdd_interface.g)(bdd_interface.sigma)))}"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_denote_permute_TCC1| 0
+  (|IMP_bdd_interface_denote_permute_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "denote_permute: AXIOM bdd_interface.denote(bdd_interface.bdd_permute(bdd_interface.f, bdd_interface.p)) = {sigma | bdd_interface.denote(bdd_interface.f)(bdd_interface.permute_valuation(bdd_interface.p, bdd_interface.sigma))}"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_support_false_axiom_TCC1| 0
+  (|IMP_bdd_interface_support_false_axiom_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "support_false_axiom: AXIOM bdd_interface.support(bdd_interface.bdd_false) = sets[bdd_interface.bddvar].emptyset"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_support_true_axiom_TCC1| 0
+  (|IMP_bdd_interface_support_true_axiom_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "support_true_axiom: AXIOM bdd_interface.support(bdd_interface.bdd_true) = sets[bdd_interface.bddvar].emptyset"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_support_ithvar_axiom_TCC1| 0
+  (|IMP_bdd_interface_support_ithvar_axiom_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "support_ithvar_axiom: AXIOM bdd_interface.support(bdd_interface.ithvar(bdd_interface.x)) = sets[bdd_interface.bddvar].singleton(bdd_interface.x)"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_support_nithvar_axiom_TCC1| 0
+  (|IMP_bdd_interface_support_nithvar_axiom_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "support_nithvar_axiom: AXIOM bdd_interface.support(bdd_interface.nithvar(bdd_interface.x)) = sets[bdd_interface.bddvar].singleton(bdd_interface.x)"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_support_not_axiom_TCC1| 0
+  (|IMP_bdd_interface_support_not_axiom_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "support_not_axiom: AXIOM bdd_interface.support(bdd_interface.bdd_not(bdd_interface.f)) = bdd_interface.support(bdd_interface.f)"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_support_and_axiom_TCC1| 0
+  (|IMP_bdd_interface_support_and_axiom_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "support_and_axiom: AXIOM sets[bdd_interface.bddvar].subset?(bdd_interface.support(bdd_interface.bdd_and(bdd_interface.f, bdd_interface.g)), sets[bdd_interface.bddvar].union(bdd_interface.support(bdd_interface.f), bdd_interface.support(bdd_interface.g)))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_support_or_axiom_TCC1| 0
+  (|IMP_bdd_interface_support_or_axiom_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "support_or_axiom: AXIOM sets[bdd_interface.bddvar].subset?(bdd_interface.support(bdd_interface.bdd_or(bdd_interface.f, bdd_interface.g)), sets[bdd_interface.bddvar].union(bdd_interface.support(bdd_interface.f), bdd_interface.support(bdd_interface.g)))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_support_xor_axiom_TCC1| 0
+  (|IMP_bdd_interface_support_xor_axiom_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "support_xor_axiom: AXIOM sets[bdd_interface.bddvar].subset?(bdd_interface.support(bdd_interface.bdd_xor(bdd_interface.f, bdd_interface.g)), sets[bdd_interface.bddvar].union(bdd_interface.support(bdd_interface.f), bdd_interface.support(bdd_interface.g)))"
+    (462 12 503 4))))
+ (|IMP_bdd_interface_pick_sat_correct_TCC1| 0
+  (|IMP_bdd_interface_pick_sat_correct_TCC1-1| NIL 3983463977
+   ("" (MAPPED-AXIOM-TCC) NIL NIL) NIL NIL
+   (|IMP_bdd_interface| MAPPED-AXIOM
+    "bdd_interface{{ bddvar := vid, valuation := cvaluation, cube := ccube, perm := cperm, bdd := obdd, read_var := abdd_read_var, update_var := abdd_update_var, cube_support := abdd_cube_support, cube_value := abdd_cube_value, cube_empty := abdd_cube_empty, cube_insert := abdd_cube_insert, force_cube := abdd_force_cube, denote := opt_denote, support := opt_support, bdd_false := opt_false, bdd_true := opt_true, ithvar := opt_var, nithvar := opt_nvar, bdd_not := opt_not, bdd_and := opt_and, bdd_or := opt_or, bdd_xor := opt_xor, bdd_xnor := opt_xnor, bdd_nand := opt_nand, bdd_nor := opt_nor, bdd_imp := opt_imp, bdd_invimp := opt_invimp, bdd_diff := opt_diff, bdd_ite := opt_ite, bdd_exists := opt_exists, bdd_forall := opt_forall, bdd_and_abstract := opt_and_abstract, bdd_restrict := opt_restrict, bdd_constrain := opt_constrain, bdd_compose := opt_compose, permute_var := abdd_permute_var, inverse_perm := abdd_inverse_perm, permute_valuation := abdd_permute_valuation, bdd_permute := opt_permute, pick_sat := opt_pick_sat }}.bdd_interface"
+    "pick_sat_correct: AXIOM bdd_interface.eval(bdd_interface.sf, bdd_interface.pick_sat(bdd_interface.sf))"
+    (462 12 503 4)))))
+

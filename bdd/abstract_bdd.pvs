@@ -1,0 +1,242 @@
+abstract_bdd_core[
+  nvars: {n: pos_uint32 | n <= 32},
+  max_nodes: {m: pos_uint32 | 3 <= m AND m <= maxsize}
+]: THEORY
+BEGIN
+  IMPORTING integertypes,
+            finite_sets[below(nvars)],
+            sets_lemmas[below(nvars)],
+            array_sequences[below(nvars)],
+            sets_lemmas[ARRAY[below(nvars) -> bool]]
+
+  vid: TYPE = below(nvars)
+  valuation: TYPE = ARRAY[vid -> bool]
+  predicate: TYPE = set[valuation]
+  mask: TYPE = ARRAY[vid -> bool]
+  varset: TYPE = finite_set[vid]
+  node_id: TYPE = below(max_nodes)
+
+  sigma, tau: VAR valuation
+  x, y, z: VAR vid
+  b: VAR bool
+  i: VAR node_id
+
+  empty_mask: mask = (LAMBDA x: FALSE)
+  full_mask: mask = (LAMBDA x: TRUE)
+  singleton_mask(x): mask = (LAMBDA y: y = x)
+  mask_union(m1, m2: mask): mask = (LAMBDA x: m1(x) OR m2(x))
+  mask_diff(m1, m2: mask): mask = (LAMBDA x: m1(x) AND NOT m2(x))
+  mask_clear(m: mask, x): mask = m WITH [(x) := FALSE]
+  support_of_mask(m: mask): varset = { x: vid | m(x) }
+
+  abdd_read_var(sigma, x): bool = sigma(x)
+  abdd_update_var(sigma, x, b): valuation = sigma WITH [(x) := b]
+  default_valuation: valuation = (LAMBDA x: FALSE)
+
+  same_outside_mask(m: mask, sigma, tau): bool =
+    FORALL x: NOT m(x) IMPLIES sigma(x) = tau(x)
+
+  support_sound_mask?(p: pred[valuation], m: mask): bool =
+    FORALL sigma, tau:
+      same_outside_mask(m, sigma, tau) IMPLIES p(sigma) = p(tau)
+
+  cube: TYPE =
+    [# support_mask: mask,
+       phase_mask: mask #]
+
+  c: VAR cube
+
+  abdd_cube_support(c): varset = support_of_mask(c`support_mask)
+  abdd_cube_value(c, (x: vid | abdd_cube_support(c)(x))): bool = c`phase_mask(x)
+
+  abdd_cube_empty: cube =
+    (# support_mask := empty_mask,
+       phase_mask := empty_mask #)
+
+  abdd_cube_insert(c, (x: vid | NOT abdd_cube_support(c)(x)), b): cube =
+    (# support_mask := c`support_mask WITH [(x) := TRUE],
+       phase_mask := c`phase_mask WITH [(x) := b] #)
+
+  abdd_force_cube(c, sigma): valuation =
+    (LAMBDA x: IF c`support_mask(x) THEN c`phase_mask(x) ELSE sigma(x) ENDIF)
+
+  perm_rep: TYPE =
+    [# forward: ARRAY[vid -> vid],
+       backward: ARRAY[vid -> vid] #]
+
+  perm_wf?(p: perm_rep): bool =
+    FORALL x:
+      p`backward(p`forward(x)) = x AND
+      p`forward(p`backward(x)) = x
+
+  perm: TYPE = (perm_wf?)
+  p: VAR perm
+
+  abdd_permute_var(p, x): vid = p`forward(x)
+
+  abdd_inverse_perm(p): perm =
+    (# forward := p`backward,
+       backward := p`forward #)
+
+  abdd_permute_valuation(p, sigma): valuation =
+    (LAMBDA x: sigma(abdd_permute_var(p, x)))
+
+  order_complete?(o: arrayseq): bool =
+    o`length = nvars AND
+    FORALL (i, j: below(o`length)):
+      i /= j IMPLIES o`seq(i) /= o`seq(j)
+
+  order: TYPE = (order_complete?)
+  o: VAR order
+
+  id_order: order =
+    (# length := nvars,
+       seq := (LAMBDA (i: below(nvars)): i) #)
+
+  order_inverse_ok?(o: order, inv: ARRAY[vid -> vid]): bool =
+    (FORALL (i: below(nvars)): inv(o`seq(i)) = i) AND
+    (FORALL x: o`seq(inv(x)) = x)
+
+  id_inverse: ARRAY[vid -> vid] = (LAMBDA (x: vid): x)
+
+  false_id: node_id = 0
+  true_id: node_id = 1
+
+  node: TYPE =
+    [# top: vid,
+       low: node_id,
+       high: node_id #]
+
+  default_node: node =
+    (# top := 0,
+       low := false_id,
+       high := true_id #)
+
+  empty_nodes: ARRAY[node_id -> node] =
+    (LAMBDA (i: node_id): default_node)
+
+  used_count: TYPE = {k: size | 2 <= k AND k <= max_nodes}
+
+  bdd_rep: TYPE =
+    [# root: node_id,
+       used: used_count,
+       nodes: ARRAY[node_id -> node],
+       support_mask: mask,
+       ord: order,
+       inv: ARRAY[vid -> vid] #]
+
+  active?(f: bdd_rep, i: node_id): bool = i < f`used
+  node_var(f: bdd_rep, i: node_id): vid = f`nodes(i)`top
+  node_low(f: bdd_rep, i: node_id): node_id = f`nodes(i)`low
+  node_high(f: bdd_rep, i: node_id): node_id = f`nodes(i)`high
+
+  local_ordered?(f: bdd_rep, i: node_id): bool =
+    IF i < 2 OR NOT active?(f, i) THEN TRUE
+    ELSE
+      node_low(f, i) < i AND
+      node_high(f, i) < i AND
+      node_low(f, i) /= node_high(f, i) AND
+      (IF node_low(f, i) < 2
+          THEN TRUE
+          ELSE f`inv(node_var(f, i)) < f`inv(node_var(f, node_low(f, i)))
+       ENDIF) AND
+      (IF node_high(f, i) < 2
+          THEN TRUE
+          ELSE f`inv(node_var(f, i)) < f`inv(node_var(f, node_high(f, i)))
+       ENDIF)
+    ENDIF
+
+  structural_wf?(f: bdd_rep): bool =
+    active?(f, f`root) AND
+    order_inverse_ok?(f`ord, f`inv) AND
+    (FORALL i: local_ordered?(f, i))
+
+  abdd_eval_id(f: bdd_rep, i, sigma): RECURSIVE bool =
+    IF i = false_id THEN FALSE
+    ELSIF i = true_id THEN TRUE
+    ELSE
+      LET nd = f`nodes(i)
+       IN IF abdd_read_var(sigma, nd`top)
+             THEN abdd_eval_id(f, nd`high, sigma)
+             ELSE abdd_eval_id(f, nd`low, sigma)
+          ENDIF
+    ENDIF
+  MEASURE i
+
+  abdd_eval(f: bdd_rep, sigma): bool = abdd_eval_id(f, f`root, sigma)
+  abdd_denote(f: bdd_rep): predicate = { sigma | abdd_eval(f, sigma) }
+  abdd_support(f: bdd_rep): varset = support_of_mask(f`support_mask)
+
+  bdd_wf?(f: bdd_rep): bool =
+    structural_wf?(f) AND support_sound_mask?(LAMBDA sigma: abdd_eval(f, sigma), f`support_mask)
+
+  bdd: TYPE = (bdd_wf?)
+  f, g, h: VAR bdd
+
+  abdd_false: bdd =
+    (# root := false_id,
+       used := 2,
+       nodes := empty_nodes,
+       support_mask := empty_mask,
+       ord := id_order,
+       inv := id_inverse #)
+
+  abdd_true: bdd =
+    (# root := true_id,
+       used := 2,
+       nodes := empty_nodes,
+       support_mask := empty_mask,
+       ord := id_order,
+       inv := id_inverse #)
+
+  abdd_ithvar(x): bdd =
+    (# root := 2,
+       used := 3,
+       nodes := empty_nodes WITH
+                  [(2) := (# top := x, low := false_id, high := true_id #)],
+       support_mask := singleton_mask(x),
+       ord := id_order,
+       inv := id_inverse #)
+
+  abdd_nithvar(x): bdd =
+    (# root := 2,
+       used := 3,
+       nodes := empty_nodes WITH
+                  [(2) := (# top := x, low := true_id, high := false_id #)],
+       support_mask := singleton_mask(x),
+       ord := id_order,
+       inv := id_inverse #)
+
+  abdd_swap_adjacent_order(o, (i: nat | i + 1 < nvars)): order =
+    (# length := nvars,
+       seq :=
+         (LAMBDA (j: below(nvars)):
+            IF j = i THEN o`seq(i + 1)
+            ELSIF j = i + 1 THEN o`seq(i)
+            ELSE o`seq(j)
+            ENDIF) #)
+
+  abdd_reverse_order(o): order =
+    (# length := nvars,
+       seq := (LAMBDA (i: below(nvars)): o`seq(nvars - 1 - i)) #)
+
+  abdd_sat_id(f: bdd_rep, i): RECURSIVE bool =
+    IF i = false_id THEN FALSE
+    ELSIF i = true_id THEN TRUE
+    ELSE
+      abdd_sat_id(f, node_low(f, i)) OR abdd_sat_id(f, node_high(f, i))
+    ENDIF
+  MEASURE i
+
+  abdd_pick_sat_id(f: bdd_rep, i, sigma): RECURSIVE valuation =
+    IF i = false_id OR i = true_id THEN sigma
+    ELSIF abdd_sat_id(f, node_low(f, i)) THEN
+      abdd_pick_sat_id(f, node_low(f, i), abdd_update_var(sigma, node_var(f, i), FALSE))
+    ELSE
+      abdd_pick_sat_id(f, node_high(f, i), abdd_update_var(sigma, node_var(f, i), TRUE))
+    ENDIF
+  MEASURE i
+
+  abdd_pick_sat(f: {f: bdd | abdd_sat_id(f, f`root)}): valuation =
+    abdd_pick_sat_id(f, f`root, default_valuation)
+END abstract_bdd_core

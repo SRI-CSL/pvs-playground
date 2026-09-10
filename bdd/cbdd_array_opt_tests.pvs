@@ -1,0 +1,178 @@
+cbdd_array_opt_tests: THEORY
+BEGIN
+  IMPORTING cbdd_array_opt[4, 128, 17, 17]
+
+  mk_val(b0, b1, b2, b3: bool): cvaluation =
+    (LAMBDA (i: vid):
+      IF i = 0 THEN b0
+      ELSIF i = 1 THEN b1
+      ELSIF i = 2 THEN b2
+      ELSE b3
+      ENDIF)
+
+  v0000: cvaluation = mk_val(FALSE, FALSE, FALSE, FALSE)
+  v1000: cvaluation = mk_val(TRUE,  FALSE, FALSE, FALSE)
+  v1100: cvaluation = mk_val(TRUE,  TRUE,  FALSE, FALSE)
+  v0100: cvaluation = mk_val(FALSE, TRUE,  FALSE, FALSE)
+  v0010: cvaluation = mk_val(FALSE, FALSE, TRUE,  FALSE)
+  v0110: cvaluation = mk_val(FALSE, TRUE,  TRUE,  FALSE)
+  v0011: cvaluation = mk_val(FALSE, FALSE, TRUE,  TRUE)
+  v0101: cvaluation = mk_val(FALSE, TRUE,  FALSE, TRUE)
+  v1110: cvaluation = mk_val(TRUE,  TRUE,  TRUE,  FALSE)
+
+  ceval(f: cbdd, sigma: cvaluation): bool = cbdd_eval(f, sigma)
+  oeval(u: obdd, sigma: cvaluation): bool = opt_eval(u, sigma)
+
+  cube_x0: ccube = abdd_cube_insert(abdd_cube_empty, 0, TRUE)
+  cube_x0_x2: ccube = abdd_cube_insert(cube_x0, 2, FALSE)
+  cube_x1: ccube = abdd_cube_insert(abdd_cube_empty, 1, TRUE)
+
+  swap01_perm: cperm =
+    (# forward := (LAMBDA (x: vid):
+                     IF x = 0 THEN 1
+                     ELSIF x = 1 THEN 0
+                     ELSE x
+                     ENDIF),
+       backward := (LAMBDA (x: vid):
+                      IF x = 0 THEN 1
+                      ELSIF x = 1 THEN 0
+                      ELSE x
+                      ENDIF) #)
+
+  sample_root0: obdd = opt_and(opt_var(0), opt_nvar(1))
+  sample_root1: obdd = opt_xor(opt_var(1), opt_var(2))
+  sample_root2: obdd = opt_ite(opt_var(0), opt_var(2), opt_var(3))
+
+  sample_roots: rootseq =
+    (# length := 3,
+       seq := (LAMBDA (k: below(3)):
+                IF k = 0 THEN sample_root0
+                ELSIF k = 1 THEN sample_root1
+                ELSE sample_root2
+                ENDIF) #)
+
+  id_inverse: ARRAY[vid -> vid] = (LAMBDA (x: vid): x)
+
+  root0(rs: rootseq): obdd =
+    IF rs`length = 0 THEN opt_false ELSE rs`seq(0) ENDIF
+
+  root1(rs: rootseq): obdd =
+    IF rs`length <= 1 THEN opt_false ELSE rs`seq(1) ENDIF
+
+  root2(rs: rootseq): obdd =
+    IF rs`length <= 2 THEN opt_false ELSE rs`seq(2) ENDIF
+
+  sample_manager: manager =
+    (# current_order := id_order,
+       inverse_level := id_inverse,
+       roots := sample_roots,
+       unique := empty_unique_table,
+       cache := empty_cache_table,
+       cache_lookups := 0,
+       cache_hits := 0,
+       cache_inserts := 0,
+       unique_lookups := 0,
+       unique_hits := 0,
+       unique_inserts := 0,
+       reorder_rounds := 0 #)
+
+  cube_force_test: _TEST_
+    LET rho = abdd_force_cube(cube_x0_x2, v0101)
+     IN rho(0) AND NOT rho(2) AND rho(1) = v0101(1) AND rho(3) = v0101(3)
+
+  cbdd_and_test: _TEST_
+    ceval(cbdd_and(cbdd_ithvar(0), cbdd_nithvar(1)), v1000) AND
+    NOT ceval(cbdd_and(cbdd_ithvar(0), cbdd_nithvar(1)), v1100) AND
+    NOT ceval(cbdd_and(cbdd_ithvar(0), cbdd_nithvar(1)), v0000)
+
+  cbdd_exists_test: _TEST_
+    ceval(cbdd_exists(cube_x0, cbdd_and(cbdd_ithvar(0), cbdd_ithvar(1))), v0100) AND
+    NOT ceval(cbdd_exists(cube_x0, cbdd_and(cbdd_ithvar(0), cbdd_ithvar(1))), v0000)
+
+  cbdd_restrict_test: _TEST_
+    ceval(cbdd_restrict(cbdd_xor(cbdd_ithvar(0), cbdd_ithvar(1)), cube_x0), v0000) AND
+    NOT ceval(cbdd_restrict(cbdd_xor(cbdd_ithvar(0), cbdd_ithvar(1)), cube_x0), v0100)
+
+  cbdd_compose_test: _TEST_
+    ceval(cbdd_compose(cbdd_and(cbdd_ithvar(0), cbdd_ithvar(2)), 0, cbdd_nithvar(1)), v0010) AND
+    NOT ceval(cbdd_compose(cbdd_and(cbdd_ithvar(0), cbdd_ithvar(2)), 0, cbdd_nithvar(1)), v0110)
+
+  cbdd_permute_test: _TEST_
+    ceval(cbdd_permute(cbdd_and(cbdd_ithvar(0), cbdd_nithvar(2)), swap01_perm), v0100) AND
+    NOT ceval(cbdd_permute(cbdd_and(cbdd_ithvar(0), cbdd_nithvar(2)), swap01_perm), v1000)
+
+  support_and_cost_test: _TEST_
+    bdd_size(sample_root0) >= 3 AND
+    bdd_size(sample_root1) >= 3 AND
+    manager_cost(sample_manager) >= bdd_size(sample_root0) + bdd_size(sample_root1)
+
+  opt_complement_test: _TEST_
+    oeval(opt_and(opt_not(opt_var(0)), opt_or(opt_var(1), opt_var(2))), v0110) AND
+    NOT oeval(opt_and(opt_not(opt_var(0)), opt_or(opt_var(1), opt_var(2))), v1110) AND
+    NOT oeval(opt_and(opt_not(opt_var(0)), opt_or(opt_var(1), opt_var(2))), v0000)
+
+  opt_xor_test: _TEST_
+    NOT oeval(opt_xor(opt_var(0), opt_not(opt_var(1))), v1000) AND
+    oeval(opt_xor(opt_var(0), opt_not(opt_var(1))), v1100)
+
+  mk_node_cached_hit_test: _TEST_
+    LET (m1, r1) = mk_node_cached(sample_manager, 0, opt_var(1), opt_false),
+        (m2, r2) = mk_node_cached(m1, 0, opt_var(1), opt_false)
+     IN unique_lookups(m2) = 2 AND
+        unique_inserts(m2) = 1 AND
+        unique_hits(m2) = 1 AND
+        r1 = r2 AND
+        oeval(r1, v1100) AND
+        NOT oeval(r2, v1000)
+
+  computed_cache_hit_test: _TEST_
+    LET (m1, r1) = cached_binop(sample_manager, op_and, opt_var(0), opt_var(1)),
+        (m2, r2) = cached_binop(m1, op_and, opt_var(0), opt_var(1))
+     IN cache_lookups(m2) = 2 AND
+        cache_inserts(m2) = 1 AND
+        cache_hits(m2) = 1 AND
+        r1 = r2 AND
+        oeval(r1, v1100) AND
+        NOT oeval(r2, v1000)
+
+  pick_sat_test: _TEST_
+    LET f = cbdd_and(cbdd_ithvar(0), cbdd_nithvar(1)),
+        sigma = cbdd_pick_sat(f)
+     IN ceval(f, sigma)
+
+  cached_relprod_test: _TEST_
+    LET (m1, r) = cached_relprod(sample_manager,
+                                 opt_and(opt_var(0), opt_var(1)),
+                                 opt_or(opt_var(0), opt_var(2)),
+                                 cube_x0)
+     IN cache_lookups(m1) = 1 AND
+        oeval(r, v0100) AND
+        NOT oeval(r, v0000)
+
+  swap_manager_test: _TEST_
+    LET m1 = swap_manager(sample_manager, 0),
+        rs0 = roots(sample_manager),
+        rs1 = roots(m1)
+     IN reorder_rounds(m1) = 1 AND
+        oeval(root0(rs0), v1000) = oeval(root0(rs1), v1000) AND
+        oeval(root2(rs0), v0011) = oeval(root2(rs1), v0011)
+
+  reverse_manager_test: _TEST_
+    LET m1 = reverse_manager(sample_manager),
+        rs0 = roots(sample_manager),
+        rs1 = roots(m1)
+     IN reorder_rounds(m1) = 1 AND
+        oeval(root1(rs0), v0100) = oeval(root1(rs1), v0100) AND
+        oeval(root2(rs0), v0011) = oeval(root2(rs1), v0011)
+
+  dynamic_reorder_cost_test: _TEST_
+    manager_cost(dynamic_reorder_var(sample_manager, 1)) <= manager_cost(sample_manager)
+
+  dynamic_reorder_eval_test: _TEST_
+    LET m1 = dynamic_reorder_var(sample_manager, 1),
+        rs0 = roots(sample_manager),
+        rs1 = roots(m1)
+     IN oeval(root1(rs0), v0100) = oeval(root1(rs1), v0100) AND
+        oeval(root1(rs0), v0010) = oeval(root1(rs1), v0010)
+
+END cbdd_array_opt_tests
