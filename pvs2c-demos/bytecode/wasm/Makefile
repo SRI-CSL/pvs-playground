@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := all
+
 PVS_HOME ?= $(HOME)/git/PVS
 PVS := $(PVS_HOME)/pvs
 
@@ -97,6 +99,11 @@ $(PVS2C_STAMP): $(PVS_SOURCES) $(MAKE_DEPS) $(TYPECHECK_LOG) | $(BUILD_DIR)
 
 $(GENERATED_HEADER) $(GENERATED_MK): $(PVS2C_STAMP)
 	@:
+
+# Generated fragments name bin/<theory> relative to pvs2c/.  These
+# drivers build from the demo directory, using the fragment's object list.
+$(GENERATED_TEST_BIN): $(OBJS_$(MAIN_THEORY)) | $(BINDIR)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 $(SRCDIR)/%.o: $(SRCDIR)/%.c $(GENERATED_HEADER)
 	@$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@

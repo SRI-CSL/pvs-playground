@@ -4,7 +4,7 @@ endif
 
 CC ?= cc
 CFLAGS ?= -O2 -w -foptimize-sibling-calls -fPIC
-CPPFLAGS += -I$(PVS_LOCATION)/lib/pvs2c/include -Ipvs2c/include
+CPPFLAGS += -I$(PVS_LOCATION)/lib/pvs2c/include -Iinclude
 LDFLAGS += -L$(PVS_LOCATION)/lib/pvs2c/lib
 LDLIBS += $(PVS_LOCATION)/lib/pvs2c/lib/libpvs-prelude.a -lgmp -lm
 
@@ -14,10 +14,11 @@ CPPFLAGS += -include $(PVS2C_DEMOS_ROOT)/pvs2c_compat.h
 endif
 endif
 
-BINDIR := pvs2c/bin
-SRCDIR := pvs2c/src
+BINDIR := bin
+SRCDIR := src
 
--include pvs2c/include/*.mk
+# Run this helper from the generated pvs2c directory.
+-include include/*.mk
 
 $(BINDIR) $(SRCDIR):
 	mkdir -p $@

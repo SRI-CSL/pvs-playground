@@ -418,8 +418,8 @@ def run_theory(
     make_env["PVS2C_DEMOS_ROOT"] = str(demo_root)
     make_log = log_prefix.with_name(log_prefix.name + "-make.log")
     run_logged(
-        ["make", "-f", str(makefile), f"pvs2c/bin/{theory.theory}"],
-        theory.directory,
+        ["make", "-f", str(makefile), f"bin/{theory.theory}"],
+        theory.directory / "pvs2c",
         make_log,
         make_env,
     )
