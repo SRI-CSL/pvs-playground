@@ -1,0 +1,254 @@
+% Emerson, Temporal and Modal Logic, Handbook of Theoretical Computer
+% Science B (1990), sections 4.1--4.2, printed pp. 1011--1014.
+% PDF pages refer to the 1254-page handbook scan listed in SOURCE_NOTES.md.
+emerson[S: TYPE+, R: (total?[S, S])]: THEORY
+BEGIN
+  % Source: p. 1012 (PDF p. 997). Totality belongs to the model parameter.
+  % A valuation maps each atomic proposition to an arbitrary state predicate.
+  % No CTL syntax datatype or recursive satisfaction interpreter is used.
+  state_pred: TYPE = [S -> bool]
+  p, q, r, g: VAR state_pred
+  s, t: VAR S
+
+  % Source: pp. 1013--1014 (PDF pp. 998--999), Boolean connectives.
+  ctrue: state_pred = LAMBDA s: TRUE
+  cfalse: state_pred = LAMBDA s: FALSE
+  cnot(p): state_pred = LAMBDA s: NOT p(s)
+  cand(p, q): state_pred = LAMBDA s: p(s) AND q(s)
+  cor(p, q): state_pred = LAMBDA s: p(s) OR q(s)
+  cimp(p, q): state_pred = LAMBDA s: p(s) IMPLIES q(s)
+  ciff(p, q): state_pred = LAMBDA s: p(s) IFF q(s)
+
+  % Framework notation: validity IN THIS model, not object-language provability.
+  model_valid(p): bool = FORALL s: p(s)
+  entails(p, q): bool = FORALL s: p(s) IMPLIES q(s)
+  at(p, s): bool = p(s)
+  satisfies(g, p): bool = entails(g, p)
+
+  % Source: p. 1014 (PDF p. 999), all infinite R-generated fullpaths.
+  trajectory: TYPE = [nat -> S]
+  a: VAR trajectory
+  i, j: VAR nat
+  fullpath(a): bool = FORALL i: R(a(i), a(i + 1))
+  starts(a, s): bool = fullpath(a) AND a(0) = s
+  path_next(p, a): bool = p(a(1))
+  path_until(p, q, a): bool =
+    EXISTS i: q(a(i)) AND (FORALL j: j < i IMPLIES p(a(j)))
+
+  % Source: p. 1014 (PDF p. 999), rules S3/P3 restricted by CTL rule P0.
+  cEX(p): state_pred = LAMBDA s:
+    EXISTS a: starts(a, s) AND path_next(p, a)
+  cAX(p): state_pred = LAMBDA s:
+    FORALL a: starts(a, s) IMPLIES path_next(p, a)
+  cEU(p, q): state_pred = LAMBDA s:
+    EXISTS a: starts(a, s) AND path_until(p, q, a)
+  cAU(p, q): state_pred = LAMBDA s:
+    FORALL a: starts(a, s) IMPLIES path_until(p, q, a)
+
+  % Source: p. 1014 (PDF p. 999), Emerson's CTL abbreviations.
+  cEF(p): state_pred = cEU(ctrue, p)
+  cAG(p): state_pred = cnot(cEF(cnot(p)))
+  cAF(p): state_pred = cAU(ctrue, p)
+  cEG(p): state_pred = cnot(cAF(cnot(p)))
+
+  % WMC section 2, p. 3: release is the logical dual of until.
+  % The finite-graph repeat shortcut in WMC Appendix A, p. 14 is not a
+  % general path semantics for this possibly infinite S; see SOURCE_NOTES.md.
+  cER(p, q): state_pred = cnot(cAU(cnot(p), cnot(q)))
+  cAR(p, q): state_pred = cnot(cEU(cnot(p), cnot(q)))
+  path_release(p, q, a): bool = NOT path_until(cnot(p), cnot(q), a)
+
+  % WMC section 2, p. 3: existential/universal predecessors and forward image.
+  preE(p): state_pred = LAMBDA s: EXISTS t: R(s, t) AND p(t)
+  preA(p): state_pred = LAMBDA s: FORALL t: R(s, t) IMPLIES p(t)
+  post(p): state_pred = LAMBDA t: EXISTS s: p(s) AND R(s, t)
+
+  % Canonical prefix/suffix operations on infinite sequences support the
+  % path proofs. These do not bound or approximate a path.
+  suffix_fullpath: LEMMA fullpath(a) IMPLIES
+    starts(suffix[S](a, i), a(i))
+  prefix_fullpath: LEMMA R(s, a(0)) AND fullpath(a) IMPLIES
+    starts(add[S](s, a), s)
+  suffix_prefix: LEMMA suffix[S](add[S](s, a), 1) = a
+  path_until_unfold: LEMMA path_until(p, q, a) IFF
+    q(a(0)) OR (p(a(0)) AND path_until(p, q, suffix[S](a, 1)))
+
+  % Semantic concordance with predecessor and path characterizations.
+  fullpath_exists: LEMMA FORALL s: EXISTS a: starts(a, s)
+  ex_as_predecessor: LEMMA cEX(p) = preE(p)
+  ax_as_predecessor: LEMMA cAX(p) = preA(p)
+  eg_as_path: LEMMA cEG(p)(s) IFF
+    (EXISTS a: starts(a, s) AND (FORALL i: p(a(i))))
+  ag_as_path: LEMMA cAG(p)(s) IFF
+    (FORALL a: starts(a, s) IMPLIES (FORALL i: p(a(i))))
+  er_as_path: LEMMA cER(p, q)(s) IFF
+    (EXISTS a: starts(a, s) AND path_release(p, q, a))
+  ar_as_path: LEMMA cAR(p, q)(s) IFF
+    (FORALL a: starts(a, s) IMPLIES path_release(p, q, a))
+
+  % Invariant reasoning on fullpaths: choose within the predicate subtype.
+  invariant_path: LEMMA
+    (FORALL s: p(s) IMPLIES (EXISTS t: R(s, t) AND p(t))) AND p(s)
+      IMPLIES (EXISTS a: starts(a, s) AND (FORALL i: p(a(i))))
+  ag_now: LEMMA cAG(p)(s) IMPLIES p(s)
+  ag_step: LEMMA cAG(p)(s) AND R(s, t) IMPLIES cAG(p)(t)
+  path_until_invariant: LEMMA r(a(0)) AND
+    (FORALL i: r(a(i)) IMPLIES NOT q(a(i)) AND
+      (p(a(i)) IMPLIES r(a(i + 1))))
+    IMPLIES NOT path_until(p, q, a)
+
+  % Emerson 6.3, p. 1040. These are semantic soundness obligations for
+  % the exact schemas and rules, NOT assumed laws of the concrete semantics.
+  tautology(n: nat, b: [[below(n) -> bool] -> bool]): bool =
+    FORALL (v: [below(n) -> bool]): b(v)
+  substitute(n: nat, b: [[below(n) -> bool] -> bool],
+             args: [below(n) -> state_pred]): state_pred =
+    LAMBDA (s: S): b(LAMBDA (k: below(n)): args(k)(s))
+  Ax1: LEMMA FORALL (n: nat, b: [[below(n) -> bool] -> bool],
+                     args: [below(n) -> state_pred]):
+    tautology(n, b) IMPLIES model_valid(substitute(n, b, args))
+  Ax2: LEMMA FORALL (p: state_pred): model_valid(ciff(cEF(p), cEU(ctrue, p)))
+  Ax2b: LEMMA FORALL (p: state_pred): model_valid(ciff(cAG(p), cnot(cEF(cnot(p)))))
+  Ax3: LEMMA FORALL (p: state_pred): model_valid(ciff(cAF(p), cAU(ctrue, p)))
+  Ax3b: LEMMA FORALL (p: state_pred): model_valid(ciff(cEG(p), cnot(cAF(cnot(p)))))
+  Ax4: LEMMA FORALL (p, q: state_pred): model_valid(ciff(cEX(cor(p, q)), cor(cEX(p), cEX(q))))
+  Ax5: LEMMA FORALL (p: state_pred): model_valid(ciff(cAX(p), cnot(cEX(cnot(p)))))
+  Ax6: LEMMA FORALL (p, q: state_pred): model_valid(ciff(cEU(p, q), cor(q, cand(p, cEX(cEU(p, q))))))
+  Ax7: LEMMA FORALL (p, q: state_pred): model_valid(ciff(cAU(p, q), cor(q, cand(p, cAX(cAU(p, q))))))
+  Ax8: LEMMA model_valid(cand(cEX(ctrue), cAX(ctrue)))
+  Ax9: LEMMA FORALL (p, q, r: state_pred): model_valid(cimp(cAG(cimp(r, cand(cnot(q), cEX(r)))),
+                        cimp(r, cnot(cAU(p, q)))))
+  Ax9b: LEMMA FORALL (q, r: state_pred): model_valid(cimp(cAG(cimp(r, cand(cnot(q), cEX(r)))),
+                         cimp(r, cnot(cAF(q)))))
+  Ax10: LEMMA FORALL (p, q, r: state_pred): model_valid(cimp(cAG(cimp(r, cand(cnot(q), cimp(p, cAX(r))))),
+                         cimp(r, cnot(cEU(p, q)))))
+  Ax10b: LEMMA FORALL (q, r: state_pred): model_valid(cimp(cAG(cimp(r, cand(cnot(q), cAX(r)))),
+                          cimp(r, cnot(cEF(q)))))
+  Ax11: LEMMA FORALL (p, q: state_pred): model_valid(cimp(cAG(cimp(p, q)), cimp(cEX(p), cEX(q))))
+  R1: LEMMA FORALL (p: state_pred): model_valid(p) IMPLIES model_valid(cAG(p))
+  R2: LEMMA FORALL (p, q: state_pred): model_valid(p) AND model_valid(cimp(p, q)) IMPLIES model_valid(q)
+
+  entails_transitive: LEMMA FORALL (p, q, r: state_pred):
+    entails(p, q) AND entails(q, r) IMPLIES entails(p, r)
+  not_not: LEMMA FORALL (p: state_pred): cnot(cnot(p)) = p
+  EX_monotone: LEMMA FORALL (p, q: state_pred): entails(p, q) IMPLIES entails(cEX(p), cEX(q))
+  AX_monotone: LEMMA FORALL (p, q: state_pred): entails(p, q) IMPLIES entails(cAX(p), cAX(q))
+  EX_AX_combine: LEMMA FORALL (p, q: state_pred):
+    entails(cand(cEX(p), cAX(q)), cEX(cand(p, q)))
+
+  % Derived rules: proof obligations in the shallow calculus, inherited by every
+  % interpretation. These are not extra axioms. Derivations are in the guide.
+  EU_induction: LEMMA FORALL (p, q, r: state_pred):
+    entails(cor(q, cand(p, cEX(r))), r) IMPLIES entails(cEU(p, q), r)
+  AU_induction: LEMMA FORALL (p, q, r: state_pred):
+    entails(cor(q, cand(p, cAX(r))), r) IMPLIES entails(cAU(p, q), r)
+  EG_coinduction: LEMMA FORALL (p, r: state_pred):
+    entails(r, cand(p, cEX(r))) IMPLIES entails(r, cEG(p))
+  AG_coinduction: LEMMA FORALL (p, r: state_pred):
+    entails(r, cand(p, cAX(r))) IMPLIES entails(r, cAG(p))
+  ER_coinduction: LEMMA FORALL (p, q, r: state_pred):
+    entails(r, cand(q, cor(p, cEX(r)))) IMPLIES entails(r, cER(p, q))
+  AR_coinduction: LEMMA FORALL (p, q, r: state_pred):
+    entails(r, cand(q, cor(p, cAX(r)))) IMPLIES entails(r, cAR(p, q))
+
+  % Witness rules are internal to the same abstract deductive system. Their
+  % proof obligations are derived from Ax6/Ax7, Ax9/Ax10 and R1/R2, not
+  % additional axioms. The finite-model interpretation inherits these rules.
+  Next(e: bool, p): state_pred = IF e THEN cEX(p) ELSE cAX(p) ENDIF
+  Until(e: bool, p, q): state_pred = IF e THEN cEU(p, q) ELSE cAU(p, q) ENDIF
+  Release(e: bool, p, q): state_pred = IF e THEN cER(p, q) ELSE cAR(p, q) ENDIF
+  last_layer(h: list[state_pred]): RECURSIVE state_pred =
+    CASES h OF null: cnot(ctrue),
+      cons(a, rest): IF null?(rest) THEN a ELSE last_layer(rest) ENDIF ENDCASES
+    MEASURE length(h)
+  layer_steps(e: bool, p, q: state_pred, h: list[state_pred]): RECURSIVE bool =
+    CASES h OF null: TRUE,
+      cons(a, rest): CASES rest OF null: TRUE,
+        cons(b, tail): entails(b, cor(a, cor(q, cand(p, Next(e, a)))))
+          AND layer_steps(e, p, q, rest) ENDCASES
+    ENDCASES
+    MEASURE length(h)
+  until_premises(e: bool, r, p, q: state_pred, h: list[state_pred]): bool =
+    CASES h OF null: FALSE,
+      cons(a, rest): entails(a, q) AND layer_steps(e, p, q, h)
+        AND entails(r, last_layer(h)) ENDCASES
+  release_premises(e: bool, r, p, q, z: state_pred): bool =
+    entails(r, z) AND entails(z, cand(q, cor(p, Next(e, z))))
+  next_monotone: LEMMA FORALL (e: bool, p, q: state_pred):
+    entails(p, q) IMPLIES entails(Next(e, p), Next(e, q))
+  until_base: LEMMA FORALL (e: bool, p, q: state_pred):
+    entails(q, Until(e, p, q))
+  until_step: LEMMA FORALL (e: bool, p, q, r: state_pred):
+    entails(r, Until(e, p, q)) IMPLIES
+    entails(cor(r, cor(q, cand(p, Next(e, r)))), Until(e, p, q))
+  layers_preserve_until: LEMMA FORALL (h: list[state_pred], e: bool,
+                                       p, q: state_pred):
+    CASES h OF null: TRUE,
+      cons(a, rest): entails(a, Until(e, p, q)) AND layer_steps(e, p, q, h)
+        IMPLIES entails(last_layer(h), Until(e, p, q)) ENDCASES
+  until_witness_rule: LEMMA FORALL (e: bool, r, p, q: state_pred,
+                                   h: list[state_pred]):
+    until_premises(e, r, p, q, h) IMPLIES entails(r, Until(e, p, q))
+  release_witness_rule: LEMMA FORALL (e: bool, r, p, q, z: state_pred):
+    release_premises(e, r, p, q, z) IMPLIES entails(r, Release(e, p, q))
+
+  until_monotone: LEMMA FORALL (e: bool, p, q, r, g: state_pred):
+    entails(p, r) AND entails(q, g) IMPLIES
+      entails(Until(e, p, q), Until(e, r, g))
+  release_monotone: LEMMA FORALL (e: bool, p, q, r, g: state_pred):
+    entails(p, r) AND entails(q, g) IMPLIES
+      entails(Release(e, p, q), Release(e, r, g))
+
+  % Proof terms use admissible macros whose expansions are the derived rules
+  % above. A local fact is a model-relative premise, discharged by finite
+  % inclusion or propositional reasoning in the compiler. It is not a new
+  % CTL axiom. No object-language formula syntax is introduced.
+  derivation: DATATYPE
+  BEGIN
+    local_fact(antecedent, consequent: [S -> bool]): local_fact?
+    cut(first, second: derivation): cut?
+    boolean_rule(conjunctive: bool, left, right: derivation): boolean_rule?
+    next_rule(existential: bool, premise: derivation): next_rule?
+    temporal_rule(existential, is_until: bool,
+                  left, right: derivation): temporal_rule?
+    until_rule(existential: bool, p, q: [S -> bool],
+               layers: list[[S -> bool]]): until_rule?
+    release_rule(existential: bool, p, q, invariant: [S -> bool]): release_rule?
+  END derivation
+
+  source(d: derivation): RECURSIVE state_pred = CASES d OF
+    local_fact(r, p): r,
+    cut(a, b): source(a),
+    boolean_rule(c, a, b): IF c THEN cand(source(a), source(b))
+                             ELSE cor(source(a), source(b)) ENDIF,
+    next_rule(e, a): Next(e, source(a)),
+    temporal_rule(e, u, a, b): IF u THEN Until(e, source(a), source(b))
+                                      ELSE Release(e, source(a), source(b)) ENDIF,
+    until_rule(e, p, q, h): last_layer(h),
+    release_rule(e, p, q, z): z
+  ENDCASES MEASURE d BY <<
+  conclusion(d: derivation): RECURSIVE state_pred = CASES d OF
+    local_fact(r, p): p,
+    cut(a, b): conclusion(b),
+    boolean_rule(c, a, b): IF c THEN cand(conclusion(a), conclusion(b))
+                             ELSE cor(conclusion(a), conclusion(b)) ENDIF,
+    next_rule(e, a): Next(e, conclusion(a)),
+    temporal_rule(e, u, a, b): IF u THEN Until(e, conclusion(a), conclusion(b))
+                                      ELSE Release(e, conclusion(a), conclusion(b)) ENDIF,
+    until_rule(e, p, q, h): Until(e, p, q),
+    release_rule(e, p, q, z): Release(e, p, q)
+  ENDCASES MEASURE d BY <<
+  licensed(d: derivation): RECURSIVE bool = CASES d OF
+    local_fact(r, p): entails(r, p),
+    cut(a, b): licensed(a) AND licensed(b) AND conclusion(a) = source(b),
+    boolean_rule(c, a, b): licensed(a) AND licensed(b),
+    next_rule(e, a): licensed(a),
+    temporal_rule(e, u, a, b): licensed(a) AND licensed(b),
+    until_rule(e, p, q, h): until_premises(e, last_layer(h), p, q, h),
+    release_rule(e, p, q, z): release_premises(e, z, p, q, z)
+  ENDCASES MEASURE d BY <<
+  derives(d: derivation, r, p: state_pred): bool =
+    licensed(d) AND source(d) = r AND conclusion(d) = p
+  derivation_sound: THEOREM FORALL (d: derivation):
+    licensed(d) IMPLIES entails(source(d), conclusion(d))
+END emerson

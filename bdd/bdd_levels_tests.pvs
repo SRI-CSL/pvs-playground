@@ -1,0 +1,253 @@
+semantic_pkg_tests: THEORY
+BEGIN
+  IMPORTING semantic_bdd_pkg[below(4)]
+
+  mk_val(b0, b1, b2, b3: bool): valuation =
+    (LAMBDA (i: bddvar):
+      IF i = 0 THEN b0
+      ELSIF i = 1 THEN b1
+      ELSIF i = 2 THEN b2
+      ELSE b3
+      ENDIF)
+
+  v0000: valuation = mk_val(FALSE, FALSE, FALSE, FALSE)
+  v1000: valuation = mk_val(TRUE, FALSE, FALSE, FALSE)
+  v1100: valuation = mk_val(TRUE, TRUE, FALSE, FALSE)
+  v0100: valuation = mk_val(FALSE, TRUE, FALSE, FALSE)
+  v0010: valuation = mk_val(FALSE, FALSE, TRUE, FALSE)
+
+  cube_x0: cube = cube_insert(cube_empty, 0, TRUE)
+
+  semantic_and_test: _TEST_
+    denote(bdd_and(ithvar(0), nithvar(1)))(v1000) AND
+    NOT denote(bdd_and(ithvar(0), nithvar(1)))(v1100) AND
+    NOT denote(bdd_and(ithvar(0), nithvar(1)))(v0000)
+
+  semantic_exists_test: _TEST_
+    denote(bdd_exists(cube_x0, bdd_and(ithvar(0), ithvar(1))))(v0100) AND
+    NOT denote(bdd_exists(cube_x0, bdd_and(ithvar(0), ithvar(1))))(v0000)
+
+  semantic_compose_test: _TEST_
+    denote(bdd_compose(bdd_and(ithvar(0), ithvar(2)), 0, nithvar(1)))(v0010) AND
+    NOT denote(bdd_compose(bdd_and(ithvar(0), ithvar(2)), 0, nithvar(1)))(mk_val(FALSE, TRUE, TRUE, FALSE))
+END semantic_pkg_tests
+
+
+abstract_core_tests: THEORY
+BEGIN
+  IMPORTING abstract_bdd_core[4, 128]
+
+  mk_val(b0, b1, b2, b3: bool): valuation =
+    (LAMBDA (i: vid):
+      IF i = 0 THEN b0
+      ELSIF i = 1 THEN b1
+      ELSIF i = 2 THEN b2
+      ELSE b3
+      ENDIF)
+
+  v1000: valuation = mk_val(TRUE, FALSE, FALSE, FALSE)
+  v0100: valuation = mk_val(FALSE, TRUE, FALSE, FALSE)
+  v1100: valuation = mk_val(TRUE, TRUE, FALSE, FALSE)
+
+  cube_x0_x2: cube =
+    abdd_cube_insert(abdd_cube_insert(abdd_cube_empty, 0, TRUE), 2, FALSE)
+
+  x0_and_x1: bdd =
+    (# root := 3,
+       used := 4,
+       nodes := empty_nodes WITH
+                  [(2) := (# top := 1, low := false_id, high := true_id #),
+                   (3) := (# top := 0, low := false_id, high := 2 #)],
+       support_mask := mask_union(singleton_mask(0), singleton_mask(1)),
+       ord := id_order,
+       inv := id_inverse #)
+
+  abstract_force_cube_test: _TEST_
+    LET rho = abdd_force_cube(cube_x0_x2, mk_val(FALSE, TRUE, TRUE, TRUE))
+     IN rho(0) AND NOT rho(2) AND rho(1) AND rho(3)
+
+  abstract_manual_node_test: _TEST_
+    abdd_eval(x0_and_x1, v1100) AND
+    NOT abdd_eval(x0_and_x1, v1000) AND
+    NOT abdd_eval(x0_and_x1, v0100)
+
+  abstract_pick_sat_test: _TEST_
+    LET sigma = abdd_pick_sat(x0_and_x1)
+     IN abdd_eval(x0_and_x1, sigma)
+END abstract_core_tests
+
+
+naive_pkg_tests: THEORY
+BEGIN
+  IMPORTING cbdd_naive_pkg[4, 128]
+
+  mk_val(b0, b1, b2, b3: bool): valuation =
+    (LAMBDA (i: bddvar):
+      IF i = 0 THEN b0
+      ELSIF i = 1 THEN b1
+      ELSIF i = 2 THEN b2
+      ELSE b3
+      ENDIF)
+
+  v0000: valuation = mk_val(FALSE, FALSE, FALSE, FALSE)
+  v0100: valuation = mk_val(FALSE, TRUE, FALSE, FALSE)
+  v0010: valuation = mk_val(FALSE, FALSE, TRUE, FALSE)
+
+  cube_x0: cube = cube_insert(cube_empty, 0, TRUE)
+
+  naive_exists_test: _TEST_
+    denote(bdd_exists(cube_x0, bdd_and(ithvar(0), ithvar(1))))(v0100) AND
+    NOT denote(bdd_exists(cube_x0, bdd_and(ithvar(0), ithvar(1))))(v0000)
+
+  naive_compose_test: _TEST_
+    denote(bdd_compose(bdd_and(ithvar(0), ithvar(2)), 0, nithvar(1)))(v0010) AND
+    NOT denote(bdd_compose(bdd_and(ithvar(0), ithvar(2)), 0, nithvar(1)))(mk_val(FALSE, TRUE, TRUE, FALSE))
+END naive_pkg_tests
+
+
+array_pkg_tests: THEORY
+BEGIN
+  IMPORTING cbdd_array_pkg[4, 128, 17, 17]
+
+  mk_val(b0, b1, b2, b3: bool): valuation =
+    (LAMBDA (i: bddvar):
+      IF i = 0 THEN b0
+      ELSIF i = 1 THEN b1
+      ELSIF i = 2 THEN b2
+      ELSE b3
+      ENDIF)
+
+  v0100: valuation = mk_val(FALSE, TRUE, FALSE, FALSE)
+  v1000: valuation = mk_val(TRUE, FALSE, FALSE, FALSE)
+
+  swap01: perm =
+    (# forward := (LAMBDA (x: bddvar):
+                     IF x = 0 THEN 1
+                     ELSIF x = 1 THEN 0
+                     ELSE x
+                     ENDIF),
+       backward := (LAMBDA (x: bddvar):
+                      IF x = 0 THEN 1
+                      ELSIF x = 1 THEN 0
+                      ELSE x
+                      ENDIF) #)
+
+  array_permute_test: _TEST_
+    denote(bdd_permute(bdd_and(ithvar(0), nithvar(2)), swap01))(v0100) AND
+    NOT denote(bdd_permute(bdd_and(ithvar(0), nithvar(2)), swap01))(v1000)
+
+  array_pick_sat_test: _TEST_
+    LET f = bdd_and(ithvar(0), nithvar(1)),
+        sigma = pick_sat(f)
+     IN denote(f)(sigma)
+END array_pkg_tests
+
+
+opt_pkg_tests: THEORY
+BEGIN
+  IMPORTING cbdd_array_opt_pkg[4, 128, 17, 17]
+
+  mk_val(b0, b1, b2, b3: bool): valuation =
+    (LAMBDA (i: bddvar):
+      IF i = 0 THEN b0
+      ELSIF i = 1 THEN b1
+      ELSIF i = 2 THEN b2
+      ELSE b3
+      ENDIF)
+
+  v0000: valuation = mk_val(FALSE, FALSE, FALSE, FALSE)
+  v0110: valuation = mk_val(FALSE, TRUE, TRUE, FALSE)
+  v1110: valuation = mk_val(TRUE, TRUE, TRUE, FALSE)
+  v1100: valuation = mk_val(TRUE, TRUE, FALSE, FALSE)
+  v1000: valuation = mk_val(TRUE, FALSE, FALSE, FALSE)
+
+  opt_shortcut_test: _TEST_
+    denote(bdd_and(bdd_not(ithvar(0)), bdd_or(ithvar(1), ithvar(2))))(v0110) AND
+    NOT denote(bdd_and(bdd_not(ithvar(0)), bdd_or(ithvar(1), ithvar(2))))(v1110) AND
+    NOT denote(bdd_and(bdd_not(ithvar(0)), bdd_or(ithvar(1), ithvar(2))))(v0000)
+
+  opt_xor_test: _TEST_
+    NOT denote(bdd_xor(ithvar(0), bdd_not(ithvar(1))))(v1000) AND
+    denote(bdd_xor(ithvar(0), bdd_not(ithvar(1))))(v1100)
+END opt_pkg_tests
+
+
+opt_manager_tests: THEORY
+BEGIN
+  IMPORTING cbdd_array_opt[4, 128, 17, 17]
+
+  mk_val(b0, b1, b2, b3: bool): cvaluation =
+    (LAMBDA (i: vid):
+      IF i = 0 THEN b0
+      ELSIF i = 1 THEN b1
+      ELSIF i = 2 THEN b2
+      ELSE b3
+      ENDIF)
+
+  v0000: cvaluation = mk_val(FALSE, FALSE, FALSE, FALSE)
+  v0011: cvaluation = mk_val(FALSE, FALSE, TRUE, TRUE)
+  v0100: cvaluation = mk_val(FALSE, TRUE, FALSE, FALSE)
+  v1000: cvaluation = mk_val(TRUE, FALSE, FALSE, FALSE)
+  v1100: cvaluation = mk_val(TRUE, TRUE, FALSE, FALSE)
+
+  cube_x0: ccube = abdd_cube_insert(abdd_cube_empty, 0, TRUE)
+
+  root0_bdd: obdd = opt_and(opt_var(0), opt_nvar(1))
+  root1_bdd: obdd = opt_xor(opt_var(1), opt_var(2))
+  root2_bdd: obdd = opt_ite(opt_var(0), opt_var(2), opt_var(3))
+
+  roots0: rootseq =
+    (# length := 3,
+       seq := (LAMBDA (k: below(3)):
+                IF k = 0 THEN root0_bdd
+                ELSIF k = 1 THEN root1_bdd
+                ELSE root2_bdd
+                ENDIF) #)
+
+  id_inverse0: ARRAY[vid -> vid] = (LAMBDA (x: vid): x)
+
+  sample_manager: manager =
+    (# current_order := id_order,
+       inverse_level := id_inverse0,
+       roots := roots0,
+       unique := empty_unique_table,
+       cache := empty_cache_table,
+       cache_lookups := 0,
+       cache_hits := 0,
+       cache_inserts := 0,
+       unique_lookups := 0,
+       unique_hits := 0,
+       unique_inserts := 0,
+       reorder_rounds := 0 #)
+
+  root_at(rs: rootseq, k: nat): obdd =
+    IF k < rs`length THEN rs`seq(k) ELSE opt_false ENDIF
+
+  manager_cache_test: _TEST_
+    LET (m1, r1) = cached_binop(sample_manager, op_and, opt_var(0), opt_var(1)),
+        (m2, r2) = cached_binop(m1, op_and, opt_var(0), opt_var(1))
+     IN cache_lookups(m2) = 2 AND
+        cache_inserts(m2) = 1 AND
+        cache_hits(m2) = 1 AND
+        r1 = r2 AND
+        opt_eval(r1, v1100) AND
+        NOT opt_eval(r2, v1000)
+
+  manager_relprod_test: _TEST_
+    LET (m1, r) = cached_relprod(sample_manager,
+                                 opt_and(opt_var(0), opt_var(1)),
+                                 opt_or(opt_var(0), opt_var(2)),
+                                 cube_x0)
+     IN cache_lookups(m1) = 1 AND
+        opt_eval(r, v0100) AND
+        NOT opt_eval(r, v0000)
+
+  manager_reorder_test: _TEST_
+    LET m1 = dynamic_reorder_var(sample_manager, 1),
+        rs0 = roots(sample_manager),
+        rs1 = roots(m1)
+     IN manager_cost(m1) <= manager_cost(sample_manager) AND
+        opt_eval(root_at(rs0, 1), v0100) = opt_eval(root_at(rs1, 1), v0100) AND
+        opt_eval(root_at(rs0, 2), v0011) = opt_eval(root_at(rs1, 2), v0011) AND
+        opt_eval(root_at(rs0, 0), v1000) = opt_eval(root_at(rs1, 0), v1000)
+END opt_manager_tests

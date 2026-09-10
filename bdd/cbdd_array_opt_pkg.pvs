@@ -1,0 +1,52 @@
+cbdd_array_opt_pkg[
+  nvars: {n: pos_uint32 | n <= 32},
+  max_nodes: {m: pos_uint32 | 3 <= m AND m <= maxsize},
+  unique_slots: {m: pos_uint32 | 1 <= m AND m <= maxsize},
+  cache_slots: {m: pos_uint32 | 1 <= m AND m <= maxsize}
+]: THEORY
+BEGIN
+  IMPORTING cbdd_array_opt[nvars, max_nodes, unique_slots, cache_slots]
+
+  IMPORTING bdd_interface{{
+    bddvar := vid,
+    valuation := cvaluation,
+    cube := ccube,
+    perm := cperm,
+    bdd := obdd,
+    read_var := abdd_read_var,
+    update_var := abdd_update_var,
+    cube_support := abdd_cube_support,
+    cube_value := abdd_cube_value,
+    cube_empty := abdd_cube_empty,
+    cube_insert := abdd_cube_insert,
+    force_cube := abdd_force_cube,
+    denote := opt_denote,
+    support := opt_support,
+    bdd_false := opt_false,
+    bdd_true := opt_true,
+    ithvar := opt_var,
+    nithvar := opt_nvar,
+    bdd_not := opt_not,
+    bdd_and := opt_and,
+    bdd_or := opt_or,
+    bdd_xor := opt_xor,
+    bdd_xnor := opt_xnor,
+    bdd_nand := opt_nand,
+    bdd_nor := opt_nor,
+    bdd_imp := opt_imp,
+    bdd_invimp := opt_invimp,
+    bdd_diff := opt_diff,
+    bdd_ite := opt_ite,
+    bdd_exists := opt_exists,
+    bdd_forall := opt_forall,
+    bdd_and_abstract := opt_and_abstract,
+    bdd_restrict := opt_restrict,
+    bdd_constrain := opt_constrain,
+    bdd_compose := opt_compose,
+    permute_var := abdd_permute_var,
+    inverse_perm := abdd_inverse_perm,
+    permute_valuation := abdd_permute_valuation,
+    bdd_permute := opt_permute,
+    pick_sat := opt_pick_sat
+  }}
+END cbdd_array_opt_pkg

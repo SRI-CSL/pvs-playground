@@ -1,0 +1,212 @@
+% Executable PVS fixtures: algorithm results and independent proof compilation.
+wmc_tests: THEORY
+BEGIN
+  % A finite transition system is a table of nonempty successor lists.
+  % The dependent result type discharges seriality once for every table.
+  transition_system(n: posnat): TYPE = [below(n) -> (cons?[below(n)])]
+  transition(n: posnat, ts: transition_system(n)):
+    {r: [below(n), below(n) -> bool] |
+       FORALL (s: below(n)): EXISTS (t: below(n)): r(s, t)} =
+    LAMBDA (s, t: below(n)): member(t, ts(s))
+
+  % Edit the state count and successor rows to define a model. A terminal
+  % state has a singleton self-loop, as required by CTL's fullpath semantics.
+  st: TYPE = below(4)
+  successors: transition_system(4) = LAMBDA (s: st):
+    IF s = 0 THEN (: 1, 2 :) ELSIF s = 1 THEN (: 1 :)
+    ELSE (: 3 :) ENDIF
+  step: [st, st -> bool] = transition(4, successors)
+  IMPORTING wmc[4, step]
+  target: region = list2set[st]((: 1 :))
+  roots: region = list2set[st]((: 0, 1 :))
+  avoid: region = complement(target)
+  zero: region = list2set[st]((: 0 :))
+  % For example: evaluate(af(atom(target)), (: 0, 1 :)). The result exposes
+  % good/bad state sets and the trace; check remains independently callable.
+  evaluate(f: CTL, initial_states: list[st]): result =
+    f`run(list2set[st](initial_states))
+  a: CTL = atom(target)
+  af_result: result = evaluate(af(a), (: 0, 1 :))
+  accepts(f: CTL, i: region, o: result): bool = up?(check(f, i, o))
+  succeeds(f: CTL, i: region): bool = accepts(f, i, f`run(i))
+
+  af_partition_test: _TEST_ same(good(af_result), target) AND
+    same(bad(af_result), zero)
+  af_trace_test: _TEST_ temporal_result?(af_result) AND
+    same(final_stage(stages(af_result)), avoid)
+  nested_ag_ef_test: _TEST_ same(good(ag(ef(a))`run(universe)), target)
+  boolean_composition_test: _TEST_
+    same(good(conj(ef(a), neg(af(a)))`run(universe)), zero)
+  next_branch_test: _TEST_ good(ex(a)`run(universe))(0) AND
+    NOT good(ax(a)`run(universe))(0)
+  until_zero_step_test: _TEST_
+    same(good(eu(atom(empty), atom(zero))`run(universe)), zero) AND
+    same(good(au(atom(empty), atom(zero))`run(universe)), zero) AND
+    good(af(atom(zero))`run(universe))(0)
+  release_terminal_test: _TEST_
+    same(good(er(atom(zero), atom(zero))`run(universe)), zero) AND
+    same(good(ar(atom(zero), atom(zero))`run(universe)), zero)
+  empty_query_test: _TEST_ vacant(good(af(a)`run(empty))) AND
+    vacant(bad(eg(a)`run(empty)))
+  next_compilation_test: _TEST_ succeeds(ex(a), universe) AND succeeds(ax(a), universe)
+  until_compilation_test: _TEST_ succeeds(eu(atom(universe), a), universe) AND
+    succeeds(au(atom(universe), a), universe)
+  release_compilation_test: _TEST_ succeeds(er(atom(empty), a), universe) AND
+    succeeds(ar(atom(empty), a), universe)
+  future_compilation_test: _TEST_ succeeds(ef(a), roots) AND succeeds(af(a), roots)
+  globally_compilation_test: _TEST_ succeeds(eg(a), universe) AND succeeds(ag(a), universe)
+  nested_compilation_test: _TEST_ succeeds(ag(ef(a)), universe)
+  boolean_compilation_test: _TEST_ succeeds(conj(ef(a), neg(af(a))), universe) AND
+    succeeds(disj(a, neg(a)), universe)
+  empty_compilation_test: _TEST_ succeeds(af(a), empty) AND succeeds(eg(a), empty)
+  immediate_compilation_test: _TEST_
+    succeeds(au(atom(empty), atom(zero)), universe) AND
+    succeeds(ar(atom(zero), atom(zero)), universe)
+
+  % This trace is supplied directly: independent checking does not run WMC.
+  supplied_af: result = temporal_result(FALSE, TRUE, roots, target,
+    universe, cons(avoid, null),
+    cons(atom_result(universe, target), cons(atom_result(avoid, avoid), null)))
+  independent_compilation_test: _TEST_ accepts(af(a), roots, supplied_af)
+  derivation_emitted_test: _TEST_ LET d = check(af(a), roots, supplied_af) IN
+    up?(d) AND cut?(down(d)`1) AND cut?(down(d)`2)
+  wrong_valuation_test: _TEST_ NOT accepts(a, universe, atom_result(universe, universe))
+  wrong_query_test: _TEST_ NOT accepts(af(a), universe, supplied_af)
+  wrong_operator_test: _TEST_ NOT accepts(ag(a), roots, supplied_af)
+  missing_children_test: _TEST_ NOT accepts(af(a), roots,
+    temporal_result(FALSE, TRUE, roots, target, universe, cons(avoid, null), null))
+  odd_children_test: _TEST_ NOT accepts(af(a), roots,
+    temporal_result(FALSE, TRUE, roots, target, universe, cons(avoid, null),
+      cons(atom_result(universe, target), null)))
+  forged_child_test: _TEST_ NOT accepts(af(a), roots,
+    temporal_result(FALSE, TRUE, roots, roots, universe, cons(avoid, null),
+      cons(atom_result(universe, universe), cons(atom_result(empty, empty), null))))
+  outside_query_test: _TEST_ NOT accepts(af(a), target,
+    temporal_result(FALSE, TRUE, target, roots, universe, cons(avoid, null),
+      children(supplied_af)))
+  false_until_cycle_test: _TEST_ NOT accepts(af(a), universe,
+    temporal_result(FALSE, TRUE, universe, universe, universe,
+      cons(avoid, cons(empty, null)), children(supplied_af)))
+  false_invariant_test: _TEST_ NOT accepts(ag(a), universe,
+    temporal_result(FALSE, FALSE, universe, universe, universe, cons(universe, null),
+      cons(atom_result(universe, target), cons(atom_result(target, empty), null))))
+  next_polarity_test: _TEST_ LET o = ex(a)`run(universe) IN
+    next_result?(o) AND NOT accepts(ax(a), universe,
+      next_result(FALSE, universe, good(o), child(o)))
+  partial_negative_evidence_test: _TEST_
+    LET d = operands(TRUE, atom(universe), a,
+      cons(atom_result(target, target), cons(atom_result(empty, empty), null))) IN
+      up?(d) AND vacant(source(down(d)`2)) AND vacant(source(down(d)`4))
+END wmc_tests
+
+% SAL 3.3 examples/peterson/peterson.sal: the two-bit, three-location
+% Peterson protocol, with guarded asynchronous composition ([]).
+peterson_model: THEORY
+BEGIN
+  PC: TYPE = {sleeping, trying, critical}
+  process: TYPE = below(2)
+  configuration: TYPE = [# pc1, pc2: PC, x1, x2: bool #]
+  c: VAR configuration
+  p: VAR process
+
+  % The WMC carrier is exactly 3 * 3 * 2 * 2 configurations.
+  code(l: PC): below(3) = CASES l OF sleeping: 0, trying: 1, critical: 2 ENDCASES
+  location(k: below(3)): PC = IF k = 0 THEN sleeping ELSIF k = 1 THEN trying ELSE critical ENDIF
+  encode(c): below(36) = code(c`pc1) + 3 * code(c`pc2) +
+    (IF c`x1 THEN 9 ELSE 0 ENDIF) + (IF c`x2 THEN 18 ELSE 0 ENDIF)
+  decode(s: below(36)): configuration =
+    (# pc1 := location(rem(3)(s)), pc2 := location(rem(3)(ndiv(s, 3))),
+       x1 := rem(2)(ndiv(s, 9)) = 1, x2 := s >= 18 #)
+  position(p, c): PC = IF p = 0 THEN c`pc1 ELSE c`pc2 ENDIF
+  bit(p, c): bool = IF p = 0 THEN c`x1 ELSE c`x2 ENDIF
+  enabled(p, c): bool = position(p, c) /= trying OR
+    position(1 - p, c) = sleeping OR bit(p, c) = (bit(1 - p, c) /= (p = 1))
+  enabled_total: LEMMA enabled(0, c) OR enabled(1, c)
+
+  % tval is FALSE for process 0 and TRUE for process 1. Waking and leaving
+  % both assign x1' = (x2 = tval), exactly as in SAL. Other fields stutter.
+  advance(p: process, c: {c: configuration | enabled(p, c)}): configuration =
+    LET next = CASES position(p, c) OF
+          sleeping: trying, trying: critical, critical: sleeping ENDCASES,
+        value = IF position(p, c) = trying THEN bit(p, c)
+                ELSE bit(1 - p, c) = (p = 1) ENDIF IN
+      IF p = 0 THEN c WITH [pc1 := next, x1 := value]
+      ELSE c WITH [pc2 := next, x2 := value] ENDIF
+  step: (total?[below(36), below(36)]) = LAMBDA (s, t: below(36)):
+    LET c = decode(s) IN
+      (enabled(0, c) AND t = encode(advance(0, c))) OR
+      (enabled(1, c) AND t = encode(advance(1, c)))
+END peterson_model
+
+peterson: THEORY
+BEGIN
+  IMPORTING peterson_model
+  IMPORTING wmc[36, step]
+
+  % SAL initializes only the two program counters: both bits are arbitrary.
+  initial: region = LAMBDA (s: state):
+    decode(s)`pc1 = sleeping AND decode(s)`pc2 = sleeping
+  at(p: process, l: PC): CTL = atom(LAMBDA (s: state): position(p, decode(s)) = l)
+  mutex: CTL = ag(neg(conj(at(0, critical), at(1, critical))))
+  response(p: process): CTL = ag(disj(neg(at(p, trying)), af(at(p, critical))))
+  possible_entry(p: process): CTL = ag(ef(at(p, critical)))
+  % These stronger recurrence claims are FALSE without a request assumption.
+  recurrence(p: process): CTL = ag(af(at(p, critical)))
+  invalid: CTL = ag(neg(conj(at(0, trying), at(1, critical))))
+
+  % PVSio: verdict(mutex); verdict(response(0)); outline(evidence(response(0))`1);
+  % The run is WMC alone. evidence explicitly invokes the independent checker.
+  evaluate(f: CTL): result = f`run(initial)
+  verdict(f: CTL): bool = same(good(evaluate(f)), initial)
+  evidence(f: CTL): proof_pair = down(check(f, initial, evaluate(f)))
+  % This is a deductive theorem, not a runtime evaluation of path semantics.
+  evidence_justifies: THEOREM FORALL (f: CTL):
+    derives(evidence(f)`1, good(evaluate(f)), f`meaning) AND
+    derives(evidence(f)`2, bad(evaluate(f)), cnot(f`meaning)) AND
+    entails(good(evaluate(f)), f`meaning) AND entails(bad(evaluate(f)), cnot(f`meaning))
+
+  % Display the constructors in preorder without evaluating their shallow CTL
+  % annotations. PVSio's default function printer would evaluate fullpaths.
+  % This is a view of the actual derivation, not another checker/certificate.
+  outline(d: derivation): RECURSIVE list[string] = CASES d OF
+    local_fact(r, p): (: "local_fact" :),
+    cut(a, b): cons("cut", append(outline(a), outline(b))),
+    boolean_rule(c, a, b):
+      cons(IF c THEN "boolean_rule(AND)" ELSE "boolean_rule(OR)" ENDIF,
+           append(outline(a), outline(b))),
+    next_rule(e, a): cons(IF e THEN "next_rule(EX)" ELSE "next_rule(AX)" ENDIF,
+                         outline(a)),
+    temporal_rule(e, u, a, b):
+      cons(IF u THEN IF e THEN "temporal_rule(EU)" ELSE "temporal_rule(AU)" ENDIF
+           ELSE IF e THEN "temporal_rule(ER)" ELSE "temporal_rule(AR)" ENDIF ENDIF,
+           append(outline(a), outline(b))),
+    until_rule(e, p, q, h): (: IF e THEN "until_rule(E)" ELSE "until_rule(A)" ENDIF :),
+    release_rule(e, p, q, z): (: IF e THEN "release_rule(E)" ELSE "release_rule(A)" ENDIF :)
+  ENDCASES MEASURE d BY <<
+
+  encoding_test: _TEST_ all_prefix(LAMBDA (s: state): encode(decode(s)) = s, 36)
+  initial_test: _TEST_ cardinality(initial) = 4
+  mutex_test: _TEST_ verdict(mutex)
+  response0_test: _TEST_ verdict(response(0))
+  response1_test: _TEST_ verdict(response(1))
+  possible_entry0_test: _TEST_ verdict(possible_entry(0))
+  possible_entry1_test: _TEST_ verdict(possible_entry(1))
+  recurrence0_test: _TEST_ NOT verdict(recurrence(0))
+  recurrence1_test: _TEST_ NOT verdict(recurrence(1))
+  invalid_test: _TEST_ NOT verdict(invalid)
+  % Process 1 cycles while process 0 never requests; recurrence(0) is false.
+  no_request_cycle_test: _TEST_ step(0, 3) AND step(3, 6) AND step(6, 0)
+  mutex_evidence_test: _TEST_ same(source(evidence(mutex)`1), initial)
+  response0_evidence_test: _TEST_ same(source(evidence(response(0))`1), initial)
+  response1_evidence_test: _TEST_ same(source(evidence(response(1))`1), initial)
+  possible_entry0_evidence_test: _TEST_ same(source(evidence(possible_entry(0))`1), initial)
+  possible_entry1_evidence_test: _TEST_ same(source(evidence(possible_entry(1))`1), initial)
+  recurrence0_evidence_test: _TEST_ same(source(evidence(recurrence(0))`2), initial)
+  recurrence1_evidence_test: _TEST_ same(source(evidence(recurrence(1))`2), initial)
+  invalid_evidence_test: _TEST_ same(source(evidence(invalid)`2), initial)
+  % Reject a genuine safety trace with its claimed positive roots erased.
+  tampered_evidence_test: _TEST_ LET o = evaluate(mutex) IN temporal_result?(o) AND
+    NOT up?(check(mutex, initial,
+      temporal_result(existential(o), is_until(o), query(o), empty,
+                      visited(o), stages(o), children(o))))
+END peterson

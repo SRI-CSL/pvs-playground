@@ -1,0 +1,448 @@
+% Shankar--Sorea WMC: forward discovery, then descending pruning.
+% Exactly one result type and one shallow compositional CTL interface.
+% below[N] uses the prelude nat_types interpretation: it avoids the current
+% PVS beta-reduction bug on the equivalent type application below(N).
+% One dependent algebra packages the executable representation and its meaning.
+wmc_sets[N: posnat, (IMPORTING nat_types[N]) edge: (total?[below[N],below[N]]), carrier: TYPE+]: THEORY
+BEGIN
+  set_algebra: TYPE = [# den: [carrier -> set[below[N]]],
+  set_empty: {z: carrier | den(z) = emptyset[below[N]]},
+  set_universe: {z: carrier | den(z) = fullset[below[N]]},
+  set_copy: [x: carrier -> {z: carrier | den(z) = den(x)}],
+  set_meet: [x: carrier, y: carrier -> {z: carrier | den(z) = (LAMBDA (s:below[N]): den(x)(s) AND den(y)(s))}],
+  set_join: [x: carrier, y: carrier -> {z: carrier | den(z) = (LAMBDA (s:below[N]): den(x)(s) OR den(y)(s))}],
+  set_complement: [x: carrier -> {z: carrier | den(z) = (LAMBDA (s:below[N]): NOT den(x)(s))}],
+  set_difference: [x: carrier, y: carrier -> {z: carrier | den(z) = (LAMBDA (s:below[N]): den(x)(s) AND NOT den(y)(s))}],
+  set_pre_e: [x: carrier -> {z: carrier | den(z) = (LAMBDA (s:below[N]): EXISTS (t:below[N]): edge(s,t) AND den(x)(t))}],
+  set_pre_a: [x: carrier -> {z: carrier | den(z) = (LAMBDA (s:below[N]): FORALL (t:below[N]): edge(s,t) IMPLIES den(x)(t))}],
+  set_forward: [x: carrier -> {z: carrier | den(z) = (LAMBDA (s:below[N]): EXISTS (t:below[N]): den(x)(t) AND edge(t,s))}],
+  set_included: [x: carrier, y: carrier -> {b: bool | b IFF subset?(den(x),den(y))}],
+  set_same: [x: carrier, y: carrier -> {b: bool | b IFF den(x)=den(y)}],
+  set_vacant: [x: carrier -> {b: bool | b IFF empty?(den(x))}] #]
+END wmc_sets
+
+wmc_kernel[N: posnat, (IMPORTING nat_types[N]) edge: (total?[below[N],below[N]]),
+  representation: TYPE+, (IMPORTING wmc_sets[N,edge,representation]) algebra: set_algebra]: THEORY
+BEGIN
+  region: TYPE = representation
+  state: TYPE = below[N]
+  den(x: region): set[state] = algebra`den(x)
+  % Model interpretation: S |-> state, R |-> edge.
+  IMPORTING emerson[state, edge]
+  x, y, z, initial: VAR region
+  s, t: VAR state
+
+  % Representation contracts are the only backend-specific proof boundary.
+  tabulate(x: region): {y: region | den(y) = den(x)} = algebra`set_copy(x)
+  empty: region = algebra`set_empty
+  universe: region = algebra`set_universe
+  meet(x, y): region = algebra`set_meet(x,y)
+  join(x, y): region = algebra`set_join(x,y)
+  complement(x): region = algebra`set_complement(x)
+  difference(x, y): region = algebra`set_difference(x,y)
+  pre_e(x): region = algebra`set_pre_e(x)
+  pre_a(x): region = algebra`set_pre_a(x)
+  forward(x): region = algebra`set_forward(x)
+  included(x, y): bool = algebra`set_included(x,y)
+  same(x, y): bool = algebra`set_same(x,y)
+  vacant(x): bool = algebra`set_vacant(x)
+  predecessor(existential: bool, x: region): region =
+    IF existential THEN pre_e(x) ELSE pre_a(x) ENDIF
+
+  tabulate_identity: LEMMA den(tabulate(x)) = den(x)
+  empty_semantics: LEMMA den(empty) = cfalse
+  universe_semantics: LEMMA den(universe) = ctrue
+  set_meet_semantics: LEMMA den(meet(x,y)) = cand(den(x),den(y))
+  set_join_semantics: LEMMA den(join(x,y)) = cor(den(x),den(y))
+  set_complement_semantics: LEMMA den(complement(x)) = cnot(den(x))
+  set_difference_semantics: LEMMA den(difference(x,y)) = cand(den(x),cnot(den(y)))
+  set_pre_e_semantics: LEMMA den(pre_e(x)) = preE(den(x))
+  set_pre_a_semantics: LEMMA den(pre_a(x)) = preA(den(x))
+  set_forward_semantics: LEMMA den(forward(x)) = post(den(x))
+  included_semantics: LEMMA included(x,y) IFF entails(den(x),den(y))
+  same_semantics: LEMMA same(x,y) IFF den(x)=den(y)
+  vacant_semantics: LEMMA vacant(x) IFF den(x)=cfalse
+  AUTO_REWRITE+ tabulate_identity, empty_semantics, universe_semantics,
+    set_meet_semantics, set_join_semantics, set_complement_semantics,
+    set_difference_semantics, set_pre_e_semantics, set_pre_a_semantics,
+    set_forward_semantics, included_semantics, same_semantics, vacant_semantics
+
+  AUTO_REWRITE+ cand, cor, cnot, cfalse, ctrue, entails, preE, preA, post
+  AUTO_REWRITE- den, tabulate, empty, universe, meet, join, complement,
+    difference, pre_e, pre_a, forward, included, same, vacant
+
+  % Finite predicate observations are used by the explicit proof compiler.
+  % The producer's cardinality measure is semantic and erased by PVSio.
+  all_prefix(x: state_pred, k: upto(N)): RECURSIVE bool =
+    IF k = 0 THEN TRUE ELSE x(k - 1) AND all_prefix(x, k - 1) ENDIF
+    MEASURE k
+  some_prefix(x: state_pred, k: upto(N)): RECURSIVE bool =
+    IF k = 0 THEN FALSE ELSE x(k - 1) OR some_prefix(x, k - 1) ENDIF
+    MEASURE k
+  count_prefix(x: state_pred, k: upto(N)): RECURSIVE nat =
+    IF k = 0 THEN 0 ELSE
+      count_prefix(x, k - 1) + IF x(k - 1) THEN 1 ELSE 0 ENDIF
+    ENDIF
+    MEASURE k
+  cardinality(x): nat = count_prefix(den(x), N)
+  finite_entails(p,q: state_pred): bool =
+    all_prefix(LAMBDA s: p(s) IMPLIES q(s), N)
+  finite_predecessor(e:bool, p:state_pred): state_pred = LAMBDA (s:state):
+    IF e THEN some_prefix(LAMBDA (t:state): edge(s,t) AND p(t),N)
+    ELSE all_prefix(LAMBDA (t:state): edge(s,t) IMPLIES p(t),N) ENDIF
+
+  % Finite-cardinality facts used by the genuine recursive measures below.
+  % No termination law is postulated. These named lemmas precede the TCCs
+  % whose proofs use them, avoiding a circular termination argument.
+  all_prefix_semantics: LEMMA FORALL (k: upto(N), x: state_pred):
+    all_prefix(x, k) IFF (FORALL s: s < k IMPLIES x(s))
+  some_prefix_semantics: LEMMA FORALL (k: upto(N), x: state_pred):
+    some_prefix(x, k) IFF (EXISTS s: s < k AND x(s))
+  finite_predecessor_semantics: LEMMA FORALL (e:bool,p:state_pred):
+    finite_predecessor(e,p) = IF e THEN preE(p) ELSE preA(p) ENDIF
+  AUTO_REWRITE+ finite_predecessor_semantics
+  AUTO_REWRITE- finite_predecessor
+  count_monotone: LEMMA FORALL (k: upto(N), x, y: state_pred):
+    all_prefix(LAMBDA s: x(s) IMPLIES y(s), k) IMPLIES
+      count_prefix(x, k) <= count_prefix(y, k)
+  count_equal_subset: LEMMA FORALL (k: upto(N), x, y: state_pred):
+    all_prefix(LAMBDA s: x(s) IMPLIES y(s), k) AND
+    count_prefix(x, k) = count_prefix(y, k) IMPLIES
+      all_prefix(LAMBDA s: x(s) IFF y(s), k)
+  AUTO_REWRITE+ all_prefix_semantics
+  AUTO_REWRITE- all_prefix, some_prefix, count_prefix
+  finite_entails_semantics: LEMMA FORALL (p,q: state_pred):
+    finite_entails(p,q) IFF entails(p,q)
+  AUTO_REWRITE+ finite_entails_semantics
+
+  proper_subset_smaller: LEMMA included(x, y) AND NOT same(x, y) IMPLIES
+    cardinality(x) < cardinality(y)
+  nonempty_difference_progress: LEMMA NOT vacant(difference(x, y)) IMPLIES
+    cardinality(complement(join(y, difference(x, y)))) < cardinality(complement(y))
+
+
+  % The trace stores only information needed by its operator. The negative
+  % answer is the complement within the query; it cannot overlap the positive.
+  result: DATATYPE
+  BEGIN
+    atom_result(atom_domain, atom_positive: region): atom_result?
+    not_result(child: result): not_result?
+    boolean_result(conjunctive: bool, left, right: result): boolean_result?
+    next_result(existential: bool, next_domain, next_positive: region,
+                child: result): next_result?
+    temporal_result(existential, is_until: bool,
+      temporal_domain, temporal_positive, visited: region,
+      stages: list[region], children: list[result]): temporal_result?
+  END result
+  query(o: result): RECURSIVE region = CASES o OF
+    atom_result(i, p): i, not_result(a): query(a),
+    boolean_result(c, a, b): query(a), next_result(e, i, p, a): i,
+    temporal_result(e, u, i, p, v, h, c): i
+  ENDCASES MEASURE o BY <<
+  good(o: result): RECURSIVE region = CASES o OF
+    atom_result(i, p): p, not_result(a): difference(query(a), good(a)),
+    boolean_result(c, a, b): IF c THEN meet(good(a), good(b))
+                                ELSE join(good(a), good(b)) ENDIF,
+    next_result(e, i, p, a): p,
+    temporal_result(e, u, i, p, v, h, c): p
+  ENDCASES MEASURE o BY <<
+  bad(o: result): region = difference(query(o), good(o))
+
+  % Finite executions of the premises of Emerson's until/release rules.
+  final_stage(h: list[region]): RECURSIVE region = CASES h OF
+    null: empty, cons(a, rest): IF null?(rest) THEN a ELSE final_stage(rest) ENDIF
+    ENDCASES MEASURE length(h)
+  AUTO_REWRITE- final_stage
+  semantic_stages(h: list[region]): list[state_pred] = map[region,state_pred](den,h)
+  final_stage_semantics: LEMMA FORALL (h: list[region]):
+    den(final_stage(h)) = last_layer(semantic_stages(h))
+  complementary_stages(v: region, h: list[region]): RECURSIVE list[region] =
+    CASES h OF null: null,
+      cons(a, rest): cons(difference(v, a), complementary_stages(v, rest))
+    ENDCASES MEASURE length(h)
+  complementary_last: LEMMA FORALL (v: region, h: (cons?[region])):
+    den(final_stage(complementary_stages(v, h))) = den(difference(v, final_stage(h)))
+  % A single finite layer premise. Keeping the predicates as arguments also
+  % avoids PVSio's incorrect uncurrying of function-valued list selectors.
+  check_step(e: bool, p, q, a, b: state_pred): bool =
+    all_prefix(LAMBDA (s:state): b(s) IMPLIES
+      a(s) OR q(s) OR (p(s) AND finite_predecessor(e,a)(s)),N)
+  check_layers(e: bool, p, q: state_pred, h: list[state_pred]): RECURSIVE bool =
+    CASES h OF null: TRUE,
+      cons(a, rest): CASES rest OF null: TRUE,
+        cons(b, tail): check_step(e,p,q,a,b)
+                      AND check_layers(e, p, q, rest)
+      ENDCASES ENDCASES MEASURE length(h)
+  check_until(e: bool, r, p, q: state_pred, h: list[state_pred]): bool =
+    CASES h OF null: FALSE, cons(a, rest): finite_entails(a, q) AND
+      check_layers(e, p, q, h) AND finite_entails(r, last_layer(h)) ENDCASES
+  check_release(e: bool, r, p, q, z: state_pred): bool =
+    finite_entails(r,z) AND all_prefix(LAMBDA (s:state):
+      z(s) IMPLIES q(s) AND (p(s) OR finite_predecessor(e,z)(s)),N)
+
+  % Interpretation of finite certificate premises into Emerson's rules.
+  pre_e_semantics: LEMMA den(pre_e(x)) = cEX(den(x))
+  pre_a_semantics: LEMMA den(pre_a(x)) = cAX(den(x))
+  layers_mapping: LEMMA FORALL (h: list[state_pred], e: bool, p, q: state_pred):
+    check_layers(e, p, q, h) IFF layer_steps(e, p, q, h)
+  until_mapping: LEMMA FORALL (e: bool, r, p, q: state_pred, h: list[state_pred]):
+    check_until(e, r, p, q, h) IFF until_premises(e, r, p, q, h)
+  release_mapping: LEMMA FORALL (e: bool, r, p, q, z: state_pred):
+    check_release(e, r, p, q, z) IFF release_premises(e, r, p, q, z)
+  forward_join: LEMMA den(forward(join(x,y))) = cor(den(forward(x)),den(forward(y)))
+  predecessor_partition: LEMMA FORALL (e: bool, x, y, z: state_pred):
+    entails(post(x), y) IMPLIES
+      entails(cand(x,cnot(finite_predecessor(e,z))),
+              finite_predecessor(NOT e,cand(y,cnot(z))))
+
+  % The translation result is either rejection or two Emerson derivations.
+  % Compiler correctness and producer acceptance are dependent type obligations.
+  % These predicates are specifications; no algorithm calls the compiler.
+  proof_pair: TYPE = [derivation, derivation]
+  compiler(p: state_pred): TYPE = [o: result ->
+    {d: lift[proof_pair] | up?(d) IMPLIES included(good(o), query(o)) AND
+      derives(down(d)`1, den(good(o)), p) AND
+      derives(down(d)`2, den(bad(o)), cnot(p))}]
+  CTL: TYPE = [# meaning: state_pred, compile: compiler(meaning),
+    run: [i: region -> {o: result | query(o) = i AND
+                                  up?(compile(o))}] #]
+  check(a: CTL, i: region, o: result): lift[proof_pair] =
+    IF same(query(o), i) THEN a`compile(o) ELSE bottom ENDIF
+
+  % Proof elaboration: only finite tests occur in a compiler's branches.
+  % Expressions containing path operators are proof annotations, never tests.
+  restrict(r: region, d: derivation): derivation =
+    cut(local_fact(den(r), source(d)), d)
+  recast(d: derivation, p: state_pred): derivation =
+    cut(d, local_fact(conclusion(d), p))
+  merge_proofs(p: state_pred, a, b: derivation): derivation =
+    recast(boolean_rule(FALSE, a, b), p)
+
+  atom(p: region): CTL =
+    (# meaning := den(p),
+       compile := LAMBDA (o: result): CASES o OF
+         atom_result(i, g): IF same(g, meet(i, p)) THEN
+           up((local_fact(den(g), den(p)), local_fact(den(difference(i, g)), cnot(den(p)))))
+           ELSE bottom ENDIF
+         ELSE bottom ENDCASES,
+       run := LAMBDA (i: region): atom_result(i, meet(i, p)) #)
+  neg(a: CTL): CTL =
+    (# meaning := cnot(a`meaning),
+       compile := LAMBDA (o: result): CASES o OF
+         not_result(x): LET d = a`compile(x) IN IF up?(d) THEN
+           up((down(d)`2, recast(restrict(bad(o), down(d)`1),
+                                cnot(cnot(a`meaning)))))
+           ELSE bottom ENDIF
+         ELSE bottom ENDCASES,
+       run := LAMBDA (i: region): not_result(a`run(i)) #)
+  boolean(c: bool, a, b: CTL): CTL =
+    (# meaning := IF c THEN cand(a`meaning, b`meaning)
+                       ELSE cor(a`meaning, b`meaning) ENDIF,
+       compile := LAMBDA (o: result): CASES o OF
+         boolean_result(k, x, y): LET d = a`compile(x), f = b`compile(y) IN
+           IF k = c AND same(query(x), query(y)) AND up?(d) AND up?(f) THEN
+             up((boolean_rule(c, down(d)`1, down(f)`1),
+                 recast(restrict(bad(o), boolean_rule(NOT c, down(d)`2, down(f)`2)),
+                   cnot(IF c THEN cand(a`meaning, b`meaning)
+                             ELSE cor(a`meaning, b`meaning) ENDIF))))
+           ELSE bottom ENDIF
+         ELSE bottom ENDCASES,
+       run := LAMBDA (i: region): boolean_result(c, a`run(i), b`run(i)) #)
+  conj(a, b: CTL): CTL = boolean(TRUE, a, b)
+  disj(a, b: CTL): CTL = boolean(FALSE, a, b)
+  next(e: bool, a: CTL): CTL =
+    (# meaning := Next(e, a`meaning),
+       compile := LAMBDA (o: result): CASES o OF
+         next_result(k, i, g, x): LET d = a`compile(x) IN
+           IF k = e AND included(g, i) AND up?(d) AND
+              included(g, predecessor(e, good(x))) AND
+              included(bad(o), predecessor(NOT e, bad(x))) THEN
+             up((restrict(g, next_rule(e, down(d)`1)),
+                 recast(restrict(bad(o), next_rule(NOT e, down(d)`2)),
+                        cnot(Next(e, a`meaning)))))
+           ELSE bottom ENDIF
+         ELSE bottom ENDCASES,
+       run := LAMBDA (i: region): LET x = a`run(forward(i)) IN
+         next_result(e, i, meet(i, predecessor(e, good(x))), x) #)
+
+  % The fold aggregates separately justified positive/negative operand sets.
+  % An unqueried state is never silently treated as negative evidence.
+  operands(u: bool, a, b: CTL, calls: list[result]):
+      RECURSIVE {ds: lift[[derivation, derivation, derivation, derivation]] |
+        up?(ds) IMPLIES
+          derives(down(ds)`1, source(down(ds)`1), a`meaning) AND
+          derives(down(ds)`2, source(down(ds)`2), cnot(a`meaning)) AND
+          derives(down(ds)`3, source(down(ds)`3), b`meaning) AND
+          derives(down(ds)`4, source(down(ds)`4), cnot(b`meaning))} =
+    CASES calls OF
+      null: up((local_fact(den(empty), a`meaning), local_fact(den(empty), cnot(a`meaning)),
+                local_fact(den(empty), b`meaning), local_fact(den(empty), cnot(b`meaning)))),
+      cons(y, rest): CASES rest OF null: bottom,
+        cons(x, tail): LET d = a`compile(x), f = b`compile(y),
+          r = operands(u, a, b, tail) IN
+          IF up?(d) AND up?(f) AND up?(r) AND
+             same(query(x), IF u THEN bad(y) ELSE good(y) ENDIF) THEN
+            up((merge_proofs(a`meaning, down(d)`1, down(r)`1),
+                merge_proofs(cnot(a`meaning), down(d)`2, down(r)`2),
+                merge_proofs(b`meaning, down(f)`1, down(r)`3),
+                merge_proofs(cnot(b`meaning), down(f)`2, down(r)`4)))
+          ELSE bottom ENDIF ENDCASES
+    ENDCASES MEASURE length(calls)
+
+  compile_temporal(e, u: bool, a, b: CTL, o: result): lift[proof_pair] =
+    CASES o OF temporal_result(k, v, i, g, visited, h, calls):
+      LET ds = operands(u, a, b, calls), layers = complementary_stages(visited, h),
+          z = final_stage(h) IN
+      IF k = e AND v = u AND included(g, i) AND up?(ds) THEN
+        LET lp = source(down(ds)`1), ln = source(down(ds)`2),
+            rp = source(down(ds)`3), rn = source(down(ds)`4) IN
+        IF (IF u THEN check_until(e, den(g), lp, rp, semantic_stages(layers)) AND
+                        check_release(NOT e, den(bad(o)), ln, rn, den(z))
+            ELSE check_release(e, den(g), lp, rp, den(z)) AND
+                 check_until(NOT e, den(bad(o)), ln, rn, semantic_stages(layers)) ENDIF) THEN
+          LET pos = IF u THEN until_rule(e, lp, rp, semantic_stages(layers))
+                              ELSE release_rule(e, lp, rp, den(z)) ENDIF,
+              minus = IF u THEN release_rule(NOT e, ln, rn, den(z))
+                                ELSE until_rule(NOT e, ln, rn, semantic_stages(layers)) ENDIF,
+              meaning = IF u THEN Until(e, a`meaning, b`meaning)
+                               ELSE Release(e, a`meaning, b`meaning) ENDIF IN
+          up((restrict(g, cut(pos, temporal_rule(e, u, down(ds)`1, down(ds)`3))),
+              recast(restrict(bad(o), cut(minus,
+                temporal_rule(NOT e, NOT u, down(ds)`2, down(ds)`4))), cnot(meaning))))
+        ELSE bottom ENDIF
+      ELSE bottom ENDIF
+      ELSE bottom ENDCASES
+
+  % Discovery's ghost invariant is the partial execution of the compiler.
+  % Frontier closure is the only extra graph invariant needed by pruning.
+  discovery: TYPE = [# seen, candidates, terminals: region,
+                       calls: list[result] #]
+  scan_invariant(u: bool, a, b: CTL, roots, frontier: region,
+                 d: discovery): bool =
+    LET ds = operands(u, a, b, d`calls) IN up?(ds) AND
+      LET lp = source(down(ds)`1), ln = source(down(ds)`2),
+          rp = source(down(ds)`3), rn = source(down(ds)`4),
+          relevant = IF u THEN rn ELSE rp ENDIF,
+          continuing = IF u THEN lp ELSE ln ENDIF,
+          stopping = IF u THEN ln ELSE lp ENDIF IN
+      den(d`seen) = cor(rp,rn) AND den(d`candidates) = relevant AND
+      den(d`terminals) = stopping AND cor(lp,ln) = relevant AND
+      entails(stopping,relevant) AND entails(continuing,relevant) AND
+      included(roots,join(d`seen,frontier)) AND
+      entails(post(continuing),den(join(d`seen,frontier)))
+
+  % Forward algorithm. No calls to check, compile, operands, or invariants
+  % occur in the body. Each recursive call must discharge the subtype anew.
+  discover(u: bool, a, b: CTL, roots, frontier: region,
+    d: {d: discovery | scan_invariant(u, a, b, roots, frontier, d)}):
+    RECURSIVE {z: discovery | scan_invariant(u, a, b, roots, empty, z)} =
+    LET fresh = difference(frontier, d`seen) IN
+    IF vacant(fresh) THEN d ELSE
+      LET right = b`run(fresh),
+          relevant = IF u THEN bad(right) ELSE good(right) ENDIF,
+          left = a`run(relevant),
+          continuing = IF u THEN good(left) ELSE bad(left) ENDIF,
+          stopping = IF u THEN bad(left) ELSE good(left) ENDIF IN
+      discover(u, a, b, roots, forward(continuing),
+        (# seen := join(d`seen, fresh), candidates := join(d`candidates, relevant),
+           terminals := join(d`terminals, stopping),
+           calls := cons(right, cons(left, d`calls)) #))
+    ENDIF MEASURE cardinality(complement(d`seen))
+
+  prune_step(e: bool, b, x: region): region =
+    tabulate(meet(x, join(b, predecessor(e, x))))
+  % This contract checks each elimination as an until inference, and the
+  % final set as a release inference. It is never evaluated by pruning.
+  pruning_invariant(e, u: bool, a, b: CTL, d: discovery,
+                    x: region, h: list[region]): bool =
+    LET ds = operands(u, a, b, d`calls) IN up?(ds) AND
+      LET lp = source(down(ds)`1), ln = source(down(ds)`2),
+          rp = source(down(ds)`3), rn = source(down(ds)`4),
+          z = final_stage(h), layers = complementary_stages(d`seen, h) IN
+      CASES h OF null: FALSE, cons(first, rest): same(first, x) AND
+        same(prune_step(e, d`terminals, z), z) AND
+        check_layers(NOT e, IF u THEN lp ELSE ln ENDIF,
+                            IF u THEN rp ELSE rn ENDIF, semantic_stages(layers)) AND
+        check_release(e, den(z), IF u THEN ln ELSE lp ENDIF,
+                            IF u THEN rn ELSE rp ENDIF, den(z)) ENDCASES
+
+  pruning_step: LEMMA FORALL (e, u: bool, a, b: CTL, roots: region,
+    d: {d: discovery | scan_invariant(u, a, b, roots, empty, d)},
+    x: {x: region | included(x, d`candidates) AND included(d`terminals, x)},
+    h: list[region]):
+      pruning_invariant(e, u, a, b, d, prune_step(e, d`terminals, x), h)
+        IMPLIES pruning_invariant(e, u, a, b, d, x, cons(x, h))
+
+  % Backward algorithm. Strict cardinality decrease, with terminals retained.
+  % The arguments a,b,roots occur only in dependent contracts after entry.
+  prune(e, u: bool, a, b: CTL, roots: region,
+    d: {d: discovery | scan_invariant(u, a, b, roots, empty, d)},
+    x: {x: region | included(x, d`candidates) AND included(d`terminals, x)}):
+      RECURSIVE {h: list[region] | pruning_invariant(e, u, a, b, d, x, h)} =
+    LET y = prune_step(e, d`terminals, x) IN
+      IF same(y, x) THEN cons(x, null)
+      ELSE cons(x, prune(e, u, a, b, roots, d, y)) ENDIF
+    MEASURE cardinality(x)
+
+  temporal(e, u: bool, a, b: CTL): CTL =
+    (# meaning := IF u THEN Until(e, a`meaning, b`meaning)
+                       ELSE Release(e, a`meaning, b`meaning) ENDIF,
+       compile := LAMBDA (o: result): compile_temporal(e, u, a, b, o),
+       run := LAMBDA (i: region):
+         LET d = discover(u, a, b, i, i,
+                   (# seen := empty, candidates := empty, terminals := empty,
+                      calls := null #)),
+             h = prune(IF u THEN NOT e ELSE e ENDIF, u, a, b, i, d, d`candidates),
+             z = final_stage(h) IN
+         temporal_result(e, u, i, IF u THEN difference(i, z) ELSE meet(i, z) ENDIF,
+                         d`seen, h, d`calls) #)
+  ex(a: CTL): CTL = next(TRUE, a)
+  ax(a: CTL): CTL = next(FALSE, a)
+  eu(a, b: CTL): CTL = temporal(TRUE, TRUE, a, b)
+  au(a, b: CTL): CTL = temporal(FALSE, TRUE, a, b)
+  er(a, b: CTL): CTL = temporal(TRUE, FALSE, a, b)
+  ar(a, b: CTL): CTL = temporal(FALSE, FALSE, a, b)
+  ef(a: CTL): CTL = eu(atom(universe), a)
+  af(a: CTL): CTL = au(atom(universe), a)
+  eg(a: CTL): CTL = er(atom(empty), a)
+  ag(a: CTL): CTL = ar(atom(empty), a)
+
+  % Semantic mapping and compositional transfer; no second operator algebra.
+  checker_sound: THEOREM FORALL (a: CTL, i: region, o: result):
+    up?(check(a, i, o)) IMPLIES
+      entails(den(good(o)), a`meaning) AND entails(den(bad(o)), cnot(a`meaning))
+  wmc_correct: THEOREM FORALL (a: CTL, i: region):
+    den(good(a`run(i))) = cand(den(i), a`meaning) AND
+    den(bad(a`run(i))) = cand(den(i), cnot(a`meaning))
+  checker_complete: THEOREM FORALL (a: CTL, i: region):
+    EXISTS (o: result): up?(check(a, i, o)) AND
+      den(good(o)) = cand(den(i), a`meaning) AND den(bad(o)) = cand(den(i), cnot(a`meaning))
+END wmc_kernel
+
+% Default executable interpretation: the existing finite closure backend.
+wmc[N: posnat, (IMPORTING nat_types[N]) edge: (total?[below[N], below[N]])]: THEORY
+BEGIN
+  pred: TYPE = set[below[N]]
+  x,y: VAR pred
+  materialize(x: pred): {y: pred | y=x} =
+    list2finseq[bool](finseq2list[bool]((# length := N, seq := x #)))`seq
+  AUTO_REWRITE- materialize
+  closure_meet(x,y): {z: pred | z=(LAMBDA (s:below[N]): x(s) AND y(s))} = LAMBDA (s: below[N]): x(s) AND y(s)
+  closure_join(x,y): {z: pred | z=(LAMBDA (s:below[N]): x(s) OR y(s))} = LAMBDA (s: below[N]): x(s) OR y(s)
+  closure_complement(x): {z: pred | z=(LAMBDA (s:below[N]): NOT x(s))} = LAMBDA (s: below[N]): NOT x(s)
+  closure_difference(x,y): {z: pred | z=(LAMBDA (s:below[N]): x(s) AND NOT y(s))} = LAMBDA (s: below[N]): x(s) AND NOT y(s)
+  closure_pre_e(x): {z: pred | z=(LAMBDA (s:below[N]): EXISTS (t:below[N]): edge(s,t) AND x(t))} = LAMBDA (s: below[N]): EXISTS (t: below[N]): edge(s,t) AND x(t)
+  closure_pre_a(x): {z: pred | z=(LAMBDA (s:below[N]): FORALL (t:below[N]): edge(s,t) IMPLIES x(t))} = LAMBDA (s: below[N]): FORALL (t: below[N]): edge(s,t) IMPLIES x(t)
+  closure_forward(x): {z: pred | z=(LAMBDA (t:below[N]): EXISTS (s:below[N]): x(s) AND edge(s,t))} = materialize(LAMBDA (t: below[N]): EXISTS (s: below[N]): x(s) AND edge(s,t))
+  closure_included(x,y): {b:bool | b IFF subset?(x,y)} = FORALL (s:below[N]): x(s) IMPLIES y(s)
+  closure_same(x,y): {b:bool | b IFF x=y} = FORALL (s:below[N]): x(s)=y(s)
+  closure_vacant(x): {b:bool | b IFF empty?(x)} = NOT EXISTS (s:below[N]): x(s)
+  IMPORTING wmc_sets[N,edge,pred]
+  closure_sets: set_algebra =
+    (# den:=identity[pred], set_empty:=emptyset[below[N]], set_universe:=fullset[below[N]],
+       set_copy:=materialize, set_meet:=closure_meet, set_join:=closure_join,
+       set_complement:=closure_complement, set_difference:=closure_difference,
+       set_pre_e:=closure_pre_e, set_pre_a:=closure_pre_a, set_forward:=closure_forward,
+       set_included:=closure_included, set_same:=closure_same, set_vacant:=closure_vacant #)
+  IMPORTING wmc_kernel[N,edge,pred,closure_sets]
+END wmc

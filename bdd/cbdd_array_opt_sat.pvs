@@ -1,0 +1,219 @@
+cbdd_array_opt_sat[
+  nvars: {n: pos_uint32 | n <= 32},
+  max_nodes: {m: pos_uint32 | 3 <= m AND m <= maxsize},
+  unique_slots: {m: pos_uint32 | 1 <= m AND m <= maxsize},
+  cache_slots: {m: pos_uint32 | 1 <= m AND m <= maxsize}
+]: THEORY
+BEGIN
+  IMPORTING cbdd_array_opt[nvars, max_nodes, unique_slots, cache_slots]
+
+  sat_bddvar: TYPE = vid
+  sat_valuation: TYPE = cvaluation
+  sat_cube: TYPE = ccube
+  sat_perm: TYPE = cperm
+  sat_bdd: TYPE = obdd
+
+  IMPORTING bdd_interface{{
+    bddvar := sat_bddvar,
+    valuation := sat_valuation,
+    cube := sat_cube,
+    perm := sat_perm,
+    bdd := sat_bdd,
+    read_var := abdd_read_var,
+    update_var := abdd_update_var,
+    cube_support := abdd_cube_support,
+    cube_value := abdd_cube_value,
+    cube_empty := abdd_cube_empty,
+    cube_insert := abdd_cube_insert,
+    force_cube := abdd_force_cube,
+    denote := opt_denote,
+    support := opt_support,
+    bdd_false := opt_false,
+    bdd_true := opt_true,
+    ithvar := opt_var,
+    nithvar := opt_nvar,
+    bdd_not := opt_not,
+    bdd_and := opt_and,
+    bdd_or := opt_or,
+    bdd_xor := opt_xor,
+    bdd_xnor := opt_xnor,
+    bdd_nand := opt_nand,
+    bdd_nor := opt_nor,
+    bdd_imp := opt_imp,
+    bdd_invimp := opt_invimp,
+    bdd_diff := opt_diff,
+    bdd_ite := opt_ite,
+    bdd_exists := opt_exists,
+    bdd_forall := opt_forall,
+    bdd_and_abstract := opt_and_abstract,
+    bdd_restrict := opt_restrict,
+    bdd_constrain := opt_constrain,
+    bdd_compose := opt_compose,
+    permute_var := abdd_permute_var,
+    inverse_perm := abdd_inverse_perm,
+    permute_valuation := abdd_permute_valuation,
+    bdd_permute := opt_permute,
+    pick_sat := opt_pick_sat
+  }}
+
+  sigma: VAR sat_valuation
+
+  cnf_literal: DATATYPE
+  BEGIN
+    positive(pos_var: sat_bddvar): positive?
+    negative(neg_var: sat_bddvar): negative?
+  END cnf_literal
+
+  cnf_clause: DATATYPE
+  BEGIN
+    clause_nil: clause_nil?
+    clause_cons(first_lit: cnf_literal, rest_clause: cnf_clause): clause_cons?
+  END cnf_clause
+
+  cnf_formula: DATATYPE
+  BEGIN
+    cnf_nil: cnf_nil?
+    cnf_cons(first_clause: cnf_clause, rest_formula: cnf_formula): cnf_cons?
+  END cnf_formula
+
+  l: VAR cnf_literal
+  c: VAR cnf_clause
+  phi: VAR cnf_formula
+
+  literal_eval(l, sigma): bool =
+    CASES l OF
+      positive(x): read_var(sigma, x),
+      negative(x): NOT read_var(sigma, x)
+    ENDCASES
+
+  clause_eval(c, sigma): RECURSIVE bool =
+    CASES c OF
+      clause_nil: FALSE,
+      clause_cons(l1, c1): literal_eval(l1, sigma) OR clause_eval(c1, sigma)
+    ENDCASES
+  MEASURE c BY <<
+
+  cnf_eval(phi, sigma): RECURSIVE bool =
+    CASES phi OF
+      cnf_nil: TRUE,
+      cnf_cons(c1, phi1): clause_eval(c1, sigma) AND cnf_eval(phi1, sigma)
+    ENDCASES
+  MEASURE phi BY <<
+
+  literal_to_bdd(l): sat_bdd =
+    CASES l OF
+      positive(x): ithvar(x),
+      negative(x): nithvar(x)
+    ENDCASES
+
+  clause_to_bdd(c): RECURSIVE sat_bdd =
+    CASES c OF
+      clause_nil: bdd_false,
+      clause_cons(l1, c1): bdd_or(literal_to_bdd(l1), clause_to_bdd(c1))
+    ENDCASES
+  MEASURE c BY <<
+
+  cnf_to_bdd(phi): RECURSIVE sat_bdd =
+    CASES phi OF
+      cnf_nil: bdd_true,
+      cnf_cons(c1, phi1): bdd_and(clause_to_bdd(c1), cnf_to_bdd(phi1))
+    ENDCASES
+  MEASURE phi BY <<
+
+  cnf_denote(phi): set[sat_valuation] = denote(cnf_to_bdd(phi))
+  cnf_sat?(phi): bool = sat?(cnf_to_bdd(phi))
+
+  cnf_witness(phi: {psi: cnf_formula | cnf_sat?(psi)}): sat_valuation =
+    pick_sat(cnf_to_bdd(phi))
+
+  sat_result: DATATYPE
+  BEGIN
+    unsat: unsat?
+    sat_assignment(model: sat_valuation): sat_assignment?
+  END sat_result
+
+  solve_cnf(phi): sat_result =
+    IF cnf_sat?(phi) THEN
+      sat_assignment(pick_sat(cnf_to_bdd(phi)))
+    ELSE
+      unsat
+    ENDIF
+END cbdd_array_opt_sat
+
+
+cbdd_array_opt_sat_tests: THEORY
+BEGIN
+  IMPORTING cbdd_array_opt_sat[4, 128, 17, 17]
+
+  mk_val(b0, b1, b2, b3: bool): sat_valuation =
+    (LAMBDA (i: sat_bddvar):
+      IF i = 0 THEN b0
+      ELSIF i = 1 THEN b1
+      ELSIF i = 2 THEN b2
+      ELSE b3
+      ENDIF)
+
+  clause1(l1: cnf_literal): cnf_clause =
+    clause_cons(l1, clause_nil)
+
+  clause2(l1, l2: cnf_literal): cnf_clause =
+    clause_cons(l1, clause1(l2))
+
+  formula1(c1: cnf_clause): cnf_formula =
+    cnf_cons(c1, cnf_nil)
+
+  formula2(c1, c2: cnf_clause): cnf_formula =
+    cnf_cons(c1, formula1(c2))
+
+  sigma0000: sat_valuation = mk_val(FALSE, FALSE, FALSE, FALSE)
+  sigma1000: sat_valuation = mk_val(TRUE, FALSE, FALSE, FALSE)
+  sigma0100: sat_valuation = mk_val(FALSE, TRUE, FALSE, FALSE)
+  sigma1010: sat_valuation = mk_val(TRUE, FALSE, TRUE, FALSE)
+
+  unit_sat: cnf_formula =
+    formula1(clause1(positive(0)))
+
+  contradiction: cnf_formula =
+    formula2(clause1(positive(0)),
+             clause1(negative(0)))
+
+  empty_clause_formula: cnf_formula =
+    formula1(clause_nil)
+
+  sample_sat: cnf_formula =
+    formula2(clause2(positive(0), positive(1)),
+             clause2(negative(0), positive(2)))
+
+  unit_sat_test: _TEST_
+    cnf_sat?(unit_sat) AND
+    cnf_eval(unit_sat, sigma1000) AND
+    denote(cnf_to_bdd(unit_sat))(sigma1000) AND
+    NOT cnf_eval(unit_sat, sigma0000)
+
+  contradiction_unsat_test: _TEST_
+    NOT cnf_sat?(contradiction) AND
+    unsat?(solve_cnf(contradiction))
+
+  empty_clause_unsat_test: _TEST_
+    NOT cnf_sat?(empty_clause_formula) AND
+    NOT denote(cnf_to_bdd(empty_clause_formula))(sigma0000)
+
+  sample_formula_semantics_test: _TEST_
+    cnf_eval(sample_sat, sigma0100) AND
+    denote(cnf_to_bdd(sample_sat))(sigma0100) AND
+    cnf_eval(sample_sat, sigma1010) AND
+    denote(cnf_to_bdd(sample_sat))(sigma1010) AND
+    NOT cnf_eval(sample_sat, sigma0000)
+
+  solve_sat_model_test: _TEST_
+    CASES solve_cnf(sample_sat) OF
+      sat_assignment(sigma):
+        cnf_eval(sample_sat, sigma) AND denote(cnf_to_bdd(sample_sat))(sigma),
+      unsat: FALSE
+    ENDCASES
+
+  empty_cnf_sat_test: _TEST_
+    cnf_sat?(cnf_nil) AND
+    denote(cnf_to_bdd(cnf_nil))(sigma0000) AND
+    denote(cnf_to_bdd(cnf_nil))(sigma1010)
+END cbdd_array_opt_sat_tests

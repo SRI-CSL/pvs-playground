@@ -1,0 +1,45 @@
+(|cbdd_array_opt_tests|
+ (|swap01_perm_TCC1| 0
+  (|swap01_perm_TCC1-1| NIL 3983463977 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|swap01_perm| SUBTYPE
+    "(# forward := (LAMBDA (x: abstract_bdd_core[4, 128].vid): IF x = 0 THEN 1 ELSIF x = 1 THEN 0 ELSE x ENDIF), backward := (LAMBDA (x: abstract_bdd_core[4, 128].vid): IF x = 0 THEN 1 ELSIF x = 1 THEN 0 ELSE x ENDIF) #)"
+    "cperm[4, 128, 17, 17]" (31 4 40 31))))
+ (|root0_TCC1| 0
+  (|root0_TCC1-1| NIL 3983463977 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|root0| SUBTYPE "0" "below[rs`length]" (57 48 57 49))))
+ (|root1_TCC1| 0
+  (|root1_TCC1-1| NIL 3983463977 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|root1| SUBTYPE "1" "below[rs`length]" (60 49 60 50))))
+ (|root2_TCC1| 0
+  (|root2_TCC1-1| NIL 3983463977 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|root2| SUBTYPE "2" "below[rs`length]" (63 49 63 50))))
+ (|sample_manager_TCC1| 0
+  (|sample_manager_TCC1-1| NIL 3983463977 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|sample_manager| SUBTYPE
+    "(# current_order := abstract_bdd_core[4, 128].id_order, inverse_level := cbdd_array_opt_tests.id_inverse, roots := cbdd_array_opt_tests.sample_roots, unique := cbdd_array_opt[4, 128, 17, 17].empty_unique_table, cache := cbdd_array_opt[4, 128, 17, 17].empty_cache_table, cache_lookups := 0, cache_hits := 0, cache_inserts := 0, unique_lookups := 0, unique_hits := 0, unique_inserts := 0, reorder_rounds := 0 #)"
+    "manager[4, 128, 17, 17]" (66 4 77 29))))
+ (|pick_sat_test_TCC1| 0
+  (|pick_sat_test_TCC1-1| NIL 3983463977 ("" (SUBTYPE-TCC) NIL NIL) NIL NIL
+   (|pick_sat_test| SUBTYPE "cbdd_array_opt_tests.f"
+    "{f: cbdd_array_core[4, 128, 17, 17].cbdd | abstract_bdd_core[4, 128].abdd_sat_id(f, f`root)}"
+    (140 30 140 31))))
+ (|reverse_manager_test| 0
+  (|reverse_manager_test-1| NIL 3983464038 ("" (EVAL-FORMULA) NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|bijective?| CONST-DECL "bool" |functions| NIL)
+    (|id| CONST-DECL "(bijective?[T, T])" |identity| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL))
+   SHOSTAK))
+ (|dynamic_reorder_cost_test| 0
+  (|dynamic_reorder_cost_test-1| NIL 3983464033 ("" (EVAL-FORMULA) NIL NIL) NIL
+   SHOSTAK))
+ (|dynamic_reorder_eval_test| 0
+  (|dynamic_reorder_eval_test-1| NIL 3983463978
+   ("" (ASSERT)
+    (("" (PROP) (("1" (EVAL-FORMULA) NIL NIL) ("2" (EVAL-FORMULA) NIL NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK)))
+
