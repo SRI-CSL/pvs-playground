@@ -1,0 +1,19 @@
+---
+layout: base.njk
+pagination:
+  data: catalog.sources
+  size: 1
+  alias: source
+permalink: "{{ source.output }}"
+eleventyComputed:
+  title: "{{ source.name }}"
+eleventyExcludeFromCollections: true
+---
+<a class="back" href="{{ source.indexLink }}">All examples</a>
+<h1>{{ title }}</h1>
+{% if source.note %}
+  <div class="prose">
+    {% renderFile source.note %}
+  </div>
+{% endif %}
+{% pvsSource source %}

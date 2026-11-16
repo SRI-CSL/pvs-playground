@@ -1,0 +1,86 @@
+:root {
+  color-scheme: light;
+  --background: #fff;
+  --text: #202124;
+  --muted: #535861;
+  --link: #174b91;
+  --border: #d9dde2;
+  --code-background: #f6f7f9;
+  --keyword: #66409c;
+  --operator: #8b480f;
+  --string: #00604c;
+  --font: system-ui, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font: 1rem/1.55 var(--font);
+}
+
+main {
+  width: min(62rem, calc(100% - 2.5rem));
+  margin: 2rem auto 4rem;
+}
+
+h1 {
+  margin: 0 0 1rem;
+  font-size: 1.6rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+a { color: var(--link); text-underline-offset: 0.16em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
+
+.examples + .examples { margin-top: 1.3rem; }
+
+.examples h2 {
+  margin: 0 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.examples ul { margin: 0; padding-left: 1.25rem; }
+.examples a { font: 0.875rem/1.75 var(--mono); overflow-wrap: anywhere; }
+.back { display: inline-block; margin-bottom: 0.75rem; font-size: 0.875rem; }
+.prose { max-width: 72ch; margin-bottom: 1.5rem; }
+.prose img { max-width: 100%; height: auto; }
+
+code { font-family: var(--mono); }
+
+pre {
+  overflow: auto;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  padding: 0.875rem 1rem;
+  background: var(--code-background);
+  font: 0.875rem/1.6 var(--mono);
+  tab-size: 4;
+}
+
+pre code { font: inherit; }
+.code-line { display: inline-block; min-width: 100%; }
+.code-line:target { background: #e3eaf4; }
+.line-number {
+  display: inline-block;
+  width: 3ch;
+  margin-right: 1.6ch;
+  color: var(--muted);
+  text-align: right;
+  user-select: none;
+}
+.line-number::before { content: attr(data-line); }
+.pvs-keyword { color: var(--keyword); font-weight: 600; }
+.pvs-operator { color: var(--operator); }
+.pvs-comment { color: var(--muted); }
+.pvs-string { color: var(--string); }
+.pvs-record, .pvs-paren, .pvs-set, .pvs-table, .pvs-type { color: var(--link); }

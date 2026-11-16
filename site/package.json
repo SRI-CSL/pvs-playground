@@ -1,0 +1,18 @@
+{
+  "name": "pvs-playground-site",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "prebuild": "npm run clean",
+    "build": "eleventy --quiet",
+    "predev": "npm run clean",
+    "dev": "eleventy --serve --quiet"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "3.1.8"
+  }
+}
