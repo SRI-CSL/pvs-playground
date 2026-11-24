@@ -47,7 +47,7 @@ PVS specs and Markdown have generated pages. Other files are served directly. Ge
 
 ## GitHub Pages
 
-`npm --prefix site run build` writes the static site to `site/dist/`. To publish, push to the default branch, then run the [GitHub Pages workflow](../.github/workflows/pages.yml) manually. The URL is [sri-csl.github.io/pvs-playground](https://sri-csl.github.io/pvs-playground/). [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
+`npm --prefix site run build` writes the static site to `site/dist/`. Push to `main` to deploy automatically. The [GitHub Pages workflow](../.github/workflows/pages.yml) can also be run manually. The URL is [sri-csl.github.io/pvs-playground](https://sri-csl.github.io/pvs-playground/). [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
 
 ## Future PVS2C browser demos
 
