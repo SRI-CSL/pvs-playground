@@ -1,0 +1,1042 @@
+(|shawe_taylor|
+ (|hlen_TCC1| 0
+  (|hlen_TCC1-1| NIL 4004538160
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|hlen| DISJOINTNESS
+    "COND booleans.OR(shawe_taylor.h = 1, booleans.OR(shawe_taylor.h = 6, shawe_taylor.h = 8)) -> 32, booleans.OR(shawe_taylor.h = 2, shawe_taylor.h = 9) -> 48, booleans.OR(shawe_taylor.h = 3, shawe_taylor.h = 10) -> 64, ELSE -> 28 ENDCOND"
+    "NIL" (8 4 8 89))))
+ (|advance_seed_TCC1| 0
+  (|advance_seed_TCC1-1| NIL 4004538160
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|advance_seed| SUBTYPE "(number_fields.-)(shawe_taylor.i, 1)"
+    "below(shawe_taylor.s`length)" (13 32 13 35))))
+ (|advance_seed_TCC2| 0
+  (|advance_seed_TCC2-1| NIL 4004538160
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|advance_seed| SUBTYPE "modulo_arithmetic.nrem(shawe_taylor.v, 256)" "byte"
+    (13 38 13 49))))
+ (|advance_seed_TCC3| 0
+  (|advance_seed_TCC3-1| NIL 4004538160
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|advance_seed| SUBTYPE "(number_fields.-)(shawe_taylor.i, 1)"
+    "upto(shawe_taylor.s`length)" (13 51 13 54))))
+ (|advance_seed_TCC4| 0
+  (|advance_seed_TCC4-1| NIL 4004538161
+   ("" (SKOSIMP* T)
+    (("" (EXPAND "u32rshift")
+      (("" (TYPEPRED "s!1`seq(i!1-1)")
+        (("1" (USE "ndiv_lt" ("x" "v!1" "b" "256"))
+          (("1" (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL) NIL NIL))
+          NIL)
+         ("2" (USE "ndiv_lt" ("x" "v!1" "b" "256"))
+          (("2" (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL) NIL NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK
+   (|advance_seed| SUBTYPE "integertypes.u32rshift(shawe_taylor.v, 8)" "uint16"
+    (13 55 13 69))))
+ (|advance_seed_TCC5| 0
+  (|advance_seed_TCC5-1| NIL 4004538162
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|advance_seed| TERMINATION
+    "shawe_taylor.advance_seed(shawe_taylor.s WITH [`seq((number_fields.-)(shawe_taylor.i, 1)) := modulo_arithmetic.nrem(shawe_taylor.v, 256)], (number_fields.-)(shawe_taylor.i, 1), integertypes.u32rshift(shawe_taylor.v, 8))"
+    "NIL" (13 6 13 70))))
+ (|advance_seed_TCC6| 0
+  (|advance_seed_TCC6-1| NIL 4004538162
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|advance_seed| SUBTYPE "(number_fields.-)(shawe_taylor.i, 1)"
+    "below(shawe_taylor.s`length)" (12 25 12 28))))
+ (|seed_plus_TCC1| 0
+  (|seed_plus_TCC1-1| NIL 4004538162
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seed_plus| SUBTYPE "shawe_taylor.s`length" "upto(shawe_taylor.s`length)"
+    (14 75 14 83))))
+ (|st_width_TCC1| 0
+  (|st_width_TCC1-1| NIL 4004538162
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_width| SUBTYPE "shawe_taylor.bits" "uint16" (17 66 17 70))))
+ (|st_width_TCC2| 0
+  (|st_width_TCC2-1| NIL 4004538302
+   (""
+    (THEN (SKOSIMP*) (EXPAND "u16div")
+     (TYPEPRED "ndiv(bits!1,32)" "rem(32)(bits!1)")
+     (GRIND :DEFS NIL :REWRITES ("exp2")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_width| SUBTYPE
+    "(number_fields.+)(integertypes.u16div(shawe_taylor.bits, 32), 1)"
+    "{n: integers.subrange(1, 65) | reals.<(shawe_taylor.bits, number_fields.*(32, n))}"
+    (17 59 17 76))))
+ (|blocks_TCC1| 0
+  (|blocks_TCC1-1| NIL 4004538162
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|blocks| SUBTYPE "(number_fields.-)(shawe_taylor.bits, 1)" "uint16"
+    (18 63 18 69))))
+ (|blocks_TCC2| 0
+  (|blocks_TCC2-1| NIL 4004538306
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|blocks| SUBTYPE "number_fields.*(8, shawe_taylor.hlen(shawe_taylor.h))"
+    "{uy16 | integertypes.uy16 /= 0}" (18 70 18 79))))
+ (|blocks_TCC3| 0
+  (|blocks_TCC3-1| NIL 4004538306
+   (""
+    (THEN (SKOSIMP*) (EXPAND "u16div")
+     (TYPEPRED "bits!1" "ndiv(bits!1-1,8*hlen(h!1))"
+      "rem(8*hlen(h!1))(bits!1-1)")
+     (EXPAND "hlen") (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|blocks| SUBTYPE
+    "(number_fields.+)(1, integertypes.u16div((number_fields.-)(shawe_taylor.bits, 1), number_fields.*(8, shawe_taylor.hlen(shawe_taylor.h))))"
+    "subrange(1, 10)" (18 54 18 80))))
+ (|fill_hashes_TCC1| 0
+  (|fill_hashes_TCC1-1| NIL 4004538163
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|fill_hashes| SUBTYPE "(number_fields.-)(10, shawe_taylor.i)"
+    "naturalnumber" (24 12 24 16))))
+ (|fill_hashes_TCC2| 0
+  (|fill_hashes_TCC2-1| NIL 4004538163
+   ("" (SKOSIMP* T)
+    ((""
+      (USE "le_times_le_pos"
+           ("nnx" "nb!1-1-i!1" "nnz" "hlen(h!1)" "y" "10" "w" "64"))
+      (("1"
+        (USE "le_times_le_pos"
+             ("nnx" "0" "nnz" "0" "y" "nb!1-1-i!1" "w" "hlen(h!1)"))
+        (("1" (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL) NIL NIL)) NIL)
+       ("2"
+        (USE "le_times_le_pos"
+             ("nnx" "0" "nnz" "0" "y" "nb!1-1-i!1" "w" "hlen(h!1)"))
+        (("2" (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL) NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|hlen| CONST-DECL "[fixed_hash -> subrange(28, 64)]" |shawe_taylor| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|le_times_le_pos| FORMULA-DECL NIL |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|fixed_hash| TYPE-EQ-DECL NIL |shawe_taylor| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|seed_string| TYPE-EQ-DECL NIL |shawe_taylor| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|fill_hashes| SUBTYPE
+    "number_fields.*(((number_fields.-)((number_fields.-)(shawe_taylor.nb, 1), shawe_taylor.i)), shawe_taylor.hlen(shawe_taylor.h))"
+    "uint16" (22 61 22 77))))
+ (|fill_hashes_TCC3| 0
+  (|fill_hashes_TCC3-1| NIL 4004538165
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|fill_hashes| SUBTYPE "shawe_taylor.off" "upto(shawe_taylor.out`length)"
+    (23 73 23 76))))
+ (|fill_hashes_TCC4| 0
+  (|fill_hashes_TCC4-1| NIL 4004538165
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|fill_hashes| SUBTYPE "0" "upto(shawe_taylor.digest`length)"
+    (23 84 23 85))))
+ (|fill_hashes_TCC5| 0
+  (|fill_hashes_TCC5-1| NIL 4004538165
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|fill_hashes| SUBTYPE "(number_fields.+)(shawe_taylor.i, 1)" "upto(10)"
+    (23 87 23 90))))
+ (|fill_hashes_TCC6| 0
+  (|fill_hashes_TCC6-1| NIL 4004538165
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|fill_hashes| TERMINATION
+    "shawe_taylor.fill_hashes(shawe_taylor.h, shawe_taylor.s, shawe_taylor.nb, crypto_buffers.copy_octets(shawe_taylor.out, shawe_taylor.off, shawe_taylor.digest, 0), (number_fields.+)(shawe_taylor.i, 1))"
+    "NIL" (23 38 23 91))))
+ (|fill_hashes_TCC7| 0
+  (|fill_hashes_TCC7-1| NIL 4004538165
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|fill_hashes| SUBTYPE
+    "shawe_taylor.fill_hashes(shawe_taylor.h, shawe_taylor.s, shawe_taylor.nb, crypto_buffers.copy_octets(shawe_taylor.out, shawe_taylor.off, shawe_taylor.digest, 0), (number_fields.+)(shawe_taylor.i, 1))"
+    "octets_of(shawe_taylor.out`length)" (23 38 23 91))))
+ (|fill_hashes_TCC8| 0
+  (|fill_hashes_TCC8-1| NIL 4004538165
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|fill_hashes| SUBTYPE "shawe_taylor.h" "hash_id" (22 28 22 29))))
+ (|fill_hashes_TCC9| 0
+  (|fill_hashes_TCC9-1| NIL 4004538165
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|fill_hashes| SUBTYPE "shawe_taylor.i" "uint16" (22 42 22 43))))
+ (|hash_series_TCC1| 0
+  (|hash_series_TCC1-1| NIL 4004538165
+   (""
+    (THEN (SKOSIMP*)
+     (USE "le_times_le_pos" ("nnx" "nb!1" "nnz" "hlen(h!1)" "y" "10" "w" "64"))
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|hash_series| SUBTYPE
+    "number_fields.*(shawe_taylor.nb, shawe_taylor.hlen(shawe_taylor.h))"
+    "index" (25 71 25 81))))
+ (|hash_series_TCC2| 0
+  (|hash_series_TCC2-1| NIL 4004538166
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|hash_series| SUBTYPE
+    "shawe_taylor.fill_hashes(shawe_taylor.h, shawe_taylor.s, shawe_taylor.nb, crypto_buffers.fill_octets(number_fields.*(shawe_taylor.nb, shawe_taylor.hlen(shawe_taylor.h)), 0), 0)"
+    "octets_of(number_fields.*(shawe_taylor.nb, shawe_taylor.hlen(shawe_taylor.h)))"
+    (26 4 26 51))))
+ (|hash_residue_TCC1| 0
+  (|hash_residue_TCC1-1| NIL 4004538168
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)) SHOSTAK
+   (|hash_residue| SUBTYPE "(number_fields.+)(shawe_taylor.bytes`length, 3)"
+    "uint32" (29 58 29 72))))
+ (|hash_residue_TCC2| 0
+  (|hash_residue_TCC2-1| NIL 4004538169
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|hash_residue| SUBTYPE "shawe_taylor.wordcount" "limb_count"
+    (30 64 30 73))))
+ (|hash_residue_TCC3| 0
+  (|hash_residue_TCC3-1| NIL 4004538315
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|hash_residue| SUBTYPE
+    "crypto_integer_ops.resize_words(shawe_taylor.m, shawe_taylor.n)"
+    "words_of(crypto_limbs.from_bytes(shawe_taylor.n, shawe_taylor.bytes, booleans.TRUE)`len)"
+    (31 48 31 65))))
+ (|st_fail_TCC1| 0
+  (|st_fail_TCC1-1| NIL 4004538832
+   (""
+    (THEN (SKOSIMP* T) (TYPEPRED "s!1")
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|seed_string| TYPE-EQ-DECL NIL |shawe_taylor| NIL))
+   SHOSTAK
+   (|st_fail| SUBTYPE "crypto_buffers.fill_octets(shawe_taylor.s`length, 0)"
+    "seed_string" (35 44 35 67))))
+ (|small_prime_TCC1| 0
+  (|small_prime_TCC1-1| NIL 4004538169
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|small_prime| SUBTYPE "(number_fields.-)(4294967295, shawe_taylor.d)"
+    "naturalnumber" (38 103 38 115))))
+ (|small_prime_TCC2| 0
+  (|small_prime_TCC2-1| NIL 4004538170
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|small_prime| SUBTYPE "shawe_taylor.d" "{uy32 | integertypes.uy32 /= 0}"
+    (38 21 38 22))))
+ (|small_prime_TCC3| 0
+  (|small_prime_TCC4-1| NIL 4004538170
+   ("" (SKOSIMP*)
+    (("" (EXPAND "u32div")
+      (("" (TYPEPRED "c!1" "d!1" "ndiv(c!1,d!1)" "rem(d!1)(c!1)")
+        (("" (CASE "d!1<=4294967293")
+          (("1"
+            (USE "le_times_le_pos"
+                 ("nnx" "4294967293" "nnz" "2" "y" "d!1" "w" "ndiv(c!1,d!1)"))
+            (("1" (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL) NIL NIL))
+            NIL)
+           ("2"
+            (USE "le_times_le_pos"
+                 ("nnx" "4294967293" "nnz" "2" "y" "d!1" "w" "ndiv(c!1,d!1)"))
+            (("2" (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL) NIL NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK
+   (|small_prime| SUBTYPE "(number_fields.+)(shawe_taylor.d, 2)"
+    "{i: integertypes.uint32 | reals.>=(i, 3)}" (38 84 38 87))))
+ (|small_prime_TCC4| 0
+  (|small_prime_TCC5-1| NIL 4004538172
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|small_prime| TERMINATION
+    "shawe_taylor.small_prime(shawe_taylor.c, (number_fields.+)(shawe_taylor.d, 2))"
+    "NIL" (38 70 38 88))))
+ (|st_short_TCC1| 0
+  (|st_short_TCC1-1| NIL 4004538172
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "shawe_taylor.bits" "st_bits" (39 105 39 109))))
+ (|st_short_TCC2| 0
+  (|st_short_TCC2-1| NIL 4004538172
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "shawe_taylor.st_width(shawe_taylor.bits)" "limb_count"
+    (39 96 39 110))))
+ (|st_short_TCC3| 0
+  (|st_short_TCC3-1| NIL 4004538172
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "(number_fields.-)(129, shawe_taylor.count)"
+    "naturalnumber" (45 92 45 101))))
+ (|st_short_TCC4| 0
+  (|st_short_TCC4-1| NIL 4004538172
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK (|st_short| SUBTYPE "shawe_taylor.h" "hash_id" (40 51 40 52))))
+ (|st_short_TCC5| 0
+  (|st_short_TCC5-1| NIL 4004538172
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "(number_fields.-)(shawe_taylor.bits, 1)" "upto(32)"
+    (42 22 42 28))))
+ (|st_short_TCC6| 0
+  (|st_short_TCC6-1| NIL 4004538172
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "0" "below(shawe_taylor.x`len)" (42 70 42 71))))
+ (|st_short_TCC7| 0
+  (|st_short_TCC7-1| NIL 4004538172
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "0" "below(shawe_taylor.y`len)" (42 80 42 81))))
+ (|st_short_TCC8| 0
+  (|st_short_TCC8-1| NIL 4004538173
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "(number_fields.+)(shawe_taylor.count, 1)" "uint32"
+    (44 102 44 109))))
+ (|st_short_TCC9| 0
+  (|st_short_TCC9-1| NIL 4004538173
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "shawe_taylor.sn" "seed_string" (44 90 44 92))))
+ (|st_short_TCC10| 0
+  (|st_short_TCC10-1| NIL 4004538173
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "shawe_taylor.n" "limb_count" (44 62 44 63))))
+ (|st_short_TCC11| 0
+  (|st_short_TCC11-1| NIL 4004538173
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "0" "below(crypto_limbs.zero_words(shawe_taylor.n)`len)"
+    (44 77 44 78))))
+ (|st_short_TCC12| 0
+  (|st_short_TCC12-1| NIL 4004538173
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE
+    "crypto_limbs.zero_words(shawe_taylor.n) WITH [`word(0) := shawe_taylor.c]"
+    "words_of(shawe_taylor.st_width(shawe_taylor.bits))" (44 51 44 83))))
+ (|st_short_TCC13| 0
+  (|st_short_TCC13-1| NIL 4004538173
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "shawe_taylor.n" "limb_count" (45 40 45 41))))
+ (|st_short_TCC14| 0
+  (|st_short_TCC14-1| NIL 4004538174
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "shawe_taylor.st_fail(shawe_taylor.n, shawe_taylor.s)"
+    "st_result(shawe_taylor.st_width(shawe_taylor.bits))" (45 32 45 44))))
+ (|st_short_TCC15| 0
+  (|st_short_TCC15-1| NIL 4004538174
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "shawe_taylor.sn" "seed_string" (45 66 45 68))))
+ (|st_short_TCC16| 0
+  (|st_short_TCC16-1| NIL 4004538174
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| SUBTYPE "(number_fields.+)(shawe_taylor.count, 1)" "upto(129)"
+    (45 69 45 76))))
+ (|st_short_TCC17| 0
+  (|st_short_TCC17-1| NIL 4004538174
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_short| TERMINATION
+    "shawe_taylor.st_short(shawe_taylor.h, shawe_taylor.bits, shawe_taylor.sn, (number_fields.+)(shawe_taylor.count, 1))"
+    "NIL" (45 50 45 77))))
+ (|sieve_remainder_TCC1| 0
+  (|sieve_remainder_TCC1-1| NIL 4004538174
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|sieve_remainder| SUBTYPE "(number_fields.-)(shawe_taylor.i, 1)"
+    "upto(shawe_taylor.a`len)" (50 26 50 29))))
+ (|sieve_remainder_TCC2| 0
+  (|sieve_remainder_TCC2-1| NIL 4004538174
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|sieve_remainder| SUBTYPE "shawe_taylor.d"
+    "{uy64 | integertypes.uy64 /= 0}" (50 44 50 45))))
+ (|sieve_remainder_TCC3| 0
+  (|sieve_remainder_TCC3-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|sieve_remainder| TERMINATION
+    "shawe_taylor.sieve_remainder(shawe_taylor.a, shawe_taylor.d, (number_fields.-)(shawe_taylor.i, 1), crypto_montgomery.lo32(integertypes.u64rem(shawe_taylor.v, shawe_taylor.d)))"
+    "NIL" (50 6 50 48))))
+ (|sieve_remainder_TCC4| 0
+  (|sieve_remainder_TCC4-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|sieve_remainder| SUBTYPE "(number_fields.-)(shawe_taylor.i, 1)"
+    "below(shawe_taylor.a`len)" (49 58 49 61))))
+ (|sieve_candidate_TCC1| 0
+  (|sieve_candidate_TCC1-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|sieve_candidate| SUBTYPE "(number_fields.-)(2049, shawe_taylor.d)"
+    "naturalnumber" (53 46 53 52))))
+ (|sieve_candidate_TCC2| 0
+  (|sieve_candidate_TCC2-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|sieve_candidate| SUBTYPE "shawe_taylor.d" "subrange(3, 2047)"
+    (52 48 52 49))))
+ (|sieve_candidate_TCC3| 0
+  (|sieve_candidate_TCC3-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|sieve_candidate| SUBTYPE "shawe_taylor.c`len" "upto(shawe_taylor.c`len)"
+    (52 50 52 55))))
+ (|sieve_candidate_TCC4| 0
+  (|sieve_candidate_TCC4-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|sieve_candidate| SUBTYPE "(number_fields.+)(shawe_taylor.d, 2)"
+    "subrange(3, 2049)" (53 27 53 30))))
+ (|sieve_candidate_TCC5| 0
+  (|sieve_candidate_TCC5-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|sieve_candidate| TERMINATION
+    "shawe_taylor.sieve_candidate(shawe_taylor.c, (number_fields.+)(shawe_taylor.d, 2))"
+    "NIL" (53 9 53 31))))
+ (|certificate_TCC1| 0
+  (|certificate_TCC1-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|certificate| SUBTYPE "shawe_taylor.three" "words_of(shawe_taylor.c`len)"
+    (57 98 57 103))))
+ (|certificate_TCC2| 0
+  (|certificate_TCC2-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|certificate| SUBTYPE "shawe_taylor.c" "words_of(shawe_taylor.a`len)"
+    (58 34 58 35))))
+ (|certificate_TCC3| 0
+  (|certificate_TCC3-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|certificate| SUBTYPE "shawe_taylor.one" "words_of(shawe_taylor.z`len)"
+    (59 56 59 59))))
+ (|certificate_TCC4| 0
+  (|certificate_TCC4-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|certificate| SUBTYPE "shawe_taylor.c"
+    "words_of(crypto_limbs.sub_words(shawe_taylor.z, shawe_taylor.one)`len)"
+    (59 61 59 62))))
+ (|certificate_TCC5| 0
+  (|certificate_TCC5-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|certificate| SUBTYPE "shawe_taylor.c" "words_of(shawe_taylor.z`len)"
+    (59 92 59 93))))
+ (|st_search_TCC1| 0
+  (|st_search_TCC1-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "shawe_taylor.st_width(shawe_taylor.bits)" "limb_count"
+    (60 76 60 90))))
+ (|st_search_TCC2| 0
+  (|st_search_TCC2-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "(number_fields.-)(8192, shawe_taylor.count)"
+    "naturalnumber" (70 18 70 28))))
+ (|st_search_TCC3| 0
+  (|st_search_TCC3-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "shawe_taylor.n" "limb_count" (62 50 62 51))))
+ (|st_search_TCC4| 0
+  (|st_search_TCC4-1| NIL 4004538175
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "shawe_taylor.bits"
+    "{i: integertypes.uint16 | reals.<(i, number_fields.*(32, crypto_limbs.zero_words(shawe_taylor.n)`len))}"
+    (62 53 62 57))))
+ (|st_search_TCC5| 0
+  (|st_search_TCC5-1| NIL 4004538176
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "shawe_taylor.limit" "words_of(shawe_taylor.raw`len)"
+    (63 68 63 73))))
+ (|st_search_TCC6| 0
+  (|st_search_TCC6-1| NIL 4004538177
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK (|st_search| SUBTYPE "shawe_taylor.nb" "uint16" (66 41 66 43))))
+ (|st_search_TCC7| 0
+  (|st_search_TCC7-1| NIL 4004538177
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "crypto_integer_ops.double_words(shawe_taylor.tt)"
+    "words_of(shawe_taylor.c`len)" (67 28 67 44))))
+ (|st_search_TCC8| 0
+  (|st_search_TCC8-1| NIL 4004538177
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "shawe_taylor.factor" "words_of(shawe_taylor.c`len)"
+    (67 45 67 51))))
+ (|st_search_TCC9| 0
+  (|st_search_TCC9-1| NIL 4004538177
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "(number_fields.+)(shawe_taylor.count, 1)" "uint32"
+    (68 59 68 66))))
+ (|st_search_TCC10| 0
+  (|st_search_TCC10-1| NIL 4004538177
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "shawe_taylor.sn" "seed_string" (68 33 68 35))))
+ (|st_search_TCC11| 0
+  (|st_search_TCC11-1| NIL 4004538177
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "shawe_taylor.c"
+    "words_of(shawe_taylor.st_width(shawe_taylor.bits))" (68 25 68 26))))
+ (|st_search_TCC12| 0
+  (|st_search_TCC12-1| NIL 4004538177
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "shawe_taylor.st_fail(shawe_taylor.n, shawe_taylor.s)"
+    "st_result(shawe_taylor.st_width(shawe_taylor.bits))" (69 31 69 43))))
+ (|st_search_TCC13| 0
+  (|st_search_TCC13-1| NIL 4004538177
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "shawe_taylor.sn" "seed_string" (69 66 69 68))))
+ (|st_search_TCC14| 0
+  (|st_search_TCC14-1| NIL 4004538178
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "crypto_integer_ops.increment(shawe_taylor.tt, 1)"
+    "words_of(shawe_taylor.st_width(shawe_taylor.bits))" (69 76 69 91))))
+ (|st_search_TCC15| 0
+  (|st_search_TCC15-1| NIL 4004538178
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| SUBTYPE "(number_fields.+)(shawe_taylor.count, 1)" "upto(8192)"
+    (69 98 69 105))))
+ (|st_search_TCC16| 0
+  (|st_search_TCC16-1| NIL 4004538178
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_search| TERMINATION
+    "shawe_taylor.st_search(shawe_taylor.h, shawe_taylor.bits, shawe_taylor.sn, shawe_taylor.factor, crypto_integer_ops.increment(shawe_taylor.tt, 1), shawe_taylor.start, (number_fields.+)(shawe_taylor.count, 1), shawe_taylor.prior)"
+    "NIL" (69 49 69 112))))
+ (|st_prime_TCC1| 0
+  (|st_prime_TCC1-1| NIL 4004538178
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE "shawe_taylor.bits" "subrange(2, 32)" (72 31 72 35))))
+ (|st_prime_TCC2| 0
+  (|st_prime_TCC2-1| NIL 4004538178
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE "(number_fields.+)(shawe_taylor.bits, 1)" "uint16"
+    (73 48 73 54))))
+ (|st_prime_TCC3| 0
+  (|st_prime_TCC4-1| NIL 4004538180
+   (""
+    (THEN (SKOSIMP* T) (EXPAND "u16div")
+     (TYPEPRED "ndiv(bits!1+1,2)" "rem(2)(bits!1+1)")
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|u16div| CONST-DECL "[[uint16, {uy16 | uy16 /= 0}] -> uint16]"
+     |integertypes| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|mod| NONEMPTY-TYPE-EQ-DECL NIL |euclidean_division| NIL)
+    (|rem| CONST-DECL
+     "[b: posnat -> [x: int -> {r: mod(b) | EXISTS (q: int): x = r + b * q}]]"
+     |modulo_arithmetic| NIL)
+    (|ndiv| CONST-DECL
+     "[d: [int, posnat] -> {q: int | d`1 = rem(d`2)(d`1) + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|fixed_hash| TYPE-EQ-DECL NIL |shawe_taylor| NIL)
+    (|st_bits| TYPE-EQ-DECL NIL |shawe_taylor| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|seed_string| TYPE-EQ-DECL NIL |shawe_taylor| NIL))
+   SHOSTAK
+   (|st_prime| SUBTYPE
+    "(number_fields.+)(integertypes.u16div((number_fields.+)(shawe_taylor.bits, 1), 2), 1)"
+    "st_bits" (73 41 73 59))))
+ (|st_prime_TCC4| 0
+  (|st_prime_TCC3-1| NIL 4004538179
+   (""
+    (THEN (SKOSIMP* T) (EXPAND "u16div")
+     (USE "ndiv_lt" ("x" "bits!1+1" "b" "2"))
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| TERMINATION
+    "shawe_taylor.st_prime(shawe_taylor.h, shawe_taylor.small, shawe_taylor.s)"
+    "NIL" (73 62 73 81))))
+ (|st_prime_TCC5| 0
+  (|st_prime_TCC6-1| NIL 4004538180
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE "shawe_taylor.n" "limb_count" (74 31 74 32))))
+ (|st_prime_TCC6| 0
+  (|st_prime_TCC5-1| NIL 4004538180
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE "shawe_taylor.st_fail(shawe_taylor.n, shawe_taylor.s)"
+    "st_result(shawe_taylor.st_width(shawe_taylor.bits))" (74 23 74 35))))
+ (|st_prime_TCC7| 0
+  (|st_prime_TCC7-1| NIL 4004538181
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE "shawe_taylor.n" "limb_count" (75 35 75 36))))
+ (|st_prime_TCC8| 0
+  (|st_prime_TCC8-1| NIL 4004538184
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE "shawe_taylor.bits"
+    "{i: integertypes.uint16 | booleans.AND(reals.>(i, 0), reals.<(i, number_fields.*(32, crypto_limbs.from_bytes(shawe_taylor.n, shawe_taylor.hash_series(shawe_taylor.h, shawe_taylor.r`seed, shawe_taylor.nb), booleans.TRUE)`len)))}"
+    (76 66 76 70))))
+ (|st_prime_TCC9| 0
+  (|st_prime_TCC9-1| NIL 4004538190
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE "(number_fields.-)(shawe_taylor.bits, 1)"
+    "{i: integertypes.uint16 | reals.<(i, number_fields.*(32, crypto_limbs.zero_words(shawe_taylor.n)`len))}"
+    (77 55 77 61))))
+ (|st_prime_TCC10| 0
+  (|st_prime_TCC13-1| NIL 4004538191
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE "shawe_taylor.step"
+    "words_of(crypto_integer_ops.set_one(crypto_limbs.zero_words(shawe_taylor.n), (number_fields.-)(shawe_taylor.bits, 1))`len)"
+    (77 63 77 67))))
+ (|st_prime_TCC11| 0
+  (|st_prime_TCC10-1| NIL 4004538190
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK (|st_prime| SUBTYPE "shawe_taylor.nb" "uint16" (78 45 78 47))))
+ (|st_prime_TCC12| 0
+  (|st_prime_TCC11-1| NIL 4004538190
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE
+    "shawe_taylor.seed_plus(shawe_taylor.r`seed, shawe_taylor.nb)"
+    "seed_string" (78 28 78 48))))
+ (|st_prime_TCC13| 0
+  (|st_prime_TCC12-1| NIL 4004538191
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE "shawe_taylor.f"
+    "words_of(shawe_taylor.st_width(shawe_taylor.bits))" (78 49 78 50))))
+ (|st_prime_TCC14| 0
+  (|st_prime_TCC14-1| NIL 4004538191
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE "shawe_taylor.step" "words_of(shawe_taylor.x`len)"
+    (78 68 78 72))))
+ (|st_prime_TCC15| 0
+  (|st_prime_TCC15-1| NIL 4004538191
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE
+    "crypto_integer_ops.ceiling_divide(shawe_taylor.x, shawe_taylor.step)"
+    "words_of(shawe_taylor.st_width(shawe_taylor.bits))" (78 51 78 73))))
+ (|st_prime_TCC16| 0
+  (|st_prime_TCC16-1| NIL 4004538329
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|st_prime| SUBTYPE "shawe_taylor.start"
+    "words_of(shawe_taylor.st_width(shawe_taylor.bits))" (78 74 78 79))))
+ (|seed_zero_step| 0
+  (|seed_zero_step-1| NIL 4004538192
+   ("" (THEN (SKOSIMP*) (EXPAND "seed_plus") (EXPAND "advance_seed") (ASSERT))
+    NIL NIL)
+   NIL SHOSTAK)))
+

@@ -1,0 +1,12 @@
+% SP 800-232 §4. Tail bits in the unused positions of frames carry no data.
+ascon_claims: THEORY
+BEGIN
+  IMPORTING ascon_options
+  normalized(m:frame):frame=m WITH [`tail:=truncate_block(m`tail,m`tail_bits)]
+  aead_correct: THEOREM FORALL(k:settings,n:block,a,m:frame):
+    LET c=encrypt_profile(k,n,a,m),p=decrypt_profile(k,n,a,c) IN
+      p`valid AND p`plaintext=normalized(m)
+  changed_tag_rejected: THEOREM FORALL(k:settings,n:block,a,m:frame,other:block):
+    LET c=encrypt_profile(k,n,a,m) IN
+      other/=c`auth IMPLIES NOT decrypt_profile(k,n,a,c WITH [`auth:=other])`valid
+END ascon_claims

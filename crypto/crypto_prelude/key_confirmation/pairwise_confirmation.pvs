@@ -1,0 +1,26 @@
+% SP 800-56A Rev. 3 §5.9 and SP 800-56B Rev. 2 §5.6.
+% The protocol fixes field lengths or encodings before the transaction.
+pairwise_confirmation: THEORY
+BEGIN
+  hmac: LIBRARY="../../hmac"
+  IMPORTING hmac@keyed_hash
+  element: TYPE={s:bytestring | s`length<=4096}
+  identifier: TYPE={x:element | x`length>0}
+  party: TYPE=[# identity:identifier,ephemeral:element #]
+  label_bytes(from_u,bilateral:bool):ARRAY[below(6) -> uint8] =
+    LAMBDA(i:below(6)):
+      IF i=0 THEN 75 ELSIF i=1 THEN 67 ELSIF i=3 THEN IF bilateral THEN 50 ELSE 49 ENDIF
+      ELSIF i=5 THEN IF from_u THEN 85 ELSE 86 ENDIF ELSE 95 ENDIF
+  label(from_u,bilateral:bool):octets_of(6) = (# length:=6,seq:=label_bytes(from_u,bilateral) #)
+  mac_data(p,r:party,from_u,bilateral:bool,text:element):octets_of(6+p`identity`length+r`identity`length+p`ephemeral`length+r`ephemeral`length+text`length) =
+    join_octets(join_octets(join_octets(join_octets(join_octets(label(from_u,bilateral),
+       p`identity),r`identity),p`ephemeral),r`ephemeral),text)
+  % SHA-256 HMAC, 256-bit MacKey and a 128-bit tag. Bound the serialised
+  % input explicitly to preserve the PVS2C Prelude storage contract.
+  confirm(key:octets_of(32),p,r:party,from_u,bilateral:bool,text:element):octets_of(16) =
+    LET m=mac_data(p,r,from_u,bilateral,text) IN hmac_truncated(h_sha256,key,m,16)
+  accept(key:octets_of(32),p,r:party,from_u,bilateral:bool,text:element,tag:bytestring):bool =
+    tag=confirm(key,p,r,from_u,bilateral,text)
+  valid_tag: LEMMA FORALL(k:octets_of(32),p,r:party,u,b:bool,t:element):
+    accept(k,p,r,u,b,t,confirm(k,p,r,u,b,t))
+END pairwise_confirmation

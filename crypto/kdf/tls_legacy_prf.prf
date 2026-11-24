@@ -1,0 +1,1802 @@
+(|tls_legacy_prf|
+ (|md_s_TCC1| 0
+  (|md_s_TCC1-1| NIL 4004537199
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|md_s| SUBTYPE
+    "[: 7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21 :]"
+    "ARRAY[below(16) -> below(32)]" (9 40 9 86))))
+ (|md_k_TCC1| 0
+  (|md_k_TCC1-1| NIL 4004537200
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|md_k| SUBTYPE
+    "[: 0xD76AA478, 0xE8C7B756, 0x242070DB, 0xC1BDCEEE, 0xF57C0FAF, 0x4787C62A, 0xA8304613, 0xFD469501, 0x698098D8, 0x8B44F7AF, 0xFFFF5BB1, 0x895CD7BE, 0x6B901122, 0xFD987193, 0xA679438E, 0x49B40821, 0xF61E2562, 0xC040B340, 0x265E5A51, 0xE9B6C7AA, 0xD62F105D, 0x2441453, 0xD8A1E681, 0xE7D3FBC8, 0x21E1CDE6, 0xC33707D6, 0xF4D50D87, 0x455A14ED, 0xA9E3E905, 0xFCEFA3F8, 0x676F02D9, 0x8D2A4C8A, 0xFFFA3942, 0x8771F681, 0x6D9D6122, 0xFDE5380C, 0xA4BEEA44, 0x4BDECFA9, 0xF6BB4B60, 0xBEBFBC70, 0x289B7EC6, 0xEAA127FA, 0xD4EF3085, 0x4881D05, 0xD9D4D039, 0xE6DB99E5, 0x1FA27CF8, 0xC4AC5665, 0xF4292244, 0x432AFF97, 0xAB9423A7, 0xFC93A039, 0x655B59C3, 0x8F0CCC92, 0xFFEFF47D, 0x85845DD1, 0x6FA87E4F, 0xFE2CE6E0, 0xA3014314, 0x4E0811A1, 0xF7537E82, 0xBD3AF235, 0x2AD7D2BB, 0xEB86D391 :]"
+    "ARRAY[below(64) -> uint32]" (10 37 18 93))))
+ (|md_byte_TCC1| 0
+  (|md_byte_TCC1-1| NIL 4004537201
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|plus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|md_byte| SUBTYPE "number_fields.*(8, tls_legacy_prf.m`length)" "uint64"
+    (21 50 21 60))))
+ (|md_byte_TCC2| 0
+  (|md_byte_TCC2-1| NIL 4004537202
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_u32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|md_byte| SUBTYPE
+    "(number_fields.-)((number_fields.-)(tls_legacy_prf.stop, tls_legacy_prf.pos), 1)"
+    "below(8)" (21 61 21 71))))
+ (|md_word_TCC1| 0
+  (|md_word_TCC1-1| NIL 4004537202
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|md_word| SUBTYPE "number_fields.*(4, tls_legacy_prf.j)" "uint32"
+    (23 23 23 26))))
+ (|md_steps_TCC1| 0
+  (|md_steps_TCC1-1| NIL 4004537203
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|md_steps| SUBTYPE "(number_fields.-)(64, tls_legacy_prf.i)"
+    "naturalnumber" (37 18 37 22))))
+ (|md_steps_TCC2| 0
+  (|md_steps_TCC2-1| NIL 4004537203
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|md_steps| SUBTYPE
+    "(number_fields.+)(number_fields.*(5, tls_legacy_prf.i), 1)" "uint16"
+    (32 60 32 65))))
+ (|md_steps_TCC3| 0
+  (|md_steps_TCC3-1| NIL 4004537203
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|u16rem| CONST-DECL "[[uint16, {uy16 | uy16 /= 0}] -> uint16]"
+     |integertypes| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|md_steps| SUBTYPE
+    "integertypes.u16rem((number_fields.+)(number_fields.*(5, tls_legacy_prf.i), 1), 16)"
+    "below(16)" (32 53 32 69))))
+ (|md_steps_TCC4| 0
+  (|md_steps_TCC4-1| NIL 4004537204
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|md_steps| SUBTYPE
+    "(number_fields.+)(number_fields.*(3, tls_legacy_prf.i), 5)" "uint16"
+    (33 46 33 51))))
+ (|md_steps_TCC5| 0
+  (|md_steps_TCC5-1| NIL 4004537204
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|u16rem| CONST-DECL "[[uint16, {uy16 | uy16 /= 0}] -> uint16]"
+     |integertypes| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|md_steps| SUBTYPE
+    "integertypes.u16rem((number_fields.+)(number_fields.*(3, tls_legacy_prf.i), 5), 16)"
+    "below(16)" (33 39 33 55))))
+ (|md_steps_TCC6| 0
+  (|md_steps_TCC6-1| NIL 4004537204
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|md_steps| SUBTYPE "number_fields.*(7, tls_legacy_prf.i)" "uint16"
+    (33 68 33 71))))
+ (|md_steps_TCC7| 0
+  (|md_steps_TCC7-1| NIL 4004537205
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|u16rem| CONST-DECL "[[uint16, {uy16 | uy16 /= 0}] -> uint16]"
+     |integertypes| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|md_steps| SUBTYPE
+    "integertypes.u16rem(number_fields.*(7, tls_legacy_prf.i), 16)" "below(16)"
+    (33 61 33 75))))
+ (|md_steps_TCC8| 0
+  (|md_steps_TCC8-1| NIL 4004537206
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK (|md_steps| SUBTYPE "tls_legacy_prf.i" "uint16" (34 35 34 36))))
+ (|md_steps_TCC9| 0
+  (|md_steps_TCC9-1| NIL 4004537206
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (USE "ndiv_lt" ("x" "i!1" "b" "16"))
+     (TYPEPRED "nrem(i!1,4)") (GRIND :DEFS NIL :REWRITES ("u16div" "u16rem")))
+    NIL)
+   ((|ndiv_lt| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|nnrat_div_posrat_is_nnrat| APPLICATION-JUDGEMENT "nonneg_rat" |rationals|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|times_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|u16rem| CONST-DECL "[[uint16, {uy16 | uy16 /= 0}] -> uint16]"
+     |integertypes| NIL)
+    (|u16div| CONST-DECL "[[uint16, {uy16 | uy16 /= 0}] -> uint16]"
+     |integertypes| NIL)
+    (|mod| NONEMPTY-TYPE-EQ-DECL NIL |euclidean_division| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nrem| CONST-DECL
+     "[d: [int, posnat] -> {r: mod(d`2) | EXISTS (q: int): d`1 = r + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|md_steps| SUBTYPE
+    "(number_fields.+)(number_fields.*(4, integertypes.u16div(tls_legacy_prf.i, 16)), integertypes.u16rem(tls_legacy_prf.i, 4))"
+    "below(16)" (34 26 34 52))))
+ (|md_steps_TCC10| 0
+  (|md_steps_TCC10-1| NIL 4004537207
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|times_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK (|md_steps| SUBTYPE "tls_legacy_prf.i" "below(64)" (35 48 35 49))))
+ (|md_steps_TCC11| 0
+  (|md_steps_TCC11-1| NIL 4004537207
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|times_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|md_steps| SUBTYPE "(number_fields.+)(tls_legacy_prf.i, 1)" "upto(64)"
+    (36 86 36 89))))
+ (|md_steps_TCC12| 0
+  (|md_steps_TCC12-1| NIL 4004537208
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|times_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|md_steps| TERMINATION
+    "tls_legacy_prf.md_steps(tls_legacy_prf.m, tls_legacy_prf.base, tls_legacy_prf.stop, (# a := tls_legacy_prf.d, b := integertypes.u32plus(tls_legacy_prf.b, crypto_words.rol32(tls_legacy_prf.v, tls_legacy_prf.md_s(tls_legacy_prf.shift))), c := tls_legacy_prf.b, d := tls_legacy_prf.c #), (number_fields.+)(tls_legacy_prf.i, 1))"
+    "NIL" (36 9 36 90))))
+ (|md_blocks_TCC1| 0
+  (|md_blocks_TCC1-1| NIL 4004537208
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|md_blocks| SUBTYPE "(number_fields.-)(tls_legacy_prf.n, tls_legacy_prf.i)"
+    "naturalnumber" (42 18 42 21))))
+ (|md_blocks_TCC2| 0
+  (|md_blocks_TCC2-1| NIL 4004537208
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|md_blocks| SUBTYPE "(number_fields.+)(tls_legacy_prf.i, 1)"
+    "upto(tls_legacy_prf.n)" (41 66 41 69))))
+ (|md_blocks_TCC3| 0
+  (|md_blocks_TCC3-1| NIL 4004537208
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|md_blocks| TERMINATION
+    "tls_legacy_prf.md_blocks(tls_legacy_prf.m, (# a := integertypes.u32plus(tls_legacy_prf.x`a, tls_legacy_prf.y`a), b := integertypes.u32plus(tls_legacy_prf.x`b, tls_legacy_prf.y`b), c := integertypes.u32plus(tls_legacy_prf.x`c, tls_legacy_prf.y`c), d := integertypes.u32plus(tls_legacy_prf.x`d, tls_legacy_prf.y`d) #), tls_legacy_prf.n, (number_fields.+)(tls_legacy_prf.i, 1))"
+    "NIL" (40 6 41 70))))
+ (|md_blocks_TCC4| 0
+  (|md_blocks_TCC4-1| NIL 4004537208
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK (|md_blocks| SUBTYPE "tls_legacy_prf.i" "uint32" (39 52 39 53))))
+ (|md_bytes_TCC1| 0
+  (|md_bytes_TCC1-1| NIL 4004537209
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK (|md_bytes| SUBTYPE "tls_legacy_prf.j" "uint8" (45 22 45 23))))
+ (|md_bytes_TCC2| 0
+  (|md_bytes_TCC2-1| NIL 4004537209
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_u8_u8| APPLICATION-JUDGEMENT "int16" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|u8rem| CONST-DECL "[[uint8, {uy8 | uy8 /= 0}] -> uint8]" |integertypes|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|md_bytes| SUBTYPE
+    "(number_fields.-)(3, integertypes.u8rem(tls_legacy_prf.j, 4))" "below(4)"
+    (45 14 45 26))))
+ (|md_TCC1| 0
+  (|md_TCC1-1| NIL 4004537209
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|md| SUBTYPE "0"
+    "upto(secure_hash.padded_blocks(tls_legacy_prf.m, booleans.FALSE))"
+    (47 73 47 74))))
+ (|md_key_TCC1| 0
+  (|md_key_TCC1-1| NIL 4004537209
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|filled_length| FORMULA-DECL NIL |crypto_buffer_lengths| NIL))
+   SHOSTAK
+   (|md_key| SUBTYPE "0" "upto(crypto_buffers.fill_octets(64, 0)`length)"
+    (49 82 49 83))))
+ (|md_key_TCC2| 0
+  (|md_key_TCC2-1| NIL 4004537209
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|md_key| SUBTYPE "0" "upto(tls_legacy_prf.s`length)" (49 86 49 87))))
+ (|md_key_TCC3| 0
+  (|md_key_TCC3-1| NIL 4004537209
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|filled_length| FORMULA-DECL NIL |crypto_buffer_lengths| NIL)
+    (|copied_length| FORMULA-DECL NIL |crypto_buffer_lengths| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|md_key| SUBTYPE
+    "crypto_buffers.copy_octets(crypto_buffers.fill_octets(64, 0), 0, tls_legacy_prf.s, 0)"
+    "octets_of(64)" (49 52 49 88))))
+ (|md_mac_TCC1| 0
+  (|md_mac_TCC1-1| NIL 4004537209
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|prf_data| TYPE-EQ-DECL NIL |prf_iteration| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| NIL))
+   SHOSTAK
+   (|md_mac| SUBTYPE "tls_legacy_prf.m"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(s`length, keyed_hash.pad_key(tls_legacy_prf.b, 0x36)`length), exp2.exp2(28))}"
+    (51 85 51 86))))
+ (|md_mac_TCC2| 0
+  (|md_mac_TCC2-1| NIL 4004537209
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|prf_data| TYPE-EQ-DECL NIL |prf_iteration| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| NIL))
+   SHOSTAK
+   (|md_mac| SUBTYPE
+    "tls_legacy_prf.md(crypto_buffers.join_octets(keyed_hash.pad_key(tls_legacy_prf.b, 0x36), tls_legacy_prf.m))"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(s`length, keyed_hash.pad_key(tls_legacy_prf.b, 0x5C)`length), exp2.exp2(28))}"
+    (51 54 51 88))))
+ (|right_half_TCC1| 0
+  (|right_half_TCC1-1| NIL 4004537209
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|field| TYPE-EQ-DECL NIL |protocol_kdf| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK (|right_half| SUBTYPE "tls_legacy_prf.n" "index" (53 50 53 51))))
+ (|right_half_TCC2| 0
+  (|right_half_TCC2-1| NIL 4004537209
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|field| TYPE-EQ-DECL NIL |protocol_kdf| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL))
+   SHOSTAK
+   (|right_half| SUBTYPE
+    "(number_fields.+)((number_fields.-)(tls_legacy_prf.k`length, tls_legacy_prf.n), tls_legacy_prf.i)"
+    "below(tls_legacy_prf.k`length)" (54 48 54 60))))
+ (|xor_stream_TCC1| 0
+  (|xor_stream_TCC1-1| NIL 4004537209
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|xor_stream| SUBTYPE "tls_legacy_prf.i" "below(tls_legacy_prf.b`length)"
+    (56 76 56 77))))
+ (|tls10_TCC1| 0
+  (|tls10_TCC1-1| NIL 4004537209
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|field| TYPE-EQ-DECL NIL |protocol_kdf| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK
+   (|tls10| SUBTYPE "(number_fields.+)(tls_legacy_prf.secret`length, 1)"
+    "uint32" (58 40 58 55))))
+ (|tls10_TCC2| 0
+  (|tls10_TCC2-1| NIL 4004536963
+   (""
+    (THEN (SKOSIMP*) (ALL-TYPEPREDS) (ASSERT)
+     (GRIND :DEFS
+      ("u32div" "u32rem" "maxsize" "exp2" "steps" "semis" "unit_octets"
+       "kw_unwrap" "kwp_unwrap" "u16div" "u64div" "u64rem" "hash_bytes"
+       "block_bytes" "h_sha1"))
+     (ALL-TYPEPREDS) (GRIND :DEFS ("maxsize" "exp2")))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|u32div| CONST-DECL "[[uint32, {uy32 | uy32 /= 0}] -> uint32]"
+     |integertypes| NIL)
+    (/= CONST-DECL "[[T, T] -> boolean]" |notequal| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|field| TYPE-EQ-DECL NIL |protocol_kdf| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|odd?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|even?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|ndiv| CONST-DECL
+     "[d: [int, posnat] -> {q: int | d`1 = rem(d`2)(d`1) + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|rem| CONST-DECL
+     "[b: posnat -> [x: int -> {r: mod(b) | EXISTS (q: int): x = r + b * q}]]"
+     |modulo_arithmetic| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|mod| NONEMPTY-TYPE-EQ-DECL NIL |euclidean_division| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|reflexive?| CONST-DECL "[PRED[[T, T]] -> bool]" |relations| NIL)
+    (|transitive?| CONST-DECL "[PRED[[T, T]] -> bool]" |relations| NIL)
+    (|preorder?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|antisymmetric?| CONST-DECL "[PRED[[T, T]] -> bool]" |relations| NIL)
+    (|partial_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|dichotomous?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|strict_total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   "shostak"
+   (|tls10| SUBTYPE
+    "integertypes.u32div((number_fields.+)(tls_legacy_prf.secret`length, 1), 2)"
+    "upto(tls_legacy_prf.secret`length)" (58 33 58 58))))
+ (|tls10_TCC3| 0
+  (|tls10_TCC3-1| NIL 4004537210
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|u32div| CONST-DECL "[[uint32, {uy32 | uy32 /= 0}] -> uint32]"
+     |integertypes| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|field| TYPE-EQ-DECL NIL |protocol_kdf| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| NIL))
+   SHOSTAK
+   (|tls10| SUBTYPE "tls_legacy_prf.seed"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(tls_legacy_prf.label`length, s`length), exp2.exp2(28))}"
+    (59 84 59 88))))
+ (|tls10_TCC4| 0
+  (|tls10_TCC4-1| NIL 4004537210
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|u32div| CONST-DECL "[[uint32, {uy32 | uy32 /= 0}] -> uint32]"
+     |integertypes| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|field| TYPE-EQ-DECL NIL |protocol_kdf| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL))
+   SHOSTAK (|tls10| SUBTYPE "tls_legacy_prf.s" "fixed_data" (60 48 60 49))))
+ (|tls10_TCC5| 0
+  (|tls10_TCC5-1| NIL 4004537211
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|filled_length| FORMULA-DECL NIL |crypto_buffer_lengths| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|field| TYPE-EQ-DECL NIL |protocol_kdf| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL))
+   SHOSTAK
+   (|tls10| SUBTYPE "crypto_buffers.fill_octets(0, 0)" "prior_block"
+    (60 50 60 66))))
+ (|tls10_TCC6| 0
+  (|tls10_TCC6-1| NIL 4004537211
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|filled_length| FORMULA-DECL NIL |crypto_buffer_lengths| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|field| TYPE-EQ-DECL NIL |protocol_kdf| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL))
+   SHOSTAK
+   (|tls10| SUBTYPE "0"
+    "upto(crypto_buffers.fill_octets(tls_legacy_prf.n, 0)`length)"
+    (60 84 60 85))))
+ (|tls10_TCC7| 0
+  (|tls10_TCC7-1| NIL 4004537211
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|filled_length| FORMULA-DECL NIL |crypto_buffer_lengths| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|u32div| CONST-DECL "[[uint32, {uy32 | uy32 /= 0}] -> uint32]"
+     |integertypes| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|field| TYPE-EQ-DECL NIL |protocol_kdf| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|fill_octets| CONST-DECL "[d: [index, uint8] -> octets_of(d`1)]"
+     |crypto_buffers| NIL))
+   SHOSTAK
+   (|tls10| SUBTYPE "keyed_hash.hash_bytes(keyed_hash.h_sha1)" "mac_size"
+    (61 18 61 36))))
+ (|tls10_TCC8| 0
+  (|tls10_TCC8-1| NIL 4004537212
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|filled_length| FORMULA-DECL NIL |crypto_buffer_lengths| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|field| TYPE-EQ-DECL NIL |protocol_kdf| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|fill_octets| CONST-DECL "[d: [index, uint8] -> octets_of(d`1)]"
+     |crypto_buffers| NIL))
+   SHOSTAK
+   (|tls10| SUBTYPE "tls_legacy_prf.y" "octets_of(tls_legacy_prf.x`length)"
+    (62 20 62 21))))
+ (|tls10_TCC9| 0
+  (|tls10_TCC9-1| NIL 4004537212
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|filled_length| FORMULA-DECL NIL |crypto_buffer_lengths| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|field| TYPE-EQ-DECL NIL |protocol_kdf| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|fill_octets| CONST-DECL "[d: [index, uint8] -> octets_of(d`1)]"
+     |crypto_buffers| NIL))
+   SHOSTAK
+   (|tls10| SUBTYPE
+    "tls_legacy_prf.xor_stream(tls_legacy_prf.x, tls_legacy_prf.y)"
+    "octets_of(tls_legacy_prf.n)" (62 7 62 22)))))
+

@@ -1,0 +1,27 @@
+% SP 800-90C §7.2. The caller commits the returned parent and child states
+% together before servicing the next request from either construction.
+rbg_tree: THEORY
+BEGIN
+  IMPORTING rbg_constructions
+  family:TYPE=[# ok:bool,parent:activated,child:activated #]
+  root_from_entropy(s:stream_id,p:personal):activated = instantiate_rbg2(s,p)
+  root_from_rbg(s:stream_id,p:personal):activated = instantiate_rbg1(s,p)
+  % §7.2.1.2. The HMAC_DRBG parent supplies 3s/2 bits at strength s=256.
+  add_child(parent:activated,p:personal,source_input:material):family =
+    LET r=pseudorandom(parent,384,source_input), next=parent WITH [internal:=r`current] IN
+      IF NOT r`success OR r`data`length/=48 THEN (# ok:=FALSE,parent:=next,child:=inactive #)
+      ELSE (# ok:=TRUE,parent:=next,child:=start_seed(r`data,p) #) ENDIF
+  % §7.2.3.1. Full-entropy source; optional additional input enters reseed.
+  reseed_root(root:activated,s:stream_id,extra:reseed_input):activated =
+    IF NOT root`ready THEN inactive ELSE LET a=entropy_bytes(32,s,0) IN
+      IF a`ok THEN (# ready:=TRUE,internal:=reseed(root`internal,a`value,extra) #) ELSE inactive ENDIF ENDIF
+  % §7.2.3.2. Parent supplies s bits; a failed request leaves the child intact.
+  reseed_child(parent,child:activated,extra:reseed_input,source_input:material):family =
+    IF NOT child`ready THEN (# ok:=FALSE,parent:=parent,child:=child #) ELSE
+      LET r=pseudorandom(parent,256,source_input), next=parent WITH [internal:=r`current] IN
+        IF NOT r`success OR r`data`length/=32 THEN (# ok:=FALSE,parent:=next,child:=child #)
+        ELSE (# ok:=TRUE,parent:=next,child:=(# ready:=TRUE,internal:=reseed(child`internal,r`data,extra) #) #) ENDIF
+    ENDIF
+  invalid_child: LEMMA FORALL (p:activated,e:reseed_input,i:material):
+    NOT reseed_child(p,inactive,e,i)`ok
+END rbg_tree

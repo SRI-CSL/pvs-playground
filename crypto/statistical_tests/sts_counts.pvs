@@ -1,0 +1,161 @@
+% SP 800-22 Rev. 1a §§2.1–2.5, 2.7, 2.8, 2.11 and 2.12.
+sts_counts: THEORY
+BEGIN
+  crypto_prelude: LIBRARY="../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_statistics
+  bitstream: TYPE=[# n:upto(2147483647), bits:ARRAY[below(n)->bool] #]
+  bit(x:bitstream,i:uint32):below(2)=IF i<x`n AND x`bits(i) THEN 1 ELSE 0 ENDIF
+  count(x:bitstream,i,stop:uint32,sum:uint32): RECURSIVE uint32 =
+    IF i>=stop THEN sum ELSE count(x,i+1,stop,u32plus(sum,bit(x,i))) ENDIF MEASURE stop-i
+  frequency(x:bitstream):observation =
+    IF x`n=0 THEN omitted ELSE LET ones=count(x,0,x`n,0) IN
+      observed(gaussian_tail(fp_div(fp_sub(fl(2*ones),fl(x`n)),fp_sqrt(fl(x`n))))) ENDIF
+  block_chi(x:bitstream,m:pos_uint32,i,N:uint32,total:fp): RECURSIVE fp =
+    IF i>=N THEN total ELSE
+      LET ones=count(x,u32times(i,m),u32times(i+1,m),0),
+          diff=fp_sub(fl(2*ones),fl(m)) IN
+        block_chi(x,m,i+1,N,fp_add(total,fp_div(sq(diff),fl(m))))
+    ENDIF MEASURE N-i
+  block_frequency(x:bitstream,m:pos_uint32):observation =
+    LET N=u32div(x`n,m) IN IF N=0 THEN omitted ELSE observed(chi_tail(N,block_chi(x,m,0,N,fl(0)))) ENDIF
+  transitions(x:bitstream,i:upto(x`n),v:uint32): RECURSIVE uint32 =
+    IF i=x`n THEN v ELSE
+      transitions(x,i+1,IF i>0 AND bit(x,i)/=bit(x,i-1) THEN u32plus(v,1) ELSE v ENDIF)
+    ENDIF MEASURE x`n-i
+  runs(x:bitstream):observation =
+    IF x`n=0 THEN omitted ELSE LET pi=ratio(count(x,0,x`n,0),x`n),root=fp_sqrt(fl(x`n)),
+        prod=fp_mul(pi,fp_sub(fl(1),pi)) IN
+      IF prod=fl(0) OR NOT fp_lt(fp_abs(fp_sub(pi,ratio(1,2))),fp_div(fl(2),root)) THEN observed(fl(0))
+      ELSE observed(gaussian_tail(fp_div(fp_sub(fl(transitions(x,0,1)),fp_mul(fl(2*x`n),prod)),
+                                         fp_mul(fp_mul(fl(2),root),prod)))) ENDIF ENDIF
+  bins: TYPE=ARRAY[below(7)->uint32]
+  probs: TYPE=ARRAY[below(7)->fp]
+  empty_bins:bins=LAMBDA(i:below(7)):0
+  cat_chi(b:bins,p:probs,N:uint32,k:upto(7),total:fp): RECURSIVE fp =
+    IF k=0 THEN total ELSE
+      cat_chi(b,p,N,k-1,fp_add(total,deviation(fl(b(k-1)),fp_mul(fl(N),p(k-1)))))
+    ENDIF MEASURE k
+  longest(x:bitstream,i,stop,run,best:uint32): RECURSIVE uint32 =
+    IF i>=stop THEN best ELSE LET r:uint32=IF bit(x,i)=1 THEN u32plus(run,1) ELSE 0 ENDIF IN
+      longest(x,i+1,stop,r,IF r>best THEN r ELSE best ENDIF) ENDIF MEASURE stop-i
+  run_bins(x:bitstream,m:pos_uint32,lo:uint8,k:below(7),i,N:uint32,b:bins): RECURSIVE bins =
+    IF i>=N THEN b ELSE
+      LET r=longest(x,u32times(m,i),u32times(m,i+1),0,0),
+          j:below(7)=IF r<=lo THEN 0 ELSIF r>=lo+k THEN k ELSE r-lo ENDIF IN
+        run_bins(x,m,lo,k,i+1,N,b WITH [(j):=u32plus(b(j),1)]) ENDIF MEASURE N-i
+  run_probs(m:pos_uint32):probs =
+    IF m=8 THEN [: ratio(55,256),ratio(94,256),ratio(59,256),ratio(48,256),fl(0),fl(0),fl(0) :]
+    ELSIF m=128 THEN [: ratio(1174035788,10000000000),ratio(242955959,1000000000),
+      ratio(249363483,1000000000),ratio(17517706,100000000),ratio(102701071,1000000000),
+      ratio(112398847,1000000000),fl(0) :]
+    ELSE [: ratio(882,10000),ratio(2092,10000),ratio(2483,10000),ratio(1933,10000),
+            ratio(1208,10000),ratio(675,10000),ratio(727,10000) :] ENDIF
+  longest_run(x:bitstream):observation =
+    IF x`n<128 THEN omitted ELSE
+      LET m:pos_uint32=IF x`n<6272 THEN 8 ELSIF x`n<750000 THEN 128 ELSE 10000 ENDIF,
+          k:below(7)=IF m=8 THEN 3 ELSIF m=128 THEN 5 ELSE 6 ENDIF,
+          lo:uint8=IF m=8 THEN 1 ELSIF m=128 THEN 4 ELSE 10 ENDIF,N=u32div(x`n,m) IN
+        observed(chi_tail(k,cat_chi(run_bins(x,m,lo,k,0,N,empty_bins),run_probs(m),N,k+1,fl(0)))) ENDIF
+
+  % Read a cyclic binary word starting at pos. Position zero is the MSB.
+  word(x:bitstream,pos:uint32,left:upto(32),acc:uint32): RECURSIVE uint32 =
+    IF left=0 OR x`n=0 THEN acc ELSE word(x,u32rem(u32plus(pos,1),x`n),left-1,
+       u32plus(u32lshift(acc,1),bit(x,pos))) ENDIF MEASURE left
+  pivots:TYPE=ARRAY[below(32)->uint32]
+  insert_row(row:uint32,col:upto(32),basis:pivots): RECURSIVE pivots =
+    IF col=0 THEN basis ELSE LET j=col-1 IN
+      IF u32and(row,u32lshift(1,j))=0 THEN insert_row(row,j,basis)
+      ELSIF basis(j)=0 THEN basis WITH [(j):=row]
+      ELSE insert_row(u32xor(row,basis(j)),j,basis) ENDIF ENDIF MEASURE col
+  rows(x:bitstream,base:uint32,i:upto(32),basis:pivots): RECURSIVE pivots =
+    IF i=32 THEN basis ELSE rows(x,base,i+1,insert_row(word(x,u32plus(base,32*i),32,0),32,basis)) ENDIF MEASURE 32-i
+  rank(b:pivots,i:upto(32),v:upto(32)):RECURSIVE upto(32)=
+    IF i=32 OR v=32 THEN v ELSE rank(b,i+1,IF b(i)=0 THEN v ELSE v+1 ENDIF) ENDIF MEASURE 32-i
+  rank_bins(x:bitstream,N:uint32,i:upto(N),b:bins):RECURSIVE bins=
+    IF i=N THEN b ELSE LET r=rank(rows(x,1024*i,0,LAMBDA(j:below(32)):0),0,0),
+       j:below(3)=IF r=32 THEN 0 ELSIF r=31 THEN 1 ELSE 2 ENDIF IN
+       rank_bins(x,N,i+1,b WITH [(j):=u32plus(b(j),1)]) ENDIF MEASURE N-i
+  rank_test(x:bitstream):observation=
+    LET N=u32div(x`n,1024),p:probs=[: ratio(28878809515,100000000000),ratio(57757619017,100000000000),
+      ratio(13363571468,100000000000),fl(0),fl(0),fl(0),fl(0) :] IN
+    IF N=0 THEN omitted ELSE observed(chi_tail(2,cat_chi(rank_bins(x,N,0,empty_bins),p,N,3,fl(0)))) ENDIF
+  matches(x:bitstream,pat:uint32,m:subrange(1,31),i,stop:uint32,overlap:bool,v:uint32): RECURSIVE uint32 =
+    IF i>=stop OR stop-i<m THEN v ELSE LET hit=word(x,i,m,0)=pat IN
+      matches(x,pat,m,IF hit AND NOT overlap THEN u32plus(i,m) ELSE u32plus(i,1) ENDIF,stop,overlap,
+              IF hit THEN u32plus(v,1) ELSE v ENDIF) ENDIF MEASURE stop-i
+  template_chi(x:bitstream,pat:uint32,m:subrange(1,31),Msize:pos_uint32,i:upto(8),meanval,variance,total:fp): RECURSIVE fp =
+    IF i=8 THEN total ELSE LET v=matches(x,pat,m,u32times(i,Msize),u32times(i+1,Msize),FALSE,0) IN
+      template_chi(x,pat,m,Msize,i+1,meanval,variance,fp_add(total,fp_div(sq(fp_sub(fl(v),meanval)),variance))) ENDIF MEASURE 8-i
+  unbordered(pat:uint32,m:subrange(1,31),j:upto(m)):RECURSIVE bool=
+    IF j=0 OR j=m THEN TRUE ELSE
+      u32rshift(pat,m-j)/=u32and(pat,u32minus(u32lshift(1,j),1)) AND
+        unbordered(pat,m,j+1) ENDIF MEASURE m-j
+  nonoverlapping(x:bitstream,pat:uint32,m:subrange(1,31)):observation =
+    LET Msize=u32div(x`n,8),base=u32lshift(1,m),q=ratio(1,base) IN
+    IF Msize<m OR pat>=base OR NOT unbordered(pat,m,1) THEN omitted ELSE
+      LET meanval=fp_mul(fl(Msize-m+1),q),variance=fp_mul(fl(Msize),fp_sub(q,fp_mul(fl(2*m-1),sq(q)))) IN
+        observed(chi_tail(8,template_chi(x,pat,m,Msize,0,meanval,variance,fl(0)))) ENDIF
+  overlap_bins(x:bitstream,i,N:uint32,b:bins):RECURSIVE bins =
+    IF i>=N THEN b ELSE LET v=matches(x,511,9,u32times(i,1032),u32times(i+1,1032),TRUE,0),
+       j:below(6)=IF v>=5 THEN 5 ELSE v ENDIF IN
+       overlap_bins(x,i+1,N,b WITH [(j):=u32plus(b(j),1)]) ENDIF MEASURE N-i
+  % §2.8.4. Exact overlapping-template probabilities for m=9 and M=1032
+  % (NIST July 2014 correction to the table used before STS 2.1.2).
+  overlapping(x:bitstream):observation =
+    LET N=u32div(x`n,1032),p:probs=[:ratio(364091,1000000),ratio(185659,1000000),
+        ratio(139381,1000000),ratio(100571,1000000),ratio(704323,10000000),ratio(139865,1000000),fl(0):] IN
+      IF N=0 THEN omitted ELSE observed(chi_tail(5,cat_chi(overlap_bins(x,0,N,empty_bins),p,N,6,fl(0)))) ENDIF
+
+  % §3.8 compound-Poisson distribution, with geometric clump size.
+  % n*P(n) = eta * sum(j * 2^(-j) * P(n-j), j=1..n).
+  categories:TYPE=ARRAY[uint8->fp]
+  weightsum(p:categories,n:uint8,j:upto(256),factor,total:fp):RECURSIVE fp=
+    IF j>n THEN total ELSE weightsum(p,n,j+1,fp_div(factor,fl(2)),
+      fp_add(total,fp_mul(fp_mul(fl(j),factor),p(n-j)))) ENDIF MEASURE 256-j
+  clump_distribution(k:pos_uint8,n:pos_uint8,eta:fp,p:categories,mass:fp):RECURSIVE categories=
+    IF n>=k THEN p WITH [(k):=fp_sub(fl(1),mass)] ELSE
+      LET v=fp_mul(fp_div(eta,fl(n)),weightsum(p,n,1,ratio(1,2),fl(0))) IN
+      clump_distribution(k,n+1,eta,p WITH [(n):=v],fp_add(mass,v)) ENDIF MEASURE k-n
+  overlap_hist:TYPE=ARRAY[uint8->uint32]
+  clump_counts(x:bitstream,m:subrange(1,31),width:pos_uint32,k:pos_uint8,i,N:uint32,h:overlap_hist):
+      RECURSIVE overlap_hist=
+    IF i>=N THEN h ELSE LET pat=u32minus(u32lshift(1,m),1),
+        v=matches(x,pat,m,u32times(i,width),u32times(i+1,width),TRUE,0),j:uint8=u32min(k,v) IN
+      clump_counts(x,m,width,k,i+1,N,h WITH [(j):=u32plus(h(j),1)]) ENDIF MEASURE N-i
+  clump_chi(h:overlap_hist,p:categories,N:pos_uint32,k:pos_uint8,i:upto(256),total:fp):RECURSIVE observation=
+    IF i>k THEN observed(chi_tail(k,total)) ELSIF NOT fp_lt(fl(0),p(i)) THEN omitted ELSE
+      clump_chi(h,p,N,k,i+1,fp_add(total,deviation(fl(h(i)),fp_mul(fl(N),p(i))))) ENDIF MEASURE 256-i
+  overlapping_parameters(x:bitstream,m:subrange(1,31),width:pos_uint32,k:pos_uint8):observation=
+    IF width<m OR width>x`n THEN omitted ELSIF width=1032 AND m=9 AND k=5 THEN overlapping(x)
+    ELSE LET N=u32div(x`n,width),eta=ratio(width-m+1,u64lshift(1,m+1)),
+      zero=fp_exp(fp_sub(fl(0),eta)),
+      p=clump_distribution(k,1,eta,LAMBDA(j:uint8):IF j=0 THEN zero ELSE fl(0) ENDIF,zero) IN
+      clump_chi(clump_counts(x,m,width,k,0,N,LAMBDA(j:uint8):0),p,N,k,0,fl(0)) ENDIF
+
+  count_table(n:pos_uint32):TYPE=ARRAY[below(n)->uint32]
+  histogram(x:bitstream,m:upto(30),size:pos_uint32,i:upto(x`n),stop:upto(x`n),t:count_table(size)):
+      RECURSIVE count_table(size)=
+    IF i>=stop THEN t ELSIF stop-i>256 THEN LET mid:upto(x`n)=u32plus(i,u32div(stop-i,2)) IN
+      histogram(x,m,size,mid,stop,histogram(x,m,size,i,mid,t))
+    ELSE LET j=word(x,i,m,0) IN
+      histogram(x,m,size,i+1,stop,IF j<size THEN t WITH [(j):=u32plus(t(j),1)] ELSE t ENDIF) ENDIF MEASURE stop-i
+  moments(n,size:pos_uint32,t:count_table(size),i:upto(size),ent:bool,acc:fp): RECURSIVE fp =
+    IF i=size THEN acc ELSE LET v=t(i),p=ratio(v,n),
+      term=IF v=0 THEN fl(0) ELSIF ent THEN fp_mul(p,fp_log(p)) ELSE sq(fl(v)) ENDIF IN
+      moments(n,size,t,i+1,ent,fp_add(acc,term)) ENDIF MEASURE size-i
+  word_stat(x:{s:bitstream | s`n>0},m:upto(30),ent:bool):fp =
+    LET size:pos_uint32=u32lshift(1,m),t=histogram(x,m,size,0,x`n,LAMBDA(j:below(size)):0),
+        v=moments(x`n,size,t,0,ent,fl(0)) IN
+      IF ent THEN v ELSE fp_sub(fp_mul(ratio(size,x`n),v),fl(x`n)) ENDIF
+  serial(x:bitstream,m:subrange(2,30),second:bool):observation =
+    IF x`n=0 THEN omitted ELSE
+      LET a=word_stat(x,m,FALSE),b=word_stat(x,m-1,FALSE),c=word_stat(x,m-2,FALSE),
+          diff=IF second THEN fp_sub(fp_sub(a,b),fp_sub(b,c)) ELSE fp_sub(a,b) ENDIF,
+          df=u32lshift(1,IF second THEN m-2 ELSE m-1 ENDIF) IN
+        observed(chi_tail(df,fp_max(fl(0),diff))) ENDIF
+  approximate_entropy(x:bitstream,m:subrange(1,29)):observation =
+    IF x`n=0 THEN omitted ELSE LET diff=fp_sub(word_stat(x,m,TRUE),word_stat(x,m+1,TRUE)),
+       chi=fp_mul(fl(2*x`n),fp_sub(fp_log(fl(2)),diff)) IN
+      observed(chi_tail(u32lshift(1,m),fp_max(fl(0),chi))) ENDIF
+  block_size_one: THEOREM FORALL(x:{s:bitstream | s`n>0}):block_chi(x,1,0,x`n,fl(0))=fl(x`n)
+END sts_counts

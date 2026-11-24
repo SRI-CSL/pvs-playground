@@ -1,0 +1,21 @@
+% FIPS 197-upd1, Algorithms 1 and 3. The proof uses the round inverse
+% lemmas for the same executable Rijndael steps at every AES key size.
+aes_fips197_proofs: THEORY
+BEGIN
+  IMPORTING aes_fips197, Rijndael_proofs
+
+  round_count: TYPE = {n: upto(14) | n > 0}
+  rounds_cancel: LEMMA
+    FORALL (nr: round_count): FORALL (r: {j: upto(nr) | j > 0}, a: block, w: expanded_key):
+      decrypt_block(encrypt_rounds(a, w, nr, r), w, nr) = decrypt_rounds(a, w, r - 1)
+
+  block_inverse: LEMMA FORALL (a: block, w: expanded_key, nr: round_count):
+    decrypt_block(encrypt_block(a, w, nr), w, nr) = a
+
+  aes128_inverse: THEOREM FORALL (a, k: block):
+    aes128_decrypt(aes128_encrypt(a, k), k) = a
+  aes192_inverse: THEOREM FORALL (a: block, k: key192):
+    aes192_decrypt(aes192_encrypt(a, k), k) = a
+  aes256_inverse: THEOREM FORALL (a: block, k: key256):
+    aes256_decrypt(aes256_encrypt(a, k), k) = a
+END aes_fips197_proofs

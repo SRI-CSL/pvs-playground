@@ -1,0 +1,54 @@
+(|mldsa_prehash|
+ (|mu_prehash_TCC1| 0
+  (|mu_prehash_TCC1-1| NIL 4004536317
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "ctx!1") (GRIND :DEFS NIL :REWRITES ("exp2")))
+    NIL)
+   ((|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|mu_prehash| SUBTYPE "mldsa_prehash.ctx`length" "uint8" (9 59 9 69))))
+ (|hash_sign_TCC1| 0
+  (|hash_sign_TCC1-1| NIL 4004536317 ("" (THEN (SKOSIMP*) (ASSERT)) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|hash_sign| SUBTYPE "mldsa_prehash.ctx"
+    "{b: bytestrings.bytestring | reals.<=(b`length, 255)}" (15 53 15 56))))
+ (|oversized_context| 0
+  (|oversized_context-1| NIL 4004536424
+   ("" (THEN (SKOSIMP*) (EXPAND "hash_verify") (ASSERT)) NIL NIL)
+   ((|hash_verify| CONST-DECL
+     "[[profile, bytestring, bytestring, hash_id, bytestring, bytestring, uint8, below(8)] -> bool]"
+     |mldsa_prehash| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,51 @@
+% FIPS 202 section 3. Keccak-p on 25, 50, 100, 200, 400, 800 and 1600 bits.
+% Each state has 25 lanes in x+5*y order. The low 2^l bits encode one lane.
+keccak_p: THEORY
+BEGIN
+  IMPORTING keccak
+  lane_log: TYPE = upto(6)
+  lane_width(l:lane_log):subrange(1,64) =
+    COND l=0 -> 1,l=1 -> 2,l=2 -> 4,l=3 -> 8,l=4 -> 16,l=5 -> 32,ELSE -> 64 ENDCOND
+  lane_mask(l:lane_log):uint64 =
+    LET w=lane_width(l) IN IF w=64 THEN 0xffffffffffffffff ELSE u64minus(u64lshift(1,w),1) ENDIF
+  rotate_lane(l:lane_log,x:uint64,offset:below(64)):uint64 =
+    LET w=lane_width(l),k:below(64)=nrem(offset,w),mask=lane_mask(l),v=u64and(x,mask) IN
+    IF k=0 THEN v ELSE u64and(u64or(u64lshift(v,k),u64rshift(v,w-k)),mask) ENDIF
+  theta_rho_pi(l:lane_log,a:lanes,i:lane_number):uint64 =
+    LET j=pi_source(i),left=column(a,nrem(j+4,5)),right=column(a,nrem(j+1,5)),
+        v=u64xor(a(j),u64xor(left,rotate_lane(l,right,1)))
+    IN rotate_lane(l,v,rho_offset(j))
+  % Evaluate each output lane against the prior state, preserving parallel
+  % assignment in Algorithms 1–4. Step 0 masks unused input bits.
+  apply_stage(l:lane_log,step:below(3),a,b:lanes,i:upto(25)):RECURSIVE lanes =
+    IF i=25 THEN b ELSE
+      LET v=IF step=0 THEN u64and(a(i),lane_mask(l)) ELSIF step=1 THEN theta_rho_pi(l,a,i)
+            ELSE chi_lane(a,i) ENDIF
+      IN apply_stage(l,step,a,b WITH [(i):=v],i+1) ENDIF MEASURE 25-i
+  % Algorithm 5 writes bit 0 at the left of the register in its diagrams.
+  lfsr_step(r:uint8):uint8 = IF u8and(r,128)=0 THEN u8lshift(r,1) ELSE u8xor(u8lshift(r,1),0x71) ENDIF
+  lfsr(r:uint8,n:below(255)):RECURSIVE uint8 =
+    IF n=0 THEN r ELSE lfsr(lfsr_step(r),n-1) ENDIF MEASURE n
+  build_rc(l:lane_log,r:uint8,j:upto(7),acc:uint64):RECURSIVE uint64 =
+    IF j>l THEN acc ELSE
+      LET z:below(64)=lane_width(j)-1,v=IF u8and(r,1)=0 THEN acc ELSE u64or(acc,u64lshift(1,z)) ENDIF
+      IN build_rc(l,lfsr_step(r),j+1,v) ENDIF MEASURE 7-j
+  rc_word(l:lane_log,ir:below(255)):uint64 = build_rc(l,lfsr(1,nrem(7*ir,255)),0,0)
+  round_p(l:lane_log,a:lanes,ir:below(255)):lanes =
+    LET b=apply_stage(l,1,a,a,0),c=apply_stage(l,2,b,b,0)
+    IN c WITH [(0):=u64xor(c(0),rc_word(l,ir))]
+  % Negative round indices in Algorithm 7 are represented modulo 255, the
+  % period of rc. A cursor supports successive chunks of any total round count.
+  cursor: TYPE = [# shape:lane_log, a:lanes, ir:below(255) #]
+  begin_p(l:lane_log,a:lanes,total_mod255:below(255)):cursor =
+    (# shape:=l,a:=apply_stage(l,0,a,a,0),ir:=nrem(267+2*l-total_mod255,255) #)
+  advance_p(c:cursor,nr:uint32):RECURSIVE cursor =
+    IF nr=0 THEN c ELSE advance_p(c WITH [`a:=round_p(c`shape,c`a,c`ir),`ir:=nrem(c`ir+1,255)],nr-1)
+    ENDIF MEASURE nr
+  permute_p(l:lane_log,nr:{n:uint32 | n>0},a:lanes):lanes =
+    advance_p(begin_p(l,a,nrem(nr,255)),nr)`a
+  permute_f(l:lane_log,a:lanes):lanes=permute_p(l,12+2*l,a)
+  zero_rounds_preserve_cursor: LEMMA FORALL(c:cursor):advance_p(c,0)=c
+  % Both parameter descriptions of the canonical Keccak-f round count start at round zero.
+  full_rounds_start_at_zero: LEMMA FORALL(l:lane_log,a:lanes): begin_p(l,a,12+2*l)`ir=0
+END keccak_p

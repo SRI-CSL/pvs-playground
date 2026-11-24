@@ -1,0 +1,31 @@
+% Proof-level end-to-end claim for SP 800-56A §6.1.1.2, Full Unified.
+% The scalar pairs are valid and the received public points are exactly those
+% derived by their holders. This leaves the group law/refinement proof explicit.
+dh_agreement_claims: THEORY
+BEGIN
+  IMPORTING dh_schemes,ff_groups
+  full_unified_agreement: THEOREM
+    FORALL (c:curve, us,ue,vs,ve:{k:scalar(c) | valid_scalar(c,k)}):
+      LET us_pub=public_key(c,us),ue_pub=public_key(c,ue),
+          vs_pub=public_key(c,vs),ve_pub=public_key(c,ve),
+          u=ec_participant(full_unified,TRUE,c,us,ue,vs_pub,ve_pub),
+          v=ec_participant(full_unified,FALSE,c,vs,ve,us_pub,ue_pub) IN
+      u`ok AND v`ok AND strcmp(u`z,v`z)=0
+  % In MQV, a zero combined scalar can produce the shared identity. In that
+  % case both holders must return the same failed form.
+  ec_scheme_agreement: THEOREM
+    FORALL (s:scheme,c:curve,us,ue,vs,ve:{k:scalar(c) | valid_scalar(c,k)}):
+      LET u=ec_participant(s,TRUE,c,us,ue,public_key(c,vs),public_key(c,ve)),
+          v=ec_participant(s,FALSE,c,vs,ve,public_key(c,us),public_key(c,ue)) IN
+        u=v AND (s<full_mqv IMPLIES u`ok)
+
+  % The fixed safe-prime groups provide explicit domains for the DH claim.
+  % Each received value is the public key of the other participant.
+  ffc_dh_agreement: THEOREM
+    FORALL (id:group_id,s:{t:scheme | t<full_mqv},
+            us,ue,vs,ve:{k:integer_of(named(id)) | exponent_ok(named(id),k)}):
+      LET d=named(id),up=mont_power(d`g,us,d`p),uq=mont_power(d`g,ue,d`p),
+          vp=mont_power(d`g,vs,d`p),vq=mont_power(d`g,ve,d`p),
+          u=ff_participant(s,TRUE,d,us,ue,vp,vq),
+          v=ff_participant(s,FALSE,d,vs,ve,up,uq) IN u`ok AND u=v
+END dh_agreement_claims

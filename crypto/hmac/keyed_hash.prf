@@ -1,0 +1,579 @@
+(|keyed_hash|
+ (|hash_bytes_TCC1| 0
+  (|hash_bytes_TCC1-1| NIL 4004534760 ("" (GRIND) NIL)
+   ((|h_sha3_384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|hash_bytes| DISJOINTNESS
+    "COND keyed_hash.h = keyed_hash.h_sha1 -> 20, keyed_hash.h = keyed_hash.h_sha224 -> 28, keyed_hash.h = keyed_hash.h_sha256 -> 32, keyed_hash.h = keyed_hash.h_sha384 -> 48, keyed_hash.h = keyed_hash.h_sha512 -> 64, keyed_hash.h = keyed_hash.h_sha512_224 -> 28, keyed_hash.h = keyed_hash.h_sha512_256 -> 32, keyed_hash.h = keyed_hash.h_sha3_224 -> 28, keyed_hash.h = keyed_hash.h_sha3_256 -> 32, keyed_hash.h = keyed_hash.h_sha3_384 -> 48, ELSE -> 64 ENDCOND"
+    "NIL" (24 4 36 11))))
+ (|block_bytes_TCC1| 0
+  (|block_bytes_TCC1-1| NIL 4004534760 ("" (GRIND) NIL)
+   ((|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|block_bytes| DISJOINTNESS
+    "COND keyed_hash.h = keyed_hash.h_sha1 -> 64, keyed_hash.h = keyed_hash.h_sha224 -> 64, keyed_hash.h = keyed_hash.h_sha256 -> 64, keyed_hash.h = keyed_hash.h_sha384 -> 128, keyed_hash.h = keyed_hash.h_sha512 -> 128, keyed_hash.h = keyed_hash.h_sha512_224 -> 128, keyed_hash.h = keyed_hash.h_sha512_256 -> 128, keyed_hash.h = keyed_hash.h_sha3_224 -> 144, keyed_hash.h = keyed_hash.h_sha3_256 -> 136, keyed_hash.h = keyed_hash.h_sha3_384 -> 104, ELSE -> 72 ENDCOND"
+    "NIL" (39 4 51 11))))
+ (|hash_message_TCC1| 0
+  (|hash_message_TCC1-1| NIL 4004534711
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "hash_bytes(h!1)")
+     (GRIND :EXCLUDE ("hash_bytes")))
+    NIL)
+   ((|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK
+   (|hash_message| SUBTYPE "keyed_hash.hash_bytes(keyed_hash.h)" "index"
+    (53 53 53 66))))
+ (|hash_message_TCC2| 0
+  (|hash_message_TCC2-1| NIL 4004534711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "hash_bytes")
+     (GRIND :EXCLUDE
+      ("hash_message" "sha1" "sha224" "sha256" "sha384" "sha512" "sha512_224"
+       "sha512_256" "sha3_224" "sha3_256" "sha3_384" "sha3_512")))
+    NIL)
+   ((|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL))
+   SHOSTAK
+   (|hash_message| SUBTYPE "secure_hash.sha1(keyed_hash.m)"
+    "octets_of(keyed_hash.hash_bytes(keyed_hash.h))" (55 20 55 27))))
+ (|hash_message_TCC3| 0
+  (|hash_message_TCC3-1| NIL 4004534711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "hash_bytes")
+     (GRIND :EXCLUDE
+      ("hash_message" "sha1" "sha224" "sha256" "sha384" "sha512" "sha512_224"
+       "sha512_256" "sha3_224" "sha3_256" "sha3_384" "sha3_512")))
+    NIL)
+   ((|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL))
+   SHOSTAK
+   (|hash_message| SUBTYPE "secure_hash.sha224(keyed_hash.m)"
+    "octets_of(keyed_hash.hash_bytes(keyed_hash.h))" (56 22 56 31))))
+ (|hash_message_TCC4| 0
+  (|hash_message_TCC4-1| NIL 4004534711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "hash_bytes")
+     (GRIND :EXCLUDE
+      ("hash_message" "sha1" "sha224" "sha256" "sha384" "sha512" "sha512_224"
+       "sha512_256" "sha3_224" "sha3_256" "sha3_384" "sha3_512")))
+    NIL)
+   ((|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL))
+   SHOSTAK
+   (|hash_message| SUBTYPE "secure_hash.sha256(keyed_hash.m)"
+    "octets_of(keyed_hash.hash_bytes(keyed_hash.h))" (57 22 57 31))))
+ (|hash_message_TCC5| 0
+  (|hash_message_TCC5-1| NIL 4004534711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "hash_bytes")
+     (GRIND :EXCLUDE
+      ("hash_message" "sha1" "sha224" "sha256" "sha384" "sha512" "sha512_224"
+       "sha512_256" "sha3_224" "sha3_256" "sha3_384" "sha3_512")))
+    NIL)
+   ((|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL))
+   SHOSTAK
+   (|hash_message| SUBTYPE "secure_hash.sha384(keyed_hash.m)"
+    "octets_of(keyed_hash.hash_bytes(keyed_hash.h))" (58 22 58 31))))
+ (|hash_message_TCC6| 0
+  (|hash_message_TCC6-1| NIL 4004534711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "hash_bytes")
+     (GRIND :EXCLUDE
+      ("hash_message" "sha1" "sha224" "sha256" "sha384" "sha512" "sha512_224"
+       "sha512_256" "sha3_224" "sha3_256" "sha3_384" "sha3_512")))
+    NIL)
+   ((|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL))
+   SHOSTAK
+   (|hash_message| SUBTYPE "secure_hash.sha512(keyed_hash.m)"
+    "octets_of(keyed_hash.hash_bytes(keyed_hash.h))" (59 22 59 31))))
+ (|hash_message_TCC7| 0
+  (|hash_message_TCC7-1| NIL 4004534711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "hash_bytes")
+     (GRIND :EXCLUDE
+      ("hash_message" "sha1" "sha224" "sha256" "sha384" "sha512" "sha512_224"
+       "sha512_256" "sha3_224" "sha3_256" "sha3_384" "sha3_512")))
+    NIL)
+   ((|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL))
+   SHOSTAK
+   (|hash_message| SUBTYPE "secure_hash.sha512_224(keyed_hash.m)"
+    "octets_of(keyed_hash.hash_bytes(keyed_hash.h))" (60 26 60 39))))
+ (|hash_message_TCC8| 0
+  (|hash_message_TCC8-1| NIL 4004534711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "hash_bytes")
+     (GRIND :EXCLUDE
+      ("hash_message" "sha1" "sha224" "sha256" "sha384" "sha512" "sha512_224"
+       "sha512_256" "sha3_224" "sha3_256" "sha3_384" "sha3_512")))
+    NIL)
+   ((|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|h_sha512_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL))
+   SHOSTAK
+   (|hash_message| SUBTYPE "secure_hash.sha512_256(keyed_hash.m)"
+    "octets_of(keyed_hash.hash_bytes(keyed_hash.h))" (61 26 61 39))))
+ (|hash_message_TCC9| 0
+  (|hash_message_TCC9-1| NIL 4004534711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "hash_bytes")
+     (GRIND :EXCLUDE
+      ("hash_message" "sha1" "sha224" "sha256" "sha384" "sha512" "sha512_224"
+       "sha512_256" "sha3_224" "sha3_256" "sha3_384" "sha3_512")))
+    NIL)
+   ((|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|h_sha3_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_256| CONST-DECL "hash_id" |keyed_hash| NIL))
+   SHOSTAK
+   (|hash_message| SUBTYPE "keccak.sha3_224(keyed_hash.m)"
+    "octets_of(keyed_hash.hash_bytes(keyed_hash.h))" (62 24 62 35))))
+ (|hash_message_TCC10| 0
+  (|hash_message_TCC10-1| NIL 4004534711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "hash_bytes")
+     (GRIND :EXCLUDE
+      ("hash_message" "sha1" "sha224" "sha256" "sha384" "sha512" "sha512_224"
+       "sha512_256" "sha3_224" "sha3_256" "sha3_384" "sha3_512")))
+    NIL)
+   ((|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|h_sha3_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_224| CONST-DECL "hash_id" |keyed_hash| NIL))
+   SHOSTAK
+   (|hash_message| SUBTYPE "keccak.sha3_256(keyed_hash.m)"
+    "octets_of(keyed_hash.hash_bytes(keyed_hash.h))" (63 24 63 35))))
+ (|hash_message_TCC11| 0
+  (|hash_message_TCC11-1| NIL 4004534711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "hash_bytes")
+     (GRIND :EXCLUDE
+      ("hash_message" "sha1" "sha224" "sha256" "sha384" "sha512" "sha512_224"
+       "sha512_256" "sha3_224" "sha3_256" "sha3_384" "sha3_512")))
+    NIL)
+   ((|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|h_sha3_384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_256| CONST-DECL "hash_id" |keyed_hash| NIL))
+   SHOSTAK
+   (|hash_message| SUBTYPE "keccak.sha3_384(keyed_hash.m)"
+    "octets_of(keyed_hash.hash_bytes(keyed_hash.h))" (64 24 64 35))))
+ (|hash_message_TCC12| 0
+  (|hash_message_TCC12-1| NIL 4004534711
+   (""
+    (THEN (SKOSIMP*) (EXPAND "hash_bytes")
+     (GRIND :EXCLUDE
+      ("hash_message" "sha1" "sha224" "sha256" "sha384" "sha512" "sha512_224"
+       "sha512_256" "sha3_224" "sha3_256" "sha3_384" "sha3_512")))
+    NIL)
+   ((|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|h_sha3_384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL))
+   SHOSTAK
+   (|hash_message| SUBTYPE "keccak.sha3_512(keyed_hash.m)"
+    "octets_of(keyed_hash.hash_bytes(keyed_hash.h))" (65 14 65 25))))
+ (|hash_message_TCC13| 0
+  (|hash_message_TCC13-1| NIL 4004534761
+   (""
+    (THEN (SKOSIMP*) (EXPAND "hash_bytes")
+     (GRIND :EXCLUDE
+      ("hash_message" "sha1" "sha224" "sha256" "sha384" "sha512" "sha512_224"
+       "sha512_256" "sha3_224" "sha3_256" "sha3_384" "sha3_512")))
+    NIL)
+   ((|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha3_384| CONST-DECL "hash_id" |keyed_hash| NIL))
+   SHOSTAK
+   (|hash_message| DISJOINTNESS
+    "COND keyed_hash.h = keyed_hash.h_sha1 -> secure_hash.sha1(keyed_hash.m), keyed_hash.h = keyed_hash.h_sha224 -> secure_hash.sha224(keyed_hash.m), keyed_hash.h = keyed_hash.h_sha256 -> secure_hash.sha256(keyed_hash.m), keyed_hash.h = keyed_hash.h_sha384 -> secure_hash.sha384(keyed_hash.m), keyed_hash.h = keyed_hash.h_sha512 -> secure_hash.sha512(keyed_hash.m), keyed_hash.h = keyed_hash.h_sha512_224 -> secure_hash.sha512_224(keyed_hash.m), keyed_hash.h = keyed_hash.h_sha512_256 -> secure_hash.sha512_256(keyed_hash.m), keyed_hash.h = keyed_hash.h_sha3_224 -> keccak.sha3_224(keyed_hash.m), keyed_hash.h = keyed_hash.h_sha3_256 -> keccak.sha3_256(keyed_hash.m), keyed_hash.h = keyed_hash.h_sha3_384 -> keccak.sha3_384(keyed_hash.m), ELSE -> keccak.sha3_512(keyed_hash.m) ENDCOND"
+    "NIL" (54 4 66 11))))
+ (|key_block_TCC1| 0
+  (|key_block_TCC1-1| NIL 4004534711
+   ("" (THEN (AUTO-REWRITE "exp2") (GRIND :DEFS NIL)) NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|key_block| SUBTYPE "keyed_hash.block_bytes(keyed_hash.h)" "index"
+    (69 50 69 64))))
+ (|hmac_TCC1| 0
+  (|hmac_TCC1-1| NIL 4004534711
+   ("" (THEN (AUTO-REWRITE "exp2") (GRIND :DEFS NIL)) NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|hmac_input| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|block_bytes| CONST-DECL "[hash_id -> subrange(64, 144)]" |keyed_hash|
+     NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|hmac| SUBTYPE "keyed_hash.m"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(s`length, keyed_hash.pad_key(keyed_hash.block, 0x36)`length), exp2.exp2(28))}"
+    (82 66 82 67))))
+ (|hmac_TCC2| 0
+  (|hmac_TCC2-1| NIL 4004534711
+   ("" (THEN (AUTO-REWRITE "exp2") (GRIND :DEFS NIL)) NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|hmac_input| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|block_bytes| CONST-DECL "[hash_id -> subrange(64, 144)]" |keyed_hash|
+     NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|hmac| SUBTYPE "keyed_hash.inner"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(s`length, keyed_hash.pad_key(keyed_hash.block, 0x5C)`length), exp2.exp2(28))}"
+    (83 57 83 62))))
+ (|hmac_truncated_TCC1| 0
+  (|hmac_truncated_TCC1-1| NIL 4004534711
+   ("" (THEN (AUTO-REWRITE "exp2") (GRIND :DEFS NIL)) NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK (|hmac_truncated| SUBTYPE "keyed_hash.n" "index" (87 14 87 15))))
+ (|hmac_truncated_TCC2| 0
+  (|hmac_truncated_TCC2-1| NIL 4004534711
+   ("" (THEN (AUTO-REWRITE "exp2") (GRIND :DEFS NIL)) NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|hmac_input| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|block_bytes| CONST-DECL "[hash_id -> subrange(64, 144)]" |keyed_hash|
+     NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|hmac_truncated| SUBTYPE "keyed_hash.n"
+    "upto(keyed_hash.hmac(keyed_hash.h, keyed_hash.k, keyed_hash.m)`length)"
+    (87 47 87 48))))
+ (|short_key_padding_TCC1| 0
+  (|short_key_padding_TCC1-1| NIL 4004534711
+   ("" (THEN (AUTO-REWRITE "exp2") (GRIND :DEFS NIL)) NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|block_bytes| CONST-DECL "[hash_id -> subrange(64, 144)]" |keyed_hash|
+     NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|short_key_padding| SUBTYPE "keyed_hash.i"
+    "below(keyed_hash.key_block(keyed_hash.h, keyed_hash.k)`length)"
+    (91 26 91 27))))
+ (|short_key_padding| 0
+  (|short_key_padding-1| NIL 4004534711
+   ("" (THEN (SKOSIMP*) (EXPAND "key_block") (ASSERT)) NIL)
+   ((|key_block| CONST-DECL
+     "[d: [hash_id, bytestring] -> octets_of(block_bytes(d`1))]" |keyed_hash|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK)))
+

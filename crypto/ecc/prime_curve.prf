@@ -1,0 +1,2719 @@
+(|prime_curve|
+ (|inv_TCC1| 0
+  (|inv_TCC1-1| NIL 4004536675
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL))
+   SHOSTAK
+   (|inv| SUBTYPE "prime_curve.one" "words_of(prime_curve.m`len)"
+    (15 64 15 67))))
+ (|inv_TCC2| 0
+  (|inv_TCC2-1| NIL 4004536675
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL))
+   SHOSTAK
+   (|inv| SUBTYPE "prime_curve.one"
+    "words_of(crypto_limbs.sub_words(prime_curve.m, prime_curve.one)`len)"
+    (15 69 15 72))))
+ (|dbl_TCC1| 0
+  (|dbl_TCC1-1| NIL 4004536675
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p" "words_of(prime_curve.u`z`len)"
+    (18 35 18 36))))
+ (|dbl_TCC2| 0
+  (|dbl_TCC2-1| NIL 4004536675
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p" "words_of(prime_curve.u`y`len)"
+    (18 52 18 53))))
+ (|dbl_TCC3| 0
+  (|dbl_TCC3-1| NIL 4004536675
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p" "words_of(prime_curve.u`x`len)"
+    (18 79 18 80))))
+ (|dbl_TCC4| 0
+  (|dbl_TCC4-1| NIL 4004536675
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.delta" "words_of(prime_curve.u`x`len)"
+    (19 43 19 48))))
+ (|dbl_TCC5| 0
+  (|dbl_TCC5-1| NIL 4004536675
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p"
+    "words_of(crypto_limbs.sub_mod(prime_curve.u`x, prime_curve.delta, prime_curve.p)`len)"
+    (19 73 19 74))))
+ (|dbl_TCC6| 0
+  (|dbl_TCC6-1| NIL 4004536675
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p"
+    "words_of(crypto_limbs.mul_mod(crypto_limbs.sub_mod(prime_curve.u`x, prime_curve.delta, prime_curve.p), crypto_limbs.add_mod(prime_curve.u`x, prime_curve.delta, prime_curve.p), prime_curve.p)`len)"
+    (19 76 19 77))))
+ (|dbl_TCC7| 0
+  (|dbl_TCC7-1| NIL 4004536675
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p" "words_of(prime_curve.beta`len)"
+    (20 37 20 38))))
+ (|dbl_TCC8| 0
+  (|dbl_TCC8-1| NIL 4004536675
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p"
+    "words_of(prime_curve.twice(prime_curve.beta, prime_curve.p)`len)"
+    (20 40 20 41))))
+ (|dbl_TCC9| 0
+  (|dbl_TCC9-1| NIL 4004536676
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p" "words_of(prime_curve.alpha`len)"
+    (20 63 20 64))))
+ (|dbl_TCC10| 0
+  (|dbl_TCC10-1| NIL 4004536676
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p" "words_of(prime_curve.four_beta`len)"
+    (20 82 20 83))))
+ (|dbl_TCC11| 0
+  (|dbl_TCC11-1| NIL 4004536676
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.twice(prime_curve.four_beta, prime_curve.p)"
+    "words_of(prime_curve.sq(prime_curve.alpha, prime_curve.p)`len)"
+    (20 66 20 84))))
+ (|dbl_TCC12| 0
+  (|dbl_TCC12-1| NIL 4004536676
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p"
+    "words_of(prime_curve.sq(prime_curve.alpha, prime_curve.p)`len)"
+    (20 85 20 86))))
+ (|dbl_TCC13| 0
+  (|dbl_TCC13-1| NIL 4004536676
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.x" "words_of(prime_curve.four_beta`len)"
+    (21 52 21 53))))
+ (|dbl_TCC14| 0
+  (|dbl_TCC14-1| NIL 4004536676
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p" "words_of(prime_curve.gamma`len)"
+    (21 87 21 88))))
+ (|dbl_TCC15| 0
+  (|dbl_TCC15-1| NIL 4004536676
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p"
+    "words_of(prime_curve.sq(prime_curve.gamma, prime_curve.p)`len)"
+    (21 90 21 91))))
+ (|dbl_TCC16| 0
+  (|dbl_TCC16-1| NIL 4004536676
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p"
+    "words_of(prime_curve.twice(prime_curve.sq(prime_curve.gamma, prime_curve.p), prime_curve.p)`len)"
+    (21 93 21 94))))
+ (|dbl_TCC17| 0
+  (|dbl_TCC17-1| NIL 4004536676
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p"
+    "words_of(prime_curve.twice(prime_curve.twice(prime_curve.sq(prime_curve.gamma, prime_curve.p), prime_curve.p), prime_curve.p)`len)"
+    (21 96 21 97))))
+ (|dbl_TCC18| 0
+  (|dbl_TCC18-1| NIL 4004536676
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE
+    "prime_curve.twice(prime_curve.twice(prime_curve.twice(prime_curve.sq(prime_curve.gamma, prime_curve.p), prime_curve.p), prime_curve.p), prime_curve.p)"
+    "words_of(crypto_limbs.mul_mod(prime_curve.alpha, crypto_limbs.sub_mod(prime_curve.four_beta, prime_curve.x, prime_curve.p), prime_curve.p)`len)"
+    (21 60 21 98))))
+ (|dbl_TCC19| 0
+  (|dbl_TCC19-1| NIL 4004536677
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p"
+    "words_of(crypto_limbs.mul_mod(prime_curve.alpha, crypto_limbs.sub_mod(prime_curve.four_beta, prime_curve.x, prime_curve.p), prime_curve.p)`len)"
+    (21 99 21 100))))
+ (|dbl_TCC20| 0
+  (|dbl_TCC20-1| NIL 4004536677
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.p"
+    "words_of(crypto_limbs.mul_mod(prime_curve.u`y, prime_curve.u`z, prime_curve.p)`len)"
+    (22 37 22 38))))
+ (|dbl_TCC21| 0
+  (|dbl_TCC21-1| NIL 4004536677
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.x" "scalar(prime_curve.c)" (22 49 22 50))))
+ (|dbl_TCC22| 0
+  (|dbl_TCC22-1| NIL 4004536677
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.y" "scalar(prime_curve.c)" (22 54 22 55))))
+ (|dbl_TCC23| 0
+  (|dbl_TCC23-1| NIL 4004536677
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|add_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|twice| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "prime_curve.z" "scalar(prime_curve.c)" (22 59 22 60))))
+ (|add_TCC1| 0
+  (|add_TCC1-1| NIL 4004536677
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.u`z`len)"
+    (26 32 26 33))))
+ (|add_TCC2| 0
+  (|add_TCC2-1| NIL 4004536677
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.v`z`len)"
+    (26 46 26 47))))
+ (|add_TCC3| 0
+  (|add_TCC3-1| NIL 4004536677
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.u`x`len)"
+    (27 28 27 29))))
+ (|add_TCC4| 0
+  (|add_TCC4-1| NIL 4004536677
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.v`x`len)"
+    (27 50 27 51))))
+ (|add_TCC5| 0
+  (|add_TCC5-1| NIL 4004536677
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.u`y`len)"
+    (28 43 28 44))))
+ (|add_TCC6| 0
+  (|add_TCC6-1| NIL 4004536678
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.v`y`len)"
+    (28 80 28 81))))
+ (|add_TCC7| 0
+  (|add_TCC7-1| NIL 4004536678
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.u1" "words_of(prime_curve.u2`len)"
+    (30 27 30 29))))
+ (|add_TCC8| 0
+  (|add_TCC8-1| NIL 4004536678
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.u2`len)"
+    (30 30 30 31))))
+ (|add_TCC9| 0
+  (|add_TCC9-1| NIL 4004536678
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.s1" "words_of(prime_curve.s2`len)"
+    (30 47 30 49))))
+ (|add_TCC10| 0
+  (|add_TCC10-1| NIL 4004536678
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.s2`len)"
+    (30 50 30 51))))
+ (|add_TCC11| 0
+  (|add_TCC11-1| NIL 4004536678
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.h`len)"
+    (30 62 30 63))))
+ (|add_TCC12| 0
+  (|add_TCC12-1| NIL 4004536678
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.u1`len)"
+    (31 30 31 31))))
+ (|add_TCC13| 0
+  (|add_TCC13-1| NIL 4004536678
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.r`len)"
+    (31 57 31 58))))
+ (|add_TCC14| 0
+  (|add_TCC14-1| NIL 4004536678
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.hhh"
+    "words_of(prime_curve.sq(prime_curve.r, prime_curve.p)`len)"
+    (31 60 31 63))))
+ (|add_TCC15| 0
+  (|add_TCC15-1| NIL 4004536679
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p"
+    "words_of(prime_curve.sq(prime_curve.r, prime_curve.p)`len)"
+    (31 64 31 65))))
+ (|add_TCC16| 0
+  (|add_TCC16-1| NIL 4004536679
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.t`len)"
+    (31 75 31 76))))
+ (|add_TCC17| 0
+  (|add_TCC17-1| NIL 4004536679
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.twice(prime_curve.t, prime_curve.p)"
+    "words_of(crypto_limbs.sub_mod(prime_curve.sq(prime_curve.r, prime_curve.p), prime_curve.hhh, prime_curve.p)`len)"
+    (31 67 31 77))))
+ (|add_TCC18| 0
+  (|add_TCC18-1| NIL 4004536679
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p"
+    "words_of(crypto_limbs.sub_mod(prime_curve.sq(prime_curve.r, prime_curve.p), prime_curve.hhh, prime_curve.p)`len)"
+    (31 78 31 79))))
+ (|add_TCC19| 0
+  (|add_TCC19-1| NIL 4004536679
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.x" "words_of(prime_curve.t`len)"
+    (32 44 32 45))))
+ (|add_TCC20| 0
+  (|add_TCC20-1| NIL 4004536679
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p" "words_of(prime_curve.s1`len)"
+    (32 67 32 68))))
+ (|add_TCC21| 0
+  (|add_TCC21-1| NIL 4004536679
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE
+    "crypto_limbs.mul_mod(prime_curve.s1, prime_curve.hhh, prime_curve.p)"
+    "words_of(crypto_limbs.mul_mod(prime_curve.r, crypto_limbs.sub_mod(prime_curve.t, prime_curve.x, prime_curve.p), prime_curve.p)`len)"
+    (32 52 32 69))))
+ (|add_TCC22| 0
+  (|add_TCC22-1| NIL 4004536680
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.p"
+    "words_of(crypto_limbs.mul_mod(prime_curve.r, crypto_limbs.sub_mod(prime_curve.t, prime_curve.x, prime_curve.p), prime_curve.p)`len)"
+    (32 70 32 71))))
+ (|add_TCC23| 0
+  (|add_TCC23-1| NIL 4004536680
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.x" "scalar(prime_curve.c)" (33 57 33 58))))
+ (|add_TCC24| 0
+  (|add_TCC24-1| NIL 4004536680
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.y" "scalar(prime_curve.c)" (33 62 33 63))))
+ (|add_TCC25| 0
+  (|add_TCC25-1| NIL 4004536680
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|sub_mod| CONST-DECL
+     "[d: [a: limbs, words_of(a`len), words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (|sq| CONST-DECL "[d: [a: limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |prime_curve| NIL)
+    (|mul_mod| CONST-DECL
+     "[d: [a: limbs, limbs, words_of(a`len)] -> words_of(d`1`len)]"
+     |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|add| SUBTYPE "prime_curve.z" "scalar(prime_curve.c)" (33 67 33 68))))
+ (|multiply_from_TCC1| 0
+  (|multiply_from_TCC1-1| NIL 4004536680
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|multiply_from| SUBTYPE "(number_fields.-)(prime_curve.remaining, 1)"
+    "{j: integertypes.uint16 | reals.<(j, number_fields.*(32, prime_curve.k`len))}"
+    (39 40 39 51))))
+ (|multiply_from_TCC2| 0
+  (|multiply_from_TCC2-1| NIL 4004536680
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|multiply_from| SUBTYPE "(number_fields.-)(prime_curve.remaining, 1)"
+    "{i: integertypes.uint16 | reals.<=(i, number_fields.*(32, nist_prime_curves.width(prime_curve.c)))}"
+    (40 30 40 41))))
+ (|multiply_from_TCC3| 0
+  (|multiply_from_TCC3-1| NIL 4004536680
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|multiply_from| TERMINATION
+    "prime_curve.multiply_from(prime_curve.c, prime_curve.k, prime_curve.v, prime_curve.a, (number_fields.-)(prime_curve.remaining, 1))"
+    "NIL" (40 8 40 42))))
+ (|multiply_TCC1| 0
+  (|multiply_TCC1-1| NIL 4004536681
+   ("" (THEN (SKOSIMP*) (TYPEPRED "width(c!1)") (GRIND :DEFS ("exp2"))) NIL)
+   ((|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|p192| CONST-DECL "curve" |nist_prime_curves| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK
+   (|multiply| SUBTYPE
+    "number_fields.*(32, nist_prime_curves.width(prime_curve.c))"
+    "{i: integertypes.uint16 | reals.<=(i, number_fields.*(32, nist_prime_curves.width(prime_curve.c)))}"
+    (43 31 43 42))))
+ (|normalize_TCC1| 0
+  (|normalize_TCC1-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|normalize| SUBTYPE "prime_curve.p" "words_of(prime_curve.u`z`len)"
+    (46 32 46 33))))
+ (|normalize_TCC2| 0
+  (|normalize_TCC2-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|normalize| SUBTYPE "prime_curve.p" "words_of(prime_curve.z`len)"
+    (46 44 46 45))))
+ (|normalize_TCC3| 0
+  (|normalize_TCC3-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|normalize| SUBTYPE "prime_curve.p" "words_of(prime_curve.u`x`len)"
+    (47 42 47 43))))
+ (|normalize_TCC4| 0
+  (|normalize_TCC4-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|normalize| SUBTYPE
+    "crypto_limbs.mul_mod(prime_curve.u`x, prime_curve.zz, prime_curve.p)"
+    "scalar(prime_curve.c)" (47 27 47 44))))
+ (|normalize_TCC5| 0
+  (|normalize_TCC5-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|normalize| SUBTYPE "prime_curve.p" "words_of(prime_curve.u`y`len)"
+    (47 76 47 77))))
+ (|normalize_TCC6| 0
+  (|normalize_TCC6-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (|point| TYPE-EQ-DECL NIL |prime_curve| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|normalize| SUBTYPE
+    "crypto_limbs.mul_mod(prime_curve.u`y, crypto_limbs.mul_mod(prime_curve.z, prime_curve.zz, prime_curve.p), prime_curve.p)"
+    "scalar(prime_curve.c)" (47 48 47 78))))
+ (|valid_scalar_TCC1| 0
+  (|valid_scalar_TCC1-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|valid_scalar| SUBTYPE "nist_prime_curves.order(prime_curve.c)"
+    "words_of(prime_curve.d`len)" (50 47 50 55))))
+ (|on_curve_TCC1| 0
+  (|on_curve_TCC1-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|on_curve| SUBTYPE "prime_curve.p" "words_of(prime_curve.q`x`len)"
+    (53 52 53 53))))
+ (|on_curve_TCC2| 0
+  (|on_curve_TCC2-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|on_curve| SUBTYPE "prime_curve.p" "words_of(prime_curve.q`y`len)"
+    (53 76 53 77))))
+ (|on_curve_TCC3| 0
+  (|on_curve_TCC3-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|on_curve| SUBTYPE "prime_curve.p"
+    "words_of(prime_curve.sq(prime_curve.q`x, prime_curve.p)`len)"
+    (54 54 54 55))))
+ (|on_curve_TCC4| 0
+  (|on_curve_TCC4-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|on_curve| SUBTYPE "prime_curve.thrice(prime_curve.q`x, prime_curve.p)"
+    "words_of(crypto_limbs.mul_mod(prime_curve.sq(prime_curve.q`x, prime_curve.p), prime_curve.q`x, prime_curve.p)`len)"
+    (54 57 54 70))))
+ (|on_curve_TCC5| 0
+  (|on_curve_TCC5-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|on_curve| SUBTYPE "prime_curve.p"
+    "words_of(crypto_limbs.mul_mod(prime_curve.sq(prime_curve.q`x, prime_curve.p), prime_curve.q`x, prime_curve.p)`len)"
+    (54 71 54 72))))
+ (|on_curve_TCC6| 0
+  (|on_curve_TCC6-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|on_curve| SUBTYPE "nist_prime_curves.coefficient(prime_curve.c)"
+    "words_of(crypto_limbs.sub_mod(crypto_limbs.mul_mod(prime_curve.sq(prime_curve.q`x, prime_curve.p), prime_curve.q`x, prime_curve.p), prime_curve.thrice(prime_curve.q`x, prime_curve.p), prime_curve.p)`len)"
+    (54 74 54 88))))
+ (|on_curve_TCC7| 0
+  (|on_curve_TCC7-1| NIL 4004536681
+   ("" (THEN (SKOSIMP* :PREDS? T) (ASSERT) (ALL-TYPEPREDS +) (ASSERT)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|curve| TYPE-EQ-DECL NIL |nist_prime_curves| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|width| CONST-DECL "[curve -> limb_count]" |nist_prime_curves| NIL)
+    (|scalar| TYPE-EQ-DECL NIL |nist_prime_curves| NIL))
+   SHOSTAK
+   (|on_curve| SUBTYPE "prime_curve.p"
+    "words_of(crypto_limbs.sub_mod(crypto_limbs.mul_mod(prime_curve.sq(prime_curve.q`x, prime_curve.p), prime_curve.q`x, prime_curve.p), prime_curve.thrice(prime_curve.q`x, prime_curve.p), prime_curve.p)`len)"
+    (54 89 54 90))))
+ (|cdh_TCC1| 0
+  (|cdh_TCC1-1| NIL 4004536681
+   ("" (THEN (SKOSIMP*) (HIDE -) (EXPAND "bits") (GRIND :DEFS ("exp2"))) NIL)
+   ((|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|plus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|plus_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|p384| CONST-DECL "curve" |nist_prime_curves| NIL)
+    (|p256| CONST-DECL "curve" |nist_prime_curves| NIL)
+    (|p224| CONST-DECL "curve" |nist_prime_curves| NIL)
+    (|p192| CONST-DECL "curve" |nist_prime_curves| NIL)
+    (|bits| CONST-DECL "[curve -> uint16]" |nist_prime_curves| NIL))
+   SHOSTAK
+   (|cdh| SUBTYPE "(number_fields.+)(nist_prime_curves.bits(prime_curve.c), 7)"
+    "uint16" (64 67 64 76))))
+ (|cdh_TCC2| 0
+  (|cdh_TCC2-1| NIL 4004536681
+   ("" (THEN (SKOSIMP*) (HIDE -) (EXPAND "bits") (GRIND :DEFS ("exp2"))) NIL)
+   ((|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|plus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|plus_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|u16div| CONST-DECL "[[uint16, {uy16 | uy16 /= 0}] -> uint16]"
+     |integertypes| NIL)
+    (|p384| CONST-DECL "curve" |nist_prime_curves| NIL)
+    (|p256| CONST-DECL "curve" |nist_prime_curves| NIL)
+    (|p224| CONST-DECL "curve" |nist_prime_curves| NIL)
+    (|p192| CONST-DECL "curve" |nist_prime_curves| NIL)
+    (|bits| CONST-DECL "[curve -> uint16]" |nist_prime_curves| NIL))
+   SHOSTAK
+   (|cdh| SUBTYPE
+    "integertypes.u16div((number_fields.+)(nist_prime_curves.bits(prime_curve.c), 7), 8)"
+    "index" (64 60 64 79))))
+ (|identity_left| 0
+  (|identity_left-1| NIL 4004536682
+   (""
+    (THEN (SKOSIMP*) (EXPAND "add") (EXPAND "infinity") (EXPAND "inf")
+     (ASSERT))
+    NIL NIL)
+   ((|add| CONST-DECL "[d: [c: curve, point(c), point(c)] -> point(d`1)]"
+     |prime_curve| NIL)
+    (|inf| CONST-DECL "[c: curve -> point(c)]" |prime_curve| NIL)
+    (|infinity| CONST-DECL "[[c: curve, point(c)] -> bool]" |prime_curve| NIL))
+   SHOSTAK))
+ (|invalid_peer_rejected| 0
+  (|invalid_peer_rejected-1| NIL 4004536682
+   ("" (THEN (SKOSIMP*) (EXPAND "cdh") (ASSERT)) NIL NIL)
+   ((|cdh| CONST-DECL "[[c: curve, scalar(c), affine(c)] -> secret_result]"
+     |prime_curve| NIL))
+   SHOSTAK)))
+

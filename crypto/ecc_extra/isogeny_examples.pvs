@@ -1,0 +1,30 @@
+% RFC 7748 §§4.2, 5.2. The dual composition on the base point is quadrupling.
+isogeny_examples: THEORY
+BEGIN
+  IMPORTING edwards_isogeny
+  ex: field448 = (# len:=14,word:=[: 0xc70cc05e,0x2626a82b,0x8b00938e,0x433b80e1,
+    0x2ab66511,0x12ae1af7,0xa3d3a464,0xea6de324,
+    0x470f1767,0x9e146570,0x22bf36da,0x221d15a6,
+    0x6bed0ded,0x4f1970c6 :] #)
+  ey: field448 = (# len:=14,word:=[: 0xf230fa14,0x9808795b,0x4ed7c8ad,0xfdbd132c,
+    0xe67c39c4,0x3ad3ff1c,0x05a0c2d7,0x87789c1e,
+    0x6ca39840,0x4bea7373,0x56c9c762,0x88762037,
+    0x6eb6bc24,0x693f4671 :] #)
+  mv: field448 = (# len:=14,word:=[: 0x457b5b1a,0x6fd7223d,0x50677af7,0x1312c4b1,
+    0x46430d21,0xb8027e23,0x8df3f6ed,0x60f75dc2,
+    0xf55545d0,0xcbae5d34,0x58326fce,0x6c98ab6e,
+    0x95f5b1f6,0x7d235d12 :] #)
+  quadx: field448 = (# len:=14,word:=[: 0x48ba7f30,0xe2ce42ac,0x8949e120,0x21aee179,
+    0x515dd8ba,0x01b7bdf1,0x70c74cc3,0x93fda4be,
+    0x4e0891c6,0x255a09cf,0x26f929ea,0x1419a172,
+    0x6c0cce2c,0x49dcbc5c :] #)
+  quady: field448 = (# len:=14,word:=[: 0x6de51839,0x32e236f8,0x5d0d4f5b,0xb5d44428,
+    0xa1ca9472,0xc0d8f97e,0x7b8a5bc1,0xc90dc322,
+    0x0457d845,0x9cb7c02f,0xde021b97,0x164b33a5,
+    0xaccde527,0xd49077e4 :] #)
+  ebase: point448 = finite(TRUE,ex,ey)
+  mbase: point448 = finite(TRUE,small(TRUE,5),mv)
+  forward_base: _TEST_ edwards_to_curve448(ebase)=mbase
+  dual_base: _TEST_ curve448_to_edwards(mbase)=finite(TRUE,quadx,quady)
+  kernel_two: _TEST_ curve448_to_edwards(finite(TRUE,zero,zero))=edwards_identity
+END isogeny_examples

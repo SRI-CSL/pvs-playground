@@ -1,0 +1,18 @@
+% SP 800-227 §4.4.1. Protocol-selected HMAC-SHA-256, 256-bit KC_Key,
+% 128-bit tags. Extra data follows the order of provider then recipient.
+kem_confirmation: THEORY
+BEGIN
+  kc: LIBRARY="../crypto_prelude/key_confirmation"
+  IMPORTING kc@pairwise_confirmation
+  kem_tag(key:octets_of(32),p,r:party,encapsulator,second_message:bool,extra_p,extra_r:element):octets_of(16) =
+    LET d=mac_data(p,r,FALSE,second_message,extra_p),
+        role=d WITH [`seq(5):=IF encapsulator THEN 69 ELSE 68 ENDIF],
+        transcript=join_octets(role,extra_r) IN
+      hmac_truncated(h_sha256,key,transcript,16)
+  release_key(key:octets_of(32),p,r:party,e,second:bool,x,y:element,supplied,data:bytestring):
+      [# ok:bool,data:bytestring #] =
+    IF supplied=kem_tag(key,p,r,e,second,x,y) THEN (# ok:=TRUE,data:=data #)
+    ELSE (# ok:=FALSE,data:=fill_octets(0,0) #) ENDIF
+  reject_tag: LEMMA FORALL(k:octets_of(32),p,r:party,e,s:bool,x,y:element,t,d:bytestring):
+    t/=kem_tag(k,p,r,e,s,x,y) IMPLIES NOT release_key(k,p,r,e,s,x,y,t,d)`ok
+END kem_confirmation

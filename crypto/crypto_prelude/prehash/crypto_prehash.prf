@@ -1,0 +1,279 @@
+(|crypto_prehash|
+ (|absorb_oid_TCC1| 0
+  (|absorb_oid_TCC1-1| NIL 4004536114
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|absorb_oid| SUBTYPE "(number_fields.-)(10, crypto_prehash.i)"
+    "naturalnumber" (13 18 13 22))))
+ (|absorb_oid_TCC2| 0
+  (|absorb_oid_TCC2-1| NIL 4004536114
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   "shostak" (|absorb_oid| SUBTYPE "crypto_prehash.id" "uint8" (12 31 12 33))))
+ (|absorb_oid_TCC3| 0
+  (|absorb_oid_TCC3-1| NIL 4004536114
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   "shostak"
+   (|absorb_oid| SUBTYPE "crypto_prehash.i" "below(10)" (12 76 12 77))))
+ (|absorb_oid_TCC4| 0
+  (|absorb_oid_TCC4-1| NIL 4004536114
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|absorb_oid| SUBTYPE "(number_fields.+)(crypto_prehash.i, 1)" "upto(10)"
+    (12 83 12 86))))
+ (|absorb_oid_TCC5| 0
+  (|absorb_oid_TCC5-1| NIL 4004536114
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   "shostak"
+   (|absorb_oid| TERMINATION
+    "crypto_prehash.absorb_oid(keccak.absorb_byte(crypto_prehash.c, crypto_prehash.oid_prefix(crypto_prehash.i)), crypto_prehash.id, (number_fields.+)(crypto_prehash.i, 1))"
+    "NIL" (12 40 12 87))))
+ (|pre_digest_TCC1| 0
+  (|pre_digest_TCC1-1| NIL 4004536114
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE
+    "secure_hash.sha256_bits(crypto_prehash.m, crypto_prehash.tail, crypto_prehash.used)"
+    "{d: bytestrings.bytestring | reals.<=(d`length, 64)}" (16 17 16 41))))
+ (|pre_digest_TCC2| 0
+  (|pre_digest_TCC2-1| NIL 4004536114
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE
+    "secure_hash.sha384_bits(crypto_prehash.m, crypto_prehash.tail, crypto_prehash.used)"
+    "{d: bytestrings.bytestring | reals.<=(d`length, 64)}" (16 51 16 75))))
+ (|pre_digest_TCC3| 0
+  (|pre_digest_TCC3-1| NIL 4004536114
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE
+    "secure_hash.sha512_bits(crypto_prehash.m, crypto_prehash.tail, crypto_prehash.used)"
+    "{d: bytestrings.bytestring | reals.<=(d`length, 64)}" (17 17 17 41))))
+ (|pre_digest_TCC4| 0
+  (|pre_digest_TCC4-1| NIL 4004536114
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE
+    "secure_hash.sha224_bits(crypto_prehash.m, crypto_prehash.tail, crypto_prehash.used)"
+    "{d: bytestrings.bytestring | reals.<=(d`length, 64)}" (17 51 17 75))))
+ (|pre_digest_TCC5| 0
+  (|pre_digest_TCC5-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE
+    "secure_hash.sha512_224_bits(crypto_prehash.m, crypto_prehash.tail, crypto_prehash.used)"
+    "{d: bytestrings.bytestring | reals.<=(d`length, 64)}" (18 17 18 45))))
+ (|pre_digest_TCC6| 0
+  (|pre_digest_TCC6-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE
+    "secure_hash.sha512_256_bits(crypto_prehash.m, crypto_prehash.tail, crypto_prehash.used)"
+    "{d: bytestrings.bytestring | reals.<=(d`length, 64)}" (18 55 18 83))))
+ (|pre_digest_TCC7| 0
+  (|pre_digest_TCC7-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE "crypto_prehash.used" "upto(8)" (19 73 19 77))))
+ (|pre_digest_TCC8| 0
+  (|pre_digest_TCC8-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE
+    "keccak.output(keccak.finish_sha3(keccak.absorb_low(keccak.absorb(keccak.start(144), crypto_prehash.m), crypto_prehash.tail, crypto_prehash.used)), 28)"
+    "{d: bytestrings.bytestring | reals.<=(d`length, 64)}" (19 17 19 83))))
+ (|pre_digest_TCC9| 0
+  (|pre_digest_TCC9-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE "crypto_prehash.used" "upto(8)" (20 73 20 77))))
+ (|pre_digest_TCC10| 0
+  (|pre_digest_TCC10-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE
+    "keccak.output(keccak.finish_sha3(keccak.absorb_low(keccak.absorb(keccak.start(136), crypto_prehash.m), crypto_prehash.tail, crypto_prehash.used)), 32)"
+    "{d: bytestrings.bytestring | reals.<=(d`length, 64)}" (20 17 20 83))))
+ (|pre_digest_TCC11| 0
+  (|pre_digest_TCC11-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE "crypto_prehash.used" "upto(8)" (21 73 21 77))))
+ (|pre_digest_TCC12| 0
+  (|pre_digest_TCC12-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE
+    "keccak.output(keccak.finish_sha3(keccak.absorb_low(keccak.absorb(keccak.start(104), crypto_prehash.m), crypto_prehash.tail, crypto_prehash.used)), 48)"
+    "{d: bytestrings.bytestring | reals.<=(d`length, 64)}" (21 17 21 83))))
+ (|pre_digest_TCC13| 0
+  (|pre_digest_TCC13-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE "crypto_prehash.used" "upto(8)" (22 73 22 77))))
+ (|pre_digest_TCC14| 0
+  (|pre_digest_TCC14-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE
+    "keccak.output(keccak.finish_sha3(keccak.absorb_low(keccak.absorb(keccak.start(72), crypto_prehash.m), crypto_prehash.tail, crypto_prehash.used)), 64)"
+    "{d: bytestrings.bytestring | reals.<=(d`length, 64)}" (22 18 22 83))))
+ (|pre_digest_TCC15| 0
+  (|pre_digest_TCC15-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE "crypto_prehash.used" "upto(8)" (23 75 23 79))))
+ (|pre_digest_TCC16| 0
+  (|pre_digest_TCC16-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE
+    "keccak.output(keccak.finish_shake(keccak.absorb_low(keccak.absorb(keccak.start(168), crypto_prehash.m), crypto_prehash.tail, crypto_prehash.used)), 32)"
+    "{d: bytestrings.bytestring | reals.<=(d`length, 64)}" (23 18 23 85))))
+ (|pre_digest_TCC17| 0
+  (|pre_digest_TCC17-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE "crypto_prehash.used" "upto(8)" (24 74 24 78))))
+ (|pre_digest_TCC18| 0
+  (|pre_digest_TCC18-1| NIL 4004536115
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|pre_digest| SUBTYPE
+    "keccak.output(keccak.finish_shake(keccak.absorb_low(keccak.absorb(keccak.start(136), crypto_prehash.m), crypto_prehash.tail, crypto_prehash.used)), 64)"
+    "{d: bytestrings.bytestring | reals.<=(d`length, 64)}" (24 17 24 84)))))
+

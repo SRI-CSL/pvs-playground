@@ -1,0 +1,116 @@
+% FIPS 205, all twelve parameter sets. Algorithms 11, 13, 17, 20 and 24.
+slh_verify: THEORY
+BEGIN
+  IMPORTING slh_wots
+  profile: TYPE = below(12) % SHAKE (0..5), SHA2 (6..11); 128s,128f,192s,192f,256s,256f
+  shape(p: profile): below(6) = IF p<6 THEN p ELSE p-6 ENDIF
+  node_bytes(p: profile): node_size = IF shape(p)<2 THEN 16 ELSIF shape(p)<4 THEN 24 ELSE 32 ENDIF
+  layers(p: profile): uint8 = IF shape(p)=0 THEN 7 ELSIF shape(p)=1 THEN 22 ELSIF shape(p)=2 THEN 7 ELSIF shape(p)=3 THEN 22 ELSIF shape(p)=4 THEN 8 ELSE 17 ENDIF
+  xmss_height(p: profile): below(10) = IF shape(p)=0 THEN 9 ELSIF shape(p)=1 THEN 3 ELSIF shape(p)=2 THEN 9 ELSIF shape(p)=3 THEN 3 ELSIF shape(p)=4 THEN 8 ELSE 4 ENDIF
+  fors_height(p: profile): below(15) = IF shape(p)=0 THEN 12 ELSIF shape(p)=1 THEN 6 ELSIF shape(p)=2 THEN 14 ELSIF shape(p)=3 THEN 8 ELSIF shape(p)=4 THEN 14 ELSE 9 ENDIF
+  forest_size(p: profile): uint8 = IF shape(p)=0 THEN 14 ELSIF shape(p)=1 THEN 33 ELSIF shape(p)=2 THEN 17 ELSIF shape(p)=3 THEN 33 ELSIF shape(p)=4 THEN 22 ELSE 35 ENDIF
+  digest_length(p: profile): below(50) = IF shape(p)=0 THEN 30 ELSIF shape(p)=1 THEN 34 ELSIF shape(p)=2 THEN 39 ELSIF shape(p)=3 THEN 42 ELSIF shape(p)=4 THEN 47 ELSE 49 ENDIF
+  md_length(p: profile): uint8 = IF shape(p)=0 THEN 21 ELSIF shape(p)=1 THEN 25 ELSIF shape(p)=2 THEN 30 ELSIF shape(p)=3 THEN 33 ELSIF shape(p)=4 THEN 39 ELSE 40 ENDIF
+  tree_bits(p: profile): upto(64) = IF shape(p)=0 THEN 54 ELSIF shape(p)=1 THEN 63 ELSIF shape(p)=2 THEN 54 ELSIF shape(p)=3 THEN 63 ELSIF shape(p)=4 THEN 56 ELSE 64 ENDIF
+  wire_size(p: profile): uint32 = IF shape(p)=0 THEN 7856 ELSIF shape(p)=1 THEN 17088 ELSIF shape(p)=2 THEN 16224 ELSIF shape(p)=3 THEN 35664 ELSIF shape(p)=4 THEN 29792 ELSE 49856 ENDIF
+
+  % The public verifier checks the exact wire length before reading fields.
+  at_byte(x: bytestring, i: uint32): uint8 = IF i<x`length THEN x`seq(i) ELSE 0 ENDIF
+  part_octets(x: bytestring,base: uint32,n: index): ARRAY[below(n) -> uint8] =
+    LAMBDA (i: below(n)): at_byte(x,u32plus(base,i))
+  part(x: bytestring,base: uint32,n: index): octets_of(n) =
+    (# length:=n, seq:=part_octets(x,base,n) #)
+  bits_from(x: bytestring,base: uint32,len: upto(14),v: uint32): RECURSIVE uint32 =
+    IF len=0 THEN v ELSE
+      LET b=at_byte(x,u32div(base,8)), shift: uint8=7-u32rem(base,8),
+          bit=u8and(u8rshift(b,shift),1) IN
+        bits_from(x,u32plus(base,1),len-1,u32or(u32lshift(v,1),bit))
+    ENDIF MEASURE len
+  read_be(x: bytestring,base: uint32,len: upto(8),v: uint64): RECURSIVE uint64 =
+    IF len=0 THEN v ELSE read_be(x,u32plus(base,1),len-1,u64or(u64lshift(v,8),at_byte(x,base))) ENDIF
+    MEASURE len
+  tree_mask(p: profile): uint64 =
+    IF tree_bits(p)=64 THEN 18446744073709551615 ELSE u64minus(u64lshift(1,tree_bits(p)),1) ENDIF
+  leaf_mask(p: profile): uint32 = u32minus(u32lshift(1,xmss_height(p)),1)
+  low_word(x: uint64): uint32 = u64rem(x,4294967296)
+  digest_pos(p: profile,x: bytestring): posn =
+    LET start: uint32=md_length(p), nt: upto(8)=IF tree_bits(p)<=56 THEN 7 ELSE 8 ENDIF,
+        nl: upto(2)=IF xmss_height(p)>8 THEN 2 ELSE 1 ENDIF,
+        tree=u64and(read_be(x,start,nt,0),tree_mask(p)),
+        leaf64=u64and(read_be(x,u32plus(start,nt),nl,0),leaf_mask(p)) IN
+      (# use_sha2:=p>=6, layer:=0, tree:=tree, leaf:=low_word(leaf64) #)
+
+  % Fold the sibling nodes from leaf to root. For a FORS tree, idx includes
+  % the offset of the tree in the forest and pos retains the FORS key address.
+  auth_path(n: node_size,seed: octets_of(n),pos: posn,kind: uint32,sig: bytestring,
+            base,idx: uint32,x: octets_of(n),level: uint8,remaining: upto(14)):
+      RECURSIVE octets_of(n) =
+    IF remaining=0 THEN x ELSE
+      LET sib=part(sig,base,n), parent=u32rshift(idx,1), h=u8plus(level,1),
+          a=addr(pos,kind,h,parent),
+          y=IF u32and(idx,1)=0 THEN hash_pair(n,seed,a,x,sib) ELSE hash_pair(n,seed,a,sib,x) ENDIF IN
+        auth_path(n,seed,pos,kind,sig,u32plus(base,n),parent,y,h,remaining-1)
+    ENDIF MEASURE remaining
+  fors_nodes(p: profile, seed: octets_of(node_bytes(p)),pos: posn, md,sig: bytestring,
+             h: hash_context, base: uint32, i: upto(forest_size(p))): RECURSIVE octets_of(node_bytes(p)) =
+    IF i=forest_size(p) THEN node_output(h,node_bytes(p)) ELSE
+      LET n=node_bytes(p), a=fors_height(p), dig=bits_from(md,u32times(i,a),a,0),
+          idx=u32plus(u32lshift(i,a),dig), x=thash(n,seed,addr(pos,3,0,idx),part(sig,base,n)),
+          y=auth_path(n,seed,pos,3,sig,u32plus(base,n),idx,x,0,a),
+          step=u32times(u8plus(a,1),n) IN
+        fors_nodes(p,seed,pos,md,sig,feed(h,y),u32plus(base,step),i+1)
+    ENDIF MEASURE forest_size(p)-i
+  next_pos(p: profile,pos: posn): posn =
+    (# use_sha2:=pos`use_sha2, layer:=u32plus(pos`layer,1), tree:=u64rshift(pos`tree,xmss_height(p)),
+       leaf:=low_word(u64and(pos`tree,leaf_mask(p))) #)
+  hypertree(p: profile,seed,x: octets_of(node_bytes(p)),pos: posn,sig: bytestring,
+            base: uint32, remaining: uint8): RECURSIVE octets_of(node_bytes(p)) =
+    IF remaining=0 THEN x ELSE
+      LET n=node_bytes(p), ws: index=wots_len(n)*n,
+          leaf=wots_recover(n,seed,x,pos,part(sig,base,ws)),
+          authbase=u32plus(base,ws), height=xmss_height(p),
+          parent=auth_path(n,seed,pos WITH [leaf:=0],2,sig,authbase,pos`leaf,leaf,0,height) IN
+        hypertree(p,seed,parent,next_pos(p,pos),sig,u32plus(authbase,u32times(height,n)),remaining-1)
+    ENDIF MEASURE remaining
+  check_digest(p: profile,seed,root: octets_of(node_bytes(p)),sig,digest: bytestring): bool =
+    LET pos=digest_pos(p,digest), n=node_bytes(p), a=fors_height(p), k=forest_size(p),
+        f=fors_nodes(p,seed,pos,digest,sig,domain(n,seed,addr(pos,4,0,0)),n,0),
+        base=u32times(u32plus(1,u32times(k,u8plus(a,1))),n) IN
+      strcmp(hypertree(p,seed,f,pos,sig,base,layers(p)),root)=0
+  context_t: TYPE = {c: bytestring | c`length<=255}
+  frame_prefix(ctx: context_t): octets_of(2) =
+    (# length:=2, seq:=LAMBDA (j: below(2)): IF j=0 THEN 0 ELSE ctx`length ENDIF #)
+  frame(h: absorbing,ctx: context_t,m: bytestring,external: bool): absorbing =
+    IF external THEN absorb(absorb(absorb(h,frame_prefix(ctx)),ctx),m) ELSE absorb(h,m) ENDIF
+  sha_frame(h: stream,ctx: context_t,m: bytestring,external: bool): stream_for(h`wide) =
+    IF external THEN stream_add(stream_add(stream_add(h,frame_prefix(ctx)),ctx),m)
+    ELSE stream_add(h,m) ENDIF
+  full_digest(h: stream): octets_of(IF h`wide THEN 64 ELSE 32 ENDIF) =
+    stream_digest(h,IF h`wide THEN 64 ELSE 32 ENDIF)
+  mgf_block(h: stream,i: uint32): bytestring =
+    full_digest(stream_add(h,(# length:=4,seq:=LAMBDA (j: below(4)): be_byte32(i,j) #)))
+  message_digest(p: profile,r,seed,root: octets_of(node_bytes(p)),ctx: context_t,
+                 m: bytestring,external: bool): octets_of(digest_length(p)) =
+    IF p<6 THEN
+      LET h=absorb(absorb(absorb(start(136),r),seed),root) IN
+        output(finish_shake(frame(h,ctx,m,external)),digest_length(p))
+    ELSE
+      LET wide=node_bytes(p)>16, h=stream_add(stream_add(stream_start(wide),r),seed),
+          inner=full_digest(sha_frame(stream_add(h,root),ctx,m,external)),
+          mgf=stream_add(h,inner), d0=mgf_block(mgf,0), n=digest_length(p),
+          out=copy_octets(fill_octets(n,0),0,d0,0) IN
+        IF n>d0`length THEN copy_octets(out,d0`length,mgf_block(mgf,1),0) ELSE out ENDIF
+    ENDIF
+  verify_internal(p: profile,pk,sig,m: bytestring): bool =
+    LET n=node_bytes(p), seed=part(pk,0,n), root=part(pk,n,n) IN
+    pk`length=2*n AND sig`length=wire_size(p) AND
+      check_digest(p,seed,root,sig,message_digest(p,part(sig,0,n),seed,root,fill_octets(0,0),m,FALSE))
+  verify(p: profile,pk,sig,ctx,m: bytestring): bool =
+    LET n=node_bytes(p) IN
+    IF pk`length/=2*n OR sig`length/=wire_size(p) OR ctx`length>255 THEN FALSE ELSE
+      LET seed=part(pk,0,n),root=part(pk,n,n) IN
+        check_digest(p,seed,root,sig,message_digest(p,part(sig,0,n),seed,root,ctx,m,TRUE))
+    ENDIF
+  invalid_signature_length: LEMMA FORALL(p: profile,pk,sig,ctx,m: bytestring):
+    sig`length/=wire_size(p) IMPLIES NOT verify(p,pk,sig,ctx,m)
+END slh_verify

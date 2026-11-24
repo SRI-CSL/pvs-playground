@@ -1,0 +1,63 @@
+% SP 800-135r1 section 4.2, TLS 1.0/1.1 PRF (RFC 2246 section 5).
+% MD5 is confined to the historical TLS PRF branch. Its compression and
+% little-endian padding follow RFC 1321 sections 3.1--3.4.
+tls_legacy_prf: THEORY
+BEGIN
+  IMPORTING protocol_kdf
+  md_state: TYPE = [# a,b,c,d:uint32 #]
+  md_iv: md_state = (# a:=0x67452301,b:=0xefcdab89,c:=0x98badcfe,d:=0x10325476 #)
+  md_s: ARRAY[below(16) -> below(32)] = [:7,12,17,22,5,9,14,20,4,11,16,23,6,10,15,21:]
+  md_k: ARRAY[below(64) -> uint32] = [:
+    0xd76aa478,0xe8c7b756,0x242070db,0xc1bdceee,0xf57c0faf,0x4787c62a,0xa8304613,0xfd469501,
+    0x698098d8,0x8b44f7af,0xffff5bb1,0x895cd7be,0x6b901122,0xfd987193,0xa679438e,0x49b40821,
+    0xf61e2562,0xc040b340,0x265e5a51,0xe9b6c7aa,0xd62f105d,0x02441453,0xd8a1e681,0xe7d3fbc8,
+    0x21e1cde6,0xc33707d6,0xf4d50d87,0x455a14ed,0xa9e3e905,0xfcefa3f8,0x676f02d9,0x8d2a4c8a,
+    0xfffa3942,0x8771f681,0x6d9d6122,0xfde5380c,0xa4beea44,0x4bdecfa9,0xf6bb4b60,0xbebfbc70,
+    0x289b7ec6,0xeaa127fa,0xd4ef3085,0x04881d05,0xd9d4d039,0xe6db99e5,0x1fa27cf8,0xc4ac5665,
+    0xf4292244,0x432aff97,0xab9423a7,0xfc93a039,0x655b59c3,0x8f0ccc92,0xffeff47d,0x85845dd1,
+    0x6fa87e4f,0xfe2ce6e0,0xa3014314,0x4e0811a1,0xf7537e82,0xbd3af235,0x2ad7d2bb,0xeb86d391:]
+  md_byte(m:bytestring,pos,stop:uint32):uint8 =
+    IF pos<m`length THEN m`seq(pos) ELSIF pos=m`length THEN 0x80
+    ELSIF pos+8>=stop AND pos<stop THEN be_byte64(8*m`length,stop-pos-1) ELSE 0 ENDIF
+  md_word(m:bytestring,base,stop:uint32,j:below(16)): uint32 =
+    LET i=u32plus(base,4*j) IN
+      load_be32(md_byte(m,u32plus(i,3),stop),md_byte(m,u32plus(i,2),stop),
+                md_byte(m,u32plus(i,1),stop),md_byte(m,i,stop))
+  md_steps(m:bytestring,base,stop:uint32,x:md_state,i:upto(64)): RECURSIVE md_state =
+    IF i=64 THEN x ELSE
+      LET b=x`b,c=x`c,d=x`d,
+          f=IF i<16 THEN u32or(u32and(b,c),u32and(u32not(b),d))
+            ELSIF i<32 THEN u32or(u32and(d,b),u32and(u32not(d),c))
+            ELSIF i<48 THEN u32xor(u32xor(b,c),d) ELSE u32xor(c,u32or(b,u32not(d))) ENDIF,
+          j:below(16)=IF i<16 THEN i ELSIF i<32 THEN u16rem(5*i+1,16)
+                       ELSIF i<48 THEN u16rem(3*i+5,16) ELSE u16rem(7*i,16) ENDIF,
+          shift:below(16)=4*u16div(i,16)+u16rem(i,4),
+          v=u32plus(u32plus(x`a,f),u32plus(md_k(i),md_word(m,base,stop,j)))
+      IN md_steps(m,base,stop,(# a:=d,b:=u32plus(b,rol32(v,md_s(shift))),c:=b,d:=c #),i+1)
+    ENDIF MEASURE 64-i
+  md_blocks(m:bytestring,x:md_state,n:uint32,i:upto(n)): RECURSIVE md_state =
+    IF i=n THEN x ELSE LET y=md_steps(m,u32times(64,i),u32times(64,n),x,0) IN
+      md_blocks(m,(# a:=u32plus(x`a,y`a),b:=u32plus(x`b,y`b),
+                     c:=u32plus(x`c,y`c),d:=u32plus(x`d,y`d) #),n,i+1)
+    ENDIF MEASURE n-i
+  md_bytes(x:md_state): ARRAY[below(16) -> uint8] = LAMBDA (j:below(16)):
+    be_byte32(IF j<4 THEN x`a ELSIF j<8 THEN x`b ELSIF j<12 THEN x`c ELSE x`d ENDIF,
+              3-u8rem(j,4))
+  md(m:bytestring): octets_of(16) =
+    (# length:=16,seq:=md_bytes(md_blocks(m,md_iv,padded_blocks(m,FALSE),0)) #)
+  md_key(k:bytestring): octets_of(64) =
+    LET s=IF k`length>64 THEN md(k) ELSE k ENDIF IN copy_octets(fill_octets(64,0),0,s,0)
+  md_mac(k:bytestring,m:prf_data): octets_of(16) =
+    LET b=md_key(k) IN md(join_octets(pad_key(b,0x5c),md(join_octets(pad_key(b,0x36),m))))
+  md_prf(k:bytestring): keyed_function(16) = LAMBDA (s:prf_data): md_mac(k,s)
+  right_half(k:field,n:upto(k`length)): octets_of(n) =
+    (# length:=n,seq:=LAMBDA(i:below(n)): k`seq(k`length-n+i) #)
+  xor_stream(a:bytestring,b:octets_of(a`length)): octets_of(a`length) =
+    (# length:=a`length,seq:=LAMBDA(i:below(a`length)):u8xor(a`seq(i),b`seq(i)) #)
+  tls10(secret,label,seed:field,n:index): octets_of(n) =
+    LET half:upto(secret`length)=u32div(secret`length+1,2),
+        k1=first_octets(secret,half),k2=right_half(secret,half),s=join_octets(label,seed),
+        x=iterate(16,md_prf(k1),pipeline_mode,0,s,fill_octets(0,0),fill_octets(n,0),0),
+        y=iterate(hash_bytes(h_sha1),bind_hmac(h_sha1,k2),pipeline_mode,0,s,fill_octets(0,0),fill_octets(n,0),0)
+    IN xor_stream(x,y)
+END tls_legacy_prf

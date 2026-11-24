@@ -1,0 +1,1067 @@
+(|mldsa_sign|
+ (|unpack_secret_TCC1| 0
+  (|unpack_secret_TCC1-1| NIL 4004535831
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|unpack_secret| SUBTYPE "mldsa_sign.l" "upto(8)" (8 29 8 30))))
+ (|unpack_secret_TCC2| 0
+  (|unpack_secret_TCC2-1| NIL 4004535831
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|unpack_secret| SUBTYPE "mldsa_sign.d" "bits" (8 31 8 32))))
+ (|unpack_secret_TCC3| 0
+  (|unpack_secret_TCC3-1| NIL 4004535831
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|unpack_secret| SUBTYPE "mldsa_ring.eta(mldsa_sign.p)" "coeff"
+    (8 33 8 39))))
+ (|unpack_secret_TCC4| 0
+  (|unpack_secret_TCC4-1| NIL 4004535831
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|unpack_secret| SUBTYPE
+    "(number_fields.+)(128, number_fields.*(number_fields.*(32, mldsa_sign.l), mldsa_sign.d))"
+    "upto(6000)" (9 25 9 35))))
+ (|unpack_secret_TCC5| 0
+  (|unpack_secret_TCC5-1| NIL 4004535831
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|unpack_secret| SUBTYPE "mldsa_sign.k" "upto(8)" (9 36 9 37))))
+ (|unpack_secret_TCC6| 0
+  (|unpack_secret_TCC6-1| NIL 4004535831
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|unpack_secret| SUBTYPE
+    "(number_fields.+)(128, number_fields.*(number_fields.*(32, ((number_fields.+)(mldsa_sign.l, mldsa_sign.k))), mldsa_sign.d))"
+    "upto(6000)" (10 25 10 39))))
+ (|masks_TCC1| 0
+  (|masks_TCC1-1| NIL 4004535831
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|masks| SUBTYPE "(number_fields.-)(8, mldsa_sign.i)" "naturalnumber"
+    (16 18 16 21))))
+ (|masks_TCC2| 0
+  (|masks_TCC2-1| NIL 4004535831
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|masks| SUBTYPE "mldsa_sign.i" "below(8)" (15 33 15 34))))
+ (|masks_TCC3| 0
+  (|masks_TCC3-1| NIL 4004535831
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|masks| SUBTYPE "(number_fields.+)(mldsa_sign.base, mldsa_sign.i)" "uint16"
+    (15 56 15 62))))
+ (|masks_TCC4| 0
+  (|masks_TCC4-1| NIL 4004535832
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|masks| SUBTYPE "(number_fields.+)(mldsa_sign.i, 1)" "upto(8)"
+    (15 65 15 68))))
+ (|masks_TCC5| 0
+  (|masks_TCC5-1| NIL 4004535832
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|masks| TERMINATION
+    "mldsa_sign.masks(mldsa_sign.p, mldsa_sign.seed, mldsa_sign.base, mldsa_sign.v WITH [(mldsa_sign.i) := mldsa_encoding.sample_mask(mldsa_sign.p, mldsa_sign.seed, (number_fields.+)(mldsa_sign.base, mldsa_sign.i))], (number_fields.+)(mldsa_sign.i, 1))"
+    "NIL" (15 6 15 69))))
+ (|commit_rows_TCC1| 0
+  (|commit_rows_TCC1-1| NIL 4004535832
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|commit_rows| SUBTYPE "(number_fields.-)(8, mldsa_sign.i)" "naturalnumber"
+    (25 26 25 29))))
+ (|commit_rows_TCC2| 0
+  (|commit_rows_TCC2-1| NIL 4004535832
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|commit_rows| SUBTYPE "mldsa_sign.i" "below(8)" (24 40 24 41))))
+ (|commit_rows_TCC3| 0
+  (|commit_rows_TCC3-1| NIL 4004535832
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|commit_rows| SUBTYPE "mldsa_ring.wbits(mldsa_sign.p)" "bits"
+    (24 58 24 66))))
+ (|commit_rows_TCC4| 0
+  (|commit_rows_TCC4-1| NIL 4004535832
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|commit_rows| SUBTYPE
+    "number_fields.*(number_fields.*(32, mldsa_ring.wbits(mldsa_sign.p)), mldsa_sign.i)"
+    "offset" (24 71 24 84))))
+ (|commit_rows_TCC5| 0
+  (|commit_rows_TCC5-1| NIL 4004535832
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|commit_rows| SUBTYPE "(number_fields.+)(mldsa_sign.i, 1)" "upto(8)"
+    (24 88 24 91))))
+ (|commit_rows_TCC6| 0
+  (|commit_rows_TCC6-1| NIL 4004535832
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|commit_rows| TERMINATION
+    "mldsa_sign.commit_rows(mldsa_sign.p, mldsa_sign.rho, mldsa_sign.yhat, mldsa_sign.w WITH [(mldsa_sign.i) := mldsa_sign.wi], mldsa_encoding.encode(mldsa_sign.hi, mldsa_ring.wbits(mldsa_sign.p), 0, mldsa_sign.b, number_fields.*(number_fields.*(32, mldsa_ring.wbits(mldsa_sign.p)), mldsa_sign.i), 0), (number_fields.+)(mldsa_sign.i, 1))"
+    "NIL" (24 8 24 92))))
+ (|commit_rows_TCC7| 0
+  (|commit_rows_TCC7-1| NIL 4004535832
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|commit_rows| SUBTYPE "mldsa_sign.i" "below(8)" (21 22 21 23))))
+ (|z_vector_TCC1| 0
+  (|z_vector_TCC1-1| NIL 4004535832
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|z_vector| SUBTYPE "(number_fields.-)(8, mldsa_sign.i)" "naturalnumber"
+    (30 38 30 41))))
+ (|z_vector_TCC2| 0
+  (|z_vector_TCC2-1| NIL 4004535832
+   ("" (SKOSIMP*)
+    (("" (HIDE-ALL-BUT (+))
+      (("" (CASE "p!1=0 OR p!1=1 OR p!1=2")
+        (("1"
+          (GRIND :DEFS NIL :REWRITES
+           ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+            "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau"
+            "exp2"))
+          NIL NIL)
+         ("2"
+          (GRIND :DEFS NIL :REWRITES
+           ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+            "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau"
+            "exp2"))
+          NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|cols| CONST-DECL "subrange(4, 7)" |mldsa_ring| NIL)
+    (|gamma1| CONST-DECL "uint32" |mldsa_ring| NIL)
+    (|tau| CONST-DECL "subrange(39, 60)" |mldsa_ring| NIL)
+    (|eta| CONST-DECL "subrange(2, 4)" |mldsa_ring| NIL)
+    (|beta| CONST-DECL "uint16" |mldsa_ring| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|profile| TYPE-EQ-DECL NIL |mldsa_ring| NIL))
+   SHOSTAK
+   (|z_vector| SUBTYPE
+    "(number_fields.-)(mldsa_ring.gamma1(mldsa_sign.p), mldsa_ring.beta(mldsa_sign.p))"
+    "uint32" (29 19 29 36))))
+ (|z_vector_TCC3| 0
+  (|z_vector_TCC3-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|z_vector| SUBTYPE "mldsa_sign.i" "below(8)" (29 70 29 71))))
+ (|z_vector_TCC4| 0
+  (|z_vector_TCC4-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|z_vector| SUBTYPE "(number_fields.+)(mldsa_sign.i, 1)" "upto(8)"
+    (29 82 29 85))))
+ (|z_vector_TCC5| 0
+  (|z_vector_TCC5-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|z_vector| TERMINATION
+    "mldsa_sign.z_vector(mldsa_sign.p, mldsa_sign.y, mldsa_sign.s1, mldsa_sign.v WITH [(mldsa_sign.i) := mldsa_sign.z], mldsa_sign.chat, (number_fields.+)(mldsa_sign.i, 1))"
+    "NIL" (29 45 29 86))))
+ (|z_vector_TCC6| 0
+  (|z_vector_TCC6-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|z_vector| SUBTYPE "mldsa_sign.i" "below(8)" (28 18 28 19))))
+ (|bounded_low_TCC1| 0
+  (|bounded_low_TCC1-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|bounded_low| SUBTYPE "(number_fields.-)(256, mldsa_sign.i)"
+    "naturalnumber" (33 18 33 23))))
+ (|bounded_low_TCC2| 0
+  (|bounded_low_TCC2-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|bounded_low| SUBTYPE "mldsa_sign.i" "below(256)" (32 46 32 47))))
+ (|bounded_low_TCC3| 0
+  (|bounded_low_TCC3-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|bounded_low| SUBTYPE "(number_fields.+)(mldsa_sign.i, 1)" "upto(256)"
+    (32 89 32 92))))
+ (|bounded_low_TCC4| 0
+  (|bounded_low_TCC4-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|bounded_low| TERMINATION
+    "mldsa_sign.bounded_low(mldsa_sign.p, mldsa_sign.r, (number_fields.+)(mldsa_sign.i, 1))"
+    "NIL" (32 73 32 93))))
+ (|hint_indices_TCC1| 0
+  (|hint_indices_TCC1-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|hint_indices| SUBTYPE "(number_fields.+)(mldsa_sign.i, 1)" "upto(256)"
+    (39 64 39 67))))
+ (|hint_indices_TCC2| 0
+  (|hint_indices_TCC2-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|hint_indices| TERMINATION
+    "mldsa_sign.hint_indices(mldsa_sign.p, mldsa_sign.r, mldsa_sign.sum, (number_fields.+)(mldsa_sign.i, 1), mldsa_sign.base, mldsa_sign.n, mldsa_sign.out)"
+    "NIL" (39 43 39 79))))
+ (|hint_indices_TCC3| 0
+  (|hint_indices_TCC3-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|hint_indices| SUBTYPE "(number_fields.+)(mldsa_sign.i, 1)" "upto(256)"
+    (41 27 41 30))))
+ (|hint_indices_TCC4| 0
+  (|hint_indices_TCC4-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|hint_indices| SUBTYPE "(number_fields.+)(mldsa_sign.n, 1)" "upto(80)"
+    (41 36 41 39))))
+ (|hint_indices_TCC5| 0
+  (|hint_indices_TCC5-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|hint_indices| SUBTYPE "(number_fields.+)(mldsa_sign.base, mldsa_sign.n)"
+    "below(mldsa_sign.out`length)" (41 55 41 61))))
+ (|hint_indices_TCC6| 0
+  (|hint_indices_TCC6-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK (|hint_indices| SUBTYPE "mldsa_sign.i" "byte" (41 64 41 65))))
+ (|hint_indices_TCC7| 0
+  (|hint_indices_TCC7-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|hint_indices| TERMINATION
+    "mldsa_sign.hint_indices(mldsa_sign.p, mldsa_sign.r, mldsa_sign.sum, (number_fields.+)(mldsa_sign.i, 1), mldsa_sign.base, (number_fields.+)(mldsa_sign.n, 1), mldsa_sign.out WITH [`seq((number_fields.+)(mldsa_sign.base, mldsa_sign.n)) := mldsa_sign.i])"
+    "NIL" (41 6 41 67))))
+ (|sign_hints_TCC1| 0
+  (|sign_hints_TCC1-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|sign_hints| SUBTYPE "mldsa_sign.i" "below(8)" (46 78 46 79))))
+ (|sign_hints_TCC2| 0
+  (|sign_hints_TCC2-1| NIL 4004535833
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|sign_hints| SUBTYPE
+    "(number_fields.+)((number_fields.+)(mldsa_sign.base, mldsa_ring.omega(mldsa_sign.p)), mldsa_sign.i)"
+    "uint16" (48 70 48 85))))
+ (|sign_hints_TCC3| 0
+  (|sign_hints_TCC3-1| NIL 4004535834
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|sign_hints| SUBTYPE "(number_fields.+)(mldsa_sign.i, 1)" "upto(8)"
+    (50 37 50 40))))
+ (|sign_hints_TCC4| 0
+  (|sign_hints_TCC4-1| NIL 4004535834
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|sign_hints| SUBTYPE "mldsa_sign.endpos" "below(mldsa_sign.h`out`length)"
+    (50 72 50 78))))
+ (|sign_hints_TCC5| 0
+  (|sign_hints_TCC5-1| NIL 4004535834
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|sign_hints| SUBTYPE "mldsa_sign.h`weight" "byte" (50 81 50 89))))
+ (|sign_hints_TCC6| 0
+  (|sign_hints_TCC6-1| NIL 4004535834
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|sign_hints| TERMINATION
+    "mldsa_sign.sign_hints(mldsa_sign.p, mldsa_sign.ws, mldsa_sign.s2, mldsa_sign.t0, mldsa_sign.chat, (number_fields.+)(mldsa_sign.i, 1), mldsa_sign.base, mldsa_sign.h`weight, mldsa_sign.h`out WITH [`seq(mldsa_sign.endpos) := mldsa_sign.h`weight])"
+    "NIL" (50 10 50 91))))
+ (|sign_hints_TCC7| 0
+  (|sign_hints_TCC7-1| NIL 4004535834
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|sign_hints| SUBTYPE "mldsa_sign.i" "below(8)" (46 24 46 25))))
+ (|trial_TCC1| 0
+  (|trial_TCC1-1| NIL 4004535834
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|trial| SUBTYPE
+    "number_fields.*(mldsa_ring.cols(mldsa_sign.p), mldsa_sign.attempt)"
+    "upto(6000)" (56 23 56 38))))
+ (|trial_TCC2| 0
+  (|trial_TCC2-1| NIL 4004535834
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL))
+   SHOSTAK
+   (|trial| SUBTYPE "mldsa_ring.cols(mldsa_sign.p)" "upto(8)" (57 54 57 61))))
+ (|trial_TCC3| 0
+  (|trial_TCC3-1| NIL 4004535834
+   ("" (SKOSIMP*)
+    (("" (HIDE-ALL-BUT (+))
+      (("" (CASE "p!1=0 OR p!1=1 OR p!1=2")
+        (("1"
+          (GRIND :DEFS NIL :REWRITES
+           ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+            "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau"
+            "exp2"))
+          NIL NIL)
+         ("2"
+          (GRIND :DEFS NIL :REWRITES
+           ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+            "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau"
+            "exp2"))
+          NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|wbits| CONST-DECL "subrange(4, 6)" |mldsa_ring| NIL)
+    (|rows| CONST-DECL "subrange(4, 8)" |mldsa_ring| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|profile| TYPE-EQ-DECL NIL |mldsa_ring| NIL))
+   SHOSTAK
+   (|trial| SUBTYPE
+    "number_fields.*(number_fields.*(32, mldsa_ring.wbits(mldsa_sign.p)), mldsa_ring.rows(mldsa_sign.p))"
+    "index" (58 34 58 53))))
+ (|trial_TCC4| 0
+  (|trial_TCC4-1| NIL 4004535835
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK
+   (|trial| SUBTYPE "mldsa_ring.cbytes(mldsa_sign.p)" "index" (60 72 60 81))))
+ (|trial_TCC5| 0
+  (|trial_TCC5-1| NIL 4004535835
+   ("" (SKOSIMP*)
+    (("" (HIDE-ALL-BUT (+))
+      (("" (CASE "p!1=0 OR p!1=1 OR p!1=2")
+        (("1"
+          (GRIND :DEFS NIL :REWRITES
+           ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+            "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau"
+            "exp2"))
+          NIL NIL)
+         ("2"
+          (GRIND :DEFS NIL :REWRITES
+           ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+            "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau"
+            "exp2"))
+          NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|cbytes| CONST-DECL "subrange(32, 64)" |mldsa_ring| NIL)
+    (|cols| CONST-DECL "subrange(4, 7)" |mldsa_ring| NIL)
+    (|zbits| CONST-DECL "subrange(18, 20)" |mldsa_ring| NIL)
+    (|omega| CONST-DECL "subrange(55, 80)" |mldsa_ring| NIL)
+    (|rows| CONST-DECL "subrange(4, 8)" |mldsa_ring| NIL)
+    (|sig_size| CONST-DECL "uint16" |mldsa_ring| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|profile| TYPE-EQ-DECL NIL |mldsa_ring| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK
+   (|trial| SUBTYPE "mldsa_ring.sig_size(mldsa_sign.p)" "index"
+    (64 42 64 53))))
+ (|trial_TCC6| 0
+  (|trial_TCC6-1| NIL 4004535836
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK
+   (|trial| SUBTYPE "0"
+    "upto(crypto_buffers.fill_octets(mldsa_ring.sig_size(mldsa_sign.p), 0)`length)"
+    (64 57 64 58))))
+ (|trial_TCC7| 0
+  (|trial_TCC7-1| NIL 4004535836
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK (|trial| SUBTYPE "0" "upto(mldsa_sign.c`length)" (64 61 64 62))))
+ (|trial_TCC8| 0
+  (|trial_TCC8-1| NIL 4004535836
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK
+   (|trial| SUBTYPE "mldsa_ring.zbits(mldsa_sign.p)" "bits" (65 45 65 53))))
+ (|trial_TCC9| 0
+  (|trial_TCC9-1| NIL 4004535836
+   ("" (SKOSIMP*)
+    (("" (HIDE-ALL-BUT (+))
+      (("" (CASE "p!1=0 OR p!1=1 OR p!1=2")
+        (("1"
+          (GRIND :DEFS NIL :REWRITES
+           ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+            "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau"
+            "exp2"))
+          NIL NIL)
+         ("2"
+          (GRIND :DEFS NIL :REWRITES
+           ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+            "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau"
+            "exp2"))
+          NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|gamma1| CONST-DECL "uint32" |mldsa_ring| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|profile| TYPE-EQ-DECL NIL |mldsa_ring| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK
+   (|trial| SUBTYPE "mldsa_ring.gamma1(mldsa_sign.p)" "coeff" (65 54 65 63))))
+ (|trial_TCC10| 0
+  (|trial_TCC10-1| NIL 4004535837
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK
+   (|trial| SUBTYPE "mldsa_ring.cbytes(mldsa_sign.p)" "upto(6000)"
+    (65 68 65 77))))
+ (|trial_TCC11| 0
+  (|trial_TCC11-1| NIL 4004535837
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK
+   (|trial| SUBTYPE
+    "(number_fields.+)(mldsa_ring.cbytes(mldsa_sign.p), number_fields.*(number_fields.*(32, mldsa_ring.zbits(mldsa_sign.p)), mldsa_ring.cols(mldsa_sign.p)))"
+    "offset" (67 32 67 61))))
+ (|trials_TCC1| 0
+  (|trials_TCC1-1| NIL 4004535837
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|trials| SUBTYPE "(number_fields.-)(814, mldsa_sign.attempt)"
+    "naturalnumber" (73 18 73 29))))
+ (|trials_TCC2| 0
+  (|trials_TCC2-1| NIL 4004535837
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|trials| SUBTYPE "(number_fields.+)(mldsa_sign.attempt, 1)" "upto(814)"
+    (72 46 72 55))))
+ (|trials_TCC3| 0
+  (|trials_TCC3-1| NIL 4004535837
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|trials| TERMINATION
+    "mldsa_sign.trials(mldsa_sign.p, mldsa_sign.secret, mldsa_sign.mu, mldsa_sign.seed, (number_fields.+)(mldsa_sign.attempt, 1))"
+    "NIL" (72 22 72 56))))
+ (|trials_TCC4| 0
+  (|trials_TCC4-1| NIL 4004535837
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|trials| SUBTYPE "mldsa_sign.attempt" "below(814)" (71 66 71 73))))
+ (|sign_message_TCC1| 0
+  (|sign_message_TCC1-1| NIL 4004535837
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|sign_message| SUBTYPE "mldsa_sign.ctx`length" "uint8" (82 64 82 74))))
+ (|exhausted_trials| 0
+  (|exhausted_trials-1| NIL 4004536409
+   ("" (THEN (SKOSIMP*) (EXPAND "trials") (ASSERT)) NIL)
+   ((|trials| DEF-DECL "bytes_result" |mldsa_sign| NIL)) "shostak")))
+

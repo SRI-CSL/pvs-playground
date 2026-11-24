@@ -1,0 +1,30 @@
+% SP 800-108 Rev. 1 section 4 and SP 800-56C Rev. 2 section 5.1,
+% with AES-CMAC from SP 800-38B.
+cmac_kdf: THEORY
+BEGIN
+  modes: LIBRARY = "../modes"
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING prf_iteration, modes@aes_modes, crypto_prelude@crypto_block_io
+
+  mac_from(k: mode_key, x: bytestring, at: upto(x`length), chain: octet_block):
+      RECURSIVE octet_block =
+    IF x`length - at <= 16 THEN
+      cmac_finish(k,chain,read_block(x,at),8*(x`length-at),128)
+    ELSE mac_from(k,x,at + 16,cmac_update(k,chain,read_block(x,at)))
+    ENDIF MEASURE x`length - at
+  cmac_bytes(k: mode_key, x: bytestring): octets_of(16) =
+    block_bytes(mac_from(k,x,0,zero_block),16)
+  bind_cmac(k: mode_key): keyed_function(16) =
+    LAMBDA (x: prf_data): cmac_bytes(k,x)
+  kbkdf_cmac(k: mode_key, mode: kdf_mode, r: counter_bytes, fixed: fixed_data,
+             iv: prior_block, n: index): result =
+    derive(16,bind_cmac(k),mode,r,fixed,iv,n)
+
+  % Extraction permits all three AES variants. The derived KDK is 128 bits,
+  % and only AES-128-CMAC may expand it (section 5.1 step 2).
+  two_step_cmac(salt: mode_key, z: {x: bytestring | x`length > 0},
+                mode: kdf_mode, r: counter_bytes, fixed: fixed_data,
+                iv: prior_block, n: index): result =
+    LET kdk = mac_from(salt,z,0,zero_block)
+    IN kbkdf_cmac(mk128(kdk),mode,r,fixed,iv,n)
+END cmac_kdf

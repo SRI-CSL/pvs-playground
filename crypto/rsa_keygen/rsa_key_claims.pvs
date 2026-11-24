@@ -1,0 +1,20 @@
+% FIPS 186-5 A.1.1 and CRT key consistency as mathematical integer claims.
+% Integer decoding here is proof-only. The implementation uses uint32 limbs.
+rsa_key_claims: THEORY
+BEGIN
+  IMPORTING rsa_keygen
+  magnitude(b:bytestring,i:upto(b`length)):RECURSIVE nat =
+    IF i=0 THEN 0 ELSE 256*magnitude(b,i-1)+b`seq(i-1) ENDIF MEASURE i
+  num(b:bytestring):nat=magnitude(b,b`length)
+  multiple_of(x,y:int):bool=EXISTS(t:int): x=y*t
+  least_common(m:posnat,a,b:int):bool=multiple_of(m,a) AND multiple_of(m,b) AND
+    (FORALL(z:posnat):multiple_of(z,a) AND multiple_of(z,b) IMPLIES m<=z)
+  private_key_arithmetic: THEOREM FORALL(profile:strength_profile,e:bytestring,p,q:words_of(prime_width(profile))):
+    LET k=derive_from_factors(profile,e,p,q),pp=num(k`p),qq=num(k`q),ee=num(k`e),dd=num(k`d) IN
+    k`ok IMPLIES (num(k`n)=pp*qq AND pp>1 AND qq>1 AND
+      (EXISTS(lam:posnat):least_common(lam,pp-1,qq-1) AND
+        exp2(32*prime_width(profile))<dd AND dd<lam AND multiple_of(ee*dd-1,lam)) AND
+      num(k`dp)<pp-1 AND multiple_of(dd-num(k`dp),pp-1) AND
+      num(k`dq)<qq-1 AND multiple_of(dd-num(k`dq),qq-1) AND
+      num(k`qinv)<pp AND multiple_of(qq*num(k`qinv)-1,pp))
+END rsa_key_claims

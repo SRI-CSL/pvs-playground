@@ -1,0 +1,17 @@
+% FIPS 186-5 section 7.4. Each invocation uses a fresh stream from an
+% approved RBG at the security strength required for the key pair.
+ed25519_random: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING ed25519, crypto_prelude@crypto_seeds
+
+  keys: TYPE = [# ok: bool, private_seed, verification_key: scalar_bytes #]
+  generate_keys(s: stream_id): keys =
+    LET d = prng_seed32(s, 0) IN
+      IF d`ok THEN (# ok := TRUE, private_seed := d`value, verification_key := public_key(d`value) #)
+      ELSE (# ok := FALSE, private_seed := fill_octets(32, 0), verification_key := fill_octets(32, 0) #)
+      ENDIF
+
+  acquisition_failure: LEMMA FORALL (s: stream_id):
+    NOT prng_seed32(s, 0)`ok IMPLIES NOT generate_keys(s)`ok
+END ed25519_random

@@ -1,0 +1,7 @@
+% Join the leading n bits of x to the remaining bits of y, MSB first.
+crypto_bit_splice: THEORY
+BEGIN
+  IMPORTING crypto_blocks
+  splice(x,y: octet_block,n: upto(128)): octet_block =
+    xor_octets(16)(take_bits(x,n),xor_octets(16)(y,take_bits(y,n)))
+END crypto_bit_splice

@@ -1,0 +1,66 @@
+% SP 800-208 sections 4, 6.1 and 8; RFC 8554 section 6.
+hss_sign: THEORY
+BEGIN
+  IMPORTING hss,lms_sign
+  level_config: TYPE = [# h: height_code,w: width_code #]
+  configs: TYPE = ARRAY[below(8) -> level_config]
+  % Supply a fresh stream at each used index on each public operation.
+  streams: TYPE = ARRAY[below(8) -> stream_id]
+  tree_state: TYPE = [# id: identifier,seed,pk,certificate: bytestring,next: uint32 #]
+  empty_tree: tree_state = (# id:=fill_octets(16,0),seed:=fill_octets(0,0),pk:=fill_octets(0,0),
+                               certificate:=fill_octets(0,0),next:=0 #)
+  forest: TYPE = ARRAY[below(8) -> tree_state]
+  empty_forest: forest = LAMBDA (i: below(8)): empty_tree
+  hierarchy: TYPE = [# s: suite,params: configs,levels: subrange(1,8),trees: forest #]
+  state_result: TYPE = [# ok: bool,state: hierarchy #]
+  % Each new or refreshed child is certified with a distinct parent leaf. A
+  % failed child draw preserves the state. A failed certificate draw burns the
+  % reserved parent leaf and returns the advanced state to the caller.
+  extend(key: hierarchy,child_stream,cert_stream: streams,depth: subrange(1,8)): RECURSIVE state_result =
+    IF depth>=key`levels THEN (# ok:=TRUE,state:=key #) ELSE
+      LET s=key`s,n=digest_len(s),par=key`trees(depth-1),pc=key`params(depth-1),
+          cc=key`params(depth),mat=generate_material(s,child_stream(depth)),a=reserve(pc`h,par`next) IN
+      IF NOT mat`ok OR mat`seed`length/=n OR par`seed`length/=n OR NOT a`ok THEN (# ok:=FALSE,state:=key #)
+      ELSE LET pk=public_key(s,cc`h,cc`w,mat`id,mat`seed),
+               tx=key WITH [`trees(depth-1)`next:=a`following],
+               cert=sign_randomized(s,pc`h,pc`w,par`id,par`seed,a`slot,pk,cert_stream(depth)) IN
+        IF NOT cert`ok THEN (# ok:=FALSE,state:=tx #) ELSE
+          LET child=(# id:=mat`id,seed:=mat`seed,pk:=pk,certificate:=cert`value,next:=0 #)
+          IN extend(tx WITH [`trees(depth):=child],child_stream,cert_stream,depth+1) ENDIF ENDIF ENDIF
+    MEASURE 8-depth
+  keygen_hss(s: suite,cfg: configs,nlevels: subrange(1,8),child_stream,cert_stream: streams): state_result =
+    LET init=(# s:=s,params:=cfg,levels:=nlevels,trees:=empty_forest #),
+        mat=generate_material(s,child_stream(0)),c=cfg(0) IN
+    IF NOT mat`ok OR mat`seed`length/=digest_len(s) THEN (# ok:=FALSE,state:=init #) ELSE
+      LET pk=public_key(s,c`h,c`w,mat`id,mat`seed),
+          top=(# id:=mat`id,seed:=mat`seed,pk:=pk,certificate:=fill_octets(0,0),next:=0 #)
+      IN extend(init WITH [`trees(0):=top],child_stream,cert_stream,1) ENDIF
+  pub_hss(key: hierarchy): bytestring =
+    LET root=key`trees(0)`pk IN IF root`length<=56 THEN join_octets(word(key`levels),root)
+    ELSE fill_octets(0,0) ENDIF
+  % Walk upward only when a descendant has exhausted its allocation.
+  usable_prefix(key: hierarchy,d: upto(8)): RECURSIVE upto(8) =
+    IF d=0 THEN 0 ELSIF key`trees(d-1)`next<leaves(key`params(d-1)`h) THEN d
+    ELSE usable_prefix(key,d-1) ENDIF MEASURE d
+  signed_message: TYPE = [# ok: bool,state: hierarchy,value: bytestring #]
+  no_signature(key: hierarchy): signed_message = (# ok:=FALSE,state:=key,value:=fill_octets(0,0) #)
+  encode_chain(key: hierarchy,i: subrange(1,8),out: {v:bytestring | v`length<=160000},
+               last: bytestring): RECURSIVE bytestring =
+    IF i>=key`levels THEN IF last`length<=20000 THEN join_octets(out,last) ELSE fill_octets(0,0) ENDIF
+    ELSE LET t=key`trees(i) IN
+      IF t`certificate`length>20000 OR t`pk`length>56 OR
+         out`length+t`certificate`length+t`pk`length>160000 THEN fill_octets(0,0)
+      ELSE encode_chain(key,i+1,join_octets(join_octets(out,t`certificate),t`pk),last) ENDIF ENDIF
+    MEASURE 8-i
+  sign_hss(key: hierarchy,m: message_input,child_stream,cert_stream: streams,msg_stream: stream_id): signed_message =
+    LET depth=usable_prefix(key,key`levels) IN IF depth=0 THEN no_signature(key) ELSE
+      LET ext=extend(key,child_stream,cert_stream,depth) IN IF NOT ext`ok THEN no_signature(ext`state) ELSE
+        LET k=ext`state,i: below(8)=k`levels-1,t=k`trees(i),c=k`params(i),
+            a=reserve(c`h,t`next),n=digest_len(k`s) IN
+        IF NOT a`ok OR t`seed`length/=n THEN no_signature(k) ELSE
+          LET tx=k WITH [`trees(i)`next:=a`following],
+              sig=sign_randomized(k`s,c`h,c`w,t`id,t`seed,a`slot,m,msg_stream) IN
+          IF NOT sig`ok THEN no_signature(tx) ELSE
+            LET wire=encode_chain(tx,1,word(k`levels-1),sig`value)
+            IN (# ok:=wire`length>0,state:=tx,value:=wire #) ENDIF ENDIF ENDIF ENDIF
+END hss_sign

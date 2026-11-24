@@ -1,0 +1,93 @@
+% FIPS 203, Algorithms 5 through 8. Input offsets are in octets.
+mlkem_encoding: THEORY
+BEGIN
+  sha3: LIBRARY = "../sha3"
+  IMPORTING mlkem_ring, sha3@keccak
+
+  % Table 2, with k=2,3,4 naming ML-KEM-512, ML-KEM-768, ML-KEM-1024.
+  rank: TYPE = subrange(2,4)
+  eta: TYPE = subrange(2,3)
+  eta1(k: rank): eta = IF k=2 THEN 3 ELSE 2 ENDIF
+  du(k: rank): subrange(10,11) = IF k=4 THEN 11 ELSE 10 ENDIF
+  dv(k: rank): subrange(4,5) = IF k=4 THEN 5 ELSE 4 ENDIF
+  ek_size(k: rank): uint16 = k*384+32
+  dk_size(k: rank): uint16 = k*768+96
+  ct_size(k: rank): uint16 = 32*(k*du(k)+dv(k))
+  fixed(n: index): TYPE = {v: bytestring | v`length=n}
+  zeros(n: index): fixed(n) = (# length:=n, seq:=blank(n) #)
+  % A zero extension lets the last coefficient use the same three-byte window
+  % as all interior coefficients. Public ML-KEM operations check input sizes.
+  at(m: bytestring,i: uint32): uint8 = IF i<m`length THEN m`seq(i) ELSE 0 ENDIF
+  base_offset: TYPE = upto(4096)
+  raw_digit(m: bytestring,base: base_offset,d: width,j: below(256)): uint16 =
+    LET off: uint16=j*d, p: uint16=base+u16div(off,8),
+        w=u32or(at(m,p),u32or(u32lshift(at(m,p+1),8),u32lshift(at(m,p+2),16)))
+    IN nrem(u32rshift(w,nrem(off,8)),scale(d))
+  decode_into(m: bytestring,base: base_offset,d: width,decomp: bool,a: polynomial,
+              j: upto(256)): RECURSIVE polynomial =
+    IF j=256 THEN a ELSE
+      LET digit=raw_digit(m,base,d,j),
+          v=IF d<12 AND decomp THEN decompress(d,digit) ELSE reduce_q(digit) ENDIF
+      IN decode_into(m,base,d,decomp,a WITH [(j):=v],j+1)
+    ENDIF MEASURE 256-j
+  decode(m: bytestring,base: base_offset,d: width,decomp: bool): polynomial =
+    decode_into(m,base,d,decomp,zero_poly,0)
+
+  % Build an output octet from the low bits of consecutive d-bit digits.
+  encode_bits(a: polynomial,d: width,comp: bool,p: below(384),b: upto(8),
+              acc: uint8): RECURSIVE uint8 =
+    IF b=8 THEN acc ELSE
+      LET off: uint16=8*p+b, j: uint16=u16div(off,d), s: below(12)=nrem(off,d) IN
+      IF j>=256 THEN acc ELSE
+        LET v: uint16=IF d<12 AND comp THEN compress(d,a(j)) ELSE a(j) ENDIF,
+            bit: uint8=nrem(u16rshift(v,s),2)
+        IN encode_bits(a,d,comp,p,b+1,u8or(acc,u8lshift(bit,b)))
+      ENDIF ENDIF MEASURE 8-b
+  encode_into(a: polynomial,d: width,comp: bool,out: bytestring,
+              base: base_offset,j: upto(384)): RECURSIVE fixed(out`length) =
+    IF j>=32*d OR base+j>=out`length THEN out ELSE
+      encode_into(a,d,comp,out WITH [`seq(base+j):=encode_bits(a,d,comp,j,0,0)],base,j+1)
+    ENDIF MEASURE 384-j
+
+  % Sections 7.2 and 4.2.1. A 12-bit public-key coefficient must be <q before
+  % reduction. Rejecting aliases implements the re-encode check.
+  canonical_from(m: bytestring,base: base_offset,i: upto(256)): RECURSIVE bool =
+    IF i=256 THEN TRUE ELSE raw_digit(m,base,12,i)<3329 AND canonical_from(m,base,i+1)
+    ENDIF MEASURE 256-i
+  canonical_rows(m: bytestring,k: rank,i: upto(4)): RECURSIVE bool =
+    IF i>=k THEN TRUE ELSE canonical_from(m,384*i,0) AND canonical_rows(m,k,i+1)
+    ENDIF MEASURE 4-i
+
+  % Algorithm 7 and Appendix B, Table 4. Consume both 12-bit candidates in
+  % order. Exhaustion returns one failure value and discards the partial sample.
+  sample: TYPE = [# ok: bool, poly: polynomial #]
+  rejected: sample = (# ok:=FALSE, poly:=zero_poly #)
+  reject_loop(m: fixed(840),triples: upto(280),j: upto(256),a: polynomial):
+      RECURSIVE sample =
+    IF j=256 THEN (# ok:=TRUE, poly:=a #)
+    ELSIF triples=280 THEN rejected
+    ELSE LET p: uint16=3*triples, b0=m`seq(p), b1=m`seq(p+1), b2=m`seq(p+2),
+             d0: uint16=b0+256*nrem(b1,16), d1: uint16=u8div(b1,16)+16*b2,
+             accept0=d0<3329, k: upto(256)=IF accept0 THEN j+1 ELSE j ENDIF,
+             a0=IF accept0 THEN a WITH [(j):=d0] ELSE a ENDIF IN
+         IF k<256 AND d1<3329 THEN reject_loop(m,triples+1,k+1,a0 WITH [(k):=d1])
+         ELSE reject_loop(m,triples+1,k,a0) ENDIF
+    ENDIF MEASURE 280-triples
+  matrix_entry(rho: fixed(32),column,row: below(4)): sample =
+    LET c=absorb_byte(absorb_byte(absorb(start(168),rho),column),row)
+    IN reject_loop(output(finish_shake(c),840),0,0,zero_poly)
+
+  % Algorithm 8. The first eta bits and the next eta bits have opposite signs.
+  weight(m: bytestring,p: upto(1536),e: {n: upto(3) | p+n<=1536}): RECURSIVE {w: uint8 | w<=e} =
+    IF e=0 THEN 0 ELSE
+      LET bit=nrem(u8rshift(at(m,u16div(p,8)),nrem(p,8)),2)
+      IN bit+weight(m,p+1,e-1) ENDIF MEASURE e
+  noise_into(m: bytestring,e: eta,a: polynomial,j: upto(256)): RECURSIVE polynomial =
+    IF j=256 THEN a ELSE
+      LET p: uint16=2*e*j, v=minus_q(weight(m,p,e),weight(m,p+e,e))
+      IN noise_into(m,e,a WITH [(j):=v],j+1)
+    ENDIF MEASURE 256-j
+  noise(seed: fixed(32),nonce: uint8,e: eta): polynomial =
+    LET c=absorb_byte(absorb(start(136),seed),nonce)
+    IN noise_into(output(finish_shake(c),64*e),e,zero_poly,0)
+END mlkem_encoding

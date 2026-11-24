@@ -1,0 +1,21 @@
+% FIPS 205 Algorithms 21 and 22. Each acquisition uses the approved external
+% RBG instantiated at the strength of the selected parameter set.
+slh_random: THEORY
+BEGIN
+  IMPORTING slh_sign, crypto_prelude@crypto_random_buffers
+  generated: TYPE = [# ok: bool, public_key, private_key: bytestring #]
+  rejected: generated = (# ok:=FALSE,public_key:=fill_octets(0,0),private_key:=fill_octets(0,0) #)
+  keygen(p: profile,s: stream_id): generated =
+    LET n=node_bytes(p), sk=acquire(n,s,0), prf=acquire(n,s,n), seed=acquire(n,s,u32times(2,n)) IN
+      IF sk`ok AND prf`ok AND seed`ok THEN
+        LET keys=keygen_internal(p,sk`value,prf`value,seed`value) IN
+          (# ok:=TRUE,public_key:=keys`pk,private_key:=keys`sk #)
+      ELSE rejected ENDIF
+  signature: TYPE = [# ok: bool, data: bytestring #]
+  sign(p: profile,key: private_key(p),ctx: context_t,m: bytestring,s: stream_id): signature =
+    LET opt=acquire(node_bytes(p),s,0) IN
+      IF opt`ok THEN (# ok:=TRUE, data:=sign_message(p,key,opt`value,ctx,m,TRUE) #)
+      ELSE (# ok:=FALSE, data:=fill_octets(0,0) #) ENDIF
+  sign_deterministic(p: profile,key: private_key(p),ctx: context_t,m: bytestring): bytestring =
+    LET n=node_bytes(p) IN sign_message(p,key,part(key,u32times(2,n),n),ctx,m,TRUE)
+END slh_random

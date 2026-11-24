@@ -1,0 +1,80 @@
+% FIPS 197-upd1 (2023), Sections 5.1--5.3 and key-expansion diagrams.
+% Rijndael provides the AES-128 schedule and the shared forward/inverse rounds.
+aes_fips197: THEORY
+BEGIN
+  IMPORTING Rijndael
+
+  block: TYPE = byv[16]
+  key192: TYPE = byv[24]
+  key256: TYPE = byv[32]
+  expanded_key: TYPE = byv[240]  % 15 round keys at most
+
+  key_bytes(wide: bool): uint8 = IF wide THEN 32 ELSE 24 ENDIF
+  rounds(wide: bool): uint8 = IF wide THEN 14 ELSE 12 ENDIF
+
+  % rcon(1) = 01; multiplication by x in GF(2^8) gives the next value.
+  rcon(j: upto(14)): RECURSIVE byte =
+    IF j <= 1 THEN 1 ELSE T2(rcon(j - 1)) ENDIF
+    MEASURE j
+
+  % Algorithm 2. Each byte depends only on earlier schedule bytes.
+  extend_key(w: expanded_key, wide: bool,
+             i: {j: upto(240) | key_bytes(wide) <= j}): RECURSIVE expanded_key =
+    IF i >= 16 * (rounds(wide) + 1) THEN w
+    ELSE LET nk = key_bytes(wide),
+             offset = u16rem(i, nk),
+             j = u16rem(i, 4),
+             t = IF offset < 4 THEN
+                   LET rotated = w(i - 4 - j + u16rem(j + 1, 4)),
+                       rc = IF j = 0 THEN rcon(u16div(i, nk)) ELSE 0 ENDIF
+                   IN u8xor(Sbox(rotated), rc)
+                 ELSIF wide AND offset >= 16 AND offset < 20 THEN Sbox(w(i - 4))
+                 ELSE w(i - 4) ENDIF,
+             b = u8xor(w(i - nk), t)
+         IN extend_key(w WITH [(i) := b], wide, i + 1)
+    ENDIF
+    MEASURE 240 - i
+
+  seed192(k: key192): expanded_key =
+    LAMBDA (i: below(240)): IF i < 24 THEN k(i) ELSE 0 ENDIF
+
+  expand192(k: key192): expanded_key =
+    extend_key(seed192(k), FALSE, 24)
+
+  seed256(k: key256): expanded_key =
+    LAMBDA (i: below(240)): IF i < 32 THEN k(i) ELSE 0 ENDIF
+
+  expand256(k: key256): expanded_key =
+    extend_key(seed256(k), TRUE, 32)
+
+  subkey(w: expanded_key, r: upto(14)): block =
+    LAMBDA (j: below(16)): w(16 * r + j)
+
+  % Algorithms 1 and 3. The middle rounds are exactly Rijndael's round steps.
+  encrypt_rounds(a: block, w: expanded_key, nr: upto(14),
+                 r: upto(nr)): RECURSIVE block =
+    IF r = nr THEN roundkeyXOR(shiftRow(byteSubst(a)), subkey(w, r))
+    ELSE encrypt_rounds(Rijndael_step(a, subkey(w, r)), w, nr, r + 1)
+    ENDIF
+    MEASURE nr - r
+
+  decrypt_rounds(a: block, w: expanded_key, r: upto(14)): RECURSIVE block =
+    IF r = 0 THEN roundkeyXOR(a, subkey(w, 0))
+    ELSE decrypt_rounds(invRijndael_step(a, subkey(w, r)), w, r - 1)
+    ENDIF
+    MEASURE r
+
+  encrypt_block(a: block, w: expanded_key, nr: {r: upto(14) | r > 0}): block =
+    encrypt_rounds(roundkeyXOR(a, subkey(w, 0)), w, nr, 1)
+
+  decrypt_block(a: block, w: expanded_key, nr: {r: upto(14) | r > 0}): block =
+    decrypt_rounds(invByteSubst(invShiftRow(roundkeyXOR(a, subkey(w, nr)))),
+                   w, nr - 1)
+
+  aes128_encrypt(a, k: block): block = Rijndael(a, k)
+  aes128_decrypt(a, k: block): block = invRijndael(a, k)
+  aes192_encrypt(a: block, k: key192): block = encrypt_block(a, expand192(k), 12)
+  aes192_decrypt(a: block, k: key192): block = decrypt_block(a, expand192(k), 12)
+  aes256_encrypt(a: block, k: key256): block = encrypt_block(a, expand256(k), 14)
+  aes256_decrypt(a: block, k: key256): block = decrypt_block(a, expand256(k), 14)
+END aes_fips197

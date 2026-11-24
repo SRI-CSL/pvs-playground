@@ -1,0 +1,17 @@
+% FIPS 204 Algorithms 1, 2 and 4. A stream identifies one fresh RBG draw.
+mldsa_random: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING mldsa_prehash,crypto_prelude@crypto_seeds
+  keygen(p: profile,s: stream_id): keys =
+    LET seed=prng_seed32(s,0) IN IF seed`ok THEN keygen_internal(p,seed`value) ELSE no_keys ENDIF
+  sign_hedged(p: profile,sk,m,ctx: bytestring,tail: uint8,used: below(8),s: stream_id): bytes_result =
+    LET rnd=prng_seed32(s,0) IN IF rnd`ok THEN sign_message(p,sk,m,ctx,tail,used,rnd`value)
+    ELSE failure ENDIF
+  hash_sign_hedged(p: profile,sk: bytestring,id: hash_id,m,ctx: bytestring,tail: uint8,
+                   used: below(8),s: stream_id): bytes_result =
+    LET rnd=prng_seed32(s,0) IN IF rnd`ok THEN hash_sign(p,sk,id,m,ctx,tail,used,rnd`value)
+    ELSE failure ENDIF
+  failed_keygen_draw: LEMMA FORALL (p: profile,s: stream_id):
+    NOT prng_seed32(s,0)`ok IMPLIES NOT keygen(p,s)`ok
+END mldsa_random

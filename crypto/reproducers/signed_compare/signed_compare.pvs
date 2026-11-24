@@ -1,0 +1,10 @@
+% The OAEP label comparison can produce either sign on unequal strings.
+signed_compare: THEORY
+BEGIN
+  unequal(a,b:bytestring):bool = strcmp(a,b)/=0
+  lo:bytestring=(# length:=1,seq:=[: 0 :] #)
+  hi:bytestring=(# length:=1,seq:=[: 1 :] #)
+  less: _TEST_ unequal(lo,hi)
+  greater: _TEST_ unequal(hi,lo)
+  same: _TEST_ NOT unequal(hi,hi)
+END signed_compare

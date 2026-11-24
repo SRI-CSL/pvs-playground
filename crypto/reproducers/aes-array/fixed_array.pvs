@@ -1,0 +1,5 @@
+fixed_array: THEORY
+BEGIN
+  block: TYPE = ARRAY[below(16) -> uint8]
+  complement(b:block): block = LAMBDA (i:below(16)): u8minus(255, b(i))
+END fixed_array

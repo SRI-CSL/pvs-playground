@@ -1,0 +1,1827 @@
+(|rsa_auxiliary|
+ (|octet_count_TCC1| 0
+  (|octet_count_TCC1-1| NIL 4004538617
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|octet_count| SUBTYPE "(number_fields.+)(rsa_auxiliary.bits, 7)" "uint16"
+    (11 54 11 60))))
+ (|octet_count_TCC2| 0
+  (|octet_count_TCC2-1| NIL 4004538617
+   (""
+    (THEN (SKOSIMP*) (EXPAND "u16div")
+     (TYPEPRED "bits!1" "ndiv(bits!1+7,8)" "rem(8)(bits!1+7)")
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|u16div| CONST-DECL "[[uint16, {uy16 | uy16 /= 0}] -> uint16]"
+     |integertypes| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|ndiv| CONST-DECL
+     "[d: [int, posnat] -> {q: int | d`1 = rem(d`2)(d`1) + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|rem| CONST-DECL
+     "[b: posnat -> [x: int -> {r: mod(b) | EXISTS (q: int): x = r + b * q}]]"
+     |modulo_arithmetic| NIL)
+    (|mod| NONEMPTY-TYPE-EQ-DECL NIL |euclidean_division| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|st_bits| TYPE-EQ-DECL NIL |shawe_taylor| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK
+   (|octet_count| SUBTYPE
+    "integertypes.u16div((number_fields.+)(rsa_auxiliary.bits, 7), 8)"
+    "subrange(1, 256)" (11 47 11 63))))
+ (|raw_bits_TCC1| 0
+  (|raw_bits_TCC1-1| NIL 4004538618
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|raw_bits| SUBTYPE "rsa_auxiliary.octet_count(rsa_auxiliary.bits)" "index"
+    (13 49 13 66))))
+ (|raw_bits_TCC2| 0
+  (|raw_bits_TCC2-1| NIL 4004538619
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|odd?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|strict_total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|nrem| CONST-DECL
+     "[d: [int, posnat] -> {r: mod(d`2) | EXISTS (q: int): d`1 = r + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|mod| NONEMPTY-TYPE-EQ-DECL NIL |euclidean_division| NIL)
+    (|even?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|octet_count| CONST-DECL "[st_bits -> subrange(1, 256)]" |rsa_auxiliary|
+     NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|st_bits| TYPE-EQ-DECL NIL |shawe_taylor| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|raw_bits| SUBTYPE "0" "below(rsa_auxiliary.b`length)" (15 23 15 24))))
+ (|raw_bits_TCC3| 0
+  (|raw_bits_TCC3-1| NIL 4004538619
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK (|raw_bits| SUBTYPE "rsa_auxiliary.used" "upto(8)" (15 61 15 65))))
+ (|aux_witness_TCC1| 0
+  (|aux_witness_TCC1-1| NIL 4004538619
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|odd?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|even?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|st_bits| TYPE-EQ-DECL NIL |shawe_taylor| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|aux_witness| SUBTYPE "(number_fields.-)(4294967295, rsa_auxiliary.off)"
+    "naturalnumber" (25 81 25 95))))
+ (|aux_witness_TCC2| 0
+  (|aux_witness_TCC2-1| NIL 4004538620
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|aux_witness| SUBTYPE "rsa_auxiliary.count" "index" (20 20 20 25))))
+ (|aux_witness_TCC3| 0
+  (|aux_witness_TCC3-1| NIL 4004538621
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|aux_witness| SUBTYPE
+    "(number_fields.+)(rsa_auxiliary.off, rsa_auxiliary.count)" "uint32"
+    (20 45 20 54))))
+ (|aux_witness_TCC4| 0
+  (|aux_witness_TCC4-1| NIL 4004538621
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|aux_witness| SUBTYPE "rsa_auxiliary.m`value"
+    "octets_of(rsa_auxiliary.octet_count(rsa_auxiliary.bits))" (22 34 22 41))))
+ (|aux_witness_TCC5| 0
+  (|aux_witness_TCC5-1| NIL 4004538621
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|aux_witness| SUBTYPE "rsa_auxiliary.b" "words_of(rsa_auxiliary.one`len)"
+    (23 24 23 25))))
+ (|aux_witness_TCC6| 0
+  (|aux_witness_TCC6-1| NIL 4004538621
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|aux_witness| SUBTYPE
+    "crypto_limbs.sub_words(rsa_auxiliary.c, rsa_auxiliary.one)"
+    "words_of(rsa_auxiliary.b`len)" (23 41 23 57))))
+ (|aux_witness_TCC7| 0
+  (|aux_witness_TCC7-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|aux_witness| TERMINATION
+    "rsa_auxiliary.aux_witness(rsa_auxiliary.c, rsa_auxiliary.bits, rsa_auxiliary.remaining, rsa_auxiliary.s, rsa_auxiliary.next)"
+    "NIL" (23 64 23 100))))
+ (|aux_witness_TCC8| 0
+  (|aux_witness_TCC8-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|aux_witness| SUBTYPE "(number_fields.-)(rsa_auxiliary.remaining, 1)"
+    "upto(44)" (24 61 24 72))))
+ (|aux_witness_TCC9| 0
+  (|aux_witness_TCC9-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|aux_witness| TERMINATION
+    "rsa_auxiliary.aux_witness(rsa_auxiliary.c, rsa_auxiliary.bits, (number_fields.-)(rsa_auxiliary.remaining, 1), rsa_auxiliary.s, rsa_auxiliary.next)"
+    "NIL" (24 42 24 80))))
+ (|next_aux_TCC1| 0
+  (|next_aux_TCC1-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|next_aux| SUBTYPE "shawe_taylor.st_width(rsa_auxiliary.bits)" "limb_count"
+    (30 56 30 70))))
+ (|next_aux_TCC2| 0
+  (|next_aux_TCC2-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|next_aux| SUBTYPE "rsa_auxiliary.n" "limb_count" (32 77 32 78))))
+ (|next_aux_TCC3| 0
+  (|next_aux_TCC3-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|next_aux| SUBTYPE "rsa_auxiliary.bits"
+    "{i: integertypes.uint16 | reals.<(i, number_fields.*(32, crypto_limbs.zero_words(rsa_auxiliary.n)`len))}"
+    (32 80 32 84))))
+ (|next_aux_TCC4| 0
+  (|next_aux_TCC4-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)) SHOSTAK
+   (|next_aux| SUBTYPE
+    "crypto_integer_ops.set_one(crypto_limbs.zero_words(rsa_auxiliary.n), rsa_auxiliary.bits)"
+    "words_of(rsa_auxiliary.raw`len)" (32 58 32 85))))
+ (|next_aux_TCC5| 0
+  (|next_aux_TCC5-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|next_aux| SUBTYPE "rsa_auxiliary.n" "limb_count" (32 104 32 105))))
+ (|next_aux_TCC6| 0
+  (|next_aux_TCC6-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)) SHOSTAK
+   (|next_aux| SUBTYPE
+    "rsa_primes.unavailable(rsa_auxiliary.n, rsa_auxiliary.off)"
+    "found(shawe_taylor.st_width(rsa_auxiliary.bits))" (32 92 32 110))))
+ (|next_aux_TCC7| 0
+  (|next_aux_TCC7-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|next_aux| SUBTYPE
+    "rsa_auxiliary.aux_rounds(rsa_auxiliary.p, rsa_auxiliary.strong)"
+    "upto(44)" (33 64 33 84))))
+ (|next_aux_TCC8| 0
+  (|next_aux_TCC8-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)) SHOSTAK
+   (|next_aux| SUBTYPE
+    "rsa_primes.unavailable(rsa_auxiliary.n, rsa_auxiliary.v`next)"
+    "found(shawe_taylor.st_width(rsa_auxiliary.bits))" (35 23 35 44))))
+ (|next_aux_TCC9| 0
+  (|next_aux_TCC9-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)) SHOSTAK
+   (|next_aux| SUBTYPE "shawe_taylor.increment(rsa_auxiliary.raw, 2)"
+    "words_of(shawe_taylor.st_width(rsa_auxiliary.bits))" (36 27 36 43))))
+ (|next_aux_TCC10| 0
+  (|next_aux_TCC10-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|next_aux| SUBTYPE "(number_fields.-)(rsa_auxiliary.attempts, 1)" "uint32"
+    (36 60 36 70))))
+ (|next_aux_TCC11| 0
+  (|next_aux_TCC11-1| NIL 4004538622
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|next_aux| TERMINATION
+    "rsa_auxiliary.next_aux(rsa_auxiliary.p, rsa_auxiliary.bits, shawe_taylor.increment(rsa_auxiliary.raw, 2), rsa_auxiliary.s, rsa_auxiliary.v`next, rsa_auxiliary.strong, (number_fields.-)(rsa_auxiliary.attempts, 1))"
+    "NIL" (36 11 36 71))))
+ (|random_aux_TCC1| 0
+  (|random_aux_TCC1-1| NIL 4004538623
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK (|random_aux| SUBTYPE "rsa_auxiliary.len" "index" (39 20 39 23))))
+ (|random_aux_TCC2| 0
+  (|random_aux_TCC2-1| NIL 4004538623
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL))
+   SHOSTAK
+   (|random_aux| SUBTYPE
+    "(number_fields.+)(rsa_auxiliary.c`starts, rsa_auxiliary.len)" "uint32"
+    (39 65 39 77))))
+ (|random_aux_TCC3| 0
+  (|random_aux_TCC3-1| NIL 4004538623
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|random_aux| SUBTYPE "rsa_auxiliary.w" "limb_count" (40 43 40 44))))
+ (|random_aux_TCC4| 0
+  (|random_aux_TCC4-1| NIL 4004538623
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|random_aux| SUBTYPE "rsa_auxiliary.m`value"
+    "octets_of(rsa_auxiliary.octet_count(rsa_auxiliary.bits))" (40 50 40 57))))
+ (|random_aux_TCC5| 0
+  (|random_aux_TCC5-1| NIL 4004538623
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK
+   (|random_aux| SUBTYPE "rsa_auxiliary.bits"
+    "{i: integertypes.uint16 | booleans.AND(reals.>(i, 0), reals.<(i, number_fields.*(32, rsa_auxiliary.raw_bits(rsa_auxiliary.w, rsa_auxiliary.bits, rsa_auxiliary.m`value)`len)))}"
+    (40 59 40 63))))
+ (|random_aux_TCC6| 0
+  (|random_aux_TCC6-1| NIL 4004538624
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|random_aux| SUBTYPE "0"
+    "{i: integertypes.uint16 | reals.<(i, number_fields.*(32, shawe_taylor.top_bit(rsa_auxiliary.raw_bits(rsa_auxiliary.w, rsa_auxiliary.bits, rsa_auxiliary.m`value), rsa_auxiliary.bits)`len))}"
+    (40 65 40 66))))
+ (|random_aux_TCC7| 0
+  (|random_aux_TCC7-1| NIL 4004538624
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|random_aux| SUBTYPE "rsa_auxiliary.start"
+    "words_of(shawe_taylor.st_width(rsa_auxiliary.bits))" (40 86 40 91))))
+ (|align_residue_TCC1| 0
+  (|align_residue_TCC1-1| NIL 4004538624
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|align_residue| SUBTYPE "0" "below(rsa_auxiliary.y`len)" (44 29 44 30))))
+ (|align_residue_TCC2| 0
+  (|align_residue_TCC2-1| NIL 4004538624
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|align_residue| SUBTYPE "rsa_auxiliary.step"
+    "words_of(shawe_taylor.plus_words(rsa_auxiliary.y, rsa_auxiliary.step)`len)"
+    (45 42 45 46))))
+ (|align_residue_TCC3| 0
+  (|align_residue_TCC3-1| NIL 4004538624
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|align_residue| SUBTYPE "(number_fields.-)(rsa_auxiliary.left, 1)"
+    "upto(3)" (45 52 45 58))))
+ (|align_residue_TCC4| 0
+  (|align_residue_TCC4-1| NIL 4004538624
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|align_residue| TERMINATION
+    "rsa_auxiliary.align_residue(shawe_taylor.plus_words(rsa_auxiliary.y, rsa_auxiliary.step), rsa_auxiliary.step, rsa_auxiliary.mod8, (number_fields.-)(rsa_auxiliary.left, 1))"
+    "NIL" (45 9 45 59))))
+ (|align_residue_TCC5| 0
+  (|align_residue_TCC5-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|align_residue| SUBTYPE
+    "rsa_auxiliary.align_residue(shawe_taylor.plus_words(rsa_auxiliary.y, rsa_auxiliary.step), rsa_auxiliary.step, rsa_auxiliary.mod8, (number_fields.-)(rsa_auxiliary.left, 1))"
+    "words_of(rsa_auxiliary.y`len)" (45 9 45 59))))
+ (|bounded_prime_TCC1| 0
+  (|bounded_prime_TCC1-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|bounded_prime| SUBTYPE
+    "shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p))"
+    "limb_count" (47 53 47 77))))
+ (|bounded_prime_TCC2| 0
+  (|bounded_prime_TCC2-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|bounded_prime| SUBTYPE "rsa_auxiliary.n" "limb_count" (50 59 50 60))))
+ (|bounded_prime_TCC3| 0
+  (|bounded_prime_TCC3-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|bounded_prime| SUBTYPE "crypto_limbs.zero_words(rsa_auxiliary.n)"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (50 48 50 61))))
+ (|bounded_prime_TCC4| 0
+  (|bounded_prime_TCC4-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|bounded_prime| SUBTYPE "rsa_auxiliary.n" "limb_count" (51 40 51 41))))
+ (|bounded_prime_TCC5| 0
+  (|bounded_prime_TCC5-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK
+   (|bounded_prime| SUBTYPE "rsa_auxiliary.bits"
+    "{i: integertypes.uint16 | reals.<(i, number_fields.*(32, crypto_limbs.zero_words(rsa_auxiliary.n)`len))}"
+    (51 43 51 47))))
+ (|bounded_prime_TCC6| 0
+  (|bounded_prime_TCC6-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|bounded_prime| SUBTYPE
+    "crypto_integer_ops.set_one(crypto_limbs.zero_words(rsa_auxiliary.n), rsa_auxiliary.bits)"
+    "words_of(rsa_auxiliary.y`len)" (51 21 51 48))))
+ (|bounded_prime_TCC7| 0
+  (|bounded_prime_TCC7-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|bounded_prime| SUBTYPE "crypto_limbs.zero_words(rsa_auxiliary.n)"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (51 83 51 96))))
+ (|bounded_prime_TCC8| 0
+  (|bounded_prime_TCC8-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|bounded_prime| SUBTYPE "crypto_limbs.one_words(rsa_auxiliary.n)"
+    "words_of(rsa_auxiliary.y`len)" (52 62 52 74))))
+ (|bounded_prime_TCC9| 0
+  (|bounded_prime_TCC9-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|bounded_prime| SUBTYPE "rsa_auxiliary.e"
+    "words_of(crypto_limbs.sub_words(rsa_auxiliary.y, crypto_limbs.one_words(rsa_auxiliary.n))`len)"
+    (52 76 52 77))))
+ (|bounded_prime_TCC10| 0
+  (|bounded_prime_TCC10-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|bounded_prime| SUBTYPE
+    "rsa_primes.rounds(rsa_auxiliary.p, rsa_auxiliary.strong)" "upto(44)"
+    (53 29 53 45))))
+ (|bounded_prime_TCC11| 0
+  (|bounded_prime_TCC11-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)) SHOSTAK
+   (|bounded_prime| SUBTYPE "crypto_limbs.zero_words(rsa_auxiliary.n)"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (54 55 54 68))))
+ (|bounded_prime_TCC12| 0
+  (|bounded_prime_TCC12-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)) SHOSTAK
+   (|bounded_prime| SUBTYPE "rsa_auxiliary.step"
+    "words_of(rsa_auxiliary.y`len)" (56 45 56 49))))
+ (|bounded_prime_TCC13| 0
+  (|bounded_prime_TCC13-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)) SHOSTAK
+   (|bounded_prime| SUBTYPE
+    "shawe_taylor.plus_words(rsa_auxiliary.y, rsa_auxiliary.step)"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (56 32 56 50))))
+ (|bounded_prime_TCC14| 0
+  (|bounded_prime_TCC14-1| NIL 4004538625
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|bounded_prime| SUBTYPE "(number_fields.-)(rsa_auxiliary.left, 1)"
+    "upto(40960)" (56 74 56 80))))
+ (|bounded_prime_TCC15| 0
+  (|bounded_prime_TCC15-1| NIL 4004538626
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|bounded_prime| TERMINATION
+    "rsa_auxiliary.bounded_prime(rsa_auxiliary.p, rsa_auxiliary.e, shawe_taylor.plus_words(rsa_auxiliary.y, rsa_auxiliary.step), rsa_auxiliary.step, rsa_auxiliary.src, rsa_auxiliary.strong, rsa_auxiliary.v`next, (number_fields.-)(rsa_auxiliary.left, 1))"
+    "NIL" (56 14 56 81))))
+ (|factor_window_TCC1| 0
+  (|factor_window_TCC1-1| NIL 4004538626
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "rsa_primes.prime_width(rsa_auxiliary.p)"
+    "limb_count" (60 60 60 74))))
+ (|factor_window_TCC2| 0
+  (|factor_window_TCC2-1| NIL 4004538626
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|strict_total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|even?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|odd?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|cursors| TYPE-EQ-DECL NIL |rsa_auxiliary| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|strength_profile| TYPE-EQ-DECL NIL |rsa_primes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|st_bits| TYPE-EQ-DECL NIL |shawe_taylor| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|st_width| CONST-DECL
+     "[bits: st_bits -> {n: subrange(1, 65) | bits < 32 * n}]" |shawe_taylor|
+     NIL)
+    (|factor_bits| CONST-DECL "[strength_profile -> st_bits]" |rsa_provable|
+     NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|residue| TYPE-EQ-DECL NIL |rsa_primes| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE
+    "(number_fields.-)(4294967295, rsa_auxiliary.c`starts)" "naturalnumber"
+    (70 12 70 31))))
+ (|factor_window_TCC3| 0
+  (|factor_window_TCC3-1| NIL 4004538628
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "number_fields.*(4, rsa_auxiliary.w)" "uint16"
+    (61 73 61 76))))
+ (|factor_window_TCC4| 0
+  (|factor_window_TCC4-1| NIL 4004538628
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "rsa_auxiliary.w" "limb_count" (62 45 62 46))))
+ (|factor_window_TCC5| 0
+  (|factor_window_TCC5-1| NIL 4004538628
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE
+    "rsa_auxiliary.aux_fail(rsa_auxiliary.w, rsa_auxiliary.c)"
+    "aux_output(rsa_primes.prime_width(rsa_auxiliary.p))" (62 36 62 49))))
+ (|factor_window_TCC6| 0
+  (|factor_window_TCC6-1| NIL 4004538628
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "rsa_auxiliary.len" "index" (63 23 63 26))))
+ (|factor_window_TCC7| 0
+  (|factor_window_TCC7-1| NIL 4004538629
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE
+    "(number_fields.+)(rsa_auxiliary.c`starts, rsa_auxiliary.len)" "uint32"
+    (63 70 63 82))))
+ (|factor_window_TCC8| 0
+  (|factor_window_TCC8-1| NIL 4004538629
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "rsa_auxiliary.w" "limb_count" (63 99 63 100))))
+ (|factor_window_TCC9| 0
+  (|factor_window_TCC9-1| NIL 4004538629
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE
+    "rsa_auxiliary.aux_fail(rsa_auxiliary.w, rsa_auxiliary.next)"
+    "aux_output(rsa_primes.prime_width(rsa_auxiliary.p))" (64 29 64 45))))
+ (|factor_window_TCC10| 0
+  (|factor_window_TCC10-1| NIL 4004538629
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "rsa_auxiliary.raw"
+    "words_of(rsa_primes.prime_width(rsa_auxiliary.p))" (64 74 64 77))))
+ (|factor_window_TCC11| 0
+  (|factor_window_TCC11-1| NIL 4004538629
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| TERMINATION
+    "rsa_auxiliary.factor_window(rsa_auxiliary.p, rsa_auxiliary.e, rsa_auxiliary.r, rsa_auxiliary.step, rsa_auxiliary.mod8, rsa_auxiliary.src, rsa_auxiliary.next, rsa_auxiliary.strong)"
+    "NIL" (64 84 64 130))))
+ (|factor_window_TCC12| 0
+  (|factor_window_TCC12-1| NIL 4004538630
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "rsa_auxiliary.n" "limb_count" (65 34 65 35))))
+ (|factor_window_TCC13| 0
+  (|factor_window_TCC13-1| NIL 4004538630
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "rsa_auxiliary.step"
+    "words_of(rsa_auxiliary.x`len)" (65 77 65 81))))
+ (|factor_window_TCC14| 0
+  (|factor_window_TCC14-1| NIL 4004538630
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE
+    "crypto_integer_ops.divide_words(rsa_auxiliary.x, rsa_auxiliary.step)`r"
+    "words_of(rsa_auxiliary.r`len)" (65 62 65 84))))
+ (|factor_window_TCC15| 0
+  (|factor_window_TCC15-1| NIL 4004538630
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "rsa_auxiliary.step"
+    "words_of(rsa_auxiliary.r`len)" (65 85 65 89))))
+ (|factor_window_TCC16| 0
+  (|factor_window_TCC16-1| NIL 4004538630
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE
+    "crypto_limbs.sub_mod(rsa_auxiliary.r, crypto_integer_ops.divide_words(rsa_auxiliary.x, rsa_auxiliary.step)`r, rsa_auxiliary.step)"
+    "words_of(rsa_auxiliary.x`len)" (65 52 65 90))))
+ (|factor_window_TCC17| 0
+  (|factor_window_TCC17-1| NIL 4004538630
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "rsa_auxiliary.step"
+    "words_of(rsa_auxiliary.y`len)" (66 37 66 41))))
+ (|factor_window_TCC18| 0
+  (|factor_window_TCC18-1| NIL 4004538631
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "rsa_auxiliary.start"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (67 35 67 40))))
+ (|factor_window_TCC19| 0
+  (|factor_window_TCC19-1| NIL 4004538631
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|odd_minus_even_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "rsa_auxiliary.delta"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (67 41 67 46))))
+ (|factor_window_TCC20| 0
+  (|factor_window_TCC20-1| NIL 4004538631
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE "number_fields.*(20, rsa_auxiliary.bits)"
+    "upto(40960)" (67 72 67 79))))
+ (|factor_window_TCC21| 0
+  (|factor_window_TCC21-1| NIL 4004538631
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE
+    "crypto_integer_ops.resize_words(rsa_auxiliary.v`v, rsa_auxiliary.w)"
+    "words_of(rsa_primes.prime_width(rsa_auxiliary.p))" (68 42 68 61))))
+ (|factor_window_TCC22| 0
+  (|factor_window_TCC22-1| NIL 4004538632
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| TERMINATION
+    "rsa_auxiliary.factor_window(rsa_auxiliary.p, rsa_auxiliary.e, rsa_auxiliary.r, rsa_auxiliary.step, rsa_auxiliary.mod8, rsa_auxiliary.src, rsa_auxiliary.after, rsa_auxiliary.strong)"
+    "NIL" (69 33 69 80))))
+ (|factor_window_TCC23| 0
+  (|factor_window_TCC23-1| NIL 4004538632
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|factor_window| SUBTYPE
+    "rsa_auxiliary.aux_fail(rsa_auxiliary.w, rsa_auxiliary.after)"
+    "aux_output(rsa_primes.prime_width(rsa_auxiliary.p))" (69 86 69 103))))
+ (|from_aux_TCC1| 0
+  (|from_aux_TCC1-1| NIL 4004538632
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|from_aux| SUBTYPE "rsa_auxiliary.r2" "words_of(rsa_auxiliary.d`len)"
+    (74 42 74 44))))
+ (|from_aux_TCC2| 0
+  (|from_aux_TCC2-1| NIL 4004538632
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|from_aux| SUBTYPE "rsa_auxiliary.r2"
+    "words_of(crypto_integer_ops.divide_words(rsa_auxiliary.d, rsa_auxiliary.r2)`r`len)"
+    (74 48 74 50))))
+ (|from_aux_TCC3| 0
+  (|from_aux_TCC3-1| NIL 4004538632
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|from_aux| SUBTYPE "rsa_auxiliary.n" "limb_count" (74 76 74 77))))
+ (|from_aux_TCC4| 0
+  (|from_aux_TCC4-1| NIL 4004538632
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|from_aux| SUBTYPE "rsa_auxiliary.w" "limb_count" (75 61 75 62))))
+ (|from_aux_TCC5| 0
+  (|from_aux_TCC5-1| NIL 4004538632
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|from_aux| SUBTYPE
+    "rsa_auxiliary.aux_fail(rsa_auxiliary.w, rsa_auxiliary.c)"
+    "aux_output(rsa_primes.prime_width(rsa_auxiliary.p))" (75 52 75 65))))
+ (|from_aux_TCC6| 0
+  (|from_aux_TCC6-1| NIL 4004538632
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|from_aux| SUBTYPE "rsa_auxiliary.r2" "words_of(rsa_auxiliary.inv`len)"
+    (76 50 76 52))))
+ (|from_aux_TCC7| 0
+  (|from_aux_TCC7-1| NIL 4004538632
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|from_aux| SUBTYPE
+    "crypto_limbs.add_mod(rsa_auxiliary.inv, rsa_auxiliary.inv, rsa_auxiliary.r2)"
+    "words_of(crypto_limbs.zero_words(rsa_auxiliary.n)`len)" (76 34 76 53))))
+ (|from_aux_TCC8| 0
+  (|from_aux_TCC8-1| NIL 4004538632
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|from_aux| SUBTYPE "rsa_auxiliary.r2"
+    "words_of(crypto_limbs.zero_words(rsa_auxiliary.n)`len)" (76 54 76 56))))
+ (|from_aux_TCC9| 0
+  (|from_aux_TCC9-1| NIL 4004538632
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|from_aux| SUBTYPE
+    "crypto_limbs.from_bytes(rsa_auxiliary.n, rsa_auxiliary.e, booleans.TRUE)"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (77 25 77 45))))
+ (|from_aux_TCC10| 0
+  (|from_aux_TCC10-1| NIL 4004538632
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|from_aux| SUBTYPE "rsa_auxiliary.r"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (77 46 77 47))))
+ (|from_aux_TCC11| 0
+  (|from_aux_TCC11-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|from_aux| SUBTYPE "rsa_auxiliary.step"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (77 48 77 52))))
+ (|make_factor_TCC1| 0
+  (|make_factor_TCC1-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|make_factor| SUBTYPE "rsa_auxiliary.w" "limb_count" (84 81 84 82))))
+ (|make_factor_TCC2| 0
+  (|make_factor_TCC2-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|make_factor| SUBTYPE
+    "rsa_auxiliary.aux_fail(rsa_auxiliary.w, rsa_auxiliary.c)"
+    "aux_output(rsa_primes.prime_width(rsa_auxiliary.p))" (84 72 84 85))))
+ (|make_factor_TCC3| 0
+  (|make_factor_TCC3-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|make_factor| SUBTYPE "rsa_auxiliary.n" "limb_count" (85 44 85 45))))
+ (|make_factor_TCC4| 0
+  (|make_factor_TCC4-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|make_factor| SUBTYPE "rsa_auxiliary.a`value"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (86 52 86 59))))
+ (|make_factor_TCC5| 0
+  (|make_factor_TCC5-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|make_factor| SUBTYPE "rsa_auxiliary.b`value"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (86 60 86 67))))
+ (|make_factor_TCC6| 0
+  (|make_factor_TCC6-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|make_factor| SUBTYPE "rsa_auxiliary.w" "limb_count" (87 31 87 32))))
+ (|make_factor_TCC7| 0
+  (|make_factor_TCC7-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|make_factor| SUBTYPE
+    "rsa_auxiliary.aux_fail(rsa_auxiliary.w, rsa_auxiliary.c)"
+    "aux_output(rsa_primes.prime_width(rsa_auxiliary.p))" (87 22 87 35))))
+ (|make_factor_TCC8| 0
+  (|make_factor_TCC8-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|make_factor| SUBTYPE "rsa_auxiliary.l" "st_bits" (88 28 88 29))))
+ (|make_factor_TCC9| 0
+  (|make_factor_TCC9-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|make_factor| SUBTYPE "rsa_auxiliary.n" "limb_count" (88 30 88 31))))
+ (|make_factor_TCC10| 0
+  (|make_factor_TCC10-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|make_factor| SUBTYPE "rsa_auxiliary.r" "st_bits" (88 61 88 62))))
+ (|make_factor_TCC11| 0
+  (|make_factor_TCC11-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|make_factor| SUBTYPE "rsa_auxiliary.a`v"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (89 52 89 55))))
+ (|make_factor_TCC12| 0
+  (|make_factor_TCC12-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|make_factor| SUBTYPE "rsa_auxiliary.b`v"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_auxiliary.p)))"
+    (89 56 89 59))))
+ (|make_factor_TCC13| 0
+  (|make_factor_TCC13-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|make_factor| SUBTYPE "rsa_auxiliary.w" "limb_count" (90 31 90 32))))
+ (|make_factor_TCC14| 0
+  (|make_factor_TCC14-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|make_factor| SUBTYPE
+    "rsa_auxiliary.aux_fail(rsa_auxiliary.w, rsa_auxiliary.b`next)"
+    "aux_output(rsa_primes.prime_width(rsa_auxiliary.p))" (90 22 90 40))))
+ (|auxiliary_pair_TCC1| 0
+  (|auxiliary_pair_TCC1-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|auxiliary_pair| SUBTYPE "(number_fields.-)(rsa_auxiliary.remaining, 1)"
+    "uint32" (99 92 99 103))))
+ (|auxiliary_pair_TCC2| 0
+  (|auxiliary_pair_TCC2-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|auxiliary_pair| TERMINATION
+    "rsa_auxiliary.auxiliary_pair(rsa_auxiliary.p, rsa_auxiliary.h, rsa_auxiliary.seeded, rsa_auxiliary.g`seed, rsa_auxiliary.e, rsa_auxiliary.sz, rsa_auxiliary.pm, rsa_auxiliary.qm, rsa_auxiliary.src, rsa_auxiliary.strong, rsa_auxiliary.v`next, rsa_auxiliary.v, (number_fields.-)(rsa_auxiliary.remaining, 1))"
+    "NIL" (99 28 99 104))))
+ (|auxiliary_pair_TCC3| 0
+  (|auxiliary_pair_TCC3-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)) SHOSTAK
+   (|auxiliary_pair| SUBTYPE "rsa_auxiliary.prior`v"
+    "words_of(rsa_auxiliary.v`v`len)" (100 28 100 35))))
+ (|auxiliary_pair_TCC4| 0
+  (|auxiliary_pair_TCC4-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)) SHOSTAK
+   (|auxiliary_pair| SUBTYPE "rsa_auxiliary.prior`x"
+    "words_of(rsa_auxiliary.v`x`len)" (100 56 100 63))))
+ (|auxiliary_pair_TCC5| 0
+  (|auxiliary_pair_TCC5-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|auxiliary_pair| SUBTYPE "(number_fields.-)(rsa_auxiliary.remaining, 1)"
+    "uint32" (101 76 101 87))))
+ (|auxiliary_pair_TCC6| 0
+  (|auxiliary_pair_TCC6-1| NIL 4004538633
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|auxiliary_pair| TERMINATION
+    "rsa_auxiliary.auxiliary_pair(rsa_auxiliary.p, rsa_auxiliary.h, rsa_auxiliary.seeded, rsa_auxiliary.g`seed, rsa_auxiliary.e, rsa_auxiliary.sz, rsa_auxiliary.pm, rsa_auxiliary.qm, rsa_auxiliary.src, rsa_auxiliary.strong, rsa_auxiliary.v`next, rsa_auxiliary.prior, (number_fields.-)(rsa_auxiliary.remaining, 1))"
+    "NIL" (101 8 101 88))))
+ (|auxiliary_pair_TCC7| 0
+  (|auxiliary_pair_TCC7-1| NIL 4004538634
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|auxiliary_pair| SUBTYPE "(number_fields.-)(rsa_auxiliary.remaining, 1)"
+    "uint32" (103 102 103 113))))
+ (|auxiliary_pair_TCC8| 0
+  (|auxiliary_pair_TCC8-1| NIL 4004538634
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|auxiliary_pair| TERMINATION
+    "rsa_auxiliary.auxiliary_pair(rsa_auxiliary.p, rsa_auxiliary.h, rsa_auxiliary.seeded, rsa_auxiliary.g`seed, rsa_auxiliary.e, rsa_auxiliary.sz, rsa_auxiliary.pm, rsa_auxiliary.qm, rsa_auxiliary.src, rsa_auxiliary.strong, rsa_auxiliary.v`next, rsa_auxiliary.aux_fail(rsa_primes.prime_width(rsa_auxiliary.p), rsa_auxiliary.v`next), (number_fields.-)(rsa_auxiliary.remaining, 1))"
+    "NIL" (103 8 103 114))))
+ (|auxiliary_key_TCC1| 0
+  (|auxiliary_key_TCC1-1| NIL 4004538634
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|auxiliary_key| SUBTYPE "rsa_auxiliary.seed" "seed_string"
+    (110 39 110 43))))
+ (|auxiliary_key_TCC2| 0
+  (|auxiliary_key_TCC2-1| NIL 4004538634
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|auxiliary_key| SUBTYPE "crypto_buffers.fill_octets(1, 0)" "seed_string"
+    (110 49 110 65))))
+ (|generate_auxiliary_TCC1| 0
+  (|generate_auxiliary_TCC1-1| NIL 4004538634
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|generate_auxiliary| SUBTYPE "rsa_provable.min_seed(rsa_auxiliary.p)"
+    "index" (115 23 115 34))))
+ (|no_aux_witnesses| 0
+  (|no_aux_witnesses-1| NIL 4004538634 ("" (GRIND :IF-MATCH NIL) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|aux_witness| DEF-DECL
+     "[[limbs, st_bits, upto(44), stream_id, uint32] -> primality]"
+     |rsa_auxiliary| NIL))
+   SHOSTAK)))
+

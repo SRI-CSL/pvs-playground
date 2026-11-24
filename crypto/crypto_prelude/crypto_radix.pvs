@@ -1,0 +1,56 @@
+% SP 800-38G §§5.1–5.2. Numerals are most significant digit first.
+crypto_radix: THEORY
+BEGIN
+  IMPORTING crypto_words
+  radix: TYPE = subrange(2,65536)
+  numeral: TYPE = [# length:uint32, digits:ARRAY[below(length) -> uint16] #]
+  half_length: TYPE = upto(2147483648)
+  value: TYPE = [# len:half_length, cells:ARRAY[below(len) -> uint32] #]
+  sized(n:half_length): TYPE = {x:value | x`len=n}
+  zeros(n:half_length): sized(n) = (# len:=n,cells:=LAMBDA(i:below(n)):0 #)
+  valid_digits?(x:numeral,r:radix,i:upto(x`length)): RECURSIVE bool =
+    IF i=x`length THEN TRUE ELSIF x`digits(i)>=r THEN FALSE
+    ELSE valid_digits?(x,r,i+1) ENDIF MEASURE x`length-i
+  domain_min(r:radix,n:uint32): bool =
+    n>=7 OR (n>=5 AND r>=3) OR (n>=4 AND r>=4)
+      OR (n>=3 AND r>=5) OR (n>=2 AND r>=10)
+
+  % Internal cells are little endian. Scaling drops carry beyond the last
+  % cell, implementing reduction modulo base^len for Feistel arithmetic.
+  cell_base: TYPE = subrange(2,4294967296)
+  scale_add(a:value,base:cell_base,factor:radix,carry:uint32,i:upto(a`len)):
+      RECURSIVE sized(a`len) =
+    IF i=a`len THEN a ELSE
+      LET s:uint64=u64plus(u64times(a`cells(i),factor),carry),
+          digit:uint32=u64rem(s,base), next:uint32=u64div(s,base) IN
+        scale_add(a WITH [`cells(i):=digit],base,factor,next,i+1)
+    ENDIF MEASURE a`len-i
+
+  % At most 16 bits per input digit. Convert radix cells to binary words.
+  as_words(a:value,r:radix,i:upto(a`len),w:value): RECURSIVE sized(w`len) =
+    IF i=0 THEN w ELSE
+      as_words(a,r,i-1,scale_add(w,4294967296,r,a`cells(i-1),0))
+    ENDIF MEASURE i
+  binary_words(a:value,r:radix): value =
+    as_words(a,r,a`len,zeros(u32div(a`len+1,2)))
+  byte_at(w:value,i:uint64): uint8 =
+    LET j=u64div(i,4) IN IF j>=w`len THEN 0
+      ELSE be_byte32(w`cells(j),3-u64rem(i,4)) ENDIF
+  used_bytes(w:value,i:upto(w`len)): RECURSIVE uint64 =
+    IF i=0 THEN 0 ELSE LET word=w`cells(i-1) IN
+      IF word=0 THEN used_bytes(w,i-1)
+      ELSE u64plus(u64times(i-1,4),IF word<256 THEN 1 ELSIF word<65536 THEN 2
+                                   ELSIF word<16777216 THEN 3 ELSE 4 ENDIF) ENDIF ENDIF MEASURE i
+  byte_width(r:radix,n:half_length): uint64 =
+    LET a:sized(n)=(# len:=n,cells:=LAMBDA(i:below(n)):r-1 #), w=binary_words(a,r) IN used_bytes(w,w`len)
+  half(x:numeral,off:uint32,n:{m:half_length | off+m<=x`length},rev:bool): sized(n) =
+    (# len:=n,cells:=LAMBDA(i:below(n)):x`digits(IF rev THEN off+i ELSE u32plus(off,u32minus(n-1,i)) ENDIF) #)
+  combine(a:value,y:sized(a`len),r:radix,subtract:bool,c:below(2),i:upto(a`len)): RECURSIVE sized(a`len) =
+    IF i=a`len THEN a ELSE
+      LET b=y`cells(i), x=a`cells(i),
+          total:uint64=IF subtract THEN u64minus(u64plus(x,r),u64plus(b,c)) ELSE u64plus(u64plus(x,b),c) ENDIF,
+          next:below(2)=IF (subtract AND x<b+c) OR (NOT subtract AND total>=r) THEN 1 ELSE 0 ENDIF,
+          d:uint32=u64rem(total,r) IN
+        combine(a WITH [`cells(i):=d],y,r,subtract,next,i+1)
+    ENDIF MEASURE a`len-i
+END crypto_radix

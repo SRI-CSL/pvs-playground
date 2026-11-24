@@ -1,0 +1,38 @@
+% SP 800-56B Rev. 2 §§5.5 and 8. KAS1/KAS2 participant-side completion
+% using RSASVE and SP 800-56C one-step SHA-256. Identifiers and algorithm
+% encodings are agreed with the peer before the transaction.
+rsa_kas: THEORY
+BEGIN
+  kdf: LIBRARY="../kdf"
+  IMPORTING rsa_random,kdf@establishment_kdf
+  field:TYPE={x:bytestring | x`length>0 AND x`length<=1024}
+  context_fields:TYPE=[# algorithm:field,u:field,v:field #]
+  % §5.5.2.1.1. Protocol profile with four-byte counts of field octets.
+  counted(x:{s:bytestring | s`length<=2048}):octets_of(4+x`length) = join_octets(ctr4(x`length),x)
+  kas_info(ctx:context_fields,nv:{s:bytestring | s`length<=1024}):
+      octets_of(12+ctx`algorithm`length+ctx`u`length+ctx`v`length+IF nv`length>0 THEN 4+nv`length ELSE 0 ENDIF) =
+    LET p=join_octets(counted(ctx`algorithm),counted(ctx`u)), q=join_octets(p,counted(ctx`v)) IN
+      IF nv`length=0 THEN q ELSE join_octets(q,counted(nv)) ENDIF
+  % §5.4 and §8.2. This profile uses fresh 32-octet nonces.
+  kas1_nonce(s:stream_id): acquisition(32) = acquire(32,s,0)
+  derive_key(z:{s:bytestring | s`length>=256 AND s`length<=4096},ctx:context_fields,
+             nv:{s:bytestring | s`length=0 OR s`length=32},n:subrange(1,65535)):rsa_result =
+    LET r=one_step(h_sha256,FALSE,fill_octets(0,0),z,kas_info(ctx,nv),n) IN
+      IF r`ok THEN (# valid:=TRUE,data:=r`data #) ELSE invalid ENDIF
+  kas1_finish(z:rsa_result,ctx:context_fields,nv:bytestring,n:subrange(1,65535)):rsa_result =
+    IF NOT z`valid OR z`data`length<256 OR z`data`length>2048 OR nv`length/=32 THEN invalid
+    ELSE derive_key(z`data,ctx,nv,n) ENDIF
+  kas1_u(sent:encapsulation,ctx:context_fields,nv:bytestring,n:subrange(1,65535)):rsa_result =
+    kas1_finish((# valid:=sent`ok,data:=sent`secret #),ctx,nv,n)
+  kas1_v(m:modulus,d,c:bytestring,ctx:context_fields,nv:bytestring,n:subrange(1,65535)):rsa_result =
+    kas1_finish(sve_recover(m,d,c),ctx,nv,n)
+  kas2_finish(from_u:bool,own:encapsulation,peer:rsa_result,ctx:context_fields,n:subrange(1,65535)):rsa_result =
+    IF NOT own`ok OR NOT peer`valid OR own`secret`length<256 OR own`secret`length>2048 OR
+       peer`data`length<256 OR peer`data`length>2048 THEN invalid ELSE
+      LET z=IF from_u THEN join_octets(own`secret,peer`data) ELSE join_octets(peer`data,own`secret) ENDIF IN
+        derive_key(z,ctx,fill_octets(0,0),n) ENDIF
+  kas2(m:modulus,d,c:bytestring,own:encapsulation,ctx:context_fields,from_u:bool,n:subrange(1,65535)):rsa_result =
+    kas2_finish(from_u,own,sve_recover(m,d,c),ctx,n)
+  missing_nonce: LEMMA FORALL(z:rsa_result,ctx:context_fields,n:subrange(1,65535)):
+    kas1_finish(z,ctx,fill_octets(0,0),n)=invalid
+END rsa_kas

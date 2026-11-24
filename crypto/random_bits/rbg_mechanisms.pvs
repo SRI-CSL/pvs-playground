@@ -1,0 +1,88 @@
+% SP 800-90C §§2.8, 4–7, Tables 3 and 6. Seed input from a randomness
+% source includes the nonce entropy in the 3s/2-bit instantiation request.
+rbg_mechanisms: THEORY
+BEGIN
+  IMPORTING hash_drbg,ctr_drbg,rbg_constructions
+  strength:TYPE={s:uint16 | s=128 OR s=192 OR s=256}
+  design:DATATYPE
+  BEGIN
+    hash_engine(hid:drbg_hash):hash_engine?
+    hmac_engine(mid:drbg_hash):hmac_engine?
+    ctr_engine(aes_kind:aes_size,df:bool):ctr_engine?
+  END design
+  supported_hash(h:drbg_hash):uint16=
+    IF h=h_sha1 THEN 128 ELSIF hash_bytes(h)=28 THEN 192 ELSE 256 ENDIF
+  highest(d:design):strength=CASES d OF hash_engine(h):supported_hash(h),hmac_engine(h):supported_hash(h),
+    ctr_engine(t,f):8*nk(t) ENDCASES
+  table3(h:drbg_hash):bool=h=h_sha256 OR h=h_sha384 OR h=h_sha512 OR h>=8
+  rbg3_design(d:design):bool=CASES d OF hash_engine(h):table3(h),hmac_engine(h):table3(h),ctr_engine(t,f):TRUE ENDCASES
+  direct(d:design):bool=ctr_engine?(d) AND NOT df(d)
+  seed_size(d:design,s:strength,initializing:bool):subrange(16,48)=
+    IF direct(d) THEN ns(aes_kind(d)) ELSIF initializing THEN u16div(3*s,16) ELSE u16div(s,8) ENDIF
+  machine:DATATYPE
+  BEGIN
+    offline:offline?
+    hashing(hs:hash_state):hashing?
+    key_hashing(ms:hmac_drbg.state):key_hashing?
+    counting(cs:ctr_state):counting?
+  END machine
+  profile(m:machine):design=CASES m OF offline:hmac_engine(h_sha256),hashing(h):hash_engine(h`algorithm),
+    key_hashing(h):hmac_engine(h`algorithm),counting(c):ctr_engine(c`kind,c`derived) ENDCASES
+  empty:octets_of(0)=fill_octets(0,0)
+  % For a derived CTR_DRBG the seed is already combined entropy and nonce.
+  % Block_Cipher_df receives their concatenation followed by personalization.
+  start(d:design,s:strength,seed,p:bytestring):machine=
+    IF s>highest(d) OR seed`length<seed_size(d,s,TRUE) OR seed`length+p`length>material_bound THEN offline
+    ELSE CASES d OF
+      hash_engine(h):hashing(hash_instantiate(h,seed,empty,p)),
+      hmac_engine(h):key_hashing(instantiate(h,seed,empty,p)),
+      ctr_engine(t,f):IF f THEN counting(start_state(t,TRUE,block_df(t,join_octets(seed,p))))
+        ELSIF seed`length=ns(t) AND p`length<=ns(t) THEN counting(instantiate_direct(t,seed,p)) ELSE offline ENDIF
+    ENDCASES ENDIF
+  refresh(m:machine,s:strength,seed,a:bytestring):machine=
+    IF seed`length<seed_size(profile(m),s,FALSE) OR seed`length+a`length>material_bound THEN offline ELSE
+      CASES m OF offline:offline,hashing(h):hashing(hash_reseed(h,seed,a)),key_hashing(h):key_hashing(reseed(h,seed,a)),
+        counting(c):IF c`derived THEN counting(ctr_reseed_df(c,seed,a))
+          ELSIF seed`length=ns(c`kind) AND a`length<=ns(c`kind) THEN counting(ctr_reseed_direct(c,seed,a)) ELSE offline ENDIF
+      ENDCASES ENDIF
+  step:TYPE=[# ok:bool,next:machine,data:bytestring #]
+  reject(m:machine):step=(# ok:=FALSE,next:=m,data:=empty #)
+  emit_bits(m:machine,n:request_bits,a:material):step=CASES m OF
+    offline:reject(m),
+    hashing(h):LET r=hash_generate(h,n,a) IN (# ok:=r`success,next:=hashing(r`current),data:=r`data #),
+    key_hashing(h):LET r=generate(h,n,a) IN (# ok:=r`success,next:=key_hashing(r`current),data:=r`data #),
+    counting(c):IF NOT c`derived AND a`length>ns(c`kind) THEN reject(m) ELSE
+      LET r=ctr_generate(c,n,a) IN (# ok:=r`success,next:=counting(r`current),data:=r`data #) ENDIF
+    ENDCASES
+  % Source-side reseeding, authenticated transfer and full-entropy assurance
+  % are properties of the external provider identified by src.
+  from_source(d:design,s:strength,p:bytestring,src:stream_id,external_rbg:bool):machine=
+    LET n=seed_size(d,s,TRUE),a=IF external_rbg THEN acquire(n,src,0) ELSE entropy_bytes(n,src,0) ENDIF IN
+      IF a`ok THEN start(d,s,a`value,p) ELSE offline ENDIF
+  rs_reseed(m:machine,s:strength,a:material,src:stream_id,pos:uint32,method_b:bool):machine=
+    LET d=profile(m),len=seed_size(d,s,FALSE) IN
+    IF direct(d) OR NOT method_b THEN
+      LET need:subrange(16,48)=IF direct(d) THEN len ELSE len+8 ENDIF,e=entropy_bytes(need,src,pos) IN
+        IF e`ok THEN refresh(m,s,e`value,a) ELSE offline ENDIF
+    ELSIF pos>4294967287 OR a`length+8>material_bound THEN offline ELSE
+      LET extra=entropy_bytes(8,src,pos),e=entropy_bytes(len,src,u32plus(pos,8)) IN
+        IF extra`ok AND e`ok THEN refresh(m,s,e`value,join_octets(extra`value,a)) ELSE offline ENDIF ENDIF
+  rs_loop(m:machine,s:strength,n:request_bits,a:material,src:stream_id,method_b:bool,
+          pos:uint32,out:octets_of(octet_count(n)),i:upto(out`length)):RECURSIVE step=
+    IF i=out`length THEN (# ok:=TRUE,next:=m,data:=prefix_last(out,n) #) ELSE
+      LET d=profile(m),len=seed_size(d,s,FALSE),used:uint8=IF direct(d) THEN len ELSE len+8 ENDIF,
+          fresh=rs_reseed(m,s,a,src,pos,method_b) IN
+      IF offline?(fresh) THEN reject(offline) ELSE LET v=emit_bits(fresh,s,a),nbytes=u16div(s,8),
+          j:upto(out`length)=IF i+nbytes>=out`length THEN out`length ELSE i+nbytes ENDIF IN
+        IF NOT v`ok OR v`data`length/=nbytes OR (j<out`length AND pos+used>4294967295) THEN reject(v`next)
+        ELSE rs_loop(v`next,s,n,empty,src,method_b,u32plus(pos,used),copy_octets(out,i,v`data,0),j) ENDIF ENDIF ENDIF MEASURE out`length-i
+  reseed_construction(m:machine,n:request_bits,a:material,src:stream_id,method_b:bool):step=
+    IF offline?(m) OR NOT rbg3_design(profile(m)) THEN reject(m) ELSE
+      rs_loop(m,highest(profile(m)),n,a,src,method_b,0,fill_octets(octet_count(n),0),0) ENDIF
+  xor_construction(m:machine,n:request_bits,a:material,src:stream_id):step=
+    IF offline?(m) OR NOT rbg3_design(profile(m)) THEN reject(m) ELSE LET e=entropy_bytes(octet_count(n),src,0) IN
+      IF NOT e`ok THEN reject(offline) ELSE LET d=emit_bits(m,n,a) IN
+        IF NOT d`ok OR e`value`length/=d`data`length THEN reject(d`next) ELSE
+          d WITH [data:=prefix_last(mixed(d`data,e`value),n)] ENDIF ENDIF ENDIF
+  offline_silent: THEOREM FORALL(n:request_bits,a:material):emit_bits(offline,n,a)=reject(offline)
+END rbg_mechanisms

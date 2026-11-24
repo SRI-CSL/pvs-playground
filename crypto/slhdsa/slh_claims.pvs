@@ -1,0 +1,17 @@
+% FIPS 205 Algorithms 19, 22–25, across all twelve parameter sets.
+slh_claims: THEORY
+BEGIN
+  IMPORTING slh_prehash
+  generated_key_width: LEMMA
+    FORALL (p:profile,x,y,z:octets_of(node_bytes(p))):
+      keygen_internal(p,x,y,z)`sk`length=4*node_bytes(p)
+  AUTO_REWRITE generated_key_width
+  pure_correct: THEOREM FORALL (p:profile,x,y,z,opt:octets_of(node_bytes(p)),
+                               c:context_t,m:bytestring):
+    LET k=keygen_internal(p,x,y,z) IN
+      verify(p,k`pk,sign_message(p,k`sk,opt,c,m,TRUE),c,m)
+  prehash_correct: THEOREM FORALL (p:profile,x,y,z,opt:octets_of(node_bytes(p)),
+                                  c:context_t,m:bytestring,h:hash_id,tail:uint8,used:below(8)):
+    LET k=keygen_internal(p,x,y,z) IN
+      hash_verify(p,k`pk,hash_sign(p,k`sk,opt,c,m,h,tail,used),c,m,h,tail,used)
+END slh_claims

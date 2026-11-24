@@ -1,0 +1,126 @@
+% FIPS 186-5 sections 7.4--7.8; SP 800-186 section 3.2.3.2; RFC 8032 section 5.2.
+ed448: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  sha3: LIBRARY = "../sha3"
+  IMPORTING crypto_prelude@crypto_limbs, sha3@keccak
+
+  element: TYPE = words_of(14)
+  prime: element = (# len := 14, word := [: 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+      0xffffffff, 0xffffffff, 0xffffffff, 0xfffffffe,
+      0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+      0xffffffff, 0xffffffff :] #)
+  order: element = (# len := 14, word := [: 0xab5844f3, 0x2378c292, 0x8dc58f55, 0x216cc272,
+      0xaed63690, 0xc44edb49, 0x7cca23e9, 0xffffffff,
+      0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+      0xffffffff, 0x3fffffff :] #)
+  curve_d: element = (# len := 14, word := [: 0xffff6756, 0xffffffff, 0xffffffff, 0xffffffff,
+      0xffffffff, 0xffffffff, 0xffffffff, 0xfffffffe,
+      0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+      0xffffffff, 0xffffffff :] #)
+  inverse_exponent: element = (# len := 14, word := [: 0xfffffffd, 0xffffffff, 0xffffffff, 0xffffffff,
+      0xffffffff, 0xffffffff, 0xffffffff, 0xfffffffe,
+      0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+      0xffffffff, 0xffffffff :] #)
+  root_exponent: element = (# len := 14, word := [: 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+      0x00000000, 0x00000000, 0xc0000000, 0xffffffff,
+      0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+      0xffffffff, 0x3fffffff :] #)
+  base_x: element = (# len := 14, word := [: 0xc70cc05e, 0x2626a82b, 0x8b00938e, 0x433b80e1,
+      0x2ab66511, 0x12ae1af7, 0xa3d3a464, 0xea6de324,
+      0x470f1767, 0x9e146570, 0x22bf36da, 0x221d15a6,
+      0x6bed0ded, 0x4f1970c6 :] #)
+  base_y: element = (# len := 14, word := [: 0xf230fa14, 0x9808795b, 0x4ed7c8ad, 0xfdbd132c,
+      0xe67c39c4, 0x3ad3ff1c, 0x05a0c2d7, 0x87789c1e,
+      0x6ca39840, 0x4bea7373, 0x56c9c762, 0x88762037,
+      0x6eb6bc24, 0x693f4671 :] #)
+  fe_plus(a,b: element): element = add_mod(a,b,prime)
+  fe_minus(a,b: element): element = sub_mod(a,b,prime)
+  fe_times(a,b: element): element = mul_mod(a,b,prime)
+
+  point: TYPE = [# x,y,z: element #]
+  affine(x,y: element): point = (# x := x,y := y,z := one_words(14) #)
+  neutral: point = affine(zero_words(14),one_words(14))
+  base: point = affine(base_x,base_y)
+
+  % RFC 8032 section 5.2.4. Complete addition in projective coordinates
+  % for this Edwards curve (a=1 and nonsquare d).
+  add_point(p,q: point): point =
+    LET a=fe_times(p`z,q`z), b=fe_times(a,a), c=fe_times(p`x,q`x), d=fe_times(p`y,q`y),
+        e=fe_times(curve_d,fe_times(c,d)), f=fe_minus(b,e), g=fe_plus(b,e),
+        h=fe_times(fe_plus(p`x,p`y),fe_plus(q`x,q`y))
+    IN (# x := fe_times(fe_times(a,f),fe_minus(fe_minus(h,c),d)),
+          y := fe_times(fe_times(a,g),fe_minus(d,c)), z := fe_times(f,g) #)
+  scale_from(p: point,s: element,acc: point,n: upto(448)): RECURSIVE point =
+    IF n=0 THEN acc ELSE LET dbl=add_point(acc,acc)
+       IN scale_from(p,s,IF bit_word(s,n-1) THEN add_point(dbl,p) ELSE dbl ENDIF,n-1)
+    ENDIF MEASURE n
+  scale(p: point,s: element): point = scale_from(p,s,neutral,448)
+  equal_point(p,q: point): bool =
+    fe_times(p`x,q`z)=fe_times(q`x,p`z) AND fe_times(p`y,q`z)=fe_times(q`y,p`z)
+
+  key_bytes: TYPE = octets_of(57)
+  signature: TYPE = octets_of(114)
+  ctx_bytes: TYPE = {c: bytestring | c`length<=255}
+  half(b: signature,upper: bool): key_bytes =
+    (# length := 57, seq := LAMBDA (i: below(57)):
+         IF upper THEN b`seq(57+i) ELSE b`seq(i) ENDIF #)
+
+  % The additional octet carries only the sign of x. The lower seven bits
+  % must be zero; a zero x cannot have the negative sign.
+  compress(p: point): key_bytes =
+    LET inv=pow_mod(p`z,inverse_exponent,prime), x=fe_times(p`x,inv),
+        y=to_bytes(fe_times(p`y,inv),57,FALSE)
+    IN y WITH [`seq(56) := IF bit_word(x,0) THEN 128 ELSE 0 ENDIF]
+  decoded: TYPE = [# valid: bool,p: point #]
+  invalid: decoded = (# valid := FALSE,p := neutral #)
+  decompress(b: key_bytes): decoded =
+    LET sign=b`seq(56)=128, y=from_bytes(14,b,FALSE)
+    IN IF (b`seq(56)/=0 AND NOT sign) OR ge_words(y,prime) THEN invalid
+       ELSE LET yy=fe_times(y,y), u=fe_minus(yy,one_words(14)), v=fe_minus(fe_times(curve_d,yy),one_words(14)),
+                xx=fe_times(u,pow_mod(v,inverse_exponent,prime)), r=pow_mod(xx,root_exponent,prime)
+            IN IF v=zero_words(14) OR fe_times(r,r)/=xx OR (r=zero_words(14) AND sign) THEN invalid
+               ELSE (# valid := TRUE,p := affine(IF bit_word(r,0)=sign THEN r ELSE fe_minus(zero_words(14),r) ENDIF,y) #)
+               ENDIF
+       ENDIF
+
+  % SHAKE256 with its output count committed by the calling algorithm.
+  shake(m: bytestring,n: index): octets_of(n) = output(finish_shake(absorb(start(136),m)),n)
+  pruned(d: signature): element =
+    LET b=half(d,FALSE), clamped=b WITH [`seq(0) := u8and(b`seq(0),252),
+                                        `seq(55) := u8or(b`seq(55),128), `seq(56) := 0]
+    IN from_bytes(14,clamped,FALSE)
+  public_key(seed: key_bytes): key_bytes = compress(scale(base,pruned(shake(seed,114))))
+
+  % dom4 is ASCII "SigEd448" || phflag || len(context) || context.
+  dom4(ph: bool,ctx: ctx_bytes): absorbing =
+    LET tag: octets_of(10) = (# length := 10, seq := [: 83,105,103,69,100,52,52,56,
+                                     IF ph THEN 1 ELSE 0 ENDIF,ctx`length :] #)
+    IN absorb(absorb(start(136),tag),ctx)
+  finish_scalar(c: absorbing,m: bytestring): element =
+    reduce_le(output(finish_shake(absorb(c,m)),114),order)
+  sign_core(seed: key_bytes,m: bytestring,ctx: ctx_bytes,ph: bool): signature =
+    LET h=shake(seed,114), s=pruned(h), vk=compress(scale(base,s)), c=dom4(ph,ctx),
+        r=finish_scalar(absorb(c,half(h,TRUE)),m), rb=compress(scale(base,r)),
+        k=finish_scalar(absorb(absorb(c,rb),vk),m),
+        response=add_mod(r,mul_mod(k,s,order),order)
+    IN join_octets(rb,to_bytes(response,57,FALSE))
+  sign(seed: key_bytes,m: bytestring,ctx: ctx_bytes): signature = sign_core(seed,m,ctx,FALSE)
+  sign_ph(seed: key_bytes,m: bytestring,ctx: ctx_bytes): signature = sign_core(seed,shake(m,64),ctx,TRUE)
+
+  valid_key(p: point): bool = NOT equal_point(p,neutral) AND equal_point(scale(p,order),neutral)
+  verify_core(vk: key_bytes,m: bytestring,sig: signature,ctx: ctx_bytes,ph: bool): bool =
+    LET rb=half(sig,FALSE), sb=half(sig,TRUE), s=from_bytes(14,sb,FALSE),
+        a=decompress(vk), r=decompress(rb)
+    IN IF sb`seq(56)/=0 OR ge_words(s,order) OR NOT a`valid OR NOT r`valid THEN FALSE
+       ELSIF NOT valid_key(a`p) THEN FALSE
+       ELSE LET k=finish_scalar(absorb(absorb(dom4(ph,ctx),rb),vk),m)
+            IN equal_point(scale(base,s),add_point(r`p,scale(a`p,k))) ENDIF
+  verify(vk: key_bytes,m: bytestring,sig: signature,ctx: ctx_bytes): bool =
+    verify_core(vk,m,sig,ctx,FALSE)
+  verify_ph(vk: key_bytes,m: bytestring,sig: signature,ctx: ctx_bytes): bool =
+    verify_core(vk,shake(m,64),sig,ctx,TRUE)
+
+  high_scalar_rejected: LEMMA FORALL (vk: key_bytes,m: bytestring,sig: signature,c: ctx_bytes,ph: bool):
+    half(sig,TRUE)`seq(56)/=0 IMPLIES NOT verify_core(vk,m,sig,c,ph)
+END ed448

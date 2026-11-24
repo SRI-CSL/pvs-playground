@@ -1,0 +1,11 @@
+% Length-indexed exclusive-or on binary strings.
+crypto_xor: THEORY
+BEGIN
+  IMPORTING crypto_buffers
+  xor_seq(n:index,x,y:ARRAY[below(n) -> uint8]):ARRAY[below(n) -> uint8] =
+    LAMBDA(i:below(n)): u8xor(x(i),y(i))
+  mixed(x:bytestring,y:octets_of(x`length)):octets_of(x`length) =
+    (# length:=x`length,seq:=xor_seq(x`length,x`seq,y`seq) #)
+  mixed_at: LEMMA FORALL(x:bytestring,y:octets_of(x`length),i:below(x`length)):
+    mixed(x,y)`seq(i)=u8xor(x`seq(i),y`seq(i))
+END crypto_xor

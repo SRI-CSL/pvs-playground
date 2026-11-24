@@ -1,0 +1,13 @@
+% FIPS 186-5 §6.4, SP 800-56A Rev. 3 §5.7.1.2. Open functional theorems.
+prime_curve_claims: THEORY
+BEGIN
+  IMPORTING ecdsa
+  signing_verifies: THEOREM FORALL(c:curve,d,k:{s:scalar(c) | valid_scalar(c,s)},m:bytestring):
+    LET sig=sign_digest(c,d,k,m) IN
+      sig`ok IMPLIES verify_digest(c,public_key(c,d),m,sig`r,sig`s)
+  public_key_on_curve: THEOREM FORALL(c:curve,d:{s:scalar(c) | valid_scalar(c,s)}):
+    on_curve(c,public_key(c,d))
+  cdh_agreement: THEOREM FORALL(c:curve,a,b:{s:scalar(c) | valid_scalar(c,s)}):
+    LET left=cdh(c,a,public_key(c,b)),right=cdh(c,b,public_key(c,a)) IN
+      left`valid AND right`valid AND left`value=right`value
+END prime_curve_claims

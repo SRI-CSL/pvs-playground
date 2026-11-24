@@ -1,0 +1,20 @@
+% SP 800-38A §§6.3–6.5, SP 800-38C §§6.1–6.2, SP 800-38D §7.
+mode_claims: THEORY
+BEGIN
+  IMPORTING gcm_bits,ccm
+  cfb_recovers_segment: THEOREM FORALL(k:mode_key,iv,m:block,n:width):
+    LET c=cfb(k,iv,m,n,FALSE),p=cfb(k,iv,c`data,n,TRUE) IN
+      p`data=take_bits(m,n) AND p`next_reg=c`next_reg
+  ofb_recovers_segment: THEOREM FORALL(k:mode_key,iv,m:block,n:width):
+    ofb(k,iv,ofb(k,iv,m,n)`data,n)`data=take_bits(m,n)
+  ctr_recovers_segment: THEOREM FORALL(k:mode_key,iv,m:block,n:width):
+    ctr(k,iv,ctr(k,iv,m,n)`data,n)`data=take_bits(m,n)
+  gcm_recovers_plaintext: THEOREM FORALL(k:mode_key,n:nonce,a,m:bytestring,t:tag_size):
+    LET r=gcm.decrypt(k,n,a,gcm.encrypt(k,n,a,m,t),t) IN r`valid AND r`plaintext=m
+  gcm_recovers_bits: THEOREM FORALL(k:mode_key,n:packed_nonce,a,m:packed,t:tag_size):
+    LET r=open_bits(k,n,a,seal_bits(k,n,a,m,t),t) IN
+      r`valid AND r`plaintext`used=m`used AND r`plaintext`value=clean(m)
+  ccm_recovers_plaintext: THEOREM FORALL(k:mode_key,n:ccm_nonce,a:bytestring,
+                                          m:{x:bytestring | fits(n,x`length)},t:ccm_tag_size):
+    LET r=ccm.decrypt(k,n,a,ccm.encrypt(k,n,a,m,t),t) IN r`valid AND r`plaintext=m
+END mode_claims

@@ -1,0 +1,52 @@
+% SP 800-22 §2.6. Bluestein's identity reduces an arbitrary length DFT to
+% a power-of-two convolution. The first floor(n/2) magnitudes include DC.
+sts_spectral: THEORY
+BEGIN
+  IMPORTING sts_counts
+  complex_word:TYPE=[# re,im:fp #]
+  vector(n:pos_uint32):TYPE=ARRAY[below(n)->complex_word]
+  zero:complex_word=(# re:=fl(0),im:=fl(0) #)
+  plus_c(a,b:complex_word):complex_word=(# re:=fp_add(a`re,b`re),im:=fp_add(a`im,b`im) #)
+  minus_c(a,b:complex_word):complex_word=(# re:=fp_sub(a`re,b`re),im:=fp_sub(a`im,b`im) #)
+  times_c(a,b:complex_word):complex_word=(# re:=fp_sub(fp_mul(a`re,b`re),fp_mul(a`im,b`im)),
+                                           im:=fp_add(fp_mul(a`re,b`im),fp_mul(a`im,b`re)) #)
+  unit(a:fp,positive:bool):complex_word =
+    (# re:=fp_cos(a),im:=IF positive THEN fp_sin(a) ELSE fp_sub(fl(0),fp_sin(a)) ENDIF #)
+  pi_word:fp=4614256656552045848
+  top(n:pos_uint32,p:upto(31)):RECURSIVE upto(31) =
+    IF p=31 OR u32lshift(1,p)>=n THEN p ELSE top(n,p+1) ENDIF MEASURE 31-p
+  reverse_index(x:uint32,left:upto(31),acc:uint32):RECURSIVE uint32 =
+    IF left=0 THEN acc ELSE reverse_index(u32rshift(x,1),left-1,u32or(u32lshift(acc,1),u32and(x,1))) ENDIF MEASURE left
+  stage(n:pos_uint32,v:vector(n),span:pos_uint32,i,stop:upto(n),inverse:bool):RECURSIVE vector(n) =
+    LET h=u32div(span,2) IN IF h=0 OR i>=stop THEN v ELSIF stop-i>256 THEN
+      LET mid:upto(n)=u32plus(i,u32div(stop-i,2)) IN stage(n,stage(n,v,span,i,mid,inverse),span,mid,stop,inverse) ELSE
+      LET j=u32rem(i,h),a=u32plus(u32times(u32div(i,h),span),j),b=u32plus(a,h) IN
+      IF b>=n OR a>=n THEN v ELSE
+        LET u=v(a),z=times_c(v(b),unit(fp_mul(pi_word,ratio(j,h)),inverse)) IN
+          stage(n,v WITH [(a):=plus_c(u,z),(b):=minus_c(u,z)],span,i+1,stop,inverse) ENDIF ENDIF MEASURE stop-i
+  layers(n:pos_uint32,v:vector(n),p:upto(31),i:upto(32),inverse:bool):RECURSIVE vector(n) =
+    IF i>p THEN v ELSE layers(n,stage(n,v,u32lshift(1,i),0,u32div(n,2),inverse),p,i+1,inverse) ENDIF MEASURE 32-i
+  transform(n:pos_uint32,v:vector(n),p:upto(31),inverse:bool):vector(n) =
+    LET perm:vector(n)=LAMBDA(i:below(n)):LET j=reverse_index(i,p,0) IN IF j<n THEN v(j) ELSE zero ENDIF IN
+      layers(n,perm,p,1,inverse)
+  chirp(j:uint32,n:pos_uint32,positive:bool):complex_word =
+    unit(fp_mul(pi_word,ratio(u64rem(u64times(j,j),2*n),n)),positive)
+  peaks(n:pos_uint32,v:vector(n),stop:uint32,i:upto(n),limit:fp,count:uint32):RECURSIVE uint32 =
+    IF i>=stop OR i=n THEN count ELSE LET z=v(i),hit=fp_lt(fp_add(sq(z`re),sq(z`im)),limit) IN
+      peaks(n,v,stop,i+1,limit,IF hit THEN u32plus(count,1) ELSE count ENDIF) ENDIF MEASURE n-i
+  spectral(x:bitstream):observation =
+    IF x`n<2 OR x`n>1073741824 THEN omitted ELSE
+      LET n=x`n,p=top(2*n-1,0),Nfft:pos_uint32=u32lshift(1,p),
+          a:vector(Nfft)=LAMBDA(j:below(Nfft)):IF j>=n THEN zero ELSE LET w=chirp(j,n,FALSE) IN
+            IF bit(x,j)=1 THEN w ELSE minus_c(zero,w) ENDIF ENDIF,
+          b:vector(Nfft)=LAMBDA(j:below(Nfft)):IF j<n THEN chirp(j,n,TRUE)
+            ELSIF Nfft-j<n THEN chirp(Nfft-j,n,TRUE) ELSE zero ENDIF,
+          Ahat=transform(Nfft,a,p,FALSE),Bhat=transform(Nfft,b,p,FALSE),
+          conv=transform(Nfft,LAMBDA(j:below(Nfft)):times_c(Ahat(j),Bhat(j)),p,TRUE),
+          threshold=fp_mul(fp_mul(fl(n),fp_log(fl(20))),sq(fl(Nfft))),
+          actual=peaks(Nfft,conv,u32div(n,2),0,threshold,0),
+          z=fp_div(fp_sub(fl(actual),ratio(19*n,40)),fp_sqrt(ratio(19*n,1600))) IN
+        observed(gaussian_tail(z)) ENDIF
+  reversal_involution: THEOREM FORALL(p:upto(31),i:{j:uint32 | j<u32lshift(1,p)}):
+    reverse_index(reverse_index(i,p,0),p,0)=i
+END sts_spectral

@@ -1,0 +1,96 @@
+% SP 800-38G (2016), Algorithms 7–10.
+fpe: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING aes_modes, crypto_prelude@crypto_radix, crypto_prelude@crypto_words
+  result: DATATYPE
+  BEGIN
+    encoded(text: numeral): encoded?
+    invalid: invalid?
+  END result
+  bc(k:mode_key,x:block,inv:bool): block =
+    IF inv THEN ecb_decrypt(k,x) ELSE ecb_encrypt(k,x) ENDIF
+
+  reverse_block(x:block): block = LAMBDA (i:below(16)): x(15-i)
+  rev192(x:key192): key192 = LAMBDA (i:below(24)): x(23-i)
+  rev256(x:key256): key256 = LAMBDA (i:below(32)): x(31-i)
+  reverse_key(k:mode_key): mode_key =
+    CASES k OF mk128(a):mk128(reverse_block(a)), mk192(a):mk192(rev192(a)), mk256(a):mk256(rev256(a)) ENDCASES
+  ff1_p(r:radix,u:half_length,n:uint32,t:uint32): block =
+    LAMBDA (i:below(16)):
+      IF i=0 OR i=2 THEN 1 ELSIF i=1 THEN 2 ELSIF i<6 THEN be_byte32(r,i-2)
+      ELSIF i=6 THEN 10 ELSIF i=7 THEN u32rem(u,256) ELSIF i<12 THEN be_byte32(n,i-8)
+      ELSE be_byte32(t,i-12) ENDIF
+  tweak_string: TYPE = [# length:uint32, seq:ARRAY[below(length) -> uint8] #]
+  q_block(t:tweak_string,w:value,b,size:uint64,round:below(10),pos:uint64): block =
+    LAMBDA(j:below(16)): LET i=u64plus(pos,j) IN
+      IF i<t`length THEN t`seq(i) ELSIF i+b+1=size THEN round
+      ELSIF i<size AND i+b>=size THEN byte_at(w,size-1-i) ELSE 0 ENDIF
+  prf(k:mode_key,inv:bool,t:tweak_string,w:value,b,size:uint64,round:below(10),
+      pos:upto(size),chain:block): RECURSIVE block =
+    IF size-pos<16 THEN chain ELSE
+      prf(k,inv,t,w,b,size,round,pos+16,bc(k,byvXOR(chain,q_block(t,w,b,size,round,pos)),inv))
+    ENDIF MEASURE size-pos
+  ff3_p(t:tweak_string,round:below(10),w:value): block =
+    LAMBDA(i:below(16)): IF i>=4 THEN byte_at(w,15-i) ELSE
+      LET j:uint8=IF u8rem(round,2)=0 THEN 4+i ELSE i ENDIF,
+          b:uint8=IF j<t`length THEN t`seq(j) ELSE 0 ENDIF IN
+        IF i=3 THEN u8xor(b,round) ELSE b ENDIF ENDIF
+
+  % Stream the FF1 expansion S into a radix-r residue. Block zero is R.
+  residue(k:mode_key,inv:bool,root,chunk:block,r:radix,d:uint64,i:upto(d),a:value):
+      RECURSIVE sized(a`len) =
+    IF i=d THEN a ELSE
+      LET j=u64rem(i,16),count=u64div(i,16),
+          ctr:block=LAMBDA(p:below(16)):IF p<8 THEN 0 ELSE be_byte64(count,p-8) ENDIF,
+          next=IF i>0 AND j=0 THEN bc(k,byvXOR(root,ctr),inv) ELSE chunk ENDIF IN
+        residue(k,inv,root,next,r,d,i+1,scale_add(a,r,256,next(j),0))
+    ENDIF MEASURE d-i
+  pair: TYPE = [# left,right:value #]
+  rounds(k:mode_key,inv,ff3,dec:bool,t:tweak_string,p:block,r:radix,b,size,d:uint64,h:pair,
+         left:upto(10)): RECURSIVE pair =
+    IF left=0 THEN h ELSE
+      LET last:upto(10)=IF ff3 THEN 8 ELSE 10 ENDIF,
+          i:below(10)=IF dec THEN left-1 ELSIF left<=last THEN last-left ELSE 0 ENDIF,
+          a=IF dec THEN h`right ELSE h`left ENDIF, v=IF dec THEN h`left ELSE h`right ENDIF,
+          w=binary_words(v,r),
+          s=IF ff3 THEN reverse_block(bc(k,reverse_block(ff3_p(t,i,w)),inv))
+            ELSE prf(k,inv,t,w,b,size,i,0,p) ENDIF,
+          y=residue(k,inv,s,s,r,d,0,zeros(a`len)),z=combine(a,y,r,dec,0,0),
+          next:pair=IF dec THEN (# left:=z,right:=v #) ELSE (# left:=v,right:=z #) ENDIF IN
+        rounds(k,inv,ff3,dec,t,p,r,b,size,d,next,left-1)
+    ENDIF MEASURE left
+  digit(x:value,i:uint32,rev:bool): uint16 =
+    IF i>=x`len THEN 0 ELSE u32rem(x`cells(IF rev THEN i ELSE x`len-1-i ENDIF),65536) ENDIF
+  crypt_wide(k:mode_key,inv,ff3,dec:bool,t:tweak_string,r:radix,x:numeral): result =
+    LET n=x`length,small:half_length=u32div(n,2),large:half_length=n-small,
+        u=IF ff3 THEN large ELSE small ENDIF,v=IF ff3 THEN small ELSE large ENDIF IN
+    IF NOT domain_min(r,n) OR (ff3 AND (t`length/=8 OR n>192)) THEN invalid
+    ELSE LET b=byte_width(r,large) IN
+      IF (ff3 AND b>12) OR NOT valid_digits?(x,r,0) THEN invalid ELSE
+        LET h:pair=(# left:=half(x,0,u,ff3),right:=half(x,u,v,ff3) #),
+            size=u64times(16,u64div(u64plus(u64plus(t`length,b),16),16)),
+            d:uint64=IF ff3 THEN 16 ELSE 4*u64div(b+3,4)+4 ENDIF,
+            p=IF ff3 THEN zero_block ELSE bc(k,ff1_p(r,u,n,t`length),inv) ENDIF,
+            kk=IF ff3 THEN reverse_key(k) ELSE k ENDIF,
+            z=rounds(kk,inv,ff3,dec,t,p,r,b,size,d,h,IF ff3 THEN 8 ELSE 10 ENDIF) IN
+          encoded((# length:=n,digits:=LAMBDA(i:below(n)):
+              IF i<u THEN digit(z`left,i,ff3) ELSE digit(z`right,i-u,ff3) ENDIF #))
+      ENDIF ENDIF
+  crypt(k:mode_key,inv,ff3,dec:bool,t:bytestring,r:radix,x:numeral): result =
+    crypt_wide(k,inv,ff3,dec,(# length:=t`length,seq:=t`seq #),r,x)
+  parameters:TYPE=[# minlen,maxlen,maxtlen:uint32 #]
+  configured(k:mode_key,inv,ff3,dec:bool,t:tweak_string,r:radix,x:numeral,p:parameters):result=
+    IF NOT domain_min(r,p`minlen) OR x`length<p`minlen OR x`length>p`maxlen
+       OR (NOT ff3 AND t`length>p`maxtlen) OR (ff3 AND (p`maxlen>192 OR
+           byte_width(r,p`maxlen-u32div(p`maxlen,2))>12)) THEN invalid
+    ELSE crypt_wide(k,inv,ff3,dec,t,r,x) ENDIF
+  accepted_domain: THEOREM FORALL(k:mode_key,inv,ff3,dec:bool,t:tweak_string,r:radix,x:numeral):
+    encoded?(crypt_wide(k,inv,ff3,dec,t,r,x)) IFF
+      (domain_min(r,x`length) AND valid_digits?(x,r,0) AND
+       (NOT ff3 OR (t`length=8 AND x`length<=192 AND byte_width(r,x`length-u32div(x`length,2))<=12)))
+  round_trip: THEOREM FORALL(k:mode_key,inv,ff3:bool,t:tweak_string,r:radix,x:numeral):
+    LET c=crypt_wide(k,inv,ff3,FALSE,t,r,x) IN encoded?(c) IMPLIES
+      text(c)`length=x`length AND valid_digits?(text(c),r,0) AND
+      crypt_wide(k,inv,ff3,TRUE,t,r,text(c))=encoded(x)
+END fpe

@@ -1,0 +1,48 @@
+% SP 800-22 §§2.13–2.15. A nonzero terminal walk closes one last cycle.
+sts_walk: THEORY
+BEGIN
+  IMPORTING sts_counts
+  magnitude(s:int64):uint64=IF s<0 THEN -s ELSE s ENDIF
+  signed_fl(s:int64):fp=IF s<0 THEN fp_sub(fl(0),fl(magnitude(s))) ELSE fl(magnitude(s)) ENDIF
+  excursion_state:TYPE={s:int8 | -9<=s AND s<=9 AND s/=0}
+  walk_info:TYPE=[# height:int32,maximum,cycles,visits,cycle_visits:uint32,hist:bins #]
+  finish_cycle(w:walk_info):walk_info =
+    LET j:below(6)=IF w`cycle_visits>=5 THEN 5 ELSE w`cycle_visits ENDIF IN
+      w WITH [cycles:=u32plus(w`cycles,1),cycle_visits:=0,`hist(j):=u32plus(w`hist(j),1)]
+  walk_range(x:bitstream,rev:bool,target:excursion_state,i,stop:upto(x`n),w:walk_info): RECURSIVE walk_info =
+    IF i>=stop THEN w ELSIF stop-i>256 THEN LET mid:upto(x`n)=u32plus(i,u32div(stop-i,2)) IN
+      walk_range(x,rev,target,mid,stop,walk_range(x,rev,target,i,mid,w)) ELSE
+      LET j:uint32=IF rev THEN u32minus(x`n-1,i) ELSE i ENDIF,h:int32=IF bit(x,j)=0 THEN w`height-1 ELSE w`height+1 ENDIF,
+          a:uint32=magnitude(h),hit=h=target,
+          v=w WITH [height:=h,maximum:=IF a>w`maximum THEN a ELSE w`maximum ENDIF,
+              cycle_visits:=IF hit THEN u32plus(w`cycle_visits,1) ELSE w`cycle_visits ENDIF,
+              visits:=IF hit THEN u32plus(w`visits,1) ELSE w`visits ENDIF] IN
+        walk_range(x,rev,target,i+1,stop,IF h=0 THEN finish_cycle(v) ELSE v ENDIF) ENDIF MEASURE stop-i
+  walk(x:bitstream,rev:bool,target:excursion_state,i:upto(x`n),w:walk_info):walk_info=
+    LET v=walk_range(x,rev,target,i,x`n,w) IN IF v`height=0 THEN v ELSE finish_cycle(v) ENDIF
+  initial:walk_info=(# height:=0,maximum:=0,cycles:=0,visits:=0,cycle_visits:=0,hist:=empty_bins #)
+  norm_cdf(x:fp):fp=fp_div(fp_erfc(fp_div(fp_sub(fl(0),x),fp_sqrt(fl(2)))),fl(2))
+  % Sum Phi((4k+c+2)z/sqrt(n)) - Phi((4k+c)z/sqrt(n)).
+  cdf_terms(k,hi:int32,c:int8,scale:fp,total:fp): RECURSIVE fp =
+    IF k>hi THEN total ELSE LET u:int64=4*k+c,
+        term=fp_sub(norm_cdf(fp_mul(signed_fl(u+2),scale)),norm_cdf(fp_mul(signed_fl(u),scale))) IN
+      cdf_terms(k+1,hi,c,scale,fp_add(total,term)) ENDIF MEASURE hi-k+1
+  cumulative_sums(x:bitstream,reverse:bool):observation =
+    IF x`n=0 THEN omitted ELSE LET z=walk(x,reverse,1,0,initial)`maximum IN
+      IF z=0 OR z>x`n THEN omitted ELSE
+        LET scale=fp_div(fl(z),fp_sqrt(fl(x`n))),den:pos_uint64=4*z,
+            lo1:int32= -u64div(x`n-z+den-1,den),lo2:int32= -u64div(x`n+3*z+den-1,den),
+            hi:int32=u64div(x`n-z,den), a=cdf_terms(lo1,hi,-1,scale,fl(0)),b=cdf_terms(lo2,hi,1,scale,fl(0)) IN
+          observed(fp_add(fp_sub(fl(1),a),b)) ENDIF ENDIF
+  excursion_probs(target:excursion_state):probs =
+    LET q=ratio(1,2*magnitude(target)),p=fp_sub(fl(1),q) IN
+      LAMBDA(k:below(7)):IF k=0 THEN p ELSIF k=5 THEN fp_mul(q,fp_pow(p,fl(4)))
+                          ELSE fp_mul(sq(q),fp_pow(p,fl(k-1))) ENDIF
+  excursion(x:bitstream,target:excursion_state,variant:bool):observation =
+    LET w=walk(x,FALSE,target,0,initial),J=w`cycles,a=magnitude(target) IN
+    IF J<500 OR (NOT variant AND a>4) OR fp_lt(fl(J),fp_div(fp_sqrt(fl(x`n)),fl(200))) THEN omitted
+    ELSIF variant THEN observed(gaussian_tail(fp_div(fp_sub(fl(w`visits),fl(J)),fp_sqrt(fl(J*(4*a-2))))))
+    ELSE observed(chi_tail(5,cat_chi(w`hist,excursion_probs(target),J,6,fl(0)))) ENDIF
+  too_few_cycles: THEOREM FORALL(x:bitstream,s:excursion_state,v:bool):
+    walk(x,FALSE,s,0,initial)`cycles<500 IMPLIES NOT excursion(x,s,v)`applicable
+END sts_walk

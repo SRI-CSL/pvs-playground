@@ -1,0 +1,19 @@
+# Alternate and legacy elliptic curve models
+
+## Montgomery and Edwards representations
+
+`montgomery` implements the RFC 7748 X25519 and X448 functions, including scalar clamping, little-endian encoding, the X25519 input mask and reduction of noncanonical input coordinates. Separate SP 800-186 partial and full validation interfaces accept complete affine points. They check coordinate ranges, the Montgomery equation and prime subgroup membership. SP 800-186 Table 2 lists Curve25519, W-25519, Curve448, E448 and W-448 as alternate representations for implementation flexibility. FIPS 186-5 uses Edwards25519 and Edwards448 for EdDSA. The X25519/X448 interfaces reproduce the RFC operation. [SP 800-186 §§3.2, D.1.2 and Table 2](https://doi.org/10.6028/NIST.SP.800-186) · [RFC 7748 §§4–6](https://www.rfc-editor.org/rfc/rfc7748#section-4)
+
+`curve_maps` implements the Appendix B conversions for Edwards25519/Curve25519/W-25519 and E448/Curve448/W-448, including infinity and the order-two point. These maps take valid points in the source model. `edwards_isogeny` implements the separate degree-four mapping between Edwards448 and Curve448 and its dual. Tests check the published base-point correspondences and that the dual composition quadruples the Edwards448 base point. The proofs include conditional-swap involution, infinity rejection and the image of the identity. [SP 800-186 Appendix B](https://doi.org/10.6028/NIST.SP.800-186)
+
+## Binary curves
+
+`binary_parameters` contains the polynomial-basis Koblitz and pseudorandom curve domains for 163, 233, 283, 409 and 571 bits. `binary_curve` implements field multiplication and inversion, affine group operations, partial and full public-key validation, and ECDSA verification. `binary_ecdsa.verify_digest` handles big-endian digest truncation to the subgroup order's bit length. `binary_encoding` implements coordinate compression and recovery using the odd-degree half-trace and a checked quadratic equation. SP 800-186 deprecates the binary curves and identifies the 163-bit curves as legacy-use. This library handles verification of existing signatures. [SP 800-186 §§3.1–3.3 and Appendices D–E](https://doi.org/10.6028/NIST.SP.800-186) · [FIPS 186-5 §6.4.2](https://doi.org/10.6028/NIST.FIPS.186-5)
+
+The binary ECDSA fixture contains one valid and one invalid SHA-256 signature for each of the ten domains from NIST's `SigVer.rsp`. The generated C hashes the supplied message, validates the key and compares the verification result. Separate tests recover every domain's generator from its compressed coordinates. [NIST ECDSA CAVP vectors](https://csrc.nist.gov/projects/cryptographic-algorithm-validation-program/digital-signatures)
+
+## Additional prime curves
+
+`appendix_h` defines the five regular Brainpool domains at 224, 256, 320, 384 and 512 bits, their RFC 5639 twisted representations, and secp256k1. `appendix_h_ecc` implements general-coefficient Jacobian doubling, mixed addition, affine point validation, cofactor-one CDH and ECDSA signing/verification of supplied digests. Signing takes a caller-supplied valid nonce. Appendix H allows the Brainpool domains for interoperability in ECDSA and EC key establishment and identifies blockchain-related applications for secp256k1. [SP 800-186 Appendix H](https://doi.org/10.6028/NIST.SP.800-186) · [RFC 5639 §3](https://www.rfc-editor.org/rfc/rfc5639#section-3) · [SEC 2 §2.4.1](https://www.secg.org/sec2-v2.pdf)
+
+Run the selected suites with `python3 validation/check.py montgomery edwards-isogeny binary-ecdsa binary-encoding appendix-h`. All executable arithmetic uses bounded integers and little-endian 32-bit limbs. The saved proofs cover type/termination obligations and the explicitly stated structural lemmas. Full algebraic refinement proofs, normal-basis arithmetic and implementation timing assurance remain open.

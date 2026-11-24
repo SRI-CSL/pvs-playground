@@ -1,0 +1,33 @@
+% SP 800-38D §§8.2–8.3. A 96-bit IV profile. Per-key device prefixes,
+% persistent counter reservation and the aggregate random invocation budget
+% are assigned by the application. Emit an IV only after reserving its state.
+iv_generation: THEORY
+BEGIN
+  crypto_prelude: LIBRARY="../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_random_buffers,crypto_prelude@crypto_words
+  serial:TYPE=[# fixed:uint32,counter:uint64,exhausted:bool #]
+  iv96:TYPE=octets_of(12)
+  serialize(prefix:uint32,c:uint64):iv96 =
+    (# length:=12,seq:=LAMBDA(i:below(12)):
+         IF i<4 THEN be_byte32(prefix,i) ELSE be_byte64(c,i-4) ENDIF #)
+  reservation:TYPE=[# ok:bool,iv:iv96,next:serial #]
+  reserve(s:serial):reservation =
+    IF s`exhausted THEN (# ok:=FALSE,iv:=fill_octets(12,0),next:=s #)
+    ELSE LET n=IF s`counter=0xffffffffffffffff THEN s WITH [`exhausted:=TRUE]
+               ELSE s WITH [`counter:=s`counter+1] ENDIF IN
+      (# ok:=TRUE,iv:=serialize(s`fixed,s`counter),next:=n #) ENDIF
+  increasing: LEMMA FORALL(s:serial): NOT s`exhausted IMPLIES
+    reserve(s)`next`exhausted OR reserve(s)`next`counter>s`counter
+  exhaustion_persists: LEMMA FORALL(s:serial): s`exhausted IMPLIES
+    NOT reserve(s)`ok AND reserve(s)`next=s
+  budget:TYPE={n:uint64 | n<=4294967296}
+  random_reservation:TYPE=[# ok:bool,iv:iv96,remaining:budget #]
+  random_iv(s:stream_id,available:budget):random_reservation =
+    IF available=0 THEN (# ok:=FALSE,iv:=fill_octets(12,0),remaining:=0 #)
+    ELSE LET r=acquire(12,s,0) IN
+      (# ok:=r`ok,iv:=r`value,remaining:=IF r`ok THEN available-1 ELSE available ENDIF #)
+    ENDIF
+  random_limit: LEMMA FORALL(s:stream_id): NOT random_iv(s,0)`ok
+  % Appendix C of SP 800-38A, unpredictable IV for CBC or CFB.
+  random_block_iv(s:stream_id):acquisition(16)=acquire(16,s,0)
+END iv_generation

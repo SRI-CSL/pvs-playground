@@ -1,0 +1,79 @@
+(|crypto_block_io|
+ (|read_block_TCC1| 0
+  (|read_block_TCC1-1| NIL 4004535527
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|read_block| SUBTYPE
+    "LAMBDA (j: naturalnumbers.upto(15)): IF reals.<((number_fields.+)(crypto_block_io.base, j), crypto_block_io.x`length) THEN crypto_block_io.x`seq((number_fields.+)(crypto_block_io.base, j)) ELSE 0 ENDIF"
+    "octet_block" (6 4 7 58))))
+ (|block_prefix_TCC1| 0
+  (|block_prefix_TCC1-1| NIL 4004535527
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   "shostak"
+   (|block_prefix| SUBTYPE "crypto_block_io.j" "below(16)" (9 28 9 29))))
+ (|block_bytes_TCC1| 0
+  (|block_bytes_TCC1-1| NIL 4004535527
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   "shostak"
+   (|block_bytes| SUBTYPE "crypto_block_io.n" "index" (10 54 10 55))))
+ (|next_block_TCC1| 0
+  (|next_block_TCC1-1| NIL 4004535528
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|next_block| SUBTYPE "(number_fields.+)(crypto_block_io.base, 16)"
+    "{j: naturalnumbers.upto(crypto_block_io.n) | reals.<(crypto_block_io.base, j)}"
+    (13 25 13 32))))
+ (|next_block_TCC2| 0
+  (|next_block_TCC2-1| NIL 4004535528
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|next_block| SUBTYPE "crypto_block_io.n"
+    "{j: naturalnumbers.upto(crypto_block_io.n) | reals.<(crypto_block_io.base, j)}"
+    (13 38 13 39))))
+ (|write_block_TCC1| 0
+  (|write_block_TCC1-1| NIL 4004535528
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   "shostak"
+   (|write_block| SUBTYPE "0"
+    "upto(crypto_block_io.block_bytes(crypto_block_io.b, 16)`length)"
+    (15 43 15 44)))))
+

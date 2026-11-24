@@ -1,0 +1,28 @@
+% RFC 8017 §§4 and 5. RSA representatives are exactly k big-endian octets.
+% Moduli in this bounded profile have 2048..16384 bits and a full high octet.
+rsa_primitive: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_montgomery
+  rsa_size: TYPE = subrange(256,2048)
+  modulus: TYPE = {b:bytestring | b`length>=256 AND b`length<=2048 AND b`seq(0)>=128
+                                  AND u8and(b`seq(b`length-1),1)=1}
+  rsa_result: TYPE = [# valid:bool, data:bytestring #]
+  invalid: rsa_result = (# valid:=FALSE,data:=fill_octets(0,0) #)
+  os2ip_width(n:rsa_size): limb_count = u16div(n+3,4)
+  % The public exponent constraint in FIPS 186-5 §5.4, without leading zeros.
+  public_exponent(e:bytestring): bool =
+    e`length>=3 AND e`length<=32 AND e`seq(0)/=0 AND u8and(e`seq(e`length-1),1)=1
+  rsa_apply(n:modulus,e:bytestring,input:bytestring): rsa_result =
+    IF input`length/=n`length OR e`length=0 OR e`length>n`length THEN invalid ELSE
+      LET w=os2ip_width(n`length), m=from_bytes(w,n,TRUE), x=from_bytes(w,input,TRUE),
+          exponent=from_bytes(w,e,TRUE) IN
+        IF ge_words(x,m) OR exponent=zero_words(w) THEN invalid ELSE
+          (# valid:=TRUE,data:=to_bytes(mont_power(x,exponent,m),n`length,TRUE) #)
+        ENDIF
+    ENDIF
+  rsa_public(n:modulus,e,input:bytestring): rsa_result =
+    IF public_exponent(e) THEN rsa_apply(n,e,input) ELSE invalid ENDIF
+  invalid_width: LEMMA FORALL (n:modulus,e,x:bytestring):
+    x`length/=n`length IMPLIES rsa_apply(n,e,x)=invalid
+END rsa_primitive

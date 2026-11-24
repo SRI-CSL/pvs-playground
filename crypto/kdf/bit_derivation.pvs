@@ -1,0 +1,24 @@
+% SP 800-108 Rev. 1 §§4–5, SP 800-56C Rev. 2 §4. Byte count plus
+% remainder denote the requested L in bits. HMAC and hash use the MSB
+% prefix. KMAC produces the FIPS 202 packed output with a low-bit tail.
+bit_derivation: THEORY
+BEGIN
+  IMPORTING establishment_kdf,crypto_prelude@crypto_bit_prefix,sha3@squeeze_bits
+  bytes_needed(w:uint16,r:below(8)):subrange(0,65536) = w+IF r=0 THEN 0 ELSE 1 ENDIF
+  trim(v:result,w:uint16,r:below(8)):result =
+    IF NOT v`ok OR v`data`length/=bytes_needed(w,r) THEN (# ok:=FALSE,data:=fill_octets(0,0) #)
+    ELSE (# ok:=TRUE,data:=bit_prefix(v`data,w,r) #) ENDIF
+  hmac_kdf_bits(h:hash_id,k:bytestring,mode:kdf_mode,r:counter_bytes,
+                label:fixed_data,ctx:{x:bytestring | x`length+label`length+217<maxsize},
+                iv:prior_block,w:uint16,tail:below(8)):result =
+    LET fixed=encode_info(label,ctx,8*w+tail),v=kbkdf(h,k,mode,r,fixed,iv,bytes_needed(w,tail)) IN trim(v,w,tail)
+  hash_kda_bits(h:hash_id,keyed:bool,salt:bytestring,z:secret,info:info_for(z),
+                w:uint16,r:{n:below(8) | w>0 OR n>0}):result =
+    trim(one_step(h,keyed,salt,z,info,bytes_needed(w,r)),w,r)
+  kmac_kdf_bits(s:strength,k,ctx,label:packed,w:uint16,r:{n:below(8) | w>0 OR n>0}):packed =
+    read_bits(kmac(s,k,ctx,label,8*w+r),w,r)
+  kmac_kda_bits(s:strength,salt:bytestring,z:secret,info:info_for(z),
+                w:uint16,r:{n:below(8) | w>0 OR n>0}):packed =
+    LET m=join_octets(encode_counter(1,4),join_octets(z,info)) IN
+      read_bits(kmac(s,octets(kmac_salt(s,salt)),octets(m),octets(kdf_label),8*w+r),w,r)
+END bit_derivation

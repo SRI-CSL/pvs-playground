@@ -1,0 +1,343 @@
+(|keccak_p|
+ (|lane_mask_TCC1| 0
+  (|lane_mask_TCC1-1| NIL 4004539513
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|lane_mask| SUBTYPE "keccak_p.w" "upto(64)" (10 85 10 86))))
+ (|rotate_lane_TCC1| 0
+  (|rotate_lane_TCC1-1| NIL 4004539513
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK
+   (|rotate_lane| SUBTYPE "modulo_arithmetic.nrem(keccak_p.offset, keccak_p.w)"
+    "below(64)" (12 36 12 50))))
+ (|rotate_lane_TCC2| 0
+  (|rotate_lane_TCC2-1| NIL 4004539513
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK (|rotate_lane| SUBTYPE "keccak_p.k" "upto(64)" (13 48 13 49))))
+ (|rotate_lane_TCC3| 0
+  (|rotate_lane_TCC3-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK
+   (|rotate_lane| SUBTYPE "(number_fields.-)(keccak_p.w, keccak_p.k)"
+    "upto(64)" (13 63 13 66))))
+ (|apply_stage_TCC1| 0
+  (|apply_stage_TCC1-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|apply_stage| SUBTYPE "(number_fields.-)(25, keccak_p.i)" "naturalnumber"
+    (24 65 24 69))))
+ (|apply_stage_TCC2| 0
+  (|apply_stage_TCC2-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|apply_stage| SUBTYPE "keccak_p.i" "lane_number" (24 39 24 40))))
+ (|apply_stage_TCC3| 0
+  (|apply_stage_TCC3-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|apply_stage| SUBTYPE "(number_fields.+)(keccak_p.i, 1)" "upto(25)"
+    (24 46 24 49))))
+ (|apply_stage_TCC4| 0
+  (|apply_stage_TCC4-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|apply_stage| TERMINATION
+    "keccak_p.apply_stage(keccak_p.l, keccak_p.step, keccak_p.a, keccak_p.b WITH [(keccak_p.i) := keccak_p.v], (number_fields.+)(keccak_p.i, 1))"
+    "NIL" (24 9 24 50))))
+ (|apply_stage_TCC5| 0
+  (|apply_stage_TCC5-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|apply_stage| SUBTYPE "keccak_p.i" "lane_number" (22 36 22 37))))
+ (|apply_stage_TCC6| 0
+  (|apply_stage_TCC6-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|apply_stage| SUBTYPE "keccak_p.i" "lane_number" (22 88 22 89))))
+ (|apply_stage_TCC7| 0
+  (|apply_stage_TCC7-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|apply_stage| SUBTYPE "keccak_p.i" "lane_number" (23 28 23 29))))
+ (|lfsr_TCC1| 0
+  (|lfsr_TCC1-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|lfsr| SUBTYPE "(number_fields.-)(keccak_p.n, 1)" "below(255)"
+    (28 41 28 44))))
+ (|lfsr_TCC2| 0
+  (|lfsr_TCC2-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|lfsr| TERMINATION
+    "keccak_p.lfsr(keccak_p.lfsr_step(keccak_p.r), (number_fields.-)(keccak_p.n, 1))"
+    "NIL" (28 23 28 45))))
+ (|build_rc_TCC1| 0
+  (|build_rc_TCC1-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|build_rc| SUBTYPE "(number_fields.-)(7, keccak_p.j)" "naturalnumber"
+    (32 54 32 57))))
+ (|build_rc_TCC2| 0
+  (|build_rc_TCC2-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|build_rc| SUBTYPE "keccak_p.z" "upto(64)" (31 92 31 93))))
+ (|build_rc_TCC3| 0
+  (|build_rc_TCC3-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|build_rc| SUBTYPE "(number_fields.+)(keccak_p.j, 1)" "upto(7)"
+    (32 33 32 36))))
+ (|build_rc_TCC4| 0
+  (|build_rc_TCC4-1| NIL 4004539514
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|build_rc| TERMINATION
+    "keccak_p.build_rc(keccak_p.l, keccak_p.lfsr_step(keccak_p.r), (number_fields.+)(keccak_p.j, 1), keccak_p.v)"
+    "NIL" (32 9 32 39))))
+ (|build_rc_TCC5| 0
+  (|build_rc_TCC5-1| NIL 4004539515
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|build_rc| SUBTYPE "keccak_p.j" "lane_log" (31 33 31 34))))
+ (|build_rc_TCC6| 0
+  (|build_rc_TCC6-1| NIL 4004539515
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|build_rc| SUBTYPE "(number_fields.-)(keccak_p.lane_width(keccak_p.j), 1)"
+    "below(64)" (31 22 31 37))))
+ (|advance_p_TCC1| 0
+  (|advance_p_TCC1-1| NIL 4004539515
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|advance_p| SUBTYPE "(number_fields.-)(keccak_p.nr, 1)" "uint32"
+    (43 95 43 99))))
+ (|advance_p_TCC2| 0
+  (|advance_p_TCC2-1| NIL 4004539515
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|advance_p| TERMINATION
+    "keccak_p.advance_p(keccak_p.c WITH [`a := keccak_p.round_p(keccak_p.c`shape, keccak_p.c`a, keccak_p.c`ir), `ir := modulo_arithmetic.nrem((number_fields.+)(keccak_p.c`ir, 1), 255)], (number_fields.-)(keccak_p.nr, 1))"
+    "NIL" (43 24 43 100))))
+ (|permute_f_TCC1| 0
+  (|permute_f_TCC1-1| NIL 4004539515
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|permute_f| SUBTYPE "(number_fields.+)(12, number_fields.*(2, keccak_p.l))"
+    "{n: integertypes.uint32 | reals.>(n, 0)}" (47 50 47 56))))
+ (|zero_rounds_preserve_cursor| 0
+  (|zero_rounds_preserve_cursor-1| NIL 4004539515
+   ("" (GRIND :IF-MATCH NIL) NIL NIL)
+   ((|advance_p| DEF-DECL "[[cursor, uint32] -> cursor]" |keccak_p| NIL))
+   SHOSTAK))
+ (|full_rounds_start_at_zero_TCC1| 0
+  (|full_rounds_start_at_zero_TCC1-1| NIL 4004539516
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|full_rounds_start_at_zero| SUBTYPE
+    "(number_fields.+)(12, number_fields.*(2, keccak_p.l))" "below(255)"
+    (50 75 50 81))))
+ (|full_rounds_start_at_zero| 0
+  (|full_rounds_start_at_zero-1| NIL 4004539516
+   (""
+    (THEN (SKOSIMP*) (EXPAND "begin_p") (USE "rem_nrem" ("b" "255" "x" "255"))
+     (USE "rem_self" ("b" "255")) (ASSERT))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|begin_p| CONST-DECL "[[lane_log, lanes, below(255)] -> cursor]"
+     |keccak_p| NIL)
+    (|rem_self| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|rem_nrem| FORMULA-DECL NIL |modulo_arithmetic| NIL))
+   SHOSTAK)))

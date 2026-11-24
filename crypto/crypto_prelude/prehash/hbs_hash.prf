@@ -1,0 +1,248 @@
+(|hbs_hash|
+ (|take_bytes_TCC1| 0
+  (|take_bytes_TCC1-1| NIL 4004536861
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK (|take_bytes| SUBTYPE "hbs_hash.i" "uint32" (14 45 14 46))))
+ (|part_TCC1| 0
+  (|part_TCC1-1| NIL 4004536862
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK (|part| SUBTYPE "hbs_hash.n" "index" (15 61 15 62))))
+ (|word_TCC1| 0
+  (|word_TCC1-1| NIL 4004536862
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|word| SUBTYPE "3" "below(crypto_buffers.fill_octets(4, 0)`length)"
+    (19 57 19 58))))
+ (|word_TCC2| 0
+  (|word_TCC2-1| NIL 4004536862
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|word| SUBTYPE "2" "below(crypto_buffers.fill_octets(4, 0)`length)"
+    (19 33 19 34))))
+ (|word_TCC3| 0
+  (|word_TCC3-1| NIL 4004536862
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|word| SUBTYPE "1" "below(crypto_buffers.fill_octets(4, 0)`length)"
+    (18 56 18 57))))
+ (|word_TCC4| 0
+  (|word_TCC4-1| NIL 4004536862
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|word| SUBTYPE "0" "below(crypto_buffers.fill_octets(4, 0)`length)"
+    (18 32 18 33))))
+ (|word_TCC5| 0
+  (|word_TCC5-1| NIL 4004536862
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   NIL SHOSTAK
+   (|word| SUBTYPE
+    "crypto_buffers.fill_octets(4, 0) WITH [`seq(0) := crypto_words.be_byte32(hbs_hash.x, 0), `seq(1) := crypto_words.be_byte32(hbs_hash.x, 1), `seq(2) := crypto_words.be_byte32(hbs_hash.x, 2), `seq(3) := crypto_words.be_byte32(hbs_hash.x, 3)]"
+    "octets_of(4)" (18 4 19 76))))
+ (|read_word_TCC1| 0
+  (|read_word_TCC1-1| NIL 4004536862
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK (|read_word| SUBTYPE "hbs_hash.i" "uint32" (20 69 20 70))))
+ (|read_word_TCC2| 0
+  (|read_word_TCC2-1| NIL 4004536862
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|read_word| SUBTYPE "(number_fields.+)(hbs_hash.i, 1)" "uint32"
+    (20 78 20 81))))
+ (|read_word_TCC3| 0
+  (|read_word_TCC3-1| NIL 4004536863
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|read_word| SUBTYPE "(number_fields.+)(hbs_hash.i, 2)" "uint32"
+    (20 89 20 92))))
+ (|read_word_TCC4| 0
+  (|read_word_TCC4-1| NIL 4004536863
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|read_word| SUBTYPE "(number_fields.+)(hbs_hash.i, 3)" "uint32"
+    (20 100 20 103))))
+ (|short_TCC1| 0
+  (|short_TCC1-1| NIL 4004536864
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|short| SUBTYPE "1" "below(crypto_buffers.fill_octets(2, 0)`length)"
+    (21 87 21 88))))
+ (|short_TCC2| 0
+  (|short_TCC2-1| NIL 4004536864
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|short| SUBTYPE "modulo_arithmetic.nrem(hbs_hash.x, 256)" "byte"
+    (21 91 21 102))))
+ (|short_TCC3| 0
+  (|short_TCC3-1| NIL 4004536864
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|short| SUBTYPE "0" "below(crypto_buffers.fill_octets(2, 0)`length)"
+    (21 63 21 64))))
+ (|short_TCC4| 0
+  (|short_TCC4-1| NIL 4004536864
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   NIL SHOSTAK
+   (|short| SUBTYPE
+    "crypto_buffers.fill_octets(2, 0) WITH [`seq(0) := integertypes.u16rshift(hbs_hash.x, 8), `seq(1) := modulo_arithmetic.nrem(hbs_hash.x, 256)]"
+    "octets_of(2)" (21 35 21 103))))
+ (|hash_TCC1| 0
+  (|hash_TCC1-1| NIL 4004536864
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|hash| SUBTYPE "hbs_hash.digest_len(hbs_hash.s)" "index" (23 42 23 55))))
+ (|hash_TCC2| 0
+  (|hash_TCC2-1| NIL 4004536864
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|hash| SUBTYPE "hbs_hash.digest_len(hbs_hash.s)"
+    "upto(secure_hash.sha256(hbs_hash.m)`length)" (24 39 24 52)))))
+

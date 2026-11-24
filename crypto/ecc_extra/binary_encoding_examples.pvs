@@ -1,0 +1,17 @@
+% Every standardized polynomial-basis generator round-trips through its compressed coordinates.
+binary_encoding_examples: THEORY
+BEGIN
+  IMPORTING binary_encoding
+  roundtrip(c: curve): bool =
+    LET g=generator(c), q=decompress(c,compress(c,g)) IN q`valid AND q`value=g
+  k163: _TEST_ roundtrip(0)
+  b163: _TEST_ roundtrip(1)
+  k233: _TEST_ roundtrip(2)
+  b233: _TEST_ roundtrip(3)
+  k283: _TEST_ roundtrip(4)
+  b283: _TEST_ roundtrip(5)
+  k409: _TEST_ roundtrip(6)
+  b409: _TEST_ roundtrip(7)
+  k571: _TEST_ roundtrip(8)
+  b571: _TEST_ roundtrip(9)
+END binary_encoding_examples

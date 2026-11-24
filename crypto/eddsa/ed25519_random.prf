@@ -1,0 +1,8 @@
+(|ed25519_random|
+ (|acquisition_failure| 0
+  (|acquisition_failure-1| NIL 4004535392
+   ("" (THEN (SKOSIMP*) (EXPAND "generate_keys") (ASSERT)) NIL)
+   ((|generate_keys| CONST-DECL "keys" |ed25519_random| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   "shostak")))
+

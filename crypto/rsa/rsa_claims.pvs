@@ -1,0 +1,19 @@
+% Mathematical specification for integer representatives and encoding inverses.
+% FIPS 186-5 §5 and SP 800-56B Rev. 2 §§7,9 (RFC 8017 §§4–9).
+rsa_claims: THEORY
+BEGIN
+  IMPORTING rsa_encoding
+  big_endian(x:bytestring,n:upto(x`length)): RECURSIVE nat =
+    IF n=0 THEN 0 ELSE 256*big_endian(x,n-1)+x`seq(n-1) ENDIF MEASURE n
+  value(x:bytestring):nat=big_endian(x,x`length)
+  rsa_exponentiation: THEOREM FORALL(n:modulus,e,x:bytestring):
+    LET r=rsa_apply(n,e,x) IN
+      r`valid IMPLIES value(n)>0 AND
+        (EXISTS(q:nat): value(x)^value(e)=q*value(n)+value(r`data) AND value(r`data)<value(n))
+  pss_encoding_valid: THEOREM FORALL(h:rsa_hash,id:mask_id,k:rsa_size,m:bytestring,
+                                      s:{x:bytestring | x`length<=digest_size(h)}):
+    pss_check(h,id,k,m,pss(h,id,k,m,s))
+  oaep_recovers_key: THEOREM FORALL(h:rsa_hash,k:rsa_size,label:bytestring,
+                      key:{b:bytestring | b`length+2*digest_size(h)+2<=k},seed:octets_of(digest_size(h))):
+    LET r=oaep_open(h,k,label,oaep(h,k,label,key,seed)) IN r`valid AND r`data=key
+END rsa_claims

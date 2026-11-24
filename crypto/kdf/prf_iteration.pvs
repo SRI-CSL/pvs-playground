@@ -1,0 +1,65 @@
+% SP 800-108 Rev. 1 update 1, section 4. Higher-order bindings allow the
+% same iteration and counter checks to drive HMAC and AES-CMAC.
+prf_iteration: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_words, crypto_prelude@crypto_buffers
+
+  fixed_data: TYPE = {s: bytestring | s`length + 212 < maxsize}
+  prf_data: TYPE = {s: bytestring | s`length + 144 < maxsize}
+  mac_size: TYPE = subrange(16, 64)
+  keyed_function(w: mac_size): TYPE = [prf_data -> octets_of(w)]
+  prior_block: TYPE = {x: bytestring | x`length <= 64}
+  counter_bytes: TYPE = upto(4)
+  counter_limit(r: counter_bytes): uint32 =
+    IF r = 1 THEN 255 ELSIF r = 2 THEN 65535 ELSIF r = 3 THEN 16777215
+    ELSE 0xffffffff ENDIF
+  encode_counter(i: uint32, r: counter_bytes): octets_of(r) =
+    (# length := r, seq := LAMBDA (j: below(r)): be_byte32(i, 4 - r + j) #)
+
+  % Label || 0x00 || Context || [L]_32; applications may supply other
+  % unambiguous encodings through the fixed_data argument.
+  encode_info(label: fixed_data, ctx: {x: bytestring | x`length + label`length + 217 < maxsize},
+              bits: uint32): octets_of(label`length + ctx`length + 5) =
+    join_octets(join_octets(label, fill_octets(1, 0)), join_octets(ctx, encode_counter(bits, 4)))
+
+  kdf_mode: TYPE = below(3)
+  counter_mode: kdf_mode = 0
+  feedback_mode: kdf_mode = 1
+  pipeline_mode: kdf_mode = 2
+  chunk: TYPE = [# output, chaining: prior_block #]
+
+  % Section 4.3 starts the first pipeline with A(0) = fixed.
+  derive_chunk(w: mac_size, f: keyed_function(w), mode: kdf_mode, r: counter_bytes,
+               fixed: fixed_data, prev: prior_block, i: pos_uint32): chunk =
+    LET a: prior_block = IF mode = pipeline_mode THEN
+                           f(IF i = 1 THEN fixed ELSE prev ENDIF)
+                         ELSIF mode = feedback_mode THEN prev ELSE fill_octets(0,0) ENDIF,
+        input = join_octets(a, join_octets(encode_counter(i, r), fixed)),
+        b = f(input)
+    IN (# output := b, chaining := IF mode = pipeline_mode THEN a ELSE b ENDIF #)
+
+  iterate(w: mac_size, f: keyed_function(w), mode: kdf_mode, r: counter_bytes,
+          fixed: fixed_data, prev: prior_block, out: bytestring, at: upto(out`length)):
+    RECURSIVE octets_of(out`length) =
+    IF at = out`length THEN out
+    ELSE LET i: pos_uint32 = 1 + u32div(at, w),
+             b = derive_chunk(w, f, mode, r, fixed, prev, i),
+             updated = copy_octets(out, at, b`output, 0),
+             next: index = IF at + w >= out`length THEN out`length ELSE at + w ENDIF
+         IN iterate(w, f, mode, r, fixed, b`chaining, updated, next)
+    ENDIF MEASURE out`length - at
+
+  result: TYPE = [# ok: bool, data: bytestring #]
+  derive(w: mac_size, f: keyed_function(w), mode: kdf_mode, r: counter_bytes,
+         fixed: fixed_data, iv: prior_block, n: index): result =
+    IF n = 0 OR (r = 0 AND mode = counter_mode) OR
+       u32div(n - 1, w) >= counter_limit(r) THEN
+      (# ok := FALSE, data := fill_octets(0, 0) #)
+    ELSE (# ok := TRUE, data := iterate(w,f,mode,r,fixed,iv,fill_octets(n,0),0) #)
+    ENDIF
+
+  counter_required: LEMMA FORALL (w: mac_size, f: keyed_function(w), d: fixed_data,
+                                  iv: prior_block, n: index):
+    NOT derive(w,f,counter_mode,0,d,iv,n)`ok
+END prf_iteration

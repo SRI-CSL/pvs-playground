@@ -1,0 +1,59 @@
+polynomials [T: TYPE, +, *: [T, T -> T], zero:T] : THEORY
+
+  BEGIN
+
+  ASSUMING IMPORTING algebra@ring_def[T, +, *, zero]
+    ring: ASSUMPTION ring?(fullset[T])
+  ENDASSUMING
+
+  IMPORTING sums_ring[T, +, *, zero]
+  IMPORTING algebra@ring[T, +, *, zero]
+
+  polynomials?(P: sequence[T]): bool = EXISTS (n: nat): FORALL (m: above(n)): P(m) = zero
+  polynomials: TYPE = (polynomials?)
+
+  P, Q: VAR polynomials
+  a: VAR T
+
+  ;+(P, Q): polynomials = LAMBDA (i: nat): P(i) + Q(i)
+
+  ;*(P, Q): polynomials = LAMBDA (n: nat): sum_f(n + 1)(LAMBDA (k: below(n + 1)): P(k)*Q(n-k))
+
+  T_to_pol(a): polynomials = LAMBDA (i: nat): IF i = 0 THEN a ELSE zero ENDIF
+
+  CONVERSION T_to_pol
+
+  const_mul: LEMMA FORALL (P, a): (a * P = LAMBDA (i: nat): a * P(i) ) AND (P * a = LAMBDA (i: nat): P(i) * a )
+
+  deg(P): nat = min({n: nat | FORALL (m: above(n)): P(m) = zero}) % not exactly equivalent to the mathematical definition of degree, because deg(0) = 0 and not -∞ (we would need to define the max of an emptyset to be -∞), but this is not essential for what is following
+
+  deg_use: LEMMA FORALL (P), (n: above(deg(P))): P(n) = zero
+
+  deg_const: LEMMA FORALL a: deg(T_to_pol(a)) = 0
+
+
+
+  pol_zero: polynomials = LAMBDA (i: nat): zero
+
+  deg_pol_zero: LEMMA deg(pol_zero) = 0
+
+  pol_plus_zero: LEMMA FORALL P: P + pol_zero = P
+
+  zero_plus_pol: LEMMA FORALL P: pol_zero + P = P
+
+  pol_times_zero: LEMMA FORALL P: P * pol_zero = pol_zero
+
+  zero_times_pol: LEMMA FORALL P: pol_zero * P = pol_zero
+
+
+  IMPORTING algebra@ring_def[polynomials, +, *, pol_zero]
+
+
+  pol_ring: LEMMA ring?(fullset[polynomials])
+
+  IMPORTING algebra@ring[polynomials, +, *, pol_zero]
+
+  minus_rew: LEMMA inv(P) = LAMBDA (k: nat): inv(P(k))
+
+
+  END polynomials

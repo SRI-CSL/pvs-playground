@@ -1,0 +1,36 @@
+% SP 800-90B §6.3.1. Upper confidence bound on the probability of the
+% most common source symbol, rounded upwards in units of 2^-24.
+mcv_estimate: THEORY
+BEGIN
+  crypto_prelude: LIBRARY="../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_integer_ops
+  samples:TYPE={x:bytestring | x`length>=2}
+  histogram:TYPE=ARRAY[uint8 -> uint32]
+  count_from(x:samples,i:upto(x`length),h:histogram,m:uint32):RECURSIVE uint32 =
+    IF i=x`length THEN m ELSE LET a=x`seq(i),n=u32plus(h(a),1) IN
+      count_from(x,i+1,h WITH [(a):=n],IF n>m THEN n ELSE m ENDIF)
+    ENDIF MEASURE x`length-i
+  most_common(x:samples):uint32=count_from(x,0,LAMBDA(a:uint8):0,0)
+  scale:uint32=16777216
+  probability:TYPE=subrange(0,16777216)
+  wide(x:uint64):words_of(5)=(# len:=5,word:=[: lo32(x),hi32(x),0,0,0 :] #)
+  % t/scale >= c/n + (322/125)*sqrt(c*(n-c)/(n*n*(n-1))).
+  % Squaring is valid after checking the sign. Five 32-bit limbs suffice:
+  % the left product is < 2^146 and the right product is < 2^122.
+  upper(n:{i:index | i>=2},c:upto(n),t:probability):bool =
+    IF t=scale THEN TRUE ELSE LET left=u64times(t,n),right=u64times(scale,c) IN
+      IF left<right THEN FALSE ELSE
+        LET a=wide(u64times(125,u64minus(left,right))), b=wide(u64times(322,scale)),
+            lhs=product_words(product_words(a,a,5),wide(n-1),5),
+            rhs=product_words(product_words(b,b,5),wide(u64times(c,n-c)),5)
+        IN ge_words(lhs,rhs) ENDIF ENDIF
+  search(n:{i:index | i>=2},c:upto(n),lo:probability,hi:{u:probability | u>=lo}):
+    RECURSIVE probability =
+    IF lo=hi THEN lo ELSE LET m:probability=ndiv(lo+hi,2) IN
+      IF m<lo OR m>=hi THEN hi
+      ELSIF upper(n,c,m) THEN search(n,c,lo,m) ELSE search(n,c,m+1,hi) ENDIF
+    ENDIF MEASURE hi-lo
+  estimate(x:samples):probability =
+    LET c=most_common(x) IN IF c>x`length THEN scale ELSE search(x`length,c,0,scale) ENDIF
+  saturated: LEMMA FORALL(n:{i:index | i>=2},c:upto(n)): upper(n,c,scale)
+END mcv_estimate

@@ -1,0 +1,17 @@
+% FIPS 197 (2001), Appendix C.2/C.3. The updated standard points to the
+% same intermediate-value examples on the NIST CSRC AES examples page.
+aes_fips197_tests: THEORY
+BEGIN
+  IMPORTING aes_fips197
+
+  plain: block = LAMBDA (i: below(16)): 17 * i
+  k192: key192 = LAMBDA (i: below(24)): i
+  k256: key256 = LAMBDA (i: below(32)): i
+  c192: block = hex2bytestring("DDA97CA4864CDFE06EAF70A0EC0D7191")`seq
+  c256: block = hex2bytestring("8EA2B7CA516745BFEAFC49904B496089")`seq
+
+  cipher192_example: _TEST_ aes192_encrypt(plain, k192) = c192
+  inv_cipher192_example: _TEST_ aes192_decrypt(c192, k192) = plain
+  cipher256_example: _TEST_ aes256_encrypt(plain, k256) = c256
+  inv_cipher256_example: _TEST_ aes256_decrypt(c256, k256) = plain
+END aes_fips197_tests

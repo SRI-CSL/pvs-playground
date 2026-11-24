@@ -1,0 +1,238 @@
+
+Rijndael  : THEORY
+
+  BEGIN
+
+   crypto_prelude: LIBRARY = "../crypto_prelude"
+   IMPORTING crypto_prelude@crypto_octets
+
+   A, K, K0, K1, K2, K3: VAR byv[16]
+
+   byvXOR(A, K): byv[16] = xor_octets(16)(A, K)
+
+   get(A)(i, j: below(4)): byte
+    = A(i + 4 * j)
+
+   every(n: posnat) (P: [below(n) -> bool], i: upto(n)): RECURSIVE bool = % This is used to exhaust cases, typically on bytes
+      IF i = 0 THEN true
+        ELSE (P(i - 1) AND every(n)(P, i - 1))
+      ENDIF
+      MEASURE i
+
+   induct_every: LEMMA FORALL (n: posnat): (FORALL (P: [below(n) -> bool], i: upto(n)): every(n) (P, i) IMPLIES (FORALL (j: below(i)): P(j))) % I need this lemma (in Rijndael) to prove some TCCs
+
+
+   IMPORTING crypto_prelude@hex
+
+   SboxHex: hexstring =  "637c777bf26b6fc53001672bfed7ab76ca82c97dfa5947f0add4a2af9ca472c0b7fd9326363ff7cc34a5e5f171d8311504c723c31896059a071280e2eb27b27509832c1a1b6e5aa0523bd6b329e32f8453d100ed20fcb15b6acbbe394a4c58cfd0efaafb434d338545f9027f503c9fa851a3408f929d38f5bcb6da2110fff3d2cd0c13ec5f974417c4a77e3d645d197360814fdc222a908846eeb814de5e0bdbe0323a0a4906245cc2d3ac629195e479e7c8376d8dd54ea96c56f4ea657aae08ba78252e1ca6b4c6e8dd741f4bbd8b8a703eb5664803f60e613557b986c11d9ee1f8981169d98e949b1e87e9ce5528df8ca1890dbfe6426841992d0fb054bb16"
+
+    Sbox: byv[256] =
+     (LET X = hex2bytestring(SboxHex)
+      IN X`seq)
+
+    byteSubst(A) : byv[16] =
+      (LAMBDA (i:below(16)): Sbox(A(i)))
+
+    shiftRow(A): byv[16]
+     = (LAMBDA (k: below(16)):
+         LET i = u16rem(k, 4),
+             j = u16div(k, 4),
+	     ij: below(16) = j + i,
+	     l = u16rem(ij, 4)  %left-shift by i. How would Arsenal figure this out from A2.5?
+          IN get(A)(i, l))
+
+    byte_msb(x: byte): bool = ndiv(x, 128) > 0
+
+
+    T2(b: byte): byte =  %In A2.6, the else case is 2b xor 283, which overflows a byte!
+      IF NOT byte_msb(b) THEN u8lshift(b, 1) ELSE u8xor(u8lshift(b, 1), 27) ENDIF
+      
+    T3(b: byte): byte =
+      u8xor(T2(b), b)
+
+   timesConst (c: byte, b: byte): RECURSIVE byte =
+      IF c = 0
+        THEN 0
+	ELSIF u8rem(c, 2) = 1
+	  THEN u8xor(b, timesConst(u8div(c, 2), T2(b)))
+	  ELSE timesConst(u8div(c, 2), T2(b))
+      ENDIF
+      MEASURE c
+
+    mixColumn(A): byv[16]
+    = (LAMBDA (k: below(16)):
+         LET i = u16rem(k, 4),
+             j = u16div(k, 4)
+          IN COND i = 0 -> u8xor(u8xor(u8xor(T2(get(A)(0, j)), T3(get(A)(1, j))), get(A)(2, j)), get(A)(3, j)),
+    	          i = 1 -> u8xor(u8xor(u8xor(get(A)(0, j), T2(get(A)(1, j))), T3(get(A)(2, j))), get(A)(3, j)),
+    		  i = 2 -> u8xor(u8xor(u8xor(get(A)(0, j), get(A)(1, j)), T2(get(A)(2, j))), T3(get(A)(3, j))),
+    		  ELSE  -> u8xor(u8xor(u8xor(T3(get(A)(0, j)), get(A)(1, j)), get(A)(2, j)), T2(get(A)(3, j)))
+    	     ENDCOND)
+
+
+    % mixColumn(A): byv[16]
+    % = (LAMBDA (k: below(16)):
+    %      LET i = u16rem(k, 4),
+    %          j = u16div(k, 4)
+    %       IN COND i = 0 -> u8xor(u8xor(u8xor(timesConst(2, get(A)(0, j)), timesConst(3, get(A)(1, j))), get(A)(2, j)), get(A)(3, j)),
+    % 	          i = 1 -> u8xor(u8xor(u8xor(get(A)(0, j), timesConst(2, get(A)(1, j))), timesConst(3, get(A)(2, j))), get(A)(3, j)),
+    % 		  i = 2 -> u8xor(u8xor(u8xor(get(A)(0, j), get(A)(1, j)), timesConst(2, get(A)(2, j))), timesConst(3, get(A)(3, j))),
+    % 		  ELSE  -> u8xor(u8xor(u8xor(timesConst(3, get(A)(0, j)), get(A)(1, j)), get(A)(2, j)), timesConst(2, get(A)(3, j)))
+    % 	     ENDCOND)
+	     
+
+    roundkeyXOR(A, K): byv[16] %K is the round key
+     = byvXOR(A, K)
+
+    nextRoundKey(K, (rconst: byte)): byv[16] = 
+     LET K0: byv[4] = (LAMBDA (i : below(4)):
+	        IF i = 0
+	        THEN u8xor(u8xor(get(K)(0, 0), Sbox(get(K)(1, 3))), rconst)%wasteful recomputing of roundConst 
+                ELSE u8xor(get(K)(i, 0), Sbox(get(K)(nrem(i + 1, 4), 3)))
+                ENDIF),
+         K1: byv[4] = (LAMBDA (i : below(4)): u8xor(get(K)(i, 1), K0(i))),
+	 K2: byv[4] = (LAMBDA (i : below(4)): u8xor(get(K)(i, 2), K1(i))),
+	 K3: byv[4] = (LAMBDA (i : below(4)): u8xor(get(K)(i, 3), K2(i)))
+          IN (LAMBDA (i: below(16)):
+	         IF i < 4 THEN K0(i)
+		 ELSIF i < 8 THEN K1(i - 4)
+		 ELSIF i < 12 THEN K2(i - 8)
+	         ELSE K3(i - 12)
+		      ENDIF)
+
+   KK: VAR ARRAY[below(11) -> byv[16]]
+
+   allKeys(KK, (rconst : byte), (i: below(11))): RECURSIVE ARRAY[below(11) -> byv[16]] =
+     (IF i = 10
+       THEN KK
+       ELSE allKeys(KK WITH [(i + 1):= nextRoundKey(KK(i), rconst)], T2(rconst), i + 1)
+       ENDIF)
+       MEASURE 10 - i
+
+   Rijndael_step(A, K): byv[16] =
+    (LET A1 = byteSubst(A),
+        A2 = shiftRow(A1),
+        A3 = mixColumn(A2)
+     IN roundkeyXOR(A3, K))
+		      
+   Rijndael_rec(A, KK, (i : below(11))): RECURSIVE byv[16] =
+    (IF i >=  10 THEN roundkeyXOR(shiftRow(byteSubst(A)), KK(i))
+     ELSIF i = 0 THEN Rijndael_rec(roundkeyXOR(A, KK(i)),
+                                   KK,
+				   i + 1)
+     ELSE LET A4 = Rijndael_step(A, KK(i)) 
+	    IN Rijndael_rec(A4, KK, i + 1)
+    ENDIF)
+    MEASURE 10 - i
+
+   % Only round zero is read before allKeys fills the remaining slots.
+   initialKeys(K): ARRAY[below(11) -> byv[16]] =
+     LAMBDA (r: below(11)): LAMBDA (j: below(16)): IF r = 0 THEN K(j) ELSE 0 ENDIF
+
+   Rijndael(A, K):  byv[16] = Rijndael_rec(A, allKeys(initialKeys(K), 1, 0), 0)
+
+   lbytes(n: uint8): TYPE = {X : bytestring | X`length = n}
+
+   Ab, Kb: VAR lbytes(16)
+
+   RijndaelB(Ab, Kb): lbytes(16)
+   = (# length := 16,
+        seq := Rijndael(Ab`seq, Kb`seq) #)
+
+   hex16(X: byv[16]): hexstring =
+      bytestring2hexstring((# length := 16, seq := X #))
+
+   test0RD: hexstring =
+    (LET Input = hex2bytestring("3243f6a8885a308d313198a2e0370734"), 
+           Cipher = hex2bytestring("2b7e151628aed2a6abf7158809cf4f3c"), 
+	   Output = roundkeyXOR(Input`seq, Cipher`seq),
+	   Outputbytestring =  (# length := 16, seq := Output #)
+	   IN bytestring2hexstring(Outputbytestring))
+
+   testRijndael1: hexstring
+    = (LET Input = hex2bytestring("3243f6a8885a308d313198a2e0370734"), 
+           Cipher = hex2bytestring("2b7e151628aed2a6abf7158809cf4f3c"), 
+	   Output = RijndaelB(Input, Cipher)
+	   IN bytestring2hexstring(Output))
+
+   invSboxHex: hexstring = "52096ad53036a538bf40a39e81f3d7fb7ce339829b2fff87348e4344c4dee9cb547b9432a6c2233dee4c950b42fac34e082ea16628d924b2765ba2496d8bd12572f8f66486689816d4a45ccc5d65b6926c704850fdedb9da5e154657a78d9d8490d8ab008cbcd30af7e45805b8b34506d02c1e8fca3f0f02c1afbd0301138a6b3a9111414f67dcea97f2cfcef0b4e67396ac7422e7ad3585e2f937e81c75df6e47f11a711d29c5896fb7620eaa18be1bfc563e4bc6d279209adbc0fe78cd5af41fdda8338807c731b11210592780ec5f60517fa919b54a0d2de57a9f93c99cefa0e03b4dae2af5b0c8ebbb3c83539961172b047eba77d626e169146355210c7d"
+
+   invSbox: byv[256] =
+     (LET X = hex2bytestring(invSboxHex)
+      IN X`seq)
+
+    invByteSubst(A) : byv[16] =
+      (LAMBDA (i:below(16)): invSbox(A(i)))
+
+    invShiftRow(A): byv[16]
+     = (LAMBDA (x: below(16)):
+         LET i = u16rem(x, 4),
+	     j = u16div(x, 4),
+	     ij: below(16) = j + 4 - i,
+	     l = u16rem(ij, 4) %inverse-shift
+	  IN get(A)(i, l))
+
+    invMixColumn(A): byv[16]
+     = (LAMBDA (k: below(16)):
+         LET i = u16rem(k, 4),
+             j = u16div(k, 4)
+          IN COND i = 0 -> u8xor(u8xor(u8xor(timesConst(14, get(A)(0,j)), timesConst(11, get(A)(1,j))), timesConst(13, get(A)(2,j))), timesConst(9, get(A)(3,j))),
+    	          i = 1 -> u8xor(u8xor(u8xor(timesConst(9, get(A)(0,j)), timesConst(14, get(A)(1,j))), timesConst(11, get(A)(2,j))), timesConst(13, get(A)(3,j))),
+    		  i = 2 -> u8xor(u8xor(u8xor(timesConst(13, get(A)(0,j)), timesConst(9, get(A)(1,j))), timesConst(14, get(A)(2,j))), timesConst(11, get(A)(3,j))),
+    		  ELSE  -> u8xor(u8xor(u8xor(timesConst(11, get(A)(0,j)), timesConst(13, get(A)(1,j))), timesConst(9, get(A)(2,j))), timesConst(14, get(A)(3,j)))
+    	     ENDCOND) %11 is byte 0B, 13 is 0D and 14 is 0E
+
+
+    invRijndael_step(A, K): byv[16] =
+     (LET A1 = roundkeyXOR(A, K),
+        A2 = invMixColumn(A1),
+        A3 = invShiftRow(A2)
+     IN invByteSubst(A3))
+		      
+   invRijndael_rec(A, KK, (i : below(11))): RECURSIVE byv[16] =
+    (IF i >= 10 THEN invByteSubst(invShiftRow(roundkeyXOR(A, KK(i))))
+     ELSIF i = 0 THEN roundkeyXOR(invRijndael_rec(A, KK, i + 1), KK(i))
+     ELSE invRijndael_step(invRijndael_rec(A, KK, i + 1), KK(i)) 
+    ENDIF)
+    MEASURE 10 - i
+
+   invRijndael(A, K):  byv[16] = invRijndael_rec(A, allKeys(initialKeys(K), 1, 0), 0)
+
+   invRijndaelB(Ab, Kb): lbytes(16)
+   = (# length := 16,
+        seq := invRijndael(Ab`seq, Kb`seq) #)
+   
+   testInvRijndael1: hexstring
+    = (LET Input = hex2bytestring("3243f6a8885a308d313198a2e0370734"), 
+           Cipher = hex2bytestring("2b7e151628aed2a6abf7158809cf4f3c"), 
+	   Output = invRijndaelB(RijndaelB(Input, Cipher), Cipher)
+	   IN bytestring2hexstring(Output))
+
+   % The Prelude leaves the return of printh uninterpreted. Keep its trace
+   % while preserving the supplied bytes in the logical and executable models.
+   trace_block(b: lbytes(16)): lbytes(16) =
+     LET printed = printh(b) IN IF printed = b THEN printed ELSE b ENDIF
+
+   testRijndael(hA, hK: {h: hexstring | hex2bytestring(h)`length = 16}): hexstring
+    = (LET Input = trace_block(hex2bytestring(hA)),
+           Cipher = trace_block(hex2bytestring(hK)),
+	   Output = trace_block(RijndaelB(Input, Cipher)),
+	   Inverse = trace_block(invRijndaelB(Output, Cipher))
+	 IN bytestring2hexstring(Inverse))
+
+   test_Rijndael_spec_vector: _TEST_
+     testRijndael1 = "3925841D02DC09FBDC118597196A0B32"
+
+   test_invRijndael_spec_vector: _TEST_
+     testInvRijndael1 = "3243F6A8885A308D313198A2E0370734"
+
+   test_Rijndael_fips197_vector: _TEST_
+     (LET Input = hex2bytestring("00112233445566778899AABBCCDDEEFF"),
+          Cipher = hex2bytestring("000102030405060708090A0B0C0D0E0F"),
+          Output = RijndaelB(Input, Cipher)
+      IN bytestring2hexstring(Output)) = "69C4E0D86A7B0430D8CDB78070B4C55A"
+	   
+
+
+
+  END Rijndael

@@ -1,0 +1,574 @@
+(|sq_matrices|
+ (|IMP_sums_ring_TCC1| 0
+  (|IMP_sums_ring_TCC1-1| NIL 4004538106
+   (""
+    (THEN (LEMMA #A((25) BASE-CHAR . "sq_matrices.ring_with_one"))
+     (GRIND :DEFS NIL :REWRITES
+      ("field?" "division_ring?" "ring_with_one?" "ring?" "abelian_group?")))
+    NIL)
+   ((|abelian_group?| CONST-DECL "[set[T] -> bool]" |group_def| |algebra|)
+    (|zero| FORMAL-CONST-DECL "T" |sq_matrices| NIL)
+    (* FORMAL-CONST-DECL "[[T, T] -> T]" |sq_matrices| NIL)
+    (+ FORMAL-CONST-DECL "[[T, T] -> T]" |sq_matrices| NIL)
+    (T FORMAL-TYPE-DECL NIL |sq_matrices| NIL)
+    (|ring?| CONST-DECL "[set[T] -> bool]" |ring_def| |algebra|)
+    (|one| FORMAL-CONST-DECL "T" |sq_matrices| NIL)
+    (|ring_with_one?| CONST-DECL "[set[T] -> bool]" |ring_with_one_def|
+     |algebra|)
+    (|ring_with_one| FORMULA-DECL NIL |sq_matrices| NIL))
+   SHOSTAK
+   (|IMP_sums_ring| ASSUMING
+    "sums_ring[sq_matrices.T, sq_matrices.+, sq_matrices.*, sq_matrices.zero].sums_ring"
+    "ring: ASSUMPTION ring_def[sums_ring.T, sums_ring.+, sums_ring.*, sums_ring.zero].ring?(sets[sums_ring.T].fullset)"
+    (8 14 8 38))))
+ (|mat_ring| 0
+  (|mat_ring-legacy| NIL 3866813981
+   ("" (EXPAND "ring?")
+    (("" (GROUND)
+      (("1" (EXPAND "abelian_group?")
+        (("1" (GROUND)
+          (("1" (EXPAND "group?")
+            (("1" (GROUND)
+              (("1" (EXPAND "monoid?")
+                (("1" (GROUND)
+                  (("1" (EXPAND "monad?")
+                    (("1" (GROUND)
+                      (("1" (EXPAND "star_closed?") (("1" (GRIND) NIL NIL))
+                        NIL)
+                       ("2" (GRIND) NIL NIL)
+                       ("3" (EXPAND "restrict")
+                        (("3" (EXPAND "identity?")
+                          (("3" (EXPAND "+")
+                            (("3" (EXPAND "mat_zero")
+                              (("3" (SKEEP)
+                                (("3" (GROUND)
+                                  (("1" (APPLY-EXTENSIONALITY :HIDE? T)
+                                    (("1" (APPLY-EXTENSIONALITY :HIDE? T) NIL
+                                      NIL))
+                                    NIL)
+                                   ("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                                    (("2" (APPLY-EXTENSIONALITY :HIDE? T) NIL
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL)
+                   ("2" (EXPAND "restrict")
+                    (("2" (EXPAND "associative?")
+                      (("2" (SKEEP)
+                        (("2" (EXPAND "+")
+                          (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                            (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                              (("2" (USE "algebra@group[T, +, zero].assoc")
+                                (("2" (REPLACE -1 :HIDE? T)
+                                  (("2" (PROPAX) NIL NIL)) NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL)
+               ("2" (EXPAND "inv_exists?")
+                (("2" (SKEEP)
+                  (("2" (INST 1 "LAMBDA k: LAMBDA l: inv(x(k)(l))")
+                    (("1" (GROUND)
+                      (("1" (APPLY-EXTENSIONALITY :HIDE? T)
+                        (("1" (APPLY-EXTENSIONALITY :HIDE? T)
+                          (("1" (EXPAND "mat_zero")
+                            (("1" (EXPAND "+") (("1" (GROUND) NIL NIL)) NIL))
+                            NIL))
+                          NIL))
+                        NIL)
+                       ("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                        (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                          (("2" (EXPAND "mat_zero")
+                            (("2" (EXPAND "+") (("2" (GROUND) NIL NIL)) NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL)
+                     ("2" (GRIND) NIL NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (EXPAND "restrict")
+            (("2" (EXPAND "commutative?")
+              (("2" (SKEEP)
+                (("2" (EXPAND "+")
+                  (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                    (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                      (("2" (USE "ring_with_one")
+                        (("2" (EXPAND "ring_with_one?")
+                          (("2" (EXPAND "ring?")
+                            (("2" (EXPAND "abelian_group?")
+                              (("2" (GROUND)
+                                (("2" (HIDE-ALL-BUT (-2 1))
+                                  (("2" (EXPAND "restrict")
+                                    (("2" (EXPAND "commutative?")
+                                      (("2" (INST?)
+                                        (("1" (GRIND) NIL NIL)
+                                         ("2" (GRIND) NIL NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (EXPAND "star_closed?") (("2" (GRIND) NIL NIL)) NIL)
+       ("3" (EXPAND "associative?")
+        (("3" (EXPAND "restrict")
+          (("3" (SKEEP)
+            (("3" (EXPAND "*")
+              (("3" (APPLY-EXTENSIONALITY :HIDE? T)
+                (("3" (APPLY-EXTENSIONALITY :HIDE? T)
+                  (("3"
+                    (CASE-REPLACE "(LAMBDA (k_1: below(n)):
+              sum_f(n)(LAMBDA k: x(x!1)(k) * y(k)(k_1)) * z(k_1)(x!2)) =
+                     (LAMBDA (k_1: below(n)):
+              sum_f(n)(LAMBDA k: x(x!1)(k) * y(k)(k_1) * z(k_1)(x!2)))")
+                    (("1"
+                      (CASE-REPLACE "(LAMBDA (k_1: below(n)):
+               x(x!1)(k_1) * sum_f(n)(LAMBDA k: y(k_1)(k) * z(k)(x!2))) =
+                     (LAMBDA (k_1: below(n)):
+               sum_f(n)(LAMBDA k: x(x!1)(k_1) * (y(k_1)(k) * z(k)(x!2))))")
+                      (("1" (HIDE-ALL-BUT 1)
+                        (("1" (USE "sum_f_invert")
+                          (("1" (REPLACE -1 :DIR RL :HIDE? T)
+                            (("1"
+                              (CASE-REPLACE "(LAMBDA (k_1: below(n)):
+              sum_f(n)
+                   (LAMBDA (l: below(n)):
+                      x(x!1)(k_1) * y(k_1)(l) * z(l)(x!2)))
+       =
+            ((LAMBDA (k_1: below(n)):
+                sum_f(n)(LAMBDA k: x(x!1)(k_1) * (y(k_1)(k) * z(k)(x!2)))))")
+                              (("1" (HIDE 2)
+                                (("1" (APPLY-EXTENSIONALITY :HIDE? T)
+                                  (("1"
+                                    (CASE-REPLACE "(LAMBDA (l: below(n)):
+                      x(x!1)(x!3) * y(x!3)(l) * z(l)(x!2)) =
+                     (LAMBDA (k: below(n)):
+                      x(x!1)(x!3) * (y(x!3)(k) * z(k)(x!2)))")
+                                    (("1" (HIDE 2)
+                                      (("1" (APPLY-EXTENSIONALITY :HIDE? T)
+                                        (("1" (USE "ring_with_one")
+                                          (("1" (EXPAND "ring_with_one?")
+                                            (("1" (EXPAND "monoid?")
+                                              (("1" (GROUND)
+                                                (("1" (HIDE -1 -2)
+                                                  (("1" (EXPAND "restrict")
+                                                    (("1"
+                                                      (EXPAND "associative?")
+                                                      (("1" (INST?)
+                                                        (("1" (GRIND) NIL NIL)
+                                                         ("2" (GRIND) NIL NIL)
+                                                         ("3" (GRIND) NIL NIL))
+                                                        NIL))
+                                                      NIL))
+                                                    NIL))
+                                                  NIL))
+                                                NIL))
+                                              NIL))
+                                            NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL)
+                       ("2" (HIDE-ALL-BUT 1)
+                        (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                          (("2" (USE "sum_f_times_const_r") NIL NIL)) NIL))
+                        NIL))
+                      NIL)
+                     ("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                      (("2" (USE "sum_f_times_const_l") NIL NIL)) NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("4" (EXPAND "restrict")
+        (("4" (EXPAND "left_distributive?")
+          (("4" (SKEEP)
+            (("4" (EXPAND "+")
+              (("4" (EXPAND "*")
+                (("4" (APPLY-EXTENSIONALITY :HIDE? T)
+                  (("4" (APPLY-EXTENSIONALITY :HIDE? T)
+                    (("4" (USE "sum_f_sign_factor")
+                      (("4" (REPLACE -1 :HIDE? T)
+                        (("4"
+                          (CASE-REPLACE "(LAMBDA (k_1: below(n)):
+              (x(x!1)(k_1) + y(x!1)(k_1)) * z(k_1)(x!2))
+       =
+            (LAMBDA (k: below(n)):
+               x(x!1)(k) * z(k)(x!2) + y(x!1)(k) * z(k)(x!2))")
+                          (("4" (HIDE 2)
+                            (("4" (APPLY-EXTENSIONALITY :HIDE? T)
+                              (("4" (USE "ring_with_one")
+                                (("4" (EXPAND "ring_with_one?")
+                                  (("4" (EXPAND "ring?")
+                                    (("4" (GROUND)
+                                      (("4" (HIDE-ALL-BUT (-4 1))
+                                        (("4" (EXPAND "restrict")
+                                          (("4" (EXPAND "left_distributive?")
+                                            (("4" (INST?)
+                                              (("1" (GRIND) NIL NIL)
+                                               ("2" (GRIND) NIL NIL)
+                                               ("3" (GRIND) NIL NIL))
+                                              NIL))
+                                            NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("5" (EXPAND "restrict")
+        (("5" (EXPAND "right_distributive?")
+          (("5" (SKEEP)
+            (("5" (EXPAND "+")
+              (("5" (EXPAND "*")
+                (("5" (APPLY-EXTENSIONALITY :HIDE? T)
+                  (("5" (APPLY-EXTENSIONALITY :HIDE? T)
+                    (("5" (USE "sum_f_sign_factor")
+                      (("5" (REPLACE -1 :HIDE? T)
+                        (("5"
+                          (CASE-REPLACE "(LAMBDA (k_1: below(n)):
+              x(x!1)(k_1) * (y(k_1)(x!2) + z(k_1)(x!2)))
+       =
+            (LAMBDA (k: below(n)):
+               x(x!1)(k) * y(k)(x!2) + x(x!1)(k) * z(k)(x!2))")
+                          (("5" (HIDE 2)
+                            (("5" (APPLY-EXTENSIONALITY :HIDE? T)
+                              (("5" (USE "ring_with_one")
+                                (("5" (EXPAND "ring_with_one?")
+                                  (("5" (EXPAND "ring?")
+                                    (("5" (GROUND)
+                                      (("5" (HIDE-ALL-BUT (-5 1))
+                                        (("5" (EXPAND "restrict")
+                                          (("5" (EXPAND "right_distributive?")
+                                            (("5" (INST?)
+                                              (("1" (GRIND) NIL NIL)
+                                               ("2" (GRIND) NIL NIL)
+                                               ("3" (GRIND) NIL NIL))
+                                              NIL))
+                                            NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|mat_ring_with_one| 0
+  (|mat_ring_with_one-legacy| NIL 3866822040
+   ("" (EXPAND "ring_with_one?")
+    (("" (GROUND)
+      (("1" (USE "mat_ring") NIL NIL)
+       ("2" (EXPAND "monoid?")
+        (("2" (GROUND)
+          (("1" (EXPAND "monad?")
+            (("1" (GROUND)
+              (("1" (EXPAND "star_closed?") (("1" (GRIND) NIL NIL)) NIL)
+               ("2" (GRIND) NIL NIL)
+               ("3" (EXPAND "identity?")
+                (("3" (EXPAND "restrict")
+                  (("3" (SKEEP)
+                    (("3" (EXPAND "*")
+                      (("3" (EXPAND "mat_id")
+                        (("3" (GROUND)
+                          (("1" (APPLY-EXTENSIONALITY :HIDE? T)
+                            (("1" (APPLY-EXTENSIONALITY :HIDE? T)
+                              (("1" (LEMMA "sum_f_cut")
+                                (("1" (INST -1 "n" "x!2" _)
+                                  (("1" (INST?)
+                                    (("1" (REPLACE -1 :HIDE? T)
+                                      (("1"
+                                        (CASE "(LAMBDA (k_1: below(x!2)):
+                                            x(x!1)(k_1) * IF k_1 = x!2 THEN one ELSE zero ENDIF) =
+                                           (LAMBDA (k_1: below(x!2)): zero)")
+                                        (("1" (REPLACE -1 :HIDE? T)
+                                          (("1" (USE "sum_f_zero")
+                                            (("1" (REPLACE -1 :HIDE? T)
+                                              (("1" (GROUND)
+                                                (("1" (LEMMA "sum_f_cut")
+                                                  (("1"
+                                                    (INST -1 "n - x!2" "1" _)
+                                                    (("1" (INST?)
+                                                      (("1"
+                                                        (REPLACE -1 :HIDE? T)
+                                                        (("1"
+                                                          (EXPAND "sum_f" 1 1)
+                                                          (("1" (EXPAND "sum")
+                                                            (("1"
+                                                              (EXPAND "sum")
+                                                              (("1"
+                                                                (EXPAND "pad")
+                                                                (("1" (GROUND)
+                                                                  (("1"
+                                                                    (LEMMA
+                                                                     "sum_f_zero")
+                                                                    (("1"
+                                                                      (INST -1
+                                                                       "n - 1 - x!2")
+                                                                      (("1"
+                                                                        (REPLACE
+                                                                         -1
+                                                                         :HIDE?
+                                                                         T)
+                                                                        (("1"
+                                                                          (GROUND)
+                                                                          (("1"
+                                                                            (USE
+                                                                             "ring_with_one")
+                                                                            (("1"
+                                                                              (EXPAND
+                                                                               "ring_with_one?")
+                                                                              (("1"
+                                                                                (EXPAND
+                                                                                 "monoid?")
+                                                                                (("1"
+                                                                                  (EXPAND
+                                                                                   "monad?")
+                                                                                  (("1"
+                                                                                    (GROUND)
+                                                                                    (("1"
+                                                                                      (HIDE-ALL-BUT
+                                                                                       (-4
+                                                                                        1))
+                                                                                      (("1"
+                                                                                        (EXPAND
+                                                                                         "restrict")
+                                                                                        (("1"
+                                                                                          (EXPAND
+                                                                                           "identity?")
+                                                                                          (("1"
+                                                                                            (INST?)
+                                                                                            (("1"
+                                                                                              (GROUND)
+                                                                                              NIL
+                                                                                              NIL)
+                                                                                             ("2"
+                                                                                              (GRIND)
+                                                                                              NIL
+                                                                                              NIL))
+                                                                                            NIL))
+                                                                                          NIL))
+                                                                                        NIL))
+                                                                                      NIL))
+                                                                                    NIL))
+                                                                                  NIL))
+                                                                                NIL))
+                                                                              NIL))
+                                                                            NIL))
+                                                                          NIL))
+                                                                        NIL))
+                                                                      NIL))
+                                                                    NIL))
+                                                                  NIL))
+                                                                NIL))
+                                                              NIL))
+                                                            NIL))
+                                                          NIL))
+                                                        NIL))
+                                                      NIL))
+                                                    NIL))
+                                                  NIL))
+                                                NIL))
+                                              NIL))
+                                            NIL))
+                                          NIL)
+                                         ("2" (HIDE 2)
+                                          (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                                            NIL NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL)
+                           ("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                            (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                              (("2" (LEMMA "sum_f_cut")
+                                (("2" (INST -1 "n" "x!1" _)
+                                  (("2" (INST?)
+                                    (("2" (REPLACE -1 :HIDE? T)
+                                      (("2"
+                                        (CASE-REPLACE
+                                         "(LAMBDA (k_1: below(x!1)):
+                                  IF x!1 = k_1 THEN one ELSE zero ENDIF * x(k_1)(x!2)) =
+                                         (LAMBDA (k_1: below(x!1)): zero)")
+                                        (("1" (HIDE -1)
+                                          (("1" (USE "sum_f_zero")
+                                            (("1" (REPLACE -1 :HIDE? T)
+                                              (("1" (GROUND)
+                                                (("1" (LEMMA "sum_f_cut")
+                                                  (("1"
+                                                    (INST -1 "n - x!1" "1" _)
+                                                    (("1" (INST?)
+                                                      (("1"
+                                                        (REPLACE -1 :HIDE? T)
+                                                        (("1"
+                                                          (EXPAND "sum_f" 1 1)
+                                                          (("1" (EXPAND "sum")
+                                                            (("1"
+                                                              (EXPAND "sum")
+                                                              (("1"
+                                                                (EXPAND "pad")
+                                                                (("1" (GROUND)
+                                                                  (("1"
+                                                                    (LEMMA
+                                                                     "sum_f_zero")
+                                                                    (("1"
+                                                                      (INST -1
+                                                                       "n - 1 - x!1")
+                                                                      (("1"
+                                                                        (REPLACE
+                                                                         -1
+                                                                         :HIDE?
+                                                                         T)
+                                                                        (("1"
+                                                                          (GROUND)
+                                                                          (("1"
+                                                                            (USE
+                                                                             "ring_with_one")
+                                                                            (("1"
+                                                                              (EXPAND
+                                                                               "ring_with_one?")
+                                                                              (("1"
+                                                                                (EXPAND
+                                                                                 "monoid?")
+                                                                                (("1"
+                                                                                  (EXPAND
+                                                                                   "monad?")
+                                                                                  (("1"
+                                                                                    (GROUND)
+                                                                                    (("1"
+                                                                                      (HIDE-ALL-BUT
+                                                                                       (-4
+                                                                                        1))
+                                                                                      (("1"
+                                                                                        (EXPAND
+                                                                                         "restrict")
+                                                                                        (("1"
+                                                                                          (EXPAND
+                                                                                           "identity?")
+                                                                                          (("1"
+                                                                                            (INST?)
+                                                                                            (("1"
+                                                                                              (GROUND)
+                                                                                              NIL
+                                                                                              NIL)
+                                                                                             ("2"
+                                                                                              (GRIND)
+                                                                                              NIL
+                                                                                              NIL))
+                                                                                            NIL))
+                                                                                          NIL))
+                                                                                        NIL))
+                                                                                      NIL))
+                                                                                    NIL))
+                                                                                  NIL))
+                                                                                NIL))
+                                                                              NIL))
+                                                                            NIL))
+                                                                          NIL))
+                                                                        NIL))
+                                                                      NIL))
+                                                                    NIL))
+                                                                  NIL))
+                                                                NIL))
+                                                              NIL))
+                                                            NIL))
+                                                          NIL))
+                                                        NIL))
+                                                      NIL))
+                                                    NIL))
+                                                  NIL))
+                                                NIL))
+                                              NIL))
+                                            NIL))
+                                          NIL)
+                                         ("2" (HIDE 2)
+                                          (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                                            NIL NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (USE "mat_ring")
+            (("2" (EXPAND "ring?") (("2" (PROPAX) NIL NIL)) NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK)))
+

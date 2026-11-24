@@ -1,0 +1,6 @@
+% In the hash conditioner this expression guards a uint32 source index.
+gmp_subtract: THEORY
+BEGIN
+  crosses(base:uint32,width:subrange(20,64)):bool =
+    LET step=width+8 IN base>4294967295-step
+END gmp_subtract

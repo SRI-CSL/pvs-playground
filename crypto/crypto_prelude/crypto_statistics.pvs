@@ -1,0 +1,37 @@
+% Binary64 object representations, following cstdlib@math_h.c_double.
+% Numerical primitives are bound by crypto-statistics-attachments.lisp.
+crypto_statistics: THEORY
+BEGIN
+  fp: TYPE = uint64
+  fl(n:uint64): fp
+  fp_add(x,y:fp): fp
+  fp_sub(x,y:fp): fp
+  fp_mul(x,y:fp): fp
+  fp_div(x,y:fp): fp
+  fp_pow(x,y:fp): fp
+  fp_lt(x,y:fp): bool
+  fp_abs(x:fp): fp
+  fp_sqrt(x:fp): fp
+  fp_log(x:fp): fp
+  fp_log1p(x:fp): fp
+  fp_expm1(x:fp): fp
+  fp_exp(x:fp): fp
+  fp_erfc(x:fp): fp
+  fp_sin(x:fp): fp
+  fp_cos(x:fp): fp
+  gamma_q(a,x:fp): fp
+  beta_i(a,b,x:fp): fp
+  ratio(a:uint64,b:pos_uint64):fp=fp_div(fl(a),fl(b))
+  sq(x:fp):fp=fp_mul(x,x)
+  fp_min(x,y:fp):fp=IF fp_lt(x,y) THEN x ELSE y ENDIF
+  fp_max(x,y:fp):fp=IF fp_lt(x,y) THEN y ELSE x ENDIF
+  log_two(x:fp):fp=fp_div(fp_log(x),fp_log(fl(2)))
+  deviation(v,expected:fp):fp=fp_div(sq(fp_sub(v,expected)),expected)
+  chi_tail(df:uint32,stat:fp):fp=gamma_q(ratio(df,2),fp_div(stat,fl(2)))
+  gaussian_tail(z:fp):fp=fp_erfc(fp_div(fp_abs(z),fp_sqrt(fl(2))))
+  % record distinguishes an inapplicable statistic from a probability of zero
+  observation: TYPE = [# applicable:bool,pvalue:fp #]
+  omitted:observation=(# applicable:=FALSE,pvalue:=fl(0) #)
+  observed(p:fp):observation=(# applicable:=TRUE,pvalue:=fp_min(fl(1),fp_max(fl(0),p)) #)
+  accepts(v:observation,alpha:fp):bool=v`applicable AND NOT fp_lt(v`pvalue,alpha)
+END crypto_statistics

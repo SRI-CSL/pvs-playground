@@ -1,0 +1,7 @@
+% Bzip2 compressed length for SP 800-90B §5.1.11. Zero signals a
+% compression error. A valid bzip2 stream has a nonempty header.
+crypto_compression: THEORY
+BEGIN
+  buffer:TYPE=[# length:uint32,seq:ARRAY[below(length)->uint8] #]
+  bzip2_length(x:buffer):uint32
+END crypto_compression

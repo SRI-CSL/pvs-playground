@@ -1,0 +1,29 @@
+% FIPS 186-4 section 4.7. Verification of previously generated DSA signatures
+% is retained by FIPS 186-5 section 4. These routines take the message digest.
+dsa_verify: THEORY
+BEGIN
+  IMPORTING ff_agreement
+  hash_bits(h:bytestring): TYPE = {j:uint32 | j<=8*h`length}
+  % Process the leftmost min(N,outlen) digest bits (FIPS 186-4 §4.7 step 2).
+  digest_prefix(h:bytestring,q:limbs,n:hash_bits(h),i:upto(n),a:words_of(q`len)):
+    RECURSIVE words_of(q`len) =
+    IF i=n THEN a ELSE
+      LET b:uint8=u8and(u8rshift(h`seq(u32div(i,8)),7-u32rem(i,8)),1),
+          doubled=add_mod(a,a,q),next=IF b=0 THEN doubled ELSE add_mod(doubled,one_words(q`len),q) ENDIF
+      IN digest_prefix(h,q,n,i+1,next)
+    ENDIF MEASURE n-i
+  verify(d:domain,y,r,s:integer_of(d),digest:bytestring): bool =
+    IF NOT exponent_ok(d,r) OR NOT exponent_ok(d,s) OR NOT public_valid(d,y)
+    THEN FALSE ELSE
+      LET q=d`q,len=q`len,two=zero_words(len) WITH [`word(0):=2],
+          bits=significant_bits(q,32*len),
+          n:uint32=IF bits<8*digest`length THEN bits ELSE 8*digest`length ENDIF,
+          z=digest_prefix(digest,q,n,0,zero_words(len)),
+          w=mont_power(s,sub_words(q,two),q),
+          u1=mul_mod(z,w,q),u2=mul_mod(r,w,q),
+          prod=mul_mod(mont_power(d`g,u1,d`p),mont_power(y,u2,d`p),d`p)
+      IN reduce_le(to_bytes(prod,4*len,FALSE),q)=r
+    ENDIF
+  reject_bad_signature: LEMMA FORALL(d:domain,y,r,s:integer_of(d),h:bytestring):
+    NOT exponent_ok(d,r) IMPLIES NOT verify(d,y,r,s,h)
+END dsa_verify

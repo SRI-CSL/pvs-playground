@@ -1,0 +1,29 @@
+vectors [T: TYPE, n: posnat, +, *: [T, T -> T], zero, one: T]: THEORY
+  BEGIN
+
+    ASSUMING IMPORTING algebra@ring_with_one_def[T, +, *, zero, one]
+      ring_with_one: ASSUMPTION ring_with_one?(fullset[T])
+    ENDASSUMING
+
+    IMPORTING sq_matrices[T, n, +, *, zero, one]
+
+    vector: TYPE = ARRAY[below(n) -> T]
+
+    X, Y: VAR vector
+    A, B: VAR sq_mat
+    i, k: VAR below(n)
+
+    ;+(X, Y): vector = LAMBDA i: X(i) + Y(i)
+    ;*(A, X): vector = LAMBDA i: sum_f(n)(LAMBDA k: A(i)(k) * X(k))
+
+    vec_zero: vector = LAMBDA i: zero
+    vec_one: vector = LAMBDA i: one
+
+    IMPORTING group_def[vector, +, vec_zero]
+
+    vec_abelian_group: LEMMA abelian_group?(fullset[vector])
+    prod_vec_associative: LEMMA FORALL (A, B, X): (A * B) * X = A * (B * X)
+
+    identity_times_vec: LEMMA FORALL X: mat_id * X = X
+
+  END vectors

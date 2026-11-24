@@ -1,0 +1,177 @@
+(|aes_modes|
+ (|shift_byte_TCC1| 0
+  (|shift_byte_TCC1-1| NIL 4004535524
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|shift_byte| SUBTYPE "(number_fields.-)(8, aes_modes.j)" "naturalnumber"
+    (31 18 31 21))))
+ (|shift_byte_TCC2| 0
+  (|shift_byte_TCC2-1| NIL 4004535524
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_u16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|shift_byte| SUBTYPE "(number_fields.-)(aes_modes.pos, 128)" "below(128)"
+    (29 66 29 73))))
+ (|shift_byte_TCC3| 0
+  (|shift_byte_TCC3-1| NIL 4004535524
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|shift_byte| SUBTYPE "(number_fields.+)(aes_modes.j, 1)" "upto(8)"
+    (30 31 30 34))))
+ (|shift_byte_TCC4| 0
+  (|shift_byte_TCC4-1| NIL 4004535524
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|shift_byte| TERMINATION
+    "aes_modes.shift_byte(aes_modes.old, aes_modes.ct, aes_modes.n, aes_modes.base, (number_fields.+)(aes_modes.j, 1), integer_bv_ops.u8or(integertypes.u8lshift(aes_modes.acc, 1), aes_modes.b))"
+    "NIL" (30 6 30 59))))
+ (|shift_byte_TCC5| 0
+  (|shift_byte_TCC5-1| NIL 4004535524
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK
+   (|shift_byte| SUBTYPE
+    "(number_fields.+)((number_fields.+)(number_fields.*(8, aes_modes.base), aes_modes.j), aes_modes.n)"
+    "uint16" (28 27 28 37))))
+ (|cfb_TCC1| 0
+  (|cfb_TCC1-1| NIL 4004535525
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|cfb| SUBTYPE "aes_modes.i" "below(16)" (36 76 36 77))))
+ (|cfb_TCC2| 0
+  (|cfb_TCC2-1| NIL 4004535525
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|byvXOR| CONST-DECL "[[byv, byv] -> byv]" |Rijndael| NIL))
+   SHOSTAK
+   (|cfb| SUBTYPE
+    "LAMBDA (i: naturalnumbers.upto(15)): aes_modes.shift_byte(aes_modes.reg, aes_modes.ct, aes_modes.n, i, 0, 0)"
+    "block" (36 34 36 82))))
+ (|dbl_TCC1| 0
+  (|dbl_TCC1-1| NIL 4004535525
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE "(number_fields.+)(aes_modes.i, 1)" "below(16)"
+    (50 32 50 35))))
+ (|dbl_TCC2| 0
+  (|dbl_TCC2-1| NIL 4004535525
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|dbl| SUBTYPE "aes_modes.i" "below(16)" (50 66 50 67))))
+ (|dbl_TCC3| 0
+  (|dbl_TCC3-1| NIL 4004535525
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|dbl| SUBTYPE
+    "LAMBDA (i: naturalnumbers.upto(15)): LET carry: integertypes.uint8 = IF i = 15 THEN (IF reals.>=(aes_modes.x(0), 128) THEN 135 ELSE 0 ENDIF) ELSE integertypes.u8rshift(aes_modes.x((number_fields.+)(i, 1)), 7) ENDIF IN integer_bv_ops.u8xor(integertypes.u8lshift(aes_modes.x(i), 1), carry)"
+    "block" (48 25 50 78))))
+ (|cmac_finish_TCC1| 0
+  (|cmac_finish_TCC1-1| NIL 4004535525
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS ("u16div" "u16rem" "maxsize" "exp2")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|cmac_finish| SUBTYPE "aes_modes.n" "below(128)" (54 64 54 65))))
+ (|ctr_advances| 0
+  (|ctr_advances-1| NIL 4004535525
+   ("" (THEN (SKOSIMP*) (EXPAND "ctr") (ASSERT)) NIL NIL)
+   ((|ctr| CONST-DECL "[[mode_key, block, block, width] -> feedback]"
+     |aes_modes| NIL))
+   SHOSTAK)))

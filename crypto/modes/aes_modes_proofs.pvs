@@ -1,0 +1,15 @@
+% SP 800-38A sections 6.1 and 6.2. For CBC, chain is the IV for the
+% first block and the preceding ciphertext for each subsequent block.
+aes_modes_proofs: THEORY
+BEGIN
+  aes: LIBRARY = "../aes"
+  IMPORTING aes_modes, aes@aes_fips197_proofs
+
+  ecb_inverse: THEOREM FORALL (k: mode_key, p: block):
+    ecb_decrypt(k,ecb_encrypt(k,p)) = p
+
+  block_xor_commutes: LEMMA FORALL (a,b: block): byvXOR(a,b) = byvXOR(b,a)
+
+  cbc_inverse: THEOREM FORALL (k: mode_key, chain,p: block):
+    cbc_decrypt(k,chain,cbc_encrypt(k,chain,p)) = p
+END aes_modes_proofs

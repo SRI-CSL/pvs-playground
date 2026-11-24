@@ -1,0 +1,1251 @@
+(|hmac_drbg|
+ (|state_TCC1| 0
+  (|state_TCC1-1| NIL 4004534712
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|drbg_hash| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|h_sha512_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|state| SUBTYPE "keyed_hash.hash_bytes(hmac_drbg.algorithm)" "index"
+    (12 59 12 80))))
+ (|update_round_TCC1| 0
+  (|update_round_TCC1-1| NIL 4004534712
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "s!1`v") (TYPEPRED "hash_bytes(s!1`algorithm)")
+     (TYPEPRED "block_bytes(s!1`algorithm)") (TYPEPRED "data!1")
+     (AUTO-REWRITE "exp2" "join_octets" "fill_octets" "material_bound")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|state| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|counter| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|drbg_hash| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|block_bytes| CONST-DECL "[hash_id -> subrange(64, 144)]" |keyed_hash|
+     NIL)
+    (|fill_octets| CONST-DECL "octets_of(n)" |crypto_buffers| |crypto_prelude|)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL))
+   SHOSTAK
+   (|update_round| SUBTYPE "crypto_buffers.fill_octets(1, hmac_drbg.marker)"
+    "{s_1: bytestrings.bytestring | reals.<((number_fields.+)(s_1`length, hmac_drbg.s`v`length), exp2.exp2(28))}"
+    (23 34 23 56))))
+ (|update_round_TCC2| 0
+  (|update_round_TCC2-1| NIL 4004534712
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "s!1`v") (TYPEPRED "hash_bytes(s!1`algorithm)")
+     (TYPEPRED "block_bytes(s!1`algorithm)") (TYPEPRED "data!1")
+     (AUTO-REWRITE "exp2" "join_octets" "fill_octets" "material_bound")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|state| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|counter| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|drbg_hash| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|block_bytes| CONST-DECL "[hash_id -> subrange(64, 144)]" |keyed_hash|
+     NIL)
+    (|fill_octets| CONST-DECL "octets_of(n)" |crypto_buffers| |crypto_prelude|)
+    (|join_octets| CONST-DECL "octets_of(a`length + b`length)" |crypto_buffers|
+     |crypto_prelude|)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL))
+   SHOSTAK
+   (|update_round| SUBTYPE "hmac_drbg.data"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(hmac_drbg.prefix`length, s`length), exp2.exp2(28))}"
+    (24 57 24 61))))
+ (|update_round_TCC3| 0
+  (|update_round_TCC3-1| NIL 4004534712
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "s!1`v") (TYPEPRED "hash_bytes(s!1`algorithm)")
+     (TYPEPRED "block_bytes(s!1`algorithm)") (TYPEPRED "data!1")
+     (AUTO-REWRITE "exp2" "join_octets" "fill_octets" "material_bound")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|state| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|counter| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|drbg_hash| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|block_bytes| CONST-DECL "[hash_id -> subrange(64, 144)]" |keyed_hash|
+     NIL)
+    (|fill_octets| CONST-DECL "octets_of(n)" |crypto_buffers| |crypto_prelude|)
+    (|join_octets| CONST-DECL "octets_of(a`length + b`length)" |crypto_buffers|
+     |crypto_prelude|)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL))
+   SHOSTAK
+   (|update_round| SUBTYPE
+    "crypto_buffers.join_octets(hmac_drbg.prefix, hmac_drbg.data)"
+    "hmac_input(hmac_drbg.s`algorithm)" (24 37 24 62))))
+ (|update_round_TCC4| 0
+  (|update_round_TCC4-1| NIL 4004534712
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "s!1`v") (TYPEPRED "hash_bytes(s!1`algorithm)")
+     (TYPEPRED "block_bytes(s!1`algorithm)") (TYPEPRED "data!1")
+     (AUTO-REWRITE "exp2" "join_octets" "fill_octets" "material_bound")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|state| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|counter| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|drbg_hash| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|block_bytes| CONST-DECL "[hash_id -> subrange(64, 144)]" |keyed_hash|
+     NIL)
+    (|fill_octets| CONST-DECL "octets_of(n)" |crypto_buffers| |crypto_prelude|)
+    (|join_octets| CONST-DECL "octets_of(a`length + b`length)" |crypto_buffers|
+     |crypto_prelude|)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL))
+   SHOSTAK
+   (|update_round| SUBTYPE "hmac_drbg.s`v" "hmac_input(hmac_drbg.s`algorithm)"
+    (25 33 25 36))))
+ (|instantiate_TCC1| 0
+  (|instantiate_TCC1-1| NIL 4004534712
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|reseed_interval| CONST-DECL "uint64" |hmac_drbg| NIL))
+   SHOSTAK (|instantiate| SUBTYPE "1" "counter" (38 70 38 71))))
+ (|instantiate_TCC2| 0
+  (|instantiate_TCC2-1| NIL 4004534712
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|entropy_input| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|drbg_hash| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|h_sha512_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|instantiate| SUBTYPE "hmac_drbg.nonce"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(hmac_drbg.e`length, s`length), exp2.exp2(28))}"
+    (39 49 39 54))))
+ (|instantiate_TCC3| 0
+  (|instantiate_TCC3-1| NIL 4004534712
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|entropy_input| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|drbg_hash| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|h_sha512_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|instantiate| SUBTYPE "hmac_drbg.personal"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(s`length, crypto_buffers.join_octets(hmac_drbg.e, hmac_drbg.nonce)`length), exp2.exp2(28))}"
+    (39 57 39 65))))
+ (|instantiate_TCC4| 0
+  (|instantiate_TCC4-1| NIL 4004534712
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|entropy_input| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|drbg_hash| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|h_sha512_256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512_224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha512| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha384| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha256| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha224| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (|h_sha1| CONST-DECL "hash_id" |keyed_hash| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|instantiate| SUBTYPE
+    "crypto_buffers.join_octets(crypto_buffers.join_octets(hmac_drbg.e, hmac_drbg.nonce), hmac_drbg.personal)"
+    "material" (39 22 39 66))))
+ (|reseed_TCC1| 0
+  (|reseed_TCC1-1| NIL 4004534712
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|entropy_input| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|reseed| SUBTYPE "hmac_drbg.extra"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(hmac_drbg.e`length, s`length), exp2.exp2(28))}"
+    (44 34 44 39))))
+ (|reseed_TCC2| 0
+  (|reseed_TCC2-1| NIL 4004534712
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|entropy_input| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|reseed| SUBTYPE "crypto_buffers.join_octets(hmac_drbg.e, hmac_drbg.extra)"
+    "material" (44 19 44 40))))
+ (|reseed_TCC3| 0
+  (|reseed_TCC3-1| NIL 4004534712
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|reseed_interval| CONST-DECL "uint64" |hmac_drbg| NIL)) SHOSTAK
+   (|reseed| SUBTYPE "1" "counter" (44 61 44 62))))
+ (|generate_blocks_TCC1| 0
+  (|generate_blocks_TCC1-1| NIL 4004534713
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   NIL SHOSTAK
+   (|generate_blocks| SUBTYPE
+    "(number_fields.-)(hmac_drbg.out`length, hmac_drbg.i)" "naturalnumber"
+    (57 18 57 32))))
+ (|generate_blocks_TCC2| 0
+  (|generate_blocks_TCC2-1| NIL 4004534713
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|drbg_hash| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|counter| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|state| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|generate_blocks| SUBTYPE "0" "upto(hmac_drbg.v`length)" (54 46 54 47))))
+ (|generate_blocks_TCC3| 0
+  (|generate_blocks_TCC3-1| NIL 4004534713
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "out!1`length") (AUTO-REWRITE "exp2")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL))
+   SHOSTAK
+   (|generate_blocks| SUBTYPE
+    "(number_fields.+)(hmac_drbg.i, hmac_drbg.v`length)" "index"
+    (55 79 55 91))))
+ (|generate_blocks_TCC4| 0
+  (|generate_blocks_TCC5-1| NIL 4004534713
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|drbg_hash| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|counter| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|state| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|generate_blocks| SUBTYPE "hmac_drbg.after"
+    "upto(hmac_drbg.updated`length)" (56 43 56 48))))
+ (|generate_blocks_TCC5| 0
+  (|generate_blocks_TCC4-1| NIL 4004534713
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|drbg_hash| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|counter| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|state| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|generate_blocks| TERMINATION
+    "hmac_drbg.generate_blocks(hmac_drbg.next, hmac_drbg.updated, hmac_drbg.after)"
+    "NIL" (56 12 56 49))))
+ (|generate_blocks_TCC6| 0
+  (|generate_blocks_TCC6-1| NIL 4004534763
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "s!1`v") (TYPEPRED "hash_bytes(s!1`algorithm)")
+     (TYPEPRED "block_bytes(s!1`algorithm)") (AUTO-REWRITE "exp2")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|state| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|counter| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|hash_bytes| CONST-DECL "[hash_id -> subrange(20, 64)]" |keyed_hash| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|hash_id| TYPE-EQ-DECL NIL |keyed_hash| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|drbg_hash| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|block_bytes| CONST-DECL "[hash_id -> subrange(64, 144)]" |keyed_hash|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK
+   (|generate_blocks| SUBTYPE "hmac_drbg.s`v"
+    "hmac_input(hmac_drbg.s`algorithm)" (52 42 52 45))))
+ (|generate_TCC1| 0
+  (|generate_TCC1-1| NIL 4004534713
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|reseed_interval| CONST-DECL "uint64" |hmac_drbg| NIL))
+   SHOSTAK
+   (|generate| SUBTYPE "(number_fields.+)(hmac_drbg.n, 7)" "uint32"
+    (65 39 65 44))))
+ (|generate_TCC2| 0
+  (|generate_TCC2-1| NIL 4004534713
+   (""
+    (THEN (SKOSIMP*) (HIDE -) (EXPAND "u32rshift") (TYPEPRED "ndiv(n!1+7,8)")
+     (GRIND))
+    NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|request_bits| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|mod| NONEMPTY-TYPE-EQ-DECL NIL |euclidean_division| NIL)
+    (|rem| CONST-DECL
+     "[b: posnat -> [x: int -> {r: mod(b) | EXISTS (q: int): x = r + b * q}]]"
+     |modulo_arithmetic| NIL)
+    (|ndiv| CONST-DECL
+     "[d: [int, posnat] -> {q: int | d`1 = rem(d`2)(d`1) + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|reseed_interval| CONST-DECL "uint64" |hmac_drbg| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|u32rshift| CONST-DECL "[[uint32, upto(32)] -> uint32]" |integertypes|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|generate| SUBTYPE
+    "integertypes.u32rshift((number_fields.+)(hmac_drbg.n, 7), 3)" "index"
+    (65 29 65 48))))
+ (|generate_TCC3| 0
+  (|generate_TCC3-1| NIL 4004534713
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|reseed_interval| CONST-DECL "uint64" |hmac_drbg| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|u32rshift_bound| APPLICATION-JUDGEMENT "below(exp2(32 - n))"
+     |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|request_bits| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|generate| SUBTYPE "0"
+    "upto(crypto_buffers.fill_octets(hmac_drbg.octets, 0)`length)"
+    (66 66 66 67))))
+ (|generate_TCC4| 0
+  (|generate_TCC4-1| NIL 4004534713
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "d!1`length") (AUTO-REWRITE "exp2")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|u32rshift_bound| APPLICATION-JUDGEMENT "below(exp2(32 - n))"
+     |integertypes| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|generate| SUBTYPE "(number_fields.-)(hmac_drbg.d`length, 1)" "index"
+    (70 45 70 57))))
+ (|generate_TCC5| 0
+  (|generate_TCC5-1| NIL 4004534713
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|reseed_interval| CONST-DECL "uint64" |hmac_drbg| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|u32rshift_bound| APPLICATION-JUDGEMENT "below(exp2(32 - n))"
+     |integertypes| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|request_bits| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|generate| SUBTYPE "hmac_drbg.last" "below(hmac_drbg.d`length)"
+    (71 37 71 41))))
+ (|generate_TCC6| 0
+  (|generate_TCC6-1| NIL 4004534713
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|reseed_interval| CONST-DECL "uint64" |hmac_drbg| NIL)) SHOSTAK
+   (|generate| SUBTYPE "(number_fields.-)(8, hmac_drbg.used)" "upto(8)"
+    (71 80 71 88))))
+ (|generate_TCC7| 0
+  (|generate_TCC7-1| NIL 4004534713
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|reseed_interval| CONST-DECL "uint64" |hmac_drbg| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|u32rshift_bound| APPLICATION-JUDGEMENT "below(exp2(32 - n))"
+     |integertypes| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|request_bits| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|generate| SUBTYPE "(number_fields.+)(hmac_drbg.s`requests, 1)" "counter"
+    (73 70 73 84))))
+ (|reseed_and_generate_TCC1| 0
+  (|reseed_and_generate_TCC1-1| NIL 4004534714
+   (""
+    (THEN (AUTO-REWRITE "exp2" "material_bound" "reseed_interval")
+     (GRIND :DEFS NIL))
+    NIL)
+   ((|material_bound| CONST-DECL "uint32" |hmac_drbg| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|request_bits| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|entropy_input| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|material| TYPE-EQ-DECL NIL |hmac_drbg| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|reseed_and_generate| SUBTYPE "crypto_buffers.fill_octets(0, 0)" "material"
+    (81 37 81 54))))
+ (|expired_no_output| 0
+  (|expired_no_output-1| NIL 4004534714
+   (""
+    (THEN (SKOSIMP*) (EXPAND "generate") (ASSERT) (EXPAND "fill_octets")
+     (ASSERT))
+    NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|generate| CONST-DECL "[[state, request_bits, material] -> result]"
+     |hmac_drbg| NIL)
+    (|fill_octets| CONST-DECL "octets_of(n)" |crypto_buffers| |crypto_prelude|)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK))
+ (|reseed_resets_counter| 0
+  (|reseed_resets_counter-1| NIL 4004534714
+   ("" (THEN (SKOSIMP*) (EXPAND "reseed") (ASSERT)) NIL)
+   ((|reseed| CONST-DECL
+     "[[state, e: entropy_input, {a: bytestring | a`length + e`length <= material_bound}] -> state]"
+     |hmac_drbg| NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,120 @@
+% SP 800-90B §§3.1, 5, 6.1–6.4. The submitter provides a source model,
+% the physical restart observations and any prior entropy iid_claim.
+entropy_assessment: THEORY
+BEGIN
+  IMPORTING entropy_permutations,entropy_context,entropy_health
+  strongest(h:stat_counts,i:upto(256),best:uint32):RECURSIVE uint32=
+    IF i=256 THEN best ELSE strongest(h,i+1,u32max(h(i),best)) ENDIF MEASURE 256-i
+  mcv(x:{s:bytestring | s`length>=2},h:stat_counts):estimate_result=
+    estimated(neglog(upper_p(ratio(strongest(h,0,0),x`length),x`length)))
+  lower(a,b:estimate_result):estimate_result=
+    IF NOT a`usable THEN b ELSIF NOT b`usable THEN a ELSE estimated(fp_min(a`bits_per_sample,b`bits_per_sample)) ENDIF
+  estimates(x:bytestring,iid:bool):estimate_result=
+    IF x`length<2 THEN unavailable ELSE LET h=counts(x,0,x`length,empty_counts),k=size(h,0,0),a=mcv(x,h) IN
+      IF iid OR k<2 THEN a ELSE LET t=substring_estimates(x),
+        p=lower(lower(lag(x,k),multi_mcw(x,k)),lower(context_estimate(x,k,FALSE),context_estimate(x,k,TRUE))),
+        b=lower(lower(a,p),lower(t`tuple_est,t`lrs_est)) IN
+      IF k=2 THEN LET y=as_binary(x,h) IN lower(b,lower(collision(y),lower(markov(y),compression(y)))) ELSE b ENDIF ENDIF ENDIF
+  iid_track(x:{s:bytestring | s`length>=2},src:stream_id):bool=
+    LET h=counts(x,0,x`length,empty_counts),k=size(h,0,0),b=k=2,y=IF b THEN as_binary(x,h) ELSE x ENDIF,alpha=ratio(1,1000) IN
+      k>=2 AND
+      (LET a=IF b THEN binary_chi(y,TRUE) ELSE nonbinary_chi(x,TRUE) ENDIF IN
+         IF b THEN accepts(a,alpha) ELSE NOT a`applicable OR accepts(a,alpha) ENDIF) AND
+      accepts(IF b THEN binary_chi(y,FALSE) ELSE nonbinary_chi(x,FALSE) ENDIF,alpha) AND
+      accepts(lrs_test(x),alpha) AND iid_permutations(x,b,src)
+  % Ordered positions are supplied by the source model (§6.4). Bit 0 is
+  % the least significant bit of the original fixed-width word.
+  ranking:TYPE={r:ARRAY[below(8)->below(64)] | FORALL(i,j:below(8)):i/=j IMPLIES r(i)/=r(j)}
+  project(x:uint64,r:ranking,m:upto(8),i:upto(m),v:uint8):RECURSIVE uint8=
+    IF i=m THEN v ELSE project(x,r,m,i+1,u8or(u8lshift(v,1),u64and(u64rshift(x,r(i)),1))) ENDIF MEASURE m-i
+  source_width:TYPE=subrange(1,8)
+  fits_width(h:stat_counts,w:source_width,i:upto(256)):RECURSIVE bool=
+    IF i=256 THEN TRUE ELSE (i<u32lshift(1,w) OR h(i)=0) AND fits_width(h,w,i+1) ENDIF MEASURE 256-i
+  bit_prefix(x:bytestring,w:source_width):bytestring=
+    LET n:index=IF w*x`length>=1000000 THEN 1000000 ELSE w*x`length ENDIF IN
+      (# length:=n,seq:=LAMBDA(i:below(n)):u8and(u8rshift(x`seq(u32div(i,w)),w-1-u32rem(i,w)),1) #)
+  initial_estimate(x:bytestring,w:source_width,iid:bool,submitted:fp):estimate_result=
+    IF x`length<1000000 OR fp_lt(submitted,fl(0)) OR NOT fits_width(counts(x,0,x`length,empty_counts),w,0) THEN unavailable ELSE LET a=estimates(x,iid) IN
+      IF NOT a`usable THEN unavailable ELSIF size(counts(x,0,x`length,empty_counts),0,0)<=2 THEN estimated(fp_min(submitted,a`bits_per_sample)) ELSE
+        LET b=estimates(bit_prefix(x,w),iid) IN IF NOT b`usable THEN unavailable ELSE
+          estimated(fp_min(submitted,fp_min(a`bits_per_sample,fp_mul(fl(w),b`bits_per_sample)))) ENDIF ENDIF ENDIF
+  restart_data:TYPE=octets_of(1000000)
+  by_column(x:restart_data):restart_data=(# length:=1000000,seq:=LAMBDA(i:below(1000000)):
+    x`seq(1000*u32rem(i,1000)+u32div(i,1000)) #)
+  row_peak(x:restart_data,i:upto(1000),best:upto(1000)):RECURSIVE upto(1000)=
+    IF i=1000 THEN best ELSE LET h=counts(x,1000*i,1000*(i+1),empty_counts) IN
+      row_peak(x,i+1,u32max(best,strongest(h,0,0))) ENDIF MEASURE 1000-i
+  sanity(rows,cols:restart_data,hi:fp):bool=
+    IF fp_lt(hi,fl(0)) THEN FALSE ELSE LET peak=u32max(row_peak(rows,0,0),row_peak(cols,0,0)),
+      p=fp_pow(ratio(1,2),hi),tail=IF peak=0 THEN fl(1) ELSE beta_i(fl(peak),fl(1001-peak),p) ENDIF IN
+      NOT fp_lt(tail,ratio(5,1000000)) ENDIF
+  restart_decision(hi,hr,hc:fp):estimate_result=
+    LET v=fp_min(hr,hc) IN IF fp_lt(v,fp_div(hi,fl(2))) THEN unavailable ELSE estimated(fp_min(v,hi)) ENDIF
+  restart(x:restart_data,iid:bool,hi:fp):estimate_result=
+    LET col=by_column(x) IN IF NOT sanity(x,col,hi) THEN unavailable ELSE
+      LET a=estimates(x,iid),b=estimates(col,iid) IN IF a`usable AND b`usable THEN
+        restart_decision(hi,a`bits_per_sample,b`bits_per_sample) ELSE unavailable ENDIF ENDIF
+  % §3.1.2. The iid_claim includes the submitter's source-model rationale.
+  % Each invocation of iid_permutations uses 10,000 distinct handles.
+  selected_iid(iid_claim,nonvetted:bool,x:bytestring,rows:restart_data,y:bytestring,src:stream_id):bool=
+    iid_claim AND x`length>=1000000 AND src<=18446744073709511616 AND
+    iid_track(x,src) AND iid_track(rows,u64plus(src,10000)) AND
+    iid_track(by_column(rows),u64plus(src,20000)) AND
+    (NOT nonvetted OR (y`length>=1000000 AND binary?(y,0) AND iid_track(y,u64plus(src,30000))))
+  source_assessment(iid_claim,nonvetted:bool,x:bytestring,w:source_width,rows:restart_data,
+                    y:bytestring,submitted:fp,src:stream_id):estimate_result=
+    IF x`length<1000000 OR NOT fits_width(counts(rows,0,1000000,empty_counts),w,0) OR (nonvetted AND (y`length<1000000 OR NOT binary?(y,0))) THEN unavailable
+    ELSE LET track=selected_iid(iid_claim,nonvetted,x,rows,y,src),a=initial_estimate(x,w,track,submitted) IN
+      IF a`usable THEN restart(rows,track,a`bits_per_sample) ELSE unavailable ENDIF ENDIF
+  % Evaluate §3.1.5 in the log domain. base = 2^(nin-n) * p_low.
+  logadd(a,b:fp):fp=
+    LET high=fp_max(a,b),low=fp_min(a,b) IN fp_add(high,fp_div(fp_log1p(fp_pow(fl(2),fp_sub(low,high))),fp_log(fl(2))))
+  output_entropy(nin,nout,nw:pos_uint32,hin:fp):estimate_result=
+    IF fp_lt(hin,fl(0)) OR fp_lt(fl(nin),hin) THEN unavailable ELSIF hin=fl(0) THEN estimated(fl(0)) ELSE
+      LET n=u32min(nout,nw),ln2=fp_log(fl(2)),neg_h=fp_sub(fl(0),hin),
+        num=fp_log(fp_sub(fl(0),fp_expm1(fp_mul(neg_h,ln2)))),
+        den=fp_log1p(fp_sub(fl(0),fp_pow(ratio(1,2),fl(nin)))),
+        base=fp_sub(fp_div(fp_sub(num,den),ln2),fl(n)),psi=logadd(base,neg_h),
+        exponent=fp_div(fp_sub(fp_add(log_two(fp_mul(fl(2*n),ln2)),fl(n)),fl(nin)),fl(2)),
+        omega=fp_add(base,logadd(fl(0),exponent)) IN
+        estimated(fp_min(hin,fp_min(fl(n),fp_sub(fl(0),fp_max(psi,omega))))) ENDIF
+  unvetted(nin,nout,nw:pos_uint32,hin,hbit:fp):estimate_result=
+    LET v=output_entropy(nin,nout,nw,hin) IN IF NOT v`usable THEN v ELSE
+      estimated(fp_min(v`bits_per_sample,fp_mul(fl(nout),fp_min(ratio(999,1000),hbit)))) ENDIF
+  % §§3.1.4–3.1.5. samples_per_input is the number of physical samples
+  % forming one conditioner input. It can differ from nin/w after §6.4
+  % projection. A non-vetted output dataset is presented as individual bits.
+  conditioned_assessment(claimed_iid,vetted:bool,x:bytestring,w:source_width,rows:restart_data,
+                         y:bytestring,submitted:fp,src:stream_id,samples_per_input,nin,nout,nw:pos_uint32):estimate_result=
+    IF x`length<1000000 OR NOT fits_width(counts(rows,0,1000000,empty_counts),w,0) OR
+       u32rem(nin,samples_per_input)/=0 OR (NOT vetted AND (y`length<1000000 OR NOT binary?(y,0))) THEN unavailable
+    ELSE LET track=selected_iid(claimed_iid,NOT vetted,x,rows,y,src),a=initial_estimate(x,w,track,submitted) IN
+      IF NOT a`usable THEN unavailable ELSE LET b=restart(rows,track,a`bits_per_sample) IN
+        IF NOT b`usable THEN unavailable ELSE LET hin=fp_mul(fl(samples_per_input),b`bits_per_sample) IN
+          IF vetted THEN output_entropy(nin,nout,nw,hin) ELSE LET h=estimates(y,track) IN
+            IF h`usable THEN unvetted(nin,nout,nw,hin,h`bits_per_sample) ELSE unavailable ENDIF ENDIF ENDIF ENDIF ENDIF
+  % Refinement obligations for the numerical interpretation of fp.
+  below_estimate(a,b:estimate_result):bool=NOT b`usable OR
+    (a`usable AND NOT fp_lt(b`bits_per_sample,a`bits_per_sample))
+  noniid_minimum: THEOREM FORALL(x:{v:bytestring | v`length>=4096}):
+    LET h=counts(x,0,x`length,empty_counts),k=size(h,0,0),a=estimates(x,FALSE),t=substring_estimates(x) IN
+    k>=2 IMPLIES below_estimate(a,mcv(x,h)) AND below_estimate(a,t`tuple_est) AND
+      below_estimate(a,t`lrs_est) AND below_estimate(a,multi_mcw(x,k)) AND below_estimate(a,lag(x,k)) AND
+      below_estimate(a,context_estimate(x,k,FALSE)) AND below_estimate(a,context_estimate(x,k,TRUE)) AND
+      (k=2 IMPLIES (LET y=as_binary(x,h) IN below_estimate(a,collision(y)) AND
+        below_estimate(a,markov(y)) AND below_estimate(a,compression(y))))
+  example40:binary_data=(# length:=40,seq:=LAMBDA(i:below(40)):
+    u64and(u64rshift(0x8e55cc72ae,39-i),1) #)
+  collision_worked_example: THEOREM LET a=collision(example40) IN a`usable AND
+    fp_lt(fp_abs(fp_sub(a`bits_per_sample,ratio(4483,10000))),ratio(1,10000))
+  markov_worked_example: THEOREM LET a=markov(example40) IN a`usable AND
+    fp_lt(fp_abs(fp_sub(a`bits_per_sample,ratio(761,1000))),ratio(6,10000))
+  no_iid_without_claim: THEOREM FORALL(nonvetted:bool,x,y:bytestring,rows:restart_data,src:stream_id):
+    NOT selected_iid(FALSE,nonvetted,x,rows,y,src)
+  initial_capped: THEOREM FORALL(x:bytestring,w:source_width,iid:bool,h:fp):
+    NOT fp_lt(h,fl(0)) IMPLIES (LET a=initial_estimate(x,w,iid,h) IN
+      a`usable IMPLIES NOT fp_lt(h,a`bits_per_sample))
+  restart_transpose: THEOREM FORALL(x:restart_data):by_column(by_column(x))=x
+  restart_half: THEOREM FORALL(hi,hr,hc:fp):fp_lt(fp_min(hr,hc),fp_div(hi,fl(2))) IMPLIES
+    NOT restart_decision(hi,hr,hc)`usable
+END entropy_assessment

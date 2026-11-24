@@ -1,0 +1,53 @@
+% SP 800-208 sections 4, 6.1 and 8. RFC 8554 Algorithms 3 and 5.
+lms_sign: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING lms,crypto_prelude@crypto_seeds
+  subtree(s: suite,w: width_code,id: identifier,seed: octets_of(digest_len(s)),
+          cap,r: uint32,left: upto(25)): RECURSIVE octets_of(digest_len(s)) =
+    IF left=0 THEN leaf_hash(s,id,r,public_ots(s,w,id,u32minus(r,cap),seed))
+    ELSE LET child=u32plus(r,r) IN node_hash(s,id,r,subtree(s,w,id,seed,cap,child,left-1),
+                         subtree(s,w,id,seed,cap,u32plus(child,1),left-1)) ENDIF MEASURE left
+  public_key(s: suite,h: height_code,w: width_code,id: identifier,seed: octets_of(digest_len(s))):
+      octets_of(24+digest_len(s)) =
+    LET pre=join_octets(join_octets(word(lms_code(s,h)),word(ots_code(s,w))),id)
+    IN join_octets(pre,subtree(s,w,id,seed,leaves(h),1,height(h)))
+  % The host commits 'following' in nonvolatile storage before using the slot.
+  % An exhausted allocator yields no slot and preserves the terminal cursor.
+  allocation: TYPE = [# ok: bool, slot,following: uint32 #]
+  reserve(h: height_code,next: uint32): allocation =
+    IF next>=leaves(h) THEN (# ok:=FALSE,slot:=0,following:=next #)
+    ELSE (# ok:=TRUE,slot:=next,following:=next+1 #) ENDIF
+  auth_path(s: suite,h: height_code,w: width_code,id: identifier,seed: octets_of(digest_len(s)),
+            r: uint32,level: upto(25),out: bytestring,base: uint16): RECURSIVE octets_of(out`length) =
+    IF level>=height(h) THEN out ELSE
+      LET sibling=IF nrem(r,2)=0 THEN u32plus(r,1) ELSE u32minus(r,1) ENDIF,
+          v=subtree(s,w,id,seed,leaves(h),sibling,level),off: uint32=base+digest_len(s)*level IN
+      IF off>out`length THEN out ELSE auth_path(s,h,w,id,seed,u32div(r,2),level+1,copy_octets(out,off,v,0),base)
+      ENDIF ENDIF MEASURE 25-level
+  sig_result: TYPE = [# ok: bool, value: bytestring #]
+  sig_error: sig_result = (# ok:=FALSE,value:=fill_octets(0,0) #)
+  sign_reserved(s: suite,h: height_code,w: width_code,id: identifier,seed,c: octets_of(digest_len(s)),
+                q: uint32,m: message_input): sig_result =
+    IF q>=leaves(h) THEN sig_error ELSE
+      LET n=digest_len(s),d=digits(s,w,read_hash(s,id,q,c,m)),
+          y=packed_chains(s,w,id,q,seed,d,fill_octets(0,0),1),
+          a=join_octets(join_octets(word(q),word(ots_code(s,w))),c),
+          b=join_octets(join_octets(a,y),word(lms_code(s,h))),
+          out=copy_octets(fill_octets(sig_length(s,h,w),0),0,b,0)
+      IN (# ok:=TRUE,value:=auth_path(s,h,w,id,seed,u32plus(leaves(h),q),0,out,12+n*(1+chains(s,w))) #)
+    ENDIF
+  key_material: TYPE = [# ok: bool,id: identifier,seed: bytestring #]
+  % Disjoint offsets in the input stream supply independent identifier and seed.
+  generate_material(s: suite,stream: stream_id): key_material =
+    LET a=prng_seed32(stream,0),b=prng_seed32(stream,32) IN
+    IF a`ok AND b`ok THEN (# ok:=TRUE,id:=first_octets(a`value,16),seed:=first_octets(b`value,digest_len(s)) #)
+    ELSE (# ok:=FALSE,id:=fill_octets(16,0),seed:=fill_octets(0,0) #) ENDIF
+  sign_randomized(s: suite,h: height_code,w: width_code,id: identifier,seed: octets_of(digest_len(s)),
+                  q: uint32,m: message_input,stream: stream_id): sig_result =
+    LET c=prng_seed32(stream,0) IN IF c`ok THEN
+      sign_reserved(s,h,w,id,seed,first_octets(c`value,digest_len(s)),q,m) ELSE sig_error ENDIF
+  allocated_cursor_increases: LEMMA FORALL (h: height_code,next: uint32):
+    reserve(h,next)`ok IMPLIES reserve(h,next)`following=next+1 AND reserve(h,next)`slot=next
+  terminal_slot_rejected: LEMMA FORALL (h: height_code): NOT reserve(h,leaves(h))`ok
+END lms_sign

@@ -1,0 +1,39 @@
+% SP 800-38D §§6–7 for packed, most-significant-bit-first input strings.
+% used = 0 denotes a complete last octet, including an empty string.
+gcm_bits: THEORY
+BEGIN
+  IMPORTING gcm
+  packed:TYPE=[# value:bytestring,used:{t:below(8) | t=0 OR value`length>0} #]
+  packed_nonce:TYPE={p:packed | p`value`length>0}
+  bit_length(p:packed):uint64 =
+    IF p`used=0 THEN u64lshift(p`value`length,3)
+    ELSE u64plus(u64lshift(p`value`length-1,3),p`used) ENDIF
+  clean(p:packed):octets_of(p`value`length) =
+    IF p`used=0 THEN p`value ELSE
+      LET i:below(p`value`length)=p`value`length-1 IN
+        p`value WITH [`seq(i):=u8and(p`value`seq(i),u8lshift(255,8-p`used))] ENDIF
+  bit_lengths(a,c:uint64):block=LAMBDA (j:upto(15)):
+    IF j<8 THEN be_byte64(a,j) ELSE be_byte64(c,j-8) ENDIF
+  initial(h:block,iv:packed_nonce):block =
+    IF iv`used=0 AND iv`value`length=12 THEN pre_counter(h,iv`value)
+    ELSE ghash_block(h,ghash_bytes(h,zero_block,clean(iv),0),bit_lengths(0,bit_length(iv))) ENDIF
+  payload(k:mode_key,j0:block,p:packed):packed =
+    LET x:packed=(# value:=gctr(k,inc32(j0),p`value,0),used:=p`used #) IN
+      x WITH [value:=clean(x)]
+  authenticate(k:mode_key,h,j0:block,a,c:packed,t:tag_size):octets_of(t) =
+    LET y=ghash_bytes(h,zero_block,clean(a),0), z=ghash_bytes(h,y,clean(c),0),
+        last=ghash_block(h,z,bit_lengths(bit_length(a),bit_length(c))) IN
+      block_bytes(byvXOR(ecb_encrypt(k,j0),last),t)
+  packet:TYPE=[# ciphertext:packed, auth:bytestring #]
+  seal_bits(k:mode_key,iv:packed_nonce,a,p:packed,t:tag_size):packet =
+    LET h=ecb_encrypt(k,zero_block),j0=initial(h,iv),c=payload(k,j0,p) IN
+      (# ciphertext:=c,auth:=authenticate(k,h,j0,a,c,t) #)
+  open_result:TYPE=[# valid:bool,plaintext:packed #]
+  open_bits(k:mode_key,iv:packed_nonce,a:packed,v:packet,t:tag_size):open_result =
+    LET h=ecb_encrypt(k,zero_block),j0=initial(h,iv) IN
+      IF v`auth=authenticate(k,h,j0,a,v`ciphertext,t) THEN (# valid:=TRUE,plaintext:=payload(k,j0,v`ciphertext) #)
+      ELSE (# valid:=FALSE,plaintext:=(# value:=fill_octets(0,0),used:=0 #) #) ENDIF
+  whole_bytes: LEMMA FORALL(p:packed): p`used=0 IMPLIES clean(p)=p`value
+  wrong_tag_width: LEMMA FORALL(k:mode_key,iv:packed_nonce,a:packed,v:packet,t:tag_size):
+    v`auth`length/=t IMPLIES NOT open_bits(k,iv,a,v,t)`valid
+END gcm_bits

@@ -1,0 +1,1245 @@
+(|lms_sign|
+ (|subtree_TCC1| 0
+  (|subtree_TCC1-1| NIL 4004536895
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|subtree| SUBTYPE "hbs_hash.digest_len(lms_sign.s)" "index" (6 64 6 77))))
+ (|subtree_TCC2| 0
+  (|subtree_TCC2-1| NIL 4004536895
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|subtree| SUBTYPE "(number_fields.-)(lms_sign.left, 1)" "upto(25)"
+    (9 82 9 88))))
+ (|subtree_TCC3| 0
+  (|subtree_TCC3-1| NIL 4004536895
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|subtree| TERMINATION
+    "lms_sign.subtree(lms_sign.s, lms_sign.w, lms_sign.id, lms_sign.seed, lms_sign.cap, lms_sign.child, (number_fields.-)(lms_sign.left, 1))"
+    "NIL" (9 52 9 89))))
+ (|public_key_TCC1| 0
+  (|public_key_TCC1-1| NIL 4004536895
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL))
+   SHOSTAK
+   (|public_key| SUBTYPE
+    "(number_fields.+)(24, hbs_hash.digest_len(lms_sign.s))" "index"
+    (12 16 12 32))))
+ (|public_key_TCC2| 0
+  (|public_key_TCC2-1| NIL 4004536895
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|public_key| SUBTYPE
+    "hbs_hash.word(lms_hash.ots_code(lms_sign.s, lms_sign.w))"
+    "{s_1: bytestrings.bytestring | reals.<((number_fields.+)(s_1`length, hbs_hash.word(lms_hash.lms_code(lms_sign.s, lms_sign.h))`length), exp2.exp2(28))}"
+    (13 56 13 75))))
+ (|public_key_TCC3| 0
+  (|public_key_TCC3-1| NIL 4004536895
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|public_key| SUBTYPE "lms_sign.id"
+    "{s_1: bytestrings.bytestring | reals.<((number_fields.+)(s_1`length, crypto_buffers.join_octets(hbs_hash.word(lms_hash.lms_code(lms_sign.s, lms_sign.h)), hbs_hash.word(lms_hash.ots_code(lms_sign.s, lms_sign.w)))`length), exp2.exp2(28))}"
+    (13 77 13 79))))
+ (|public_key_TCC4| 0
+  (|public_key_TCC4-1| NIL 4004536895
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|public_key| SUBTYPE "lms_hash.leaves(lms_sign.h)" "uint32"
+    (14 43 14 52))))
+ (|public_key_TCC5| 0
+  (|public_key_TCC5-1| NIL 4004536895
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("join_octets" "exp2" "maxsize") :IF-MATCH
+      NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|odd?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|height| CONST-DECL "[height_code -> subrange(5, 25)]" |lms_hash| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|suite| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|height_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|width_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|identifier| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|digest_len| CONST-DECL "[suite -> subrange(24, 32)]" |hbs_hash| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|join_octets| CONST-DECL
+     "[d: [a: bytestring, {s: bytestring | s`length + a`length < exp2(28)}] -> octets_of(d`1`length + d`2`length)]"
+     |crypto_buffers| |crypto_prelude|)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|word| CONST-DECL "[uint32 -> octets_of(4)]" |hbs_hash| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|lms_code| CONST-DECL "[[suite, height_code] -> uint8]" |lms_hash| NIL)
+    (|ots_code| CONST-DECL "[[suite, width_code] -> uint8]" |lms_hash| NIL))
+   SHOSTAK
+   (|public_key| SUBTYPE "lms_hash.height(lms_sign.h)" "upto(25)"
+    (14 55 14 64))))
+ (|public_key_TCC6| 0
+  (|public_key_TCC6-1| NIL 4004536896
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("join_octets" "exp2" "maxsize") :IF-MATCH
+      NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|strict_total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|subtree| DEF-DECL
+     "[d: [s: suite, width_code, identifier, octets_of(digest_len(s)), uint32, uint32, upto(25)] -> octets_of(digest_len(d`1))]"
+     |lms_sign| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|leaves| CONST-DECL "[height_code -> subrange(32, 33554432)]" |lms_hash|
+     NIL)
+    (|odd?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|height| CONST-DECL "[height_code -> subrange(5, 25)]" |lms_hash| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|suite| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|height_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|width_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|identifier| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|digest_len| CONST-DECL "[suite -> subrange(24, 32)]" |hbs_hash| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|join_octets| CONST-DECL
+     "[d: [a: bytestring, {s: bytestring | s`length + a`length < exp2(28)}] -> octets_of(d`1`length + d`2`length)]"
+     |crypto_buffers| |crypto_prelude|)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|word| CONST-DECL "[uint32 -> octets_of(4)]" |hbs_hash| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|lms_code| CONST-DECL "[[suite, height_code] -> uint8]" |lms_hash| NIL)
+    (|ots_code| CONST-DECL "[[suite, width_code] -> uint8]" |lms_hash| NIL))
+   SHOSTAK
+   (|public_key| SUBTYPE
+    "lms_sign.subtree(lms_sign.s, lms_sign.w, lms_sign.id, lms_sign.seed, lms_hash.leaves(lms_sign.h), 1, lms_hash.height(lms_sign.h))"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(lms_sign.pre`length, s`length), exp2.exp2(28))}"
+    (14 23 14 65))))
+ (|public_key_TCC7| 0
+  (|public_key_TCC7-1| NIL 4004537741
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("join_octets" "exp2" "maxsize") :IF-MATCH
+      NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|strict_total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|even?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|odd?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|height| CONST-DECL "[height_code -> subrange(5, 25)]" |lms_hash| NIL)
+    (|leaves| CONST-DECL "[height_code -> subrange(32, 33554432)]" |lms_hash|
+     NIL)
+    (|subtree| DEF-DECL
+     "[d: [s: suite, width_code, identifier, octets_of(digest_len(s)), uint32, uint32, upto(25)] -> octets_of(digest_len(d`1))]"
+     |lms_sign| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|suite| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|height_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|width_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|identifier| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|digest_len| CONST-DECL "[suite -> subrange(24, 32)]" |hbs_hash| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|join_octets| CONST-DECL
+     "[d: [a: bytestring, {s: bytestring | s`length + a`length < exp2(28)}] -> octets_of(d`1`length + d`2`length)]"
+     |crypto_buffers| |crypto_prelude|)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|word| CONST-DECL "[uint32 -> octets_of(4)]" |hbs_hash| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|lms_code| CONST-DECL "[[suite, height_code] -> uint8]" |lms_hash| NIL)
+    (|ots_code| CONST-DECL "[[suite, width_code] -> uint8]" |lms_hash| NIL))
+   SHOSTAK
+   (|public_key| SUBTYPE
+    "crypto_buffers.join_octets(lms_sign.pre, lms_sign.subtree(lms_sign.s, lms_sign.w, lms_sign.id, lms_sign.seed, lms_hash.leaves(lms_sign.h), 1, lms_hash.height(lms_sign.h)))"
+    "octets_of((number_fields.+)(24, hbs_hash.digest_len(lms_sign.s)))"
+    (14 7 14 66))))
+ (|reserve_TCC1| 0
+  (|reserve_TCC1-1| NIL 4004536896
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|plus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|plus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|reserve| SUBTYPE "(number_fields.+)(lms_sign.next, 1)" "uint32"
+    (20 43 20 49))))
+ (|auth_path_TCC1| 0
+  (|auth_path_TCC1-1| NIL 4004536896
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|auth_path| SUBTYPE "(number_fields.-)(25, lms_sign.level)" "naturalnumber"
+    (27 26 27 34))))
+ (|auth_path_TCC2| 0
+  (|auth_path_TCC2-1| NIL 4004536896
+   (""
+    (THEN (SKOSIMP*)
+     (USE "le_times_le_pos"
+          ("nnx" "digest_len(s!1)" "nnz" "level!1" "y" "32" "w" "25"))
+     (GRIND :DEFS NIL :REWRITES ("exp2")))
+    NIL NIL)
+   ((|le_times_le_pos| FORMULA-DECL NIL |real_props| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|suite| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|digest_len| CONST-DECL "[suite -> subrange(24, 32)]" |hbs_hash| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|auth_path| SUBTYPE "lms_hash.leaves(lms_sign.h)" "uint32" (25 32 25 41))))
+ (|auth_path_TCC3| 0
+  (|auth_path_TCC3-1| NIL 4004536896
+   (""
+    (THEN (SKOSIMP* T)
+     (USE "le_times_le_pos"
+          ("nnx" "digest_len(s!1)" "nnz" "level!1" "y" "32" "w" "25"))
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL)
+   ((|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|le_times_le_pos| FORMULA-DECL NIL |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|digest_len| CONST-DECL "[suite -> subrange(24, 32)]" |hbs_hash| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|identifier| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|width_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|height_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|suite| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|auth_path| SUBTYPE
+    "(number_fields.+)(lms_sign.base, number_fields.*(hbs_hash.digest_len(lms_sign.s), lms_sign.level))"
+    "uint32" (25 69 25 93))))
+ (|auth_path_TCC4| 0
+  (|auth_path_TCC4-1| NIL 4004536896
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|auth_path| SUBTYPE "(number_fields.+)(lms_sign.level, 1)" "upto(25)"
+    (26 74 26 81))))
+ (|auth_path_TCC5| 0
+  (|auth_path_TCC5-1| NIL 4004536896
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|auth_path| SUBTYPE "lms_sign.off" "upto(lms_sign.out`length)"
+    (26 98 26 101))))
+ (|auth_path_TCC6| 0
+  (|auth_path_TCC7-1| NIL 4004536897
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|auth_path| SUBTYPE "0" "upto(lms_sign.v`length)" (26 104 26 105))))
+ (|auth_path_TCC7| 0
+  (|auth_path_TCC6-1| NIL 4004536897
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|auth_path| TERMINATION
+    "lms_sign.auth_path(lms_sign.s, lms_sign.h, lms_sign.w, lms_sign.id, lms_sign.seed, integertypes.u32div(lms_sign.r, 2), (number_fields.+)(lms_sign.level, 1), crypto_buffers.copy_octets(lms_sign.out, lms_sign.off, lms_sign.v, 0), lms_sign.base)"
+    "NIL" (26 38 26 112))))
+ (|auth_path_TCC8| 0
+  (|auth_path_TCC8-1| NIL 4004537758
+   ("" (SKOSIMP* T)
+    (("" (ALL-TYPEPREDS)
+      (("1"
+        (GRIND :DEFS NIL :REWRITES ("join_octets" "exp2" "maxsize") :IF-MATCH
+         NIL)
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES ("join_octets" "exp2" "maxsize") :IF-MATCH
+         NIL)
+        NIL NIL)
+       ("3"
+        (GRIND :DEFS NIL :REWRITES ("join_octets" "exp2" "maxsize") :IF-MATCH
+         NIL)
+        NIL NIL)
+       ("4"
+        (GRIND :DEFS NIL :REWRITES ("join_octets" "exp2" "maxsize") :IF-MATCH
+         NIL)
+        NIL NIL))
+      NIL))
+    NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|odd?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|height| CONST-DECL "[height_code -> subrange(5, 25)]" |lms_hash| NIL)
+    (IF CONST-DECL
+        "[[boolean, T, T] -> T]"
+        |if_def|
+        NIL)
+    (|nrem| CONST-DECL
+     "[d: [int, posnat] -> {r: mod(d`2) | EXISTS (q: int): d`1 = r + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|mod| NONEMPTY-TYPE-EQ-DECL NIL |euclidean_division| NIL)
+    (|u32plus| CONST-DECL "[[uint32, uint32] -> uint32]" |integertypes| NIL)
+    (|u32minus| CONST-DECL "[[uint32, uint32] -> uint32]" |integertypes| NIL)
+    (|subtree| DEF-DECL
+     "[d: [s: suite, width_code, identifier, octets_of(digest_len(s)), uint32, uint32, upto(25)] -> octets_of(digest_len(d`1))]"
+     |lms_sign| NIL)
+    (|leaves| CONST-DECL "[height_code -> subrange(32, 33554432)]" |lms_hash|
+     NIL)
+    (|even?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|strict_total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|u32div| CONST-DECL "[[uint32, {uy32 | uy32 /= 0}] -> uint32]"
+     |integertypes| NIL)
+    (/= CONST-DECL "[[T, T] -> boolean]" |notequal| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|copy_octets| DEF-DECL
+     "[d: [out: bytestring, upto(out`length), v: bytestring, upto(v`length)] -> octets_of(d`1`length)]"
+     |crypto_buffers| |crypto_prelude|)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|digest_len| CONST-DECL "[suite -> subrange(24, 32)]" |hbs_hash| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|identifier| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|width_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|height_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|suite| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|auth_path| SUBTYPE
+    "lms_sign.auth_path(lms_sign.s, lms_sign.h, lms_sign.w, lms_sign.id, lms_sign.seed, integertypes.u32div(lms_sign.r, 2), (number_fields.+)(lms_sign.level, 1), crypto_buffers.copy_octets(lms_sign.out, lms_sign.off, lms_sign.v, 0), lms_sign.base)"
+    "octets_of(lms_sign.out`length)" (26 38 26 112))))
+ (|sign_reserved_TCC1| 0
+  (|sign_reserved_TCC1-1| NIL 4004536897
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|sign_reserved| SUBTYPE
+    "hbs_hash.word(lms_hash.ots_code(lms_sign.s, lms_sign.w))"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(s`length, hbs_hash.word(lms_sign.q)`length), exp2.exp2(28))}"
+    (35 44 35 63))))
+ (|sign_reserved_TCC2| 0
+  (|sign_reserved_TCC2-1| NIL 4004536897
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|sign_reserved| SUBTYPE "lms_sign.c"
+    "{s_1: bytestrings.bytestring | reals.<((number_fields.+)(s_1`length, crypto_buffers.join_octets(hbs_hash.word(lms_sign.q), hbs_hash.word(lms_hash.ots_code(lms_sign.s, lms_sign.w)))`length), exp2.exp2(28))}"
+    (35 65 35 66))))
+ (|sign_reserved_TCC3| 0
+  (|sign_reserved_TCC3-1| NIL 4004536897
+   (""
+    (THEN (SKOSIMP* T) (TYPEPRED "a!1" "y!1")
+     (USE "le_times_le_pos"
+          ("nnx" "chains(s!1,w!1)" "nnz" "digest_len(s!1)" "y" "265" "w" "32"))
+     (GRIND :DEFS NIL :REWRITES ("exp2" "join_octets" "word") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|times_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|le_times_le_pos| FORMULA-DECL NIL |real_props| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|chains| CONST-DECL "[[suite, width_code] -> subrange(26, 265)]"
+     |lms_hash| NIL)
+    (|join_octets| CONST-DECL
+     "[d: [a: bytestring, {s: bytestring | s`length + a`length < exp2(28)}] -> octets_of(d`1`length + d`2`length)]"
+     |crypto_buffers| |crypto_prelude|)
+    (|word| CONST-DECL "[uint32 -> octets_of(4)]" |hbs_hash| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|ots_code| CONST-DECL "[[suite, width_code] -> uint8]" |lms_hash| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|message_input| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|digest_len| CONST-DECL "[suite -> subrange(24, 32)]" |hbs_hash| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|identifier| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|width_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|height_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|suite| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|sign_reserved| SUBTYPE "lms_sign.y"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(lms_sign.a`length, s`length), exp2.exp2(28))}"
+    (36 38 36 39))))
+ (|sign_reserved_TCC4| 0
+  (|sign_reserved_TCC4-1| NIL 4004536897
+   (""
+    (THEN (SKOSIMP* T) (TYPEPRED "a!1" "y!1")
+     (USE "le_times_le_pos"
+          ("nnx" "chains(s!1,w!1)" "nnz" "digest_len(s!1)" "y" "265" "w" "32"))
+     (GRIND :DEFS NIL :REWRITES ("exp2" "join_octets" "word") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|times_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|le_times_le_pos| FORMULA-DECL NIL |real_props| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|chains| CONST-DECL "[[suite, width_code] -> subrange(26, 265)]"
+     |lms_hash| NIL)
+    (|join_octets| CONST-DECL
+     "[d: [a: bytestring, {s: bytestring | s`length + a`length < exp2(28)}] -> octets_of(d`1`length + d`2`length)]"
+     |crypto_buffers| |crypto_prelude|)
+    (|word| CONST-DECL "[uint32 -> octets_of(4)]" |hbs_hash| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|ots_code| CONST-DECL "[[suite, width_code] -> uint8]" |lms_hash| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|message_input| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|digest_len| CONST-DECL "[suite -> subrange(24, 32)]" |hbs_hash| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|identifier| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|width_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|height_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|suite| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|sign_reserved| SUBTYPE
+    "hbs_hash.word(lms_hash.lms_code(lms_sign.s, lms_sign.h))"
+    "{s: bytestrings.bytestring | reals.<((number_fields.+)(s`length, crypto_buffers.join_octets(lms_sign.a, lms_sign.y)`length), exp2.exp2(28))}"
+    (36 41 36 60))))
+ (|sign_reserved_TCC5| 0
+  (|sign_reserved_TCC5-1| NIL 4004536898
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "sig_length(s!1,h!1,w!1)")
+     (GRIND :DEFS NIL :REWRITES ("exp2")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|suite| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|height_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|width_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|sig_length| CONST-DECL "[[suite, height_code, width_code] -> uint16]"
+     |lms| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|sign_reserved| SUBTYPE
+    "lms.sig_length(lms_sign.s, lms_sign.h, lms_sign.w)" "index"
+    (37 38 37 55))))
+ (|sign_reserved_TCC6| 0
+  (|sign_reserved_TCC6-1| NIL 4004536898
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|sign_reserved| SUBTYPE "0"
+    "upto(crypto_buffers.fill_octets(lms.sig_length(lms_sign.s, lms_sign.h, lms_sign.w), 0)`length)"
+    (37 59 37 60))))
+ (|sign_reserved_TCC7| 0
+  (|sign_reserved_TCC7-1| NIL 4004536898
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|sign_reserved| SUBTYPE "0" "upto(lms_sign.b`length)" (37 63 37 64))))
+ (|sign_reserved_TCC8| 0
+  (|sign_reserved_TCC8-1| NIL 4004536898
+   (""
+    (THEN (SKOSIMP*)
+     (USE "le_times_le_pos"
+          ("nnx" "n!1" "nnz" "1+chains(s!1,w!1)" "y" "32" "w" "266"))
+     (GRIND :DEFS NIL :REWRITES ("exp2")))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|le_times_le_pos| FORMULA-DECL NIL |real_props| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|suite| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|width_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|chains| CONST-DECL "[[suite, width_code] -> subrange(26, 265)]"
+     |lms_hash| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|times_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|sign_reserved| SUBTYPE "lms_hash.leaves(lms_sign.h)" "uint32"
+    (38 60 38 69))))
+ (|sign_reserved_TCC9| 0
+  (|sign_reserved_TCC9-1| NIL 4004537762
+   (""
+    (THEN (SKOSIMP* T) (TYPEPRED "a!1" "y!1")
+     (USE "le_times_le_pos"
+          ("nnx" "chains(s!1,w!1)" "nnz" "digest_len(s!1)" "y" "265" "w" "32"))
+     (GRIND :DEFS NIL :REWRITES ("exp2" "join_octets" "word") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|times_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|le_times_le_pos| FORMULA-DECL NIL |real_props| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|chains| CONST-DECL "[[suite, width_code] -> subrange(26, 265)]"
+     |lms_hash| NIL)
+    (|join_octets| CONST-DECL
+     "[d: [a: bytestring, {s: bytestring | s`length + a`length < exp2(28)}] -> octets_of(d`1`length + d`2`length)]"
+     |crypto_buffers| |crypto_prelude|)
+    (|word| CONST-DECL "[uint32 -> octets_of(4)]" |hbs_hash| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|ots_code| CONST-DECL "[[suite, width_code] -> uint8]" |lms_hash| NIL)
+    (|lms_code| CONST-DECL "[[suite, height_code] -> uint8]" |lms_hash| NIL)
+    (|fill_octets| CONST-DECL "[d: [index, uint8] -> octets_of(d`1)]"
+     |crypto_buffers| |crypto_prelude|)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|sig_length| CONST-DECL "[[suite, height_code, width_code] -> uint16]"
+     |lms| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|message_input| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|digest_len| CONST-DECL "[suite -> subrange(24, 32)]" |hbs_hash| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|identifier| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|width_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|height_code| TYPE-EQ-DECL NIL |lms_hash| NIL)
+    (|suite| TYPE-EQ-DECL NIL |hbs_hash| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|sign_reserved| SUBTYPE
+    "(number_fields.+)(12, number_fields.*(lms_sign.n, ((number_fields.+)(1, lms_hash.chains(lms_sign.s, lms_sign.w)))))"
+    "uint16" (38 79 38 99))))
+ (|generate_material_TCC1| 0
+  (|generate_material_TCC1-1| NIL 4004536899
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|generate_material| SUBTYPE "16" "upto(lms_sign.a`value`length)"
+    (44 63 44 65))))
+ (|generate_material_TCC2| 0
+  (|generate_material_TCC2-1| NIL 4004536899
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|generate_material| SUBTYPE "hbs_hash.digest_len(lms_sign.s)"
+    "upto(lms_sign.b`value`length)" (44 94 44 107))))
+ (|sign_randomized_TCC1| 0
+  (|sign_randomized_TCC1-1| NIL 4004536899
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|sign_randomized| SUBTYPE "hbs_hash.digest_len(lms_sign.s)"
+    "upto(lms_sign.c`value`length)" (49 55 49 68))))
+ (|allocated_cursor_increases| 0
+  (|allocated_cursor_increases-1| NIL 4004536899
+   ("" (THEN (SKOSIMP*) (EXPAND "reserve") (GRIND :DEFS NIL)) NIL NIL)
+   ((|reserve| CONST-DECL "[[height_code, uint32] -> allocation]" |lms_sign|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|plus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|plus_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK))
+ (|terminal_slot_rejected_TCC1| 0
+  (|terminal_slot_rejected_TCC1-1| NIL 4004537769
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("join_octets" "exp2" "maxsize") :IF-MATCH
+      NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|strict_total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|leaves| CONST-DECL "[height_code -> subrange(32, 33554432)]" |lms_hash|
+     NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|even?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|odd?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|height_code| TYPE-EQ-DECL NIL |lms_hash| NIL))
+   SHOSTAK
+   (|terminal_slot_rejected| SUBTYPE "lms_hash.leaves(lms_sign.h)" "uint32"
+    (52 71 52 80))))
+ (|terminal_slot_rejected| 0
+  (|terminal_slot_rejected-1| NIL 4004536899
+   ("" (THEN (SKOSIMP*) (EXPAND "reserve") (ASSERT)) NIL NIL)
+   ((|reserve| CONST-DECL "[[height_code, uint32] -> allocation]" |lms_sign|
+     NIL))
+   SHOSTAK)))
+

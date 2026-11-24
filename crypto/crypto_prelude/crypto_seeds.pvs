@@ -1,0 +1,11 @@
+% A fixed-width view of the generic checked PRNG acquisition.
+crypto_seeds: THEORY
+BEGIN
+  IMPORTING crypto_random_buffers
+  seed32_read: TYPE = acquisition(32)
+  read_seed32(s: stream_id, base: upto(32), i: upto(32), out: octets_of(32)): seed32_read =
+    collect(32,s,base,out,i,FALSE)
+  prng_seed32(s: stream_id, base: upto(32)): seed32_read = acquire(32,s,base)
+  first_sample_failure: LEMMA FORALL (s: stream_id, base: upto(32)):
+    NOT available(prng_sample(s, base)) IMPLIES NOT prng_seed32(s, base)`ok
+END crypto_seeds

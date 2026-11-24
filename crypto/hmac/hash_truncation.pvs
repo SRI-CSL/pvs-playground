@@ -1,0 +1,16 @@
+% SP 800-107 Rev. 1 §§5.1 and 5.3.3. The application selects the digest
+% and truncation length appropriate for its security objective.
+hash_truncation: THEORY
+BEGIN
+  IMPORTING keyed_hash,crypto_prelude@crypto_bit_prefix
+  truncated(h:hash_id,m:bytestring,w:upto(hash_bytes(h)),r:tail_size(hash_bytes(h),w)):
+      octets_of(w+IF r=0 THEN 0 ELSE 1 ENDIF) = bit_prefix(hash_message(h,m),w,r)
+  % HMAC truncation is at least 32 bits in §5.3.3.
+  mac_whole(h:hash_id):TYPE={w:upto(hash_bytes(h)) | w>=4}
+  mac_tag(h:hash_id,k:bytestring,m:hmac_input(h),w:mac_whole(h),r:tail_size(hash_bytes(h),w)):
+      octets_of(w+IF r=0 THEN 0 ELSE 1 ENDIF) = bit_prefix(hmac(h,k,m),w,r)
+  check_tag(h:hash_id,k:bytestring,m:hmac_input(h),w:mac_whole(h),r:tail_size(hash_bytes(h),w),tag:bytestring):bool =
+    mac_tag(h,k,m,w,r)=tag
+  generated_tag_verifies: LEMMA FORALL(h:hash_id,k:bytestring,m:hmac_input(h),w:mac_whole(h),r:tail_size(hash_bytes(h),w)):
+    check_tag(h,k,m,w,r,mac_tag(h,k,m,w,r))
+END hash_truncation

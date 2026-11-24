@@ -1,0 +1,8 @@
+% Fixed-width octets. The explicit length is also available to generated C.
+crypto_octets: THEORY
+BEGIN
+  byv[n: index]: TYPE = ARRAY[below(n) -> uint8]
+
+  xor_octets(n: index)(x, y: byv[n]): byv[n] =
+    LAMBDA (i: below(n)): u8xor(x(i), y(i))
+END crypto_octets

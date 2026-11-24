@@ -1,0 +1,98 @@
+% RFC 8017 §7.1, §9.1 and Appendix B.2.1.
+rsa_encoding: THEORY
+BEGIN
+  hmac: LIBRARY = "../hmac"
+  IMPORTING rsa_primitive,hmac@keyed_hash
+  rsa_hash: TYPE = subrange(1,12) % keyed_hash identifiers 1..10; 11/12 denote SHAKE128/256
+  digest_size(h:rsa_hash): subrange(28,64) =
+    IF h<11 THEN hash_bytes(h) ELSIF h=11 THEN 32 ELSE 64 ENDIF
+  digest(h:rsa_hash,m:bytestring): octets_of(digest_size(h)) =
+    IF h<11 THEN hash_message(h,m) ELSIF h=11 THEN output(finish_shake(absorb(start(168),m)),32)
+    ELSE output(finish_shake(absorb(start(136),m)),64) ENDIF
+  chunk: TYPE = {x: bytestring | x`length<=2048}
+  offset: TYPE = upto(2048)
+  byte_of(x:bytestring,i:uint32):uint8 = IF i<x`length THEN x`seq(i) ELSE 0 ENDIF
+  sub_seq(x:bytestring,base:uint32,n:offset): ARRAY[below(n) -> uint8] =
+    LAMBDA(i:below(n)): byte_of(x,u32plus(base,i))
+  part(x:bytestring,base:uint32,n:offset):octets_of(n) = (# length:=n,seq:=sub_seq(x,base,n) #)
+  xor_seq(a,b:bytestring,n:offset): ARRAY[below(n) -> uint8] =
+    LAMBDA(i:below(n)): u8xor(byte_of(a,i),byte_of(b,i))
+  xor_at(a,b:bytestring,n:offset):octets_of(n) = (# length:=n,seq:=xor_seq(a,b,n) #)
+  counter_octets(i:uint32): ARRAY[below(4) -> uint8] = LAMBDA(j:upto(3)): be_byte32(i,j)
+  ctr4(i:uint32):octets_of(4) = (# length:=4,seq:=counter_octets(i) #)
+  mgf_next(h:rsa_hash,s:chunk,out:bytestring,i:upto(out`length),counter:uint32):
+      RECURSIVE octets_of(out`length) =
+    IF i=out`length THEN out ELSE
+      LET d=digest(h,join_octets(s,ctr4(counter))),
+          next:index=IF i+d`length>=out`length THEN out`length ELSE i+d`length ENDIF IN
+        mgf_next(h,s,copy_octets(out,i,d,0),next,u32plus(counter,1))
+    ENDIF MEASURE out`length-i
+  mgf1(h:rsa_hash,s:chunk,n:offset):octets_of(n) = mgf_next(h,s,fill_octets(n,0),0,0)
+  mask_id: TYPE = below(3) % MGF1, SHAKE128, SHAKE256
+  mask(h:rsa_hash,id:mask_id,s:chunk,n:offset):octets_of(n) =
+    IF id=0 THEN mgf1(h,s,n) ELSIF id=1 THEN output(finish_shake(absorb(start(168),s)),n)
+    ELSE output(finish_shake(absorb(start(136),s)),n) ENDIF
+  % 0x00...00 || 0x01 || value, with an exact total length.
+  marker(n:offset,value:{x:bytestring | x`length<n}):octets_of(n) =
+    LET at:below(n)=n-value`length-1, out=fill_octets(n,0) WITH [`seq(at):=1] IN
+      copy_octets(out,at+1,value,0)
+  first_mark(x:bytestring,i:upto(x`length)): RECURSIVE upto(x`length) =
+    IF i=x`length OR x`seq(i)/=0 THEN i ELSE first_mark(x,i+1) ENDIF MEASURE x`length-i
+
+  % The FIPS 186-5 profile limits salt length to the digest length.
+  pss(h:rsa_hash,id:mask_id,k:rsa_size,m:bytestring,salt:{b:bytestring | b`length<=digest_size(h)}):octets_of(k) =
+    LET hl=digest_size(h),dl:offset=k-hl-1,
+        hashed=digest(h,join_octets(join_octets(fill_octets(8,0),digest(h,m)),salt)),
+        db=marker(dl,salt), bits=mask(h,id,hashed,dl), x=xor_at(db,bits,dl),
+        masked=x WITH [`seq(0):=u8and(x`seq(0),127)],
+        out=copy_octets(fill_octets(k,0),0,masked,0), both=copy_octets(out,dl,hashed,0) IN
+      both WITH [`seq(k-1):=188]
+  pss_check(h:rsa_hash,id:mask_id,k:rsa_size,m,em:bytestring):bool =
+    IF em`length/=k OR byte_of(em,k-1)/=188 OR byte_of(em,0)>=128 THEN FALSE ELSE
+      LET hl=digest_size(h), dl:offset=k-hl-1, hashed=part(em,dl,hl),
+          x=xor_at(part(em,0,dl),mask(h,id,hashed,dl),dl),
+          db=x WITH [`seq(0):=u8and(x`seq(0),127)], j=first_mark(db,0) IN
+        IF j>=dl OR byte_of(db,j)/=1 OR dl-j-1>hl THEN FALSE ELSE
+          LET salt=part(db,j+1,dl-j-1) IN pss(h,id,k,m,salt)=em
+        ENDIF
+    ENDIF
+  oaep(h:rsa_hash,k:rsa_size,label:bytestring,key:{b:bytestring | b`length+2*digest_size(h)+2<=k},
+       seed:octets_of(digest_size(h))):octets_of(k) =
+    LET hl=digest_size(h),dl:offset=k-hl-1, tail=marker(dl-hl,key),
+        db=join_octets(digest(h,label),tail), mdb=xor_at(db,mgf1(h,seed,dl),dl),
+        ms=xor_at(seed,mgf1(h,mdb,hl),hl), head=copy_octets(fill_octets(k,0),1,ms,0) IN
+      copy_octets(head,1+hl,mdb,0)
+  oaep_open(h:rsa_hash,k:rsa_size,label,em:bytestring):rsa_result =
+    IF em`length/=k OR byte_of(em,0)/=0 THEN invalid ELSE
+      LET hl=digest_size(h), dl:offset=k-hl-1, mdb=part(em,1+hl,dl),
+          seed=xor_at(part(em,1,hl),mgf1(h,mdb,hl),hl),
+          db=xor_at(mdb,mgf1(h,seed,dl),dl), j=first_mark(db,hl) IN
+        IF part(db,0,hl)/=digest(h,label) OR j>=dl OR byte_of(db,j)/=1 THEN invalid
+        ELSE (# valid:=TRUE,data:=part(db,j+1,dl-j-1) #) ENDIF
+    ENDIF
+  sign_pss(h:rsa_hash,id:mask_id,n:modulus,d,m:bytestring,salt:{b:bytestring | b`length<=digest_size(h)}):rsa_result =
+    rsa_apply(n,d,pss(h,id,n`length,m,salt))
+  verify_pss(h:rsa_hash,id:mask_id,n:modulus,e,m,sig:bytestring):bool =
+    LET a=rsa_public(n,e,sig) IN a`valid AND pss_check(h,id,n`length,m,a`data)
+  oaep_wrap(h:rsa_hash,n:modulus,e,label:bytestring,key:{b:bytestring | b`length+2*digest_size(h)+2<=n`length},
+            seed:octets_of(digest_size(h))):rsa_result = rsa_public(n,e,oaep(h,n`length,label,key,seed))
+  oaep_unwrap(h:rsa_hash,n:modulus,d,label,cipher:bytestring):rsa_result =
+    LET a=rsa_apply(n,d,cipher) IN IF a`valid THEN oaep_open(h,n`length,label,a`data) ELSE invalid ENDIF
+  fixed_hash: TYPE = subrange(1,10)
+  digest_oid(h:fixed_hash):uint8 =
+    IF h=1 THEN 4 ELSIF h=2 THEN 1 ELSIF h=3 THEN 2 ELSIF h=4 THEN 3 ELSE h ENDIF
+  der_header(h:fixed_hash,i:below(19)):uint8 =
+    COND i=0 OR i=2 -> 0x30, i=1 -> 17+digest_size(h), i=3 -> 13,
+         i=4 -> 6, i=5 -> 9, i=6 -> 0x60, i=7 -> 0x86, i=8 -> 0x48,
+         i=9 -> 1, i=10 -> 0x65, i=11 -> 3, i=12 -> 4, i=13 -> 2,
+         i=14 -> digest_oid(h), i=15 -> 5, i=16 -> 0, i=17 -> 4, ELSE -> digest_size(h) ENDCOND
+  der_seq(h:fixed_hash):ARRAY[below(19) -> uint8] = LAMBDA(i:upto(18)):der_header(h,i)
+  v15(h:fixed_hash,k:rsa_size,m:bytestring):octets_of(k) =
+    LET n=digest_size(h), pos:offset=k-19-n, out=fill_octets(k,255),
+        pad=out WITH [`seq(0):=0,`seq(1):=1,`seq(pos-1):=0],
+        pref=copy_octets(pad,pos,(# length:=19,seq:=der_seq(h) #),0) IN
+      copy_octets(pref,k-n,digest(h,m),0)
+  sign_v15(h:fixed_hash,n:modulus,d,m:bytestring):rsa_result = rsa_apply(n,d,v15(h,n`length,m))
+  verify_v15(h:fixed_hash,n:modulus,e,m,sig:bytestring):bool =
+    LET a=rsa_public(n,e,sig) IN a`valid AND a`data=v15(h,n`length,m)
+END rsa_encoding

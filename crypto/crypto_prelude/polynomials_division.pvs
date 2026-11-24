@@ -1,0 +1,99 @@
+polynomials_division[T: TYPE, +, *: [T, T -> T], zero, one:T]: THEORY
+
+  BEGIN
+
+  ASSUMING IMPORTING algebra@field_def[T, +, *, zero, one]
+    field: ASSUMPTION field?(fullset[T])
+  ENDASSUMING
+
+  IMPORTING polynomials[T, +, *, zero]
+  IMPORTING algebra@field[T, +, *, zero, one]
+  
+  pol_one: polynomials = LAMBDA (k: nat): IF k = 0 THEN one ELSE zero ENDIF
+
+  nonzero_polynomials?(P: polynomials): bool = P /= pol_zero
+  nonzero_polynomials: NONEMPTY_TYPE = (nonzero_polynomials?) CONTAINING pol_one
+  nzpol: NONEMPTY_TYPE = nonzero_polynomials
+
+  A, P, Q: VAR polynomials
+  B, C: VAR nonzero_polynomials
+
+  times_pol_one: LEMMA FORALL P: P * pol_one = P
+  one_times_pol: LEMMA FORALL P: pol_one * P = P
+
+  IMPORTING algebra@ring_with_one_def[polynomials, +, *, pol_zero, pol_one]
+
+  pol_commutative_ring_with_one: LEMMA commutative_ring_with_one?(fullset[polynomials])
+
+  IMPORTING algebra@commutative_ring_with_one[polynomials, +, *, pol_zero, pol_one]
+
+
+  Xn(n: nat): polynomials = LAMBDA (k: nat): IF k = n THEN one ELSE zero ENDIF % the monomial X^n
+
+  monomial_deg: LEMMA FORALL (n: nat): deg(Xn(n)) = n
+
+  nonconst_polynomials?(P: polynomials): bool = deg(P) > 0
+  nonconst_polynomials: NONEMPTY_TYPE = (nonconst_polynomials?) CONTAINING Xn(1)
+  nonconst_is_nz: JUDGEMENT nonconst_polynomials SUBTYPE_OF nzpol
+
+  leading_coeff(P): T = P(deg(P))
+
+  leading_coeff_nz: LEMMA FORALL B: leading_coeff(B) /= zero
+
+  deg_minus: LEMMA deg(inv(P)) = deg(P)
+
+  deg_times: LEMMA FORALL (B, C): deg(B*C) = deg(B) + deg(C) % We need B and C to be nonzero because the definition we gave for deg gives deg(0) = 0
+
+  leading_coeff_times: LEMMA FORALL (B, C): leading_coeff(B*C) = leading_coeff(B) * leading_coeff(C)
+
+  leading_coeff_minus: LEMMA FORALL P: leading_coeff(inv(P)) = inv(leading_coeff(P))
+
+  deg_plus: LEMMA FORALL (P, Q): deg(P + Q) <= max(deg(P), deg(Q))
+
+  deg_plus_lt: LEMMA FORALL (A, B: nonconst_polynomials): deg(A + B) < max(deg(A), deg(B)) IFF (deg(A) = deg(B) AND leading_coeff(A) + leading_coeff(B) = zero)
+
+  leading_coeff_Xn: LEMMA FORALL (n: nat): leading_coeff(Xn(n)) = one
+
+  leading_coeff_const: LEMMA FORALL (a: T): leading_coeff(a) = a
+  
+
+  mod(P: nonconst_polynomials): NONEMPTY_TYPE = {Q | deg(Q) < deg(P)}
+
+  aux1: LEMMA FORALL (x1: [nz_T[T, +, *, zero], nz_T[T, +, *, zero]]): % one of the TCCs for the following lemma
+                restrict[[T, T], [nz_T[T, +, *, zero], nz_T[T, +, *, zero]], T](*)(x1) /= zero
+
+  euclid_pol: LEMMA FORALL (A: polynomials, B: nonconst_polynomials): EXISTS (Q), (R: mod(B)): A = B*Q + R
+
+  pol_unique_quotient: PROPOSITION FORALL (B: nonconst_polynomials), (Q1, Q2: polynomials), (R1, R2: mod(B)): B * Q1 + R1 = B * Q2 + R2 IMPLIES Q1 = Q2 
+
+  pol_unique_remainder: PROPOSITION FORALL (B: nonconst_polynomials), (Q1, Q2: polynomials), (R1, R2: mod(B)): B * Q1 + R1 = B * Q2 + R2 IMPLIES R1 = R2
+
+  pol_unique_division: COROLLARY FORALL (B: nonconst_polynomials), (Q1, Q2: polynomials), (R1, R2: mod(B)): B * Q1 + R1 = B * Q2 + R2 IMPLIES Q1 = Q2 AND R1 = R2
+
+
+  prem(A, (B: nonconst_polynomials)): {R: mod(B) |  EXISTS Q: A = B * Q + R}
+
+  prem_def: LEMMA FORALL (B: nonconst_polynomials, R : mod(B)): prem(P, B) = R IFF EXISTS Q: P = B * Q + R
+
+  prem_simplify: LEMMA FORALL (B: nonconst_polynomials, R: mod(B)): prem(B * Q + R, B) = R
+
+  prem_simplify2: LEMMA FORALL (B: nonconst_polynomials): prem(B * Q + P, B) = prem(P, B)
+
+  pdiv(A, (B: nonconst_polynomials)): {Q |  A = B * Q + prem(A, B)}
+
+  pdiv_simplify: LEMMA FORALL (B: nonconst_polynomials, R: mod(B)): pdiv(B * Q + R, B) = Q
+
+  pdiv_simplify2: LEMMA FORALL (B: nonconst_polynomials): pdiv(B * Q + P, B) = Q + pdiv(P, B)
+
+  pdiv_deg: LEMMA FORALL (B: nonconst_polynomials): deg(pdiv(A, B)) = max(deg(A) - deg(B), 0)
+
+
+  prem_sum1: LEMMA FORALL (B: nonconst_polynomials): prem(prem(P, B) + Q, B) = prem(P + Q, B)
+
+  prem_sum2: LEMMA FORALL (B: nonconst_polynomials): prem(P + prem(Q, B), B) = prem(P + Q, B)
+
+  prem_prod1: LEMMA FORALL (B: nonconst_polynomials): prem(prem(P, B) * Q, B) = prem(P * Q, B)
+
+  prem_prod2: LEMMA FORALL (B: nonconst_polynomials): prem(P * prem(Q, B), B) = prem(P * Q, B)
+
+  END polynomials_division

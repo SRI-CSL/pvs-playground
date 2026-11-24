@@ -1,0 +1,24 @@
+% SP 800-56Ar3 §§5.6.2.3.3--4 and 5.7.2.2--3. The supplied NIST prime
+% curves all have cofactor one. Affine inputs are full-width field elements.
+ec_mqv: THEORY
+BEGIN
+  ecc: LIBRARY = "../ecc"
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING ecc@prime_curve, crypto_prelude@crypto_associate
+  full_public_valid(c:curve,q:affine(c)): bool =
+    on_curve(c,q) AND infinity(c,multiply(c,order(c),lift(c,q)))
+  % On cofactor-one curves every finite on-curve point is in the prime-order
+  % subgroup. This primitive takes the partial public-key validation branch.
+  mqv(c:curve,ds,de:scalar(c),qs,qe:affine(c)): secret_result =
+    IF NOT valid_scalar(c,ds) OR NOT valid_scalar(c,de) OR NOT on_curve(c,qs) OR NOT on_curve(c,qe)
+    THEN (# valid:=FALSE,value:=fill_octets(0,0) #) ELSE
+      LET local=public_key(c,de),n=order(c),
+          s=add_mod(de,mul_mod(ds,associate(local`x,n),n),n),
+          b=add(c,lift(c,qe),multiply(c,associate(qe`x,n),lift(c,qs))),
+          z=normalize(c,multiply(c,s,b)) IN
+        IF z`finite THEN (# valid:=TRUE,value:=to_bytes(z`x,u16div(bits(c)+7,8),TRUE) #)
+        ELSE (# valid:=FALSE,value:=fill_octets(0,0) #) ENDIF
+    ENDIF
+  rejected_static_peer: LEMMA FORALL(c:curve,ds,de:scalar(c),qs,qe:affine(c)):
+    NOT on_curve(c,qs) IMPLIES NOT mqv(c,ds,de,qs,qe)`valid
+END ec_mqv

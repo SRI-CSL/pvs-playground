@@ -1,0 +1,19 @@
+% SP 800-132 §5.1. An optional purpose string precedes the random salt.
+storage_random: THEORY
+BEGIN
+  crypto_prelude: LIBRARY="../crypto_prelude"
+  IMPORTING password_kdf,crypto_prelude@crypto_random_buffers
+  portion_size:TYPE=subrange(16,65535)
+  generated:TYPE=[# ok:bool,salt,master:bytestring #]
+  make_key(h:hash_id,password:bytestring,random_bytes:portion_size,
+           purpose:{p:bytestring | p`length+random_bytes+148<maxsize},
+           iterations:pos_uint32,n:{l:index | l>=14},s:stream_id):generated =
+    LET r=acquire(random_bytes,s,0) IN
+      IF NOT r`ok THEN (# ok:=FALSE,salt:=fill_octets(0,0),master:=fill_octets(0,0) #)
+      ELSE LET salt=join_octets(purpose,r`value) IN
+        (# ok:=TRUE,salt:=salt,master:=storage_key(h,password,salt,iterations,n) #)
+      ENDIF
+  unavailable_salt: LEMMA FORALL(h:hash_id,password:bytestring,len:portion_size,
+       p:{x:bytestring | x`length+len+148<maxsize},i:pos_uint32,n:{l:index | l>=14},s:stream_id):
+    NOT acquire(len,s,0)`ok IMPLIES NOT make_key(h,password,len,p,i,n,s)`ok
+END storage_random

@@ -1,0 +1,29 @@
+% SP 800-186 Appendix B.1--B.3, including the two exceptional points.
+% E448 is the Edwards model birational to Curve448; Edwards448 is 4-isogenous.
+curve_maps: THEORY
+BEGIN
+  IMPORTING montgomery
+  to_weierstrass(w: bool,q: affine(w)): affine(w) =
+    IF q`infinity THEN q ELSE finite(w,add_mod(q`x,w_shift(w),prime(w)),q`y) ENDIF
+  from_weierstrass(w: bool,q: affine(w)): affine(w) =
+    IF q`infinity THEN q ELSE finite(w,sub_mod(q`x,w_shift(w),prime(w)),q`y) ENDIF
+  to_edwards(w: bool,q: affine(w)): affine(w) =
+    LET m=prime(w), z=small(w,0), one=small(w,1), u=q`x, v=q`y IN
+      IF q`infinity THEN finite(w,z,one)
+      ELSIF u=z AND v=z THEN finite(w,z,sub_mod(z,one,m))
+      ELSE LET minus=sub_mod(u,one,m), plus=add_mod(u,one,m),
+               y=IF w THEN mul_mod(plus,inverse(w,minus),m)
+                 ELSE mul_mod(minus,inverse(w,plus),m) ENDIF IN
+        finite(w,mul_mod(ed_scale(w),mul_mod(u,inverse(w,v),m),m),y)
+      ENDIF
+  from_edwards(w: bool,q: affine(w)): affine(w) =
+    LET m=prime(w), z=small(w,0), one=small(w,1), x=q`x,y=q`y IN
+      IF x=z AND y=one THEN infinity(w)
+      ELSIF x=z AND y=sub_mod(z,one,m) THEN finite(w,z,z)
+      ELSE LET d=IF w THEN sub_mod(y,one,m) ELSE sub_mod(one,y,m) ENDIF,
+               u=mul_mod(add_mod(one,y,m),inverse(w,d),m) IN
+        finite(w,u,mul_mod(ed_scale(w),mul_mod(u,inverse(w,x),m),m))
+      ENDIF
+  map_infinity: LEMMA FORALL(w: bool):
+    to_edwards(w,infinity(w))=finite(w,small(w,0),small(w,1))
+END curve_maps

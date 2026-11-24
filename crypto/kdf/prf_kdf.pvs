@@ -1,0 +1,19 @@
+% SP 800-108 Rev. 1 update 1, sections 4 and 5. The PRF argument to iterate
+% is instantiated by HMAC or AES-CMAC. All byte-string lengths use Prelude index.
+prf_kdf: THEORY
+BEGIN
+  hmac: LIBRARY = "../hmac"
+  sha3: LIBRARY = "../sha3"
+  IMPORTING prf_iteration, hmac@keyed_hash, sha3@sp800_185
+
+  bind_hmac(h: hash_id, key: bytestring): keyed_function(hash_bytes(h)) =
+    LAMBDA (x: prf_data): hmac(h, key, x)
+  kbkdf(h: hash_id, key: bytestring, mode: kdf_mode, r: counter_bytes,
+        fixed: fixed_data, iv: prior_block, n: index): result =
+    derive(hash_bytes(h), bind_hmac(h,key), mode,r,fixed,iv,n)
+
+  % Section 5. The output length committed to KMAC is exactly 8*n bits.
+  kbkdf_kmac(s: strength, key, ctx, label: packed, n: {i: index | i > 0}): octets_of(n) =
+    output(kmac(s,key,ctx,label,8*n),n)
+
+END prf_kdf

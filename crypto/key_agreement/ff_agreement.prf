@@ -1,0 +1,545 @@
+(|ff_agreement|
+ (|exponent_ok_TCC1| 0
+  (|exponent_ok_TCC1-1| NIL 4004537569
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|exponent_ok| SUBTYPE "ff_agreement.d`q" "words_of(ff_agreement.x`len)"
+    (12 46 12 49))))
+ (|public_range_TCC1| 0
+  (|public_range_TCC1-1| NIL 4004537569
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|public_range| SUBTYPE "ff_agreement.one" "words_of(ff_agreement.y`len)"
+    (14 45 14 48))))
+ (|public_range_TCC2| 0
+  (|public_range_TCC2-1| NIL 4004537569
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|public_range| SUBTYPE
+    "crypto_limbs.sub_words(ff_agreement.d`p, ff_agreement.one)"
+    "words_of(ff_agreement.y`len)" (14 80 14 98))))
+ (|domain_shape_TCC1| 0
+  (|domain_shape_TCC1-1| NIL 4004537569
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|domain_shape| SUBTYPE "0" "below(ff_agreement.d`p`len)" (16 50 16 51))))
+ (|domain_shape_TCC2| 0
+  (|domain_shape_TCC2-1| NIL 4004537569
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|domain_shape| SUBTYPE "0" "below(ff_agreement.d`q`len)" (16 78 16 79))))
+ (|domain_shape_TCC3| 0
+  (|domain_shape_TCC3-1| NIL 4004537569
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|domain_shape| SUBTYPE "ff_agreement.one" "words_of(ff_agreement.d`q`len)"
+    (17 23 17 26))))
+ (|domain_shape_TCC4| 0
+  (|domain_shape_TCC4-1| NIL 4004537569
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|domain_shape| SUBTYPE "ff_agreement.d`p" "words_of(ff_agreement.d`q`len)"
+    (17 62 17 65))))
+ (|public_valid_TCC1| 0
+  (|public_valid_TCC1-1| NIL 4004537569
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|public_valid| SUBTYPE "ff_agreement.d`p" "words_of(ff_agreement.y`len)"
+    (20 63 20 66))))
+ (|encode_secret_TCC1| 0
+  (|encode_secret_TCC1-1| NIL 4004537569
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|encode_secret| SUBTYPE "number_fields.*(32, ff_agreement.d`p`len)"
+    "{i: integertypes.uint16 | reals.<=(i, number_fields.*(32, ff_agreement.d`p`len))}"
+    (23 60 23 70))))
+ (|encode_secret_TCC2| 0
+  (|encode_secret_TCC2-1| NIL 4004537570
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|plus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|plus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|encode_secret| SUBTYPE
+    "(number_fields.+)(crypto_montgomery.significant_bits(ff_agreement.d`p, number_fields.*(32, ff_agreement.d`p`len)), 7)"
+    "uint16" (23 39 23 73))))
+ (|encode_secret_TCC3| 0
+  (|encode_secret_TCC3-1| NIL 4004537570
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|plus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|u16div| CONST-DECL "[[uint16, {uy16 | uy16 /= 0}] -> uint16]"
+     |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|plus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|encode_secret| SUBTYPE
+    "integertypes.u16div((number_fields.+)(crypto_montgomery.significant_bits(ff_agreement.d`p, number_fields.*(32, ff_agreement.d`p`len)), 7), 8)"
+    "index" (23 32 23 76))))
+ (|dh_TCC1| 0
+  (|dh_TCC1-1| NIL 4004537570
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|dh| SUBTYPE "ff_agreement.d`p" "words_of(ff_agreement.y`len)"
+    (26 82 26 85))))
+ (|dh_TCC2| 0
+  (|dh_TCC2-1| NIL 4004537570
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|dh| SUBTYPE
+    "crypto_montgomery.mont_power(ff_agreement.y, ff_agreement.x, ff_agreement.d`p)"
+    "integer_of(ff_agreement.d)" (26 67 26 86))))
+ (|mqv_TCC1| 0
+  (|mqv_TCC1-1| NIL 4004537570
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|mqv| SUBTYPE "ff_agreement.d`p" "words_of(ff_agreement.d`g`len)"
+    (35 30 35 33))))
+ (|mqv_TCC2| 0
+  (|mqv_TCC2-1| NIL 4004537570
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|mqv| SUBTYPE "ff_agreement.d`q" "words_of(ff_agreement.ta`len)"
+    (35 70 35 73))))
+ (|mqv_TCC3| 0
+  (|mqv_TCC3-1| NIL 4004537570
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|mqv| SUBTYPE "ff_agreement.d`q" "words_of(ff_agreement.x`len)"
+    (35 75 35 78))))
+ (|mqv_TCC4| 0
+  (|mqv_TCC4-1| NIL 4004537570
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|mqv| SUBTYPE
+    "crypto_limbs.mul_mod(ff_agreement.x, crypto_associate.associate(ff_agreement.ta, ff_agreement.d`q), ff_agreement.d`q)"
+    "words_of(ff_agreement.r`len)" (35 47 35 79))))
+ (|mqv_TCC5| 0
+  (|mqv_TCC5-1| NIL 4004537570
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|mqv| SUBTYPE "ff_agreement.d`q" "words_of(ff_agreement.r`len)"
+    (35 80 35 83))))
+ (|mqv_TCC6| 0
+  (|mqv_TCC6-1| NIL 4004537570
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|mqv| SUBTYPE "ff_agreement.d`q" "words_of(ff_agreement.t`len)"
+    (36 47 36 50))))
+ (|mqv_TCC7| 0
+  (|mqv_TCC7-1| NIL 4004537571
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|mqv| SUBTYPE "ff_agreement.d`p" "words_of(ff_agreement.t`len)"
+    (36 57 36 60))))
+ (|mqv_TCC8| 0
+  (|mqv_TCC8-1| NIL 4004537571
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|mqv| SUBTYPE "ff_agreement.d`p" "words_of(ff_agreement.v`len)"
+    (37 40 37 43))))
+ (|mqv_TCC9| 0
+  (|mqv_TCC9-1| NIL 4004537571
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|domain| TYPE-EQ-DECL NIL |ff_agreement| NIL)
+    (|integer_of| TYPE-EQ-DECL NIL |ff_agreement| NIL))
+   SHOSTAK
+   (|mqv| SUBTYPE
+    "crypto_montgomery.mont_power(ff_agreement.v, ff_agreement.s, ff_agreement.d`p)"
+    "integer_of(ff_agreement.d)" (37 25 37 44))))
+ (|rejected_peer| 0
+  (|rejected_peer-1| NIL 4004537571
+   ("" (THEN (SKOSIMP*) (EXPAND "dh") (EXPAND "fail") (ASSERT) (GROUND)) NIL)
+   ((|dh| CONST-DECL "[[d: domain, integer_of(d), integer_of(d)] -> result]"
+     |ff_agreement| NIL)
+    (|fail| CONST-DECL "result" |ff_agreement| NIL))
+   SHOSTAK)))
+

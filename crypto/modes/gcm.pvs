@@ -1,0 +1,65 @@
+% NIST SP 800-38D §§5.2.1, 6.2–6.5, 7.1 and 7.2.
+% Byte-oriented interface. The Prelude buffer bound is below GCM's per-call
+% maximum. The caller manages the fixed tag length and IV uniqueness per key.
+gcm: THEORY
+BEGIN
+  IMPORTING aes_modes
+  IMPORTING crypto_prelude@crypto_block_io, crypto_prelude@crypto_words
+  nonce: TYPE = {v: bytestring | v`length > 0}
+  tag_size: TYPE = {n: uint8 | n = 4 OR n = 8 OR (12 <= n AND n <= 16)}
+
+  % Algorithm 1 traverses X most-significant bit first. The reduction
+  % polynomial contributes 0xe1 to the high octet after a right shift.
+  mul_x(v: block): block = LAMBDA (j: upto(15)):
+    LET carry: uint8 = IF j = 0 THEN (IF u8and(v(15),1) = 1 THEN 225 ELSE 0 ENDIF)
+                       ELSE u8lshift(v(j-1),7) ENDIF IN
+      u8xor(u8rshift(v(j),1),carry)
+  multiply(x,v,z: block, bit: upto(128)): RECURSIVE block =
+    IF bit = 128 THEN z ELSE
+      multiply(x,mul_x(v),IF bit_at(x,bit) = 1 THEN byvXOR(z,v) ELSE z ENDIF,bit+1)
+    ENDIF MEASURE 128-bit
+  ghash_block(h,y,b: block): block = multiply(byvXOR(y,b),h,zero_block,0)
+  ghash_bytes(h,y: block, x: bytestring, pos: upto(x`length)): RECURSIVE block =
+    IF pos = x`length THEN y ELSE
+      ghash_bytes(h,ghash_block(h,y,read_block(x,pos)),x,next_block(x`length,pos))
+    ENDIF MEASURE x`length-pos
+  lengths(a,c: index): block = LAMBDA (j: upto(15)):
+    IF j < 8 THEN be_byte64(u64lshift(a,3),j)
+    ELSE be_byte64(u64lshift(c,3),j-8) ENDIF
+  pre_counter(h: block, iv: nonce): block =
+    IF iv`length = 12 THEN
+      LAMBDA (j: upto(15)): IF j < 12 THEN iv`seq(j) ELSIF j = 15 THEN 1 ELSE 0 ENDIF
+    ELSE ghash_block(h,ghash_bytes(h,zero_block,iv,0),lengths(0,iv`length)) ENDIF
+  inc32(c: block): block =
+    LET v = increment(c,16) IN LAMBDA (j: upto(15)): IF j < 12 THEN c(j) ELSE v(j) ENDIF
+
+  gctr(k: mode_key, c: block, buf: bytestring, pos: upto(buf`length)):
+      RECURSIVE octets_of(buf`length) =
+    IF pos = buf`length THEN buf ELSE
+      LET b = byvXOR(read_block(buf,pos),ecb_encrypt(k,c)) IN
+        gctr(k,inc32(c),write_block(buf,pos,b),next_block(buf`length,pos))
+    ENDIF MEASURE buf`length-pos
+  auth_code(k: mode_key, h,j0: block, aad,c: bytestring, t: tag_size): octets_of(t) =
+    LET y = ghash_bytes(h,zero_block,aad,0),
+        z = ghash_bytes(h,y,c,0),
+        s = ghash_block(h,z,lengths(aad`length,c`length)) IN
+      block_bytes(byvXOR(ecb_encrypt(k,j0),s),t)
+  sealed: TYPE = [# ciphertext: bytestring, auth: bytestring #]
+  encrypt(k: mode_key,iv: nonce,aad,p: bytestring,t: tag_size): sealed =
+    LET h = ecb_encrypt(k,zero_block), j0 = pre_counter(h,iv),
+        c = gctr(k,inc32(j0),p,0) IN
+      (# ciphertext := c, auth := auth_code(k,h,j0,aad,c,t) #)
+  gmac(k: mode_key, iv: nonce, aad: bytestring, t: tag_size): octets_of(t) =
+    LET h = ecb_encrypt(k,zero_block) IN auth_code(k,h,pre_counter(h,iv),aad,fill_octets(0,0),t)
+
+  opened: TYPE = [# valid: bool, plaintext: bytestring #]
+  decrypt(k: mode_key, iv: nonce, aad: bytestring, input: sealed, t: tag_size): opened =
+    LET h = ecb_encrypt(k,zero_block), j0 = pre_counter(h,iv),
+        expected = auth_code(k,h,j0,aad,input`ciphertext,t) IN
+      IF input`auth`length = t AND strcmp(input`auth,expected) = 0 THEN
+        (# valid := TRUE, plaintext := gctr(k,inc32(j0),input`ciphertext,0) #)
+      ELSE (# valid := FALSE, plaintext := fill_octets(0,0) #) ENDIF
+
+  tag_size_enforced: LEMMA FORALL (k: mode_key, iv: nonce, aad: bytestring, input: sealed, t: tag_size):
+    input`auth`length /= t IMPLIES NOT decrypt(k,iv,aad,input,t)`valid
+END gcm

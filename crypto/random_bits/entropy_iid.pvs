@@ -1,0 +1,92 @@
+% SP 800-90B §5.2. Frequencies are grouped by increasing expectation.
+% The symbol value breaks ties, including for the encoded ordered pair.
+entropy_iid: THEORY
+BEGIN
+  IMPORTING entropy_substrings
+  stat_counts:TYPE=ARRAY[uint8->uint32]
+  counts(x:bytestring,i,stop:upto(x`length),h:stat_counts):RECURSIVE stat_counts=
+    IF i>=stop THEN h ELSIF stop-i>256 THEN LET mid:upto(x`length)=u32plus(i,u32div(stop-i,2)) IN
+      counts(x,mid,stop,counts(x,i,mid,h)) ELSE LET a=x`seq(i) IN
+      counts(x,i+1,stop,h WITH [(a):=u32plus(h(a),1)]) ENDIF MEASURE stop-i
+  empty_counts:stat_counts=LAMBDA(i:uint8):0
+  size(h:stat_counts,i:upto(256),k:upto(256)):RECURSIVE upto(256)=
+    IF i=256 OR k=256 THEN k ELSE size(h,i+1,IF h(i)>0 THEN k+1 ELSE k ENDIF) ENDIF MEASURE 256-i
+  first_symbol(h:stat_counts,i:uint8):RECURSIVE uint8=
+    IF h(i)>0 OR i=255 THEN i ELSE first_symbol(h,i+1) ENDIF MEASURE 255-i
+  as_binary(x:bytestring,h:stat_counts):binary_data=
+    LET low=first_symbol(h,0) IN (# length:=x`length,seq:=LAMBDA(i:below(x`length)):
+      IF x`seq(i)=low THEN 0 ELSE 1 ENDIF #)
+  groupsize:TYPE=subrange(1,65536)
+  weights(n:groupsize):TYPE=ARRAY[below(n)->uint64]
+  weighted_merge(n:groupsize,w:weights(n),a,b:positions(n),i,mid,j,stop,pos:upto(n)):RECURSIVE positions(n)=
+    IF pos>=stop THEN b ELSE LET take=j>=stop OR (i<mid AND w(a(i))<=w(a(j))) IN
+      IF take THEN weighted_merge(n,w,a,b WITH [(pos):=a(i)],i+1,mid,j,stop,pos+1)
+      ELSE weighted_merge(n,w,a,b WITH [(pos):=a(j)],i,mid,j+1,stop,pos+1) ENDIF ENDIF MEASURE n-pos
+  merge_groups(n:groupsize,w:weights(n),a,b:positions(n),span:pos_uint32,i:upto(n)):RECURSIVE positions(n)=
+    IF i=n THEN b ELSE LET mid:upto(n)=IF i+span>=n THEN n ELSE i+span ENDIF,
+      stop:upto(n)=IF mid+span>=n THEN n ELSE mid+span ENDIF IN
+      merge_groups(n,w,a,weighted_merge(n,w,a,b,i,mid,mid,stop,i),span,stop) ENDIF MEASURE n-i
+  sort_weights(n:groupsize,w:weights(n),a:positions(n),span:pos_uint32):RECURSIVE positions(n)=
+    IF span>=n THEN a ELSE sort_weights(n,w,merge_groups(n,w,a,LAMBDA(j:below(n)):0,span,0),2*span) ENDIF MEASURE n-span
+  layout(n:groupsize):TYPE=[# used:uint32,which:positions(n),expected:ARRAY[below(n)->fp] #]
+  allocate(n:groupsize,a:positions(n),w:weights(n),mult:fp,i:upto(n),b:layout(n),acc:fp):RECURSIVE layout(n)=
+    IF i=n THEN
+      IF b`used=0 OR NOT fp_lt(acc,fl(5)) THEN b WITH [`expected(b`used):=acc,used:=b`used+1]
+      ELSE b WITH [`expected(b`used-1):=fp_add(b`expected(b`used-1),acc)] ENDIF
+    ELSE LET j=a(i),full=NOT fp_lt(acc,fl(5)),k=IF full THEN u32plus(b`used,1) ELSE b`used ENDIF,
+      next=b WITH [`which(j):=k],v=fp_mul(fl(w(j)),mult) IN
+      allocate(n,a,w,mult,i+1,IF full THEN next WITH [`expected(b`used):=acc,used:=k] ELSE next ENDIF,
+               IF full THEN v ELSE fp_add(acc,v) ENDIF) ENDIF MEASURE n-i
+  observed_bins(x:bytestring,n:groupsize,b:layout(n),pairs:bool,i,stop:upto(x`length),v:positions(n)):RECURSIVE positions(n)=
+    IF i>=stop OR (pairs AND i+1>=stop) THEN v ELSIF stop-i>256 THEN
+      LET half=u32div(stop-i,2),mid:upto(x`length)=u32plus(i,IF pairs THEN u32and(half,4294967294) ELSE half ENDIF) IN
+        observed_bins(x,n,b,pairs,mid,stop,observed_bins(x,n,b,pairs,i,mid,v)) ELSE
+      LET j:uint16=IF pairs THEN 256*x`seq(i)+x`seq(i+1) ELSE x`seq(i) ENDIF,
+          raw=b`which(j),k:uint32=IF raw>=b`used THEN b`used-1 ELSE raw ENDIF IN
+        observed_bins(x,n,b,pairs,IF pairs THEN u32plus(i,2) ELSE u32plus(i,1) ENDIF,stop,v WITH [(k):=u32plus(v(k),1)]) ENDIF MEASURE stop-i
+  sum_bins(n:groupsize,b:layout(n),v:positions(n),i:upto(n),acc:fp):RECURSIVE fp=
+    IF i>=b`used OR i=n THEN acc ELSE sum_bins(n,b,v,i+1,fp_add(acc,deviation(fl(v(i)),b`expected(i)))) ENDIF MEASURE n-i
+  segments(x:bytestring,n:groupsize,b:layout(n),width:index,i:upto(10),acc:fp):RECURSIVE fp=
+    IF i=10 THEN acc ELSE LET v=observed_bins(x,n,b,FALSE,i*width,(i+1)*width,LAMBDA(j:below(n)):0) IN
+      segments(x,n,b,width,i+1,sum_bins(n,b,v,0,acc)) ENDIF MEASURE 10-i
+  nonbinary_chi(x:bytestring,pairs:bool):observation=
+    IF x`length<10 THEN omitted ELSE LET h=counts(x,0,x`length,empty_counts),k=size(h,0,0),
+      n:groupsize=IF pairs THEN 65536 ELSE 256 ENDIF,width=u32div(x`length,10),
+      w:weights(n)=LAMBDA(j:below(n)):IF pairs THEN u64times(h(u32div(j,256)),h(u32rem(j,256))) ELSE h(j) ENDIF,
+      mult=IF pairs THEN fp_div(fl(u32div(x`length,2)),sq(fl(x`length))) ELSE ratio(width,x`length) ENDIF,
+      order=sort_weights(n,w,LAMBDA(j:below(n)):j,1),z:positions(n)=LAMBDA(j:below(n)):0,
+      b=allocate(n,order,w,mult,0,(# used:=0,which:=z,expected:=LAMBDA(j:below(n)):fl(0) #),fl(0)) IN
+      IF k<2 OR b`used<=1 OR (pairs AND b`used<=k) THEN omitted ELSE
+        LET chi=IF pairs THEN sum_bins(n,b,observed_bins(x,n,b,TRUE,0,x`length,z),0,fl(0)) ELSE segments(x,n,b,width,0,fl(0)) ENDIF,
+            df=IF pairs THEN u32minus(b`used,k) ELSE u32times(9,b`used-1) ENDIF IN observed(chi_tail(df,chi)) ENDIF ENDIF
+
+  pick_m(n:uint32,p:fp,m:subrange(1,11)):RECURSIVE subrange(1,11)=
+    IF m=1 OR NOT fp_lt(fp_mul(fp_pow(p,fl(m)),fl(u32div(n,m))),fl(5)) THEN m ELSE pick_m(n,p,m-1) ENDIF MEASURE m
+  pattern(x:binary_data,i:uint32,m:upto(11),acc:uint16):RECURSIVE uint16=
+    IF m=0 OR i>=x`length THEN acc ELSE pattern(x,i+1,m-1,u16plus(u16lshift(acc,1),x`seq(i))) ENDIF MEASURE m
+  patterns(x:binary_data,m:subrange(1,11),n:groupsize,i,stop:uint32,a:positions(n)):RECURSIVE positions(n)=
+    IF i>=stop THEN a ELSIF stop-i>128 THEN LET mid:uint32=u32plus(i,u32div(stop-i,2)) IN
+      patterns(x,m,n,mid,stop,patterns(x,m,n,i,mid,a)) ELSE LET j=pattern(x,u32times(i,m),m,0) IN
+      patterns(x,m,n,i+1,stop,a WITH [(j):=u32plus(a(j),1)]) ENDIF MEASURE stop-i
+  ones(i:uint32):RECURSIVE uint8=IF i=0 THEN 0 ELSE u8plus(u32and(i,1),ones(u32rshift(i,1))) ENDIF MEASURE i
+  binary_sum(m:subrange(1,11),n:groupsize,total:uint32,a:positions(n),p,q:fp,i:upto(n),acc:fp):RECURSIVE fp=
+    IF i=n THEN acc ELSE LET w=ones(i),e=fp_mul(fl(total),fp_mul(fp_pow(p,fl(w)),fp_pow(q,fl(m-w)))) IN
+      binary_sum(m,n,total,a,p,q,i+1,fp_add(acc,deviation(fl(a(i)),e))) ENDIF MEASURE n-i
+  binary_chi(x:binary_data,pairs:bool):observation=
+    IF x`length<10 THEN omitted ELSE LET h=counts(x,0,x`length,empty_counts),p=ratio(h(1),x`length),q=ratio(h(0),x`length),
+      m=pick_m(x`length,fp_min(p,q),11),n:groupsize=u32lshift(1,m),total=u32div(x`length,m) IN
+      IF h(1)=0 OR h(0)=0 THEN observed(fl(0)) ELSIF NOT pairs THEN
+        LET width=u32div(x`length,10),b:layout(2)=(# used:=2,which:=[:0,1:],
+           expected:=[:fp_mul(q,fl(width)),fp_mul(p,fl(width)):] #) IN observed(chi_tail(9,segments(x,2,b,width,0,fl(0))))
+      ELSIF m=1 THEN observed(fl(0)) ELSE observed(chi_tail(n-2,binary_sum(m,n,total,
+        patterns(x,m,n,0,total,LAMBDA(j:below(n)):0),p,q,0,fl(0)))) ENDIF ENDIF
+  collision_prob(h:stat_counts,n:pos_uint32,i:upto(256),p:fp):RECURSIVE fp=
+    IF i=256 THEN p ELSE collision_prob(h,n,i+1,fp_add(p,sq(ratio(h(i),n)))) ENDIF MEASURE 256-i
+  maxl(n:index,l:positions(n),i:upto(n),best:uint32):RECURSIVE uint32=
+    IF i=n THEN best ELSE maxl(n,l,i+1,IF l(i)>best THEN l(i) ELSE best ENDIF) ENDIF MEASURE n-i
+  lrs_test(x:bytestring):observation=
+    IF x`length<2 THEN omitted ELSE LET n=x`length,w=maxl(n,lcp(x),0,0),N=u64div(u64times(n-w+1,n-w),2),
+      p=collision_prob(counts(x,0,n,empty_counts),n,0,fl(0)),single=fp_pow(p,fl(w)) IN
+      IF single=fl(1) THEN observed(fl(1)) ELSE observed(fp_sub(fl(0),fp_expm1(fp_mul(fl(N),fp_log1p(fp_sub(fl(0),single)))))) ENDIF ENDIF
+  zero_width_rejected: THEOREM FORALL(x:{s:bytestring | s`length<2}):NOT lrs_test(x)`applicable
+END entropy_iid

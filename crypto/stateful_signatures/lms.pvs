@@ -1,0 +1,52 @@
+% SP 800-208 section 4 and RFC 8554, Algorithms 1-6.
+lms: THEORY
+BEGIN
+  IMPORTING lms_hash
+  posuint32: TYPE = {v: uint32 | v>0}
+  mode: TYPE = below(3) % deriving a public key, signing, recovering a candidate
+  chain_vector(s: suite,w: width_code,id: identifier,q: uint32,seed: octets_of(digest_len(s)),
+      coefficients,encoded,out: bytestring,op: mode,i: upto(265)): RECURSIVE octets_of(out`length) =
+    IF i>=chains(s,w) THEN out ELSE
+      LET n=digest_len(s), a=coefficient(coefficients,i,w),
+          x=IF op=2 THEN part(encoded,n*i,n) ELSE secret_element(s,id,q,i,seed) ENDIF,
+          j: uint8=IF op=2 THEN a ELSE 0 ENDIF, stop: uint8=IF op=1 THEN a ELSE digit_max(w) ENDIF,
+          v=chain(s,id,q,i,j,stop,x), off: uint16=i*n IN
+      IF off>out`length THEN out ELSE
+        chain_vector(s,w,id,q,seed,coefficients,encoded,copy_octets(out,off,v,0),op,i+1)
+      ENDIF ENDIF MEASURE 265-i
+  packed_chains(s: suite,w: width_code,id: identifier,q: uint32,seed: octets_of(digest_len(s)),
+                 coefficients,encoded: bytestring,op: mode): octets_of(chains(s,w)*digest_len(s)) =
+    chain_vector(s,w,id,q,seed,coefficients,encoded,fill_octets(chains(s,w)*digest_len(s),0),op,0)
+  public_ots(s: suite,w: width_code,id: identifier,q: uint32,seed: octets_of(digest_len(s))):
+      octets_of(digest_len(s)) =
+    LET tails=packed_chains(s,w,id,q,seed,fill_octets(0,0),fill_octets(0,0),0)
+    IN hash(s,join_octets(prefix(id,q,0x8080),tails))
+  candidate(s: suite,w: width_code,id: identifier,q: uint32,c: octets_of(digest_len(s)),
+            encoded: bytestring,m: message_input): octets_of(digest_len(s)) =
+    LET d=digits(s,w,read_hash(s,id,q,c,m)),
+        tails=packed_chains(s,w,id,q,fill_octets(digest_len(s),0),d,encoded,2)
+    IN hash(s,join_octets(prefix(id,q,0x8080),tails))
+  sig_length(s: suite,h: height_code,w: width_code): uint16 =
+    12+digest_len(s)*(1+chains(s,w)+height(h))
+  ascend(s: suite,id: identifier,auth: bytestring,r: posuint32,v: octets_of(digest_len(s)),
+         level: upto(25)): RECURSIVE octets_of(digest_len(s)) =
+    IF r=1 OR level=25 THEN v ELSE
+      LET sib=part(auth,level*digest_len(s),digest_len(s)),p: posuint32=u32div(r,2),
+          parent=IF nrem(r,2)=0 THEN node_hash(s,id,p,v,sib) ELSE node_hash(s,id,p,sib,v) ENDIF
+      IN ascend(s,id,auth,p,parent,level+1) ENDIF MEASURE 25-level
+  % Public key contains type codes, a 16-byte identifier and the tree root.
+  verify_params(s: suite,h: height_code,w: width_code,pk,sig: bytestring,m: message_input): bool =
+    LET n=digest_len(s), q=read_word(sig,0), cap=leaves(h), path_at: uint16=8+n*(1+chains(s,w)) IN
+    IF sig`length/=sig_length(s,h,w) OR pk`length/=24+n OR q>=cap OR
+       read_word(pk,0)/=lms_code(s,h) OR read_word(pk,4)/=ots_code(s,w) OR
+       read_word(sig,4)/=ots_code(s,w) OR read_word(sig,path_at)/=lms_code(s,h) THEN FALSE
+    ELSE LET id=part(pk,8,16),c=part(sig,8,n),bits=part(sig,8+n,n*chains(s,w)),
+             auth=part(sig,path_at+4,n*height(h)),r: posuint32=cap+q,
+             k=candidate(s,w,id,q,c,bits,m)
+         IN ascend(s,id,auth,r,leaf_hash(s,id,r,k),0)=part(pk,24,n) ENDIF
+  verify_lms(pk,sig: bytestring,m: message_input): bool =
+    LET l=read_word(pk,0),o=read_word(pk,4) IN
+    IF l<5 OR l>24 OR o<1 OR o>16 THEN FALSE ELSE
+      LET s: suite=u8div(l-5,5), h: height_code=nrem(l-5,5),w: width_code=nrem(o-1,4)
+      IN verify_params(s,h,w,pk,sig,m) ENDIF
+END lms

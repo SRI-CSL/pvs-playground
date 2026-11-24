@@ -1,0 +1,16 @@
+% Pack bounded octet buffers into AES blocks, preserving wire order.
+crypto_block_io: THEORY
+BEGIN
+  IMPORTING crypto_blocks, crypto_buffers
+  read_block(x: bytestring, base: upto(x`length)): octet_block =
+    LAMBDA (j: upto(15)):
+      IF base+j < x`length THEN x`seq(base+j) ELSE 0 ENDIF
+  block_prefix(x: octet_block, n: upto(16)): ARRAY[below(n) -> uint8] =
+    LAMBDA (j: below(n)): x(j)
+  block_bytes(x: octet_block, n: upto(16)): octets_of(n) =
+    (# length := n, seq := block_prefix(x,n) #)
+  next_block(n: index, base: below(n)): {j: upto(n) | base < j} =
+    IF base+16 <= n THEN base+16 ELSE n ENDIF
+  write_block(out: bytestring, base: upto(out`length), b: octet_block): octets_of(out`length) =
+    copy_octets(out,base,block_bytes(b,16),0)
+END crypto_block_io

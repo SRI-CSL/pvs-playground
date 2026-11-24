@@ -1,0 +1,18 @@
+% The leftmost bits of a network-order octet string. For a partial last
+% octet, its significant bits occupy the high positions; unused bits are zero.
+crypto_bit_prefix: THEORY
+BEGIN
+  IMPORTING crypto_buffers
+  tail_size(n:index,whole:upto(n)):TYPE={r:below(8) | r=0 OR whole<n}
+  high_bits(x:uint8,r:subrange(1,7)):uint8=u8and(x,u8lshift(255,8-r))
+  bit_prefix(a:bytestring,whole:upto(a`length),r:tail_size(a`length,whole)):
+    octets_of(whole+IF r=0 THEN 0 ELSE 1 ENDIF) =
+    IF r=0 THEN first_octets(a,whole)
+    ELSE LET n:index=whole+1 IN
+      (# length:=n,seq:=LAMBDA(i:below(n)):IF i<whole THEN a`seq(i)
+                        ELSE high_bits(a`seq(whole),r) ENDIF #)
+    ENDIF
+  aligned: LEMMA FORALL(a:bytestring,w:upto(a`length)):bit_prefix(a,w,0)=first_octets(a,w)
+  partial_tail: LEMMA FORALL(a:bytestring,w:below(a`length),r:subrange(1,7)):
+    bit_prefix(a,w,r)`seq(w)=high_bits(a`seq(w),r)
+END crypto_bit_prefix

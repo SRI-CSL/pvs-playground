@@ -1,0 +1,599 @@
+(|rsa_provable|
+ (|factor_bits_TCC1| 0
+  (|factor_bits_TCC1-1| NIL 4004538328
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|factor_bits| SUBTYPE
+    "number_fields.*(32, rsa_primes.prime_width(rsa_provable.p))" "st_bits"
+    (24 45 24 62))))
+ (|sqrt_floor_TCC1| 0
+  (|sqrt_floor_TCC1-1| NIL 4004538328
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|sqrt_floor| SUBTYPE
+    "shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p))"
+    "limb_count" (25 43 25 67))))
+ (|sqrt_floor_TCC2| 0
+  (|sqrt_floor_TCC2-1| NIL 4004538328
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|sqrt_floor| SUBTYPE "rsa_provable.w" "limb_count" (27 12 27 13))))
+ (|sqrt_floor_TCC3| 0
+  (|sqrt_floor_TCC3-1| NIL 4004538328
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|sqrt_floor| SUBTYPE
+    "(number_fields.-)((number_fields.-)(rsa_provable.n, 1), rsa_provable.i)"
+    "below(64)" (27 64 27 69))))
+ (|auxiliary_TCC1| 0
+  (|auxiliary_TCC1-1| NIL 4004538328
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|auxiliary| SUBTYPE "rsa_provable.sz" "st_bits" (39 23 39 25))))
+ (|seek_provable_TCC1| 0
+  (|seek_provable_TCC1-1| NIL 4004538328
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "(number_fields.-)(10240, rsa_provable.count)"
+    "naturalnumber" (57 88 57 99))))
+ (|seek_provable_TCC2| 0
+  (|seek_provable_TCC2-1| NIL 4004538328
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "rsa_provable.n" "limb_count" (46 88 46 89))))
+ (|seek_provable_TCC3| 0
+  (|seek_provable_TCC3-1| NIL 4004538328
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "rsa_provable.bits"
+    "{i: integertypes.uint16 | reals.<(i, number_fields.*(32, crypto_limbs.zero_words(rsa_provable.n)`len))}"
+    (46 91 46 95))))
+ (|seek_provable_TCC4| 0
+  (|seek_provable_TCC4-1| NIL 4004538329
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "rsa_provable.y"
+    "words_of(crypto_integer_ops.product_words(rsa_provable.t, rsa_provable.r2, rsa_provable.n)`len)"
+    (47 69 47 70))))
+ (|seek_provable_TCC5| 0
+  (|seek_provable_TCC5-1| NIL 4004538329
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "rsa_provable.limit" "words_of(rsa_provable.v`len)"
+    (48 61 48 66))))
+ (|seek_provable_TCC6| 0
+  (|seek_provable_TCC6-1| NIL 4004538329
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "rsa_provable.y"
+    "words_of(crypto_integer_ops.product_words(rsa_provable.start, rsa_provable.r2, rsa_provable.n)`len)"
+    (50 93 50 94))))
+ (|seek_provable_TCC7| 0
+  (|seek_provable_TCC7-1| NIL 4004538329
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "crypto_limbs.one_words(rsa_provable.n)"
+    "words_of(rsa_provable.cand`len)" (52 41 52 53))))
+ (|seek_provable_TCC8| 0
+  (|seek_provable_TCC8-1| NIL 4004538329
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "rsa_provable.e"
+    "words_of(crypto_limbs.sub_words(rsa_provable.cand, crypto_limbs.one_words(rsa_provable.n))`len)"
+    (52 55 52 56))))
+ (|seek_provable_TCC9| 0
+  (|seek_provable_TCC9-1| NIL 4004538329
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "rsa_provable.nb" "uint16" (53 39 53 41))))
+ (|seek_provable_TCC10| 0
+  (|seek_provable_TCC10-1| NIL 4004538329
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "rsa_provable.exponent"
+    "words_of(rsa_provable.cand`len)" (54 46 54 54))))
+ (|seek_provable_TCC11| 0
+  (|seek_provable_TCC11-1| NIL 4004538330
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "rsa_provable.r0" "words_of(rsa_provable.cand`len)"
+    (54 55 54 57))))
+ (|seek_provable_TCC12| 0
+  (|seek_provable_TCC12-1| NIL 4004538330
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "(number_fields.+)(rsa_provable.count, 1)" "uint32"
+    (55 51 55 58))))
+ (|seek_provable_TCC13| 0
+  (|seek_provable_TCC13-1| NIL 4004538330
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "rsa_provable.sn" "seed_string" (55 39 55 41))))
+ (|seek_provable_TCC14| 0
+  (|seek_provable_TCC14-1| NIL 4004538331
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "rsa_provable.cand"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p)))"
+    (55 28 55 32))))
+ (|seek_provable_TCC15| 0
+  (|seek_provable_TCC15-1| NIL 4004538331
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE
+    "shawe_taylor.st_fail(rsa_provable.n, rsa_provable.s)"
+    "st_result(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p)))"
+    (56 34 56 46))))
+ (|seek_provable_TCC16| 0
+  (|seek_provable_TCC16-1| NIL 4004538331
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "rsa_provable.sn" "seed_string" (57 27 57 29))))
+ (|seek_provable_TCC17| 0
+  (|seek_provable_TCC17-1| NIL 4004538331
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "shawe_taylor.increment(rsa_provable.tt, 1)"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p)))"
+    (57 41 57 56))))
+ (|seek_provable_TCC18| 0
+  (|seek_provable_TCC18-1| NIL 4004538332
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| SUBTYPE "(number_fields.+)(rsa_provable.count, 1)"
+    "upto(10240)" (57 65 57 72))))
+ (|seek_provable_TCC19| 0
+  (|seek_provable_TCC19-1| NIL 4004538332
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|seek_provable| TERMINATION
+    "rsa_provable.seek_provable(rsa_provable.p, rsa_provable.h, rsa_provable.sn, rsa_provable.r0, rsa_provable.r1, rsa_provable.r2, rsa_provable.y, shawe_taylor.increment(rsa_provable.tt, 1), rsa_provable.start, rsa_provable.e, (number_fields.+)(rsa_provable.count, 1))"
+    "NIL" (57 9 57 73))))
+ (|construct_provable_TCC1| 0
+  (|construct_provable_TCC1-1| NIL 4004538332
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.n" "limb_count" (61 93 61 94))))
+ (|construct_provable_TCC2| 0
+  (|construct_provable_TCC2-1| NIL 4004538332
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE
+    "shawe_taylor.st_fail(rsa_provable.n, rsa_provable.s)"
+    "st_result(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p)))"
+    (61 85 61 97))))
+ (|construct_provable_TCC3| 0
+  (|construct_provable_TCC3-1| NIL 4004538332
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.n" "limb_count" (62 28 62 29))))
+ (|construct_provable_TCC4| 0
+  (|construct_provable_TCC4-1| NIL 4004538332
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "(number_fields.+)(rsa_provable.bits, 1)"
+    "uint16" (62 77 62 83))))
+ (|construct_provable_TCC5| 0
+  (|construct_provable_TCC5-1| NIL 4004538332
+   (""
+    (THEN (SKOSIMP* T) (EXPAND "u16div")
+     (TYPEPRED "ndiv(bits!1+1,2)" "rem(2)(bits!1+1)" "prime_width(p!1)")
+     (EXPAND "factor_bits") (ASSERT))
+    NIL NIL)
+   ((|prime_width| CONST-DECL "[strength_profile -> subrange(32, 64)]"
+     |rsa_primes| NIL)
+    (|strength_profile| TYPE-EQ-DECL NIL |rsa_primes| NIL)
+    (|fixed_hash| TYPE-EQ-DECL NIL |shawe_taylor| NIL)
+    (|seed_string| TYPE-EQ-DECL NIL |shawe_taylor| NIL)
+    (|st_bits| TYPE-EQ-DECL NIL |shawe_taylor| NIL))
+   SHOSTAK
+   (|construct_provable| SUBTYPE
+    "(number_fields.+)(integertypes.u16div((number_fields.+)(rsa_provable.bits, 1), 2), 1)"
+    "st_bits" (62 70 62 88))))
+ (|construct_provable_TCC6| 0
+  (|construct_provable_TCC6-1| NIL 4004538338
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.r2"
+    "words_of(rsa_provable.uv`len)" (64 73 64 75))))
+ (|construct_provable_TCC7| 0
+  (|construct_provable_TCC7-1| NIL 4004538338
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.r2"
+    "words_of(crypto_integer_ops.divide_words(rsa_provable.uv, rsa_provable.r2)`r`len)"
+    (64 79 64 81))))
+ (|construct_provable_TCC8| 0
+  (|construct_provable_TCC8-1| NIL 4004538338
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE
+    "shawe_taylor.st_fail(rsa_provable.n, rsa_provable.s)"
+    "st_result(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p)))"
+    (65 69 65 81))))
+ (|construct_provable_TCC9| 0
+  (|construct_provable_TCC9-1| NIL 4004538338
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.bits"
+    "{i: integertypes.uint16 | reals.<(i, number_fields.*(32, crypto_limbs.zero_words(rsa_provable.n)`len))}"
+    (66 76 66 80))))
+ (|construct_provable_TCC10| 0
+  (|construct_provable_TCC10-1| NIL 4004538339
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.low"
+    "words_of(rsa_provable.limit`len)" (67 70 67 73))))
+ (|construct_provable_TCC11| 0
+  (|construct_provable_TCC11-1| NIL 4004538339
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE
+    "shawe_taylor.hash_residue(rsa_provable.h, rsa_provable.z`seed, rsa_provable.nb, crypto_limbs.sub_words(rsa_provable.limit, rsa_provable.low))"
+    "words_of(rsa_provable.low`len)" (67 29 67 75))))
+ (|construct_provable_TCC12| 0
+  (|construct_provable_TCC12-1| NIL 4004538339
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.x"
+    "words_of(rsa_provable.yp`len)" (69 43 69 44))))
+ (|construct_provable_TCC13| 0
+  (|construct_provable_TCC13-1| NIL 4004538339
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.den"
+    "words_of(shawe_taylor.plus_words(rsa_provable.yp, rsa_provable.x)`len)"
+    (69 46 69 49))))
+ (|construct_provable_TCC14| 0
+  (|construct_provable_TCC14-1| NIL 4004538339
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.low"
+    "words_of(rsa_provable.yp`len)" (69 85 69 88))))
+ (|construct_provable_TCC15| 0
+  (|construct_provable_TCC15-1| NIL 4004538340
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.den"
+    "words_of(shawe_taylor.plus_words(rsa_provable.yp, rsa_provable.low)`len)"
+    (69 90 69 93))))
+ (|construct_provable_TCC16| 0
+  (|construct_provable_TCC16-1| NIL 4004538340
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.nb" "uint16" (70 46 70 48))))
+ (|construct_provable_TCC17| 0
+  (|construct_provable_TCC17-1| NIL 4004538340
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE
+    "shawe_taylor.seed_plus(rsa_provable.z`seed, rsa_provable.nb)"
+    "seed_string" (70 29 70 49))))
+ (|construct_provable_TCC18| 0
+  (|construct_provable_TCC18-1| NIL 4004538341
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.r0"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p)))"
+    (70 50 70 52))))
+ (|construct_provable_TCC19| 0
+  (|construct_provable_TCC19-1| NIL 4004538341
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.u`value"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p)))"
+    (70 53 70 60))))
+ (|construct_provable_TCC20| 0
+  (|construct_provable_TCC20-1| NIL 4004538341
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.r2"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p)))"
+    (70 61 70 63))))
+ (|construct_provable_TCC21| 0
+  (|construct_provable_TCC21-1| NIL 4004538341
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.y"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p)))"
+    (70 64 70 65))))
+ (|construct_provable_TCC22| 0
+  (|construct_provable_TCC22-1| NIL 4004538342
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.t"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p)))"
+    (70 66 70 67))))
+ (|construct_provable_TCC23| 0
+  (|construct_provable_TCC23-1| NIL 4004538342
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE "rsa_provable.base"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p)))"
+    (70 68 70 72))))
+ (|construct_provable_TCC24| 0
+  (|construct_provable_TCC24-1| NIL 4004538342
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|construct_provable| SUBTYPE
+    "crypto_limbs.from_bytes(rsa_provable.n, rsa_provable.e, booleans.TRUE)"
+    "words_of(shawe_taylor.st_width(rsa_provable.factor_bits(rsa_provable.p)))"
+    (70 73 70 93))))
+ (|provable_pair_TCC1| 0
+  (|provable_pair_TCC1-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|provable_pair| SUBTYPE "rsa_primes.prime_width(rsa_provable.p)"
+    "limb_count" (75 31 75 45))))
+ (|provable_pair_TCC2| 0
+  (|provable_pair_TCC2-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|provable_pair| SUBTYPE "rsa_provable.n" "limb_count" (79 33 79 34))))
+ (|provable_pair_TCC3| 0
+  (|provable_pair_TCC3-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|provable_pair| SUBTYPE "rsa_provable.x"
+    "words_of(rsa_primes.prime_width(rsa_provable.p))" (80 86 80 87))))
+ (|provable_pair_TCC4| 0
+  (|provable_pair_TCC4-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|provable_pair| SUBTYPE "(number_fields.-)(rsa_provable.attempts, 1)"
+    "uint32" (80 93 80 103))))
+ (|provable_pair_TCC5| 0
+  (|provable_pair_TCC5-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|provable_pair| TERMINATION
+    "rsa_provable.provable_pair(rsa_provable.p, rsa_provable.h, rsa_provable.a`seed, rsa_provable.e, rsa_provable.sz, rsa_provable.x, booleans.TRUE, (number_fields.-)(rsa_provable.attempts, 1))"
+    "NIL" (80 56 80 104))))
+ (|provable_pair_TCC6| 0
+  (|provable_pair_TCC6-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|provable_pair| SUBTYPE "rsa_provable.x" "words_of(rsa_provable.first`len)"
+    (81 30 81 31))))
+ (|provable_pair_TCC7| 0
+  (|provable_pair_TCC7-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|provable_pair| SUBTYPE "(number_fields.-)(rsa_provable.attempts, 1)"
+    "uint32" (81 79 81 89))))
+ (|provable_pair_TCC8| 0
+  (|provable_pair_TCC8-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|provable_pair| TERMINATION
+    "rsa_provable.provable_pair(rsa_provable.p, rsa_provable.h, rsa_provable.a`seed, rsa_provable.e, rsa_provable.sz, rsa_provable.first, booleans.TRUE, (number_fields.-)(rsa_provable.attempts, 1))"
+    "NIL" (81 38 81 90))))
+ (|provable_pair_TCC9| 0
+  (|provable_pair_TCC9-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|provable_pair| SUBTYPE "rsa_provable.x"
+    "words_of(rsa_primes.prime_width(rsa_provable.p))" (82 47 82 48))))
+ (|provable_pair_TCC10| 0
+  (|provable_pair_TCC10-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|provable_pair| SUBTYPE "crypto_limbs.zero_words(rsa_provable.n)"
+    "words_of(rsa_primes.prime_width(rsa_provable.p))" (83 38 83 51))))
+ (|provable_pair_TCC11| 0
+  (|provable_pair_TCC11-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|provable_pair| SUBTYPE "(number_fields.-)(rsa_provable.attempts, 1)"
+    "uint32" (83 58 83 68))))
+ (|provable_pair_TCC12| 0
+  (|provable_pair_TCC12-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|provable_pair| TERMINATION
+    "rsa_provable.provable_pair(rsa_provable.p, rsa_provable.h, rsa_provable.a`seed, rsa_provable.e, rsa_provable.sz, crypto_limbs.zero_words(rsa_provable.n), booleans.FALSE, (number_fields.-)(rsa_provable.attempts, 1))"
+    "NIL" (83 8 83 69))))
+ (|from_provable_seed_TCC1| 0
+  (|from_provable_seed_TCC1-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|from_provable_seed| SUBTYPE "rsa_provable.s" "seed_string"
+    (90 39 90 40))))
+ (|generate_provable_TCC1| 0
+  (|generate_provable_TCC1-1| NIL 4004538343
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|generate_provable| SUBTYPE "rsa_provable.min_seed(rsa_provable.p)" "index"
+    (92 18 92 29))))
+ (|exhausted_pair| 0
+  (|exhausted_pair-1| NIL 4004538344
+   ("" (THEN (SKOSIMP*) (EXPAND "provable_pair") (EXPAND "no_key") (ASSERT))
+    NIL NIL)
+   ((|provable_pair| DEF-DECL
+     "[[p: strength_profile, fixed_hash, seed_string, bytestring, lengths, words_of(prime_width(p)), bool, uint32] -> key]"
+     |rsa_provable| NIL)
+    (|no_key| CONST-DECL "key" |rsa_keygen| NIL))
+   SHOSTAK)))

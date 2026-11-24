@@ -1,0 +1,147 @@
+% SP 800-90C §§2.3, 3.1–3.2.2, 5–7. A transcript contains independent,
+% validated source acquisitions in order. The provider owns source health,
+% provenance, freshness and the per-chunk entropy assessment.
+rbg_profiles: THEORY
+BEGIN
+  IMPORTING rbg_instances,hash_conditioning,aes_conditioning
+  source_chunk:TYPE=[# id:stream_id,offset:uint32,physical,validated,healthy:bool,
+                        octets:index,credit:{v:uint64 | v<=2048*octets} #]
+  transcript:TYPE=[# length:index,samples:ARRAY[below(length)->source_chunk] #]
+  selection:TYPE=[# physical_only,targeted:bool,target:stream_id #]
+  collection:TYPE=[# ok:bool,next:index,error_source:stream_id,value:bytestring #]
+  rejected(i:index,id:stream_id):collection=(# ok:=FALSE,next:=i,error_source:=id,value:=empty #)
+  collect_input(t:transcript,s:selection,need:uint64,i:upto(t`length),credit:uint64,out:bytestring):RECURSIVE collection=
+    IF credit>=need THEN (# ok:=TRUE,next:=i,error_source:=0,value:=out #)
+    ELSIF i=t`length THEN rejected(i,0) ELSE LET c=t`samples(i) IN
+      IF NOT c`validated OR (s`targeted AND s`target/=c`id) THEN collect_input(t,s,need,i+1,credit,out)
+      ELSIF NOT c`healthy OR out`length+c`octets>=maxsize THEN rejected(i+1,c`id)
+      ELSE LET b=entropy_bytes(c`octets,c`id,c`offset) IN
+        IF NOT b`ok THEN rejected(i+1,c`id) ELSE
+          collect_input(t,s,need,i+1,IF s`physical_only AND NOT c`physical THEN credit ELSE u64plus(credit,c`credit) ENDIF,
+                        join_octets(out,b`value)) ENDIF ENDIF ENDIF MEASURE t`length-i
+  get_entropy_bitstring(t:transcript,s:selection,n:requested,i:upto(t`length)):collection=
+    collect_input(t,s,256*n,i,0,empty)
+  conditioner:DATATYPE
+  BEGIN
+    hashed(h:approved,f:method,hkey:bytestring):hashed?
+    aes_cbc(ck:mode_key):aes_cbc?
+    aes_cmac(mk:mode_key):aes_cmac?
+    aes_df(ks:aes_size):aes_df?
+    raw_source:raw_source?
+  END conditioner
+  outsize(c:conditioner):subrange(16,64)=IF hashed?(c) THEN hash_bytes(h(c)) ELSE 16 ENDIF
+  block_value(c:conditioner,x:bytestring):bytestring=
+    IF x`length>material_bound THEN empty ELSE CASES c OF
+      hashed(h,f,k):IF f/=1 THEN condition(h,f,fill_octets(hash_bytes(h),0),x)
+        ELSIF k`length=hash_bytes(h) THEN condition(h,f,k,x) ELSE empty ENDIF,
+      aes_cbc(k):IF x`length>0 AND u32rem(x`length,16)=0 THEN cbc_condition(k,x) ELSE empty ENDIF,
+      aes_cmac(k):cmac_condition(k,x),
+      aes_df(t):external_df(t,x),raw_source:empty
+    ENDCASES ENDIF
+  conditioned_blocks(t:transcript,s:selection,c:conditioner,w:requested,n:requested,full:bool,
+                     left:uint32,i:upto(t`length),out:bytestring):RECURSIVE collection=
+    IF left=0 THEN
+      IF full AND out`length>=octet_count(n) THEN
+        (# ok:=TRUE,next:=i,error_source:=0,value:=prefix_last(first_octets(out,octet_count(n)),n) #)
+      ELSIF full THEN rejected(i,0) ELSE (# ok:=TRUE,next:=i,error_source:=0,value:=out #) ENDIF
+    ELSE LET a=get_entropy_bitstring(t,s,w,i) IN IF NOT a`ok OR a`next>t`length THEN a ELSE
+      LET b=block_value(c,a`value) IN
+      IF b`length/=outsize(c) OR out`length+b`length>=maxsize THEN rejected(a`next,0) ELSE
+        conditioned_blocks(t,s,c,w,n,full,left-1,a`next,join_octets(out,b)) ENDIF ENDIF ENDIF MEASURE left
+  get_conditioned_input(t:transcript,s:selection,c:conditioner,n:requested,full:bool,i:upto(t`length)):collection=
+    LET bits:uint16=8*outsize(c),v:pos_uint32=u32div(n+bits-1,bits),
+      w:requested=IF full THEN bits+64 ELSE u32div(n+v-1,v) ENDIF IN
+      IF raw_source?(c) THEN rejected(i,0) ELSE conditioned_blocks(t,s,c,w,n,full,v,i,empty) ENDIF
+  all_full(t:transcript,s:selection,i,stop:upto(t`length)):RECURSIVE bool=
+    IF i>=stop THEN TRUE ELSE LET c=t`samples(i),used=c`validated AND (NOT s`targeted OR s`target=c`id) IN
+      (NOT used OR (c`credit=2048*c`octets AND (NOT s`physical_only OR c`physical))) AND
+      all_full(t,s,i+1,stop) ENDIF MEASURE stop-i
+  source_material(t:transcript,s:selection,c:conditioner,n:requested,full:bool,i:upto(t`length)):collection=
+    IF NOT raw_source?(c) THEN get_conditioned_input(t,s,c,n,full,i)
+    ELSE LET v=get_entropy_bitstring(t,s,n,i) IN
+      IF NOT full OR NOT v`ok THEN v
+      ELSIF v`next>t`length OR NOT all_full(t,s,i,v`next) OR v`value`length<octet_count(n) THEN rejected(v`next,0)
+      ELSE v WITH [value:=prefix_last(first_octets(v`value,octet_count(n)),n)] ENDIF ENDIF
+  seeded:TYPE=[# current:instance,next:index,error_source:stream_id #]
+  % A direct CTR_DRBG always takes exactly seedlen full-entropy bits. When
+  % CBC-MAC provides entropy to a CTR_DRBG, extra input is excluded here.
+  conditioned_seed(k:role,d:design,wanted:strength,p:bytestring,t:transcript,s:selection,c:conditioner,full:bool):seeded=
+    LET level=IF is_three(k) THEN highest(d) ELSE wanted ENDIF,n=8*seed_size(d,level,TRUE),fail=attach(k,level,offline) IN
+      IF k=rbg1 OR k=sub_drbg OR k=rbgc_child OR wanted>highest(d) OR (is_three(k) AND NOT rbg3_design(d))
+        OR ((k=rbg2_p OR is_three(k)) AND NOT s`physical_only) OR (k=rbg2_np AND s`physical_only)
+        OR (ctr_engine?(d) AND aes_cbc?(c) AND p`length>0)
+      THEN (# current:=fail,next:=0,error_source:=0 #) ELSE
+        LET a=source_material(t,s,c,n,full OR direct(d) OR k=rbgc,0) IN
+          (# current:=IF a`ok THEN attach(k,level,start(d,level,a`value,p)) ELSE fail ENDIF,
+             next:=a`next,error_source:=a`error_source #) ENDIF
+  conditioned_reseed(a:instance,e:material,t:transcript,s:selection,c:conditioner,full:bool,i:upto(t`length)):seeded=
+    LET d=profile(a`drbg),n=8*seed_size(d,a`level,FALSE),fail=a WITH [drbg:=offline] IN
+      IF offline?(a`drbg) OR a`kind=rbg1 OR a`kind=sub_drbg OR
+        ((a`kind=rbg2_p OR is_three(a`kind)) AND NOT s`physical_only) OR (a`kind=rbg2_np AND s`physical_only) OR
+        (ctr_engine?(d) AND aes_cbc?(c) AND e`length>0) THEN (# current:=fail,next:=i,error_source:=0 #)
+      ELSE LET b=source_material(t,s,c,n,full OR direct(d) OR a`kind=rbgc OR a`kind=rbgc_child,i) IN
+        (# current:=IF b`ok THEN a WITH [drbg:=refresh(a`drbg,a`level,b`value,e)] ELSE fail ENDIF,
+           next:=b`next,error_source:=b`error_source #) ENDIF
+  % §§6.4–6.5. Carry the acquisition cursor across every invocation so
+  % two RS blocks (or the XOR mask and an automatic reseed) use disjoint input.
+  delivery:TYPE=[# answer:returned,next:index,error_source:stream_id #]
+  delivery_of(a:instance,v:step,after:bool,i:index,id:stream_id):delivery=
+    (# answer:=wrap(a,v,after),next:=i,error_source:=id #)
+  conditioned_rs_seed(a:instance,e:material,t:transcript,s:selection,c:conditioner,
+                      i:upto(t`length),method_b:bool):seeded=
+    LET d=profile(a`drbg),level=a`level,need=8*seed_size(d,level,FALSE),fail=a WITH [drbg:=offline] IN
+      IF NOT s`physical_only OR (ctr_engine?(d) AND aes_cbc?(c) AND e`length>0)
+        THEN (# current:=fail,next:=i,error_source:=0 #)
+      ELSIF direct(d) OR NOT method_b THEN
+        LET v=source_material(t,s,c,IF direct(d) THEN need ELSE need+64 ENDIF,direct(d),i) IN
+          (# current:=IF v`ok THEN a WITH [drbg:=refresh(a`drbg,level,v`value,e)] ELSE fail ENDIF,
+             next:=v`next,error_source:=v`error_source #)
+      ELSE LET extra=get_entropy_bitstring(t,s,64,i) IN
+        IF NOT extra`ok OR extra`next>t`length OR extra`value`length+e`length>material_bound
+          OR (ctr_engine?(d) AND aes_cbc?(c)) THEN
+          (# current:=fail,next:=extra`next,error_source:=extra`error_source #)
+        ELSE LET v=source_material(t,s,c,need,FALSE,extra`next) IN
+          (# current:=IF v`ok THEN a WITH [drbg:=refresh(a`drbg,level,v`value,join_octets(extra`value,e))] ELSE fail ENDIF,
+             next:=v`next,error_source:=v`error_source #) ENDIF ENDIF
+  conditioned_rs_loop(a:instance,n:request_bits,e:material,t:transcript,s:selection,c:conditioner,
+                      method_b:bool,i:upto(t`length),out:octets_of(octet_count(n)),pos:upto(out`length)):
+                      RECURSIVE delivery=
+    IF pos=out`length THEN
+      delivery_of(a,(# ok:=TRUE,next:=a`drbg,data:=prefix_last(out,n) #),TRUE,i,0)
+    ELSE LET b=conditioned_rs_seed(a,e,t,s,c,i,method_b),r=emit_bits(b`current`drbg,a`level,e),
+             k=u16div(a`level,8),j:upto(out`length)=IF pos+k>=out`length THEN out`length ELSE pos+k ENDIF IN
+      IF NOT r`ok OR r`data`length/=k OR b`next>t`length THEN delivery_of(a,reject(offline),TRUE,b`next,b`error_source)
+      ELSE conditioned_rs_loop(a WITH [drbg:=r`next],n,empty,t,s,c,method_b,b`next,
+             copy_octets(out,pos,r`data,0),j) ENDIF ENDIF MEASURE out`length-pos
+  conditioned_full_generate(a:instance,n:request_bits,e:material,t:transcript,s:selection,c:conditioner,
+                            i:upto(t`length),method_b:bool):delivery=
+    IF NOT is_three(a`kind) OR NOT s`physical_only OR offline?(a`drbg) OR a`level/=highest(profile(a`drbg)) THEN
+      delivery_of(a,reject(a`drbg),a`after_rs,i,0)
+    ELSIF a`kind=rbg3_r THEN conditioned_rs_loop(a,n,e,t,s,c,method_b,i,fill_octets(octet_count(n),0),0)
+    ELSE LET b=IF expired(a`drbg) THEN conditioned_reseed(a,empty,t,s,c,FALSE,i)
+               ELSE (# current:=a,next:=i,error_source:=0 #) ENDIF IN
+      IF offline?(b`current`drbg) OR b`next>t`length THEN delivery_of(a,reject(offline),FALSE,b`next,b`error_source)
+      ELSE LET v=source_material(t,s,c,n,TRUE,b`next) IN
+        IF NOT v`ok THEN delivery_of(a,reject(offline),FALSE,v`next,v`error_source)
+        ELSE LET r=emit_bits(b`current`drbg,n,e) IN
+          delivery_of(a,IF r`ok AND r`data`length=v`value`length THEN
+            r WITH [data:=prefix_last(mixed(r`data,v`value),n)] ELSE reject(r`next) ENDIF,FALSE,v`next,0) ENDIF ENDIF ENDIF
+  direct_with_transcript(a:instance,n:request_bits,wanted:strength,e:material,t:transcript,s:selection,
+                         c:conditioner,i:upto(t`length),pr,method_b:bool):delivery=
+    IF offline?(a`drbg) OR wanted>a`level THEN delivery_of(a,reject(a`drbg),a`after_rs,i,0)
+    ELSIF (a`kind=rbg1 OR a`kind=sub_drbg OR a`kind=rbgc_child) AND (pr OR expired(a`drbg)) THEN
+      delivery_of(a,reject(a`drbg),a`after_rs,i,0)
+    ELSE LET barrier=a`kind=rbg3_r AND a`after_rs,need=pr OR expired(a`drbg),
+             v=IF barrier THEN conditioned_rs_seed(a,e,t,s,c,i,method_b)
+               ELSIF need THEN conditioned_reseed(a,e,t,s,c,FALSE,i)
+               ELSE (# current:=a,next:=i,error_source:=0 #) ENDIF IN
+      delivery_of(a,emit_bits(v`current`drbg,n,IF need THEN empty ELSE e ENDIF),FALSE,v`next,v`error_source) ENDIF
+  delivered_length: THEOREM FORALL(a:instance,n:request_bits,e:material,t:transcript,s:selection,c:conditioner,b:bool):
+    LET r=conditioned_full_generate(a,n,e,t,s,c,0,b)`answer IN
+      IF r`ok THEN r`data`length=octet_count(n) ELSE r`data`length=0 ENDIF
+  failure_discards_prefix: THEOREM FORALL(t:transcript,s:selection,n:requested,i:upto(t`length)):
+    LET a=get_entropy_bitstring(t,s,n,i) IN NOT a`ok IMPLIES a`value`length=0
+  conditioned_lengths: THEOREM FORALL(t:transcript,s:selection,c:conditioner,n:requested,f:bool):
+    LET a=get_conditioned_input(t,s,c,n,f,0) IN a`ok IMPLIES
+      IF f THEN a`value`length=octet_count(n) ELSE u32rem(a`value`length,outsize(c))=0 ENDIF
+END rbg_profiles

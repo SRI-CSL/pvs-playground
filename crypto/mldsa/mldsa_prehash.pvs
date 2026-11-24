@@ -1,0 +1,23 @@
+% HashML-DSA, FIPS 204 Algorithms 4 and 5. Hash identifiers are the final
+% octets of their DER object identifiers (the prefix is shared by all 12).
+mldsa_prehash: THEORY
+BEGIN
+  prehash: LIBRARY = "../crypto_prelude/prehash"
+  IMPORTING mldsa_sign, prehash@crypto_prehash
+  mu_prehash(tr: octets_of(64),id: hash_id,m: bytestring,ctx: {b: bytestring | b`length<=255},
+             tail: uint8,used: below(8)): octets_of(64) =
+    LET c=absorb_byte(absorb_byte(absorb(start(136),tr),1),ctx`length),
+        d=absorb_oid(absorb(c,ctx),id,0)
+    IN output(finish_shake(absorb(d,pre_digest(id,m,tail,used))),64)
+  hash_sign(p: profile,sk: bytestring,id: hash_id,m,ctx: bytestring,tail: uint8,
+            used: below(8),rnd: octets_of(32)): bytes_result =
+    IF ctx`length>255 OR sk`length/=sk_size(p) THEN failure ELSE
+      sign_mu(p,sk,mu_prehash(portion(sk,64,64),id,m,ctx,tail,used),rnd) ENDIF
+  hash_verify(p: profile,pk,sig: bytestring,id: hash_id,m,ctx: bytestring,
+              tail: uint8,used: below(8)): bool =
+    ctx`length<=255 AND pk`length=pk_size(p) AND
+    verify_mu(p,pk,sig,mu_prehash(output(finish_shake(absorb(start(136),pk)),64),
+                                  id,m,ctx,tail,used))
+  oversized_context: LEMMA FORALL (p: profile,pk,sig,m,ctx: bytestring,id: hash_id):
+    ctx`length>255 IMPLIES NOT hash_verify(p,pk,sig,id,m,ctx,0,0)
+END mldsa_prehash

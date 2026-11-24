@@ -1,0 +1,391 @@
+(|aes_fips197|
+ (|rcon_TCC1| 0
+  (|rcon_TCC1-1| NIL 4004535041
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|rcon| SUBTYPE "(number_fields.-)(aes_fips197.j, 1)" "upto(14)"
+    (17 34 17 39))))
+ (|rcon_TCC2| 0
+  (|rcon_TCC2-1| NIL 4004535041
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|rcon| TERMINATION "aes_fips197.rcon((number_fields.-)(aes_fips197.j, 1))"
+    "NIL" (17 29 17 40))))
+ (|extend_key_TCC1| 0
+  (|extend_key_TCC1-1| NIL 4004535041
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|extend_key| SUBTYPE "(number_fields.-)(240, aes_fips197.i)"
+    "naturalnumber" (36 12 36 19))))
+ (|extend_key_TCC2| 0
+  (|extend_key_TCC2-1| NIL 4004535041
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK (|extend_key| SUBTYPE "aes_fips197.i" "uint16" (25 29 25 30))))
+ (|extend_key_TCC3| 0
+  (|extend_key_TCC3-1| NIL 4004535041
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|extend_key| SUBTYPE "aes_fips197.nk" "{uy16 | integertypes.uy16 /= 0}"
+    (25 32 25 34))))
+ (|extend_key_TCC4| 0
+  (|extend_key_TCC4-1| NIL 4004535041
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|extend_key| SUBTYPE "(number_fields.+)(aes_fips197.j, 1)" "uint16"
+    (28 54 28 59))))
+ (|extend_key_TCC5| 0
+  (|extend_key_TCC5-1| NIL 4004535042
+   ("" (SKOSIMP*)
+    (("" (GROUND)
+      (("1"
+        (GRIND :EXCLUDE
+         ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox"))
+        NIL NIL)
+       ("2"
+        (GRIND :EXCLUDE
+         ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox"))
+        NIL NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK
+   (|extend_key| SUBTYPE
+    "(number_fields.+)((number_fields.-)((number_fields.-)(aes_fips197.i, 4), aes_fips197.j), integertypes.u16rem((number_fields.+)(aes_fips197.j, 1), 4))"
+    "below(240)" (28 35 28 63))))
+ (|extend_key_TCC6| 0
+  (|extend_key_TCC6-1| NIL 4004535042
+   ("" (SKOSIMP*)
+    (("" (ALL-TYPEPREDS)
+      (("1" (GRIND :EXCLUDE ("extend_key" "rcon" "Sbox"))
+        (("1" (USE "ndiv_lt" ("x" "i!1" "b" "32"))
+          (("1" (USE "ndiv_lt" ("x" "i!1" "b" "24")) (("1" (ASSERT) NIL NIL))
+            NIL))
+          NIL)
+         ("2" (USE "ndiv_lt" ("x" "i!1" "b" "32"))
+          (("2" (USE "ndiv_lt" ("x" "i!1" "b" "24")) (("2" (ASSERT) NIL NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (GRIND :EXCLUDE ("extend_key" "rcon" "Sbox")) NIL NIL))
+      NIL))
+    NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|times_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|plus_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|plus_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|plus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|rounds| CONST-DECL "[bool -> uint8]" |aes_fips197| NIL)
+    (|odd?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|strict_total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|expanded_key| TYPE-EQ-DECL NIL |aes_fips197| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|u16rem| CONST-DECL "[[uint16, {uy16 | uy16 /= 0}] -> uint16]"
+     |integertypes| NIL)
+    (- CONST-DECL "[numfield -> numfield]" |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|key_bytes| CONST-DECL "[bool -> uint8]" |aes_fips197| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|u16div| CONST-DECL "[[uint16, {uy16 | uy16 /= 0}] -> uint16]"
+     |integertypes| NIL)
+    (/= CONST-DECL "[[T, T] -> boolean]" |notequal| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|even?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|ndiv_lt| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|nnrat_div_posrat_is_nnrat| APPLICATION-JUDGEMENT "nonneg_rat" |rationals|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|plus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|trichotomous?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|strict_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|irreflexive?| CONST-DECL "[PRED[[T, T]] -> bool]" |relations| NIL)
+    (|dichotomous?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|partial_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|antisymmetric?| CONST-DECL "[PRED[[T, T]] -> bool]" |relations| NIL)
+    (|preorder?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|transitive?| CONST-DECL "[PRED[[T, T]] -> bool]" |relations| NIL)
+    (|reflexive?| CONST-DECL "[PRED[[T, T]] -> bool]" |relations| NIL)
+    (|odd_minus_odd_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|real_minus_real_is_real| APPLICATION-JUDGEMENT "real" |reals| NIL)
+    (|even_minus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|minus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|minus_u8_u8| APPLICATION-JUDGEMENT "int16" |integertypes| NIL)
+    (|even_plus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|odd_plus_even_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|even_pos_uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (IF CONST-DECL
+        "[[boolean, T, T] -> T]"
+        |if_def|
+        NIL)
+    (|even_minus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|odd_minus_even_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|extend_key| SUBTYPE "integertypes.u16div(aes_fips197.i, aes_fips197.nk)"
+    "upto(14)" (29 47 29 60))))
+ (|extend_key_TCC7| 0
+  (|extend_key_TCC7-1| NIL 4004535043
+   ("" (SKOSIMP*)
+    (("" (ALL-TYPEPREDS)
+      (("1" (GRIND) NIL NIL) ("2" (GRIND) NIL NIL) ("3" (GRIND) NIL NIL)
+       ("4" (GRIND) NIL NIL) ("5" (GRIND) NIL NIL) ("6" (GRIND) NIL NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK
+   (|extend_key| SUBTYPE "aes_fips197.rotated" "below(256)" (30 33 30 40))))
+ (|extend_key_TCC8| 0
+  (|extend_key_TCC8-1| NIL 4004535043
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|extend_key| SUBTYPE "(number_fields.-)(aes_fips197.i, 4)" "below(240)"
+    (31 73 31 78))))
+ (|extend_key_TCC9| 0
+  (|extend_key_TCC9-1| NIL 4004535043
+   ("" (SKOSIMP*)
+    (("" (ALL-TYPEPREDS) (("1" (GRIND) NIL NIL) ("2" (GRIND) NIL NIL)) NIL))
+    NIL)
+   NIL SHOSTAK
+   (|extend_key| SUBTYPE "aes_fips197.w((number_fields.-)(aes_fips197.i, 4))"
+    "below(256)" (31 71 31 79))))
+ (|extend_key_TCC10| 0
+  (|extend_key_TCC10-1| NIL 4004535044
+   ("" (SKOSIMP*)
+    (("" (GROUND)
+      (("1"
+        (GRIND :EXCLUDE
+         ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox"))
+        NIL NIL)
+       ("2"
+        (GRIND :EXCLUDE
+         ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox"))
+        NIL NIL)
+       ("3"
+        (GRIND :EXCLUDE
+         ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox"))
+        NIL NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK
+   (|extend_key| SUBTYPE "(number_fields.-)(aes_fips197.i, 4)" "below(240)"
+    (32 24 32 29))))
+ (|extend_key_TCC11| 0
+  (|extend_key_TCC11-1| NIL 4004535044
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|extend_key| SUBTYPE "(number_fields.-)(aes_fips197.i, aes_fips197.nk)"
+    "below(240)" (33 25 33 31))))
+ (|extend_key_TCC12| 0
+  (|extend_key_TCC12-1| NIL 4004535044
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|extend_key| SUBTYPE "aes_fips197.i" "below(240)" (34 32 34 33))))
+ (|extend_key_TCC13| 0
+  (|extend_key_TCC13-1| NIL 4004535046
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|extend_key| SUBTYPE "(number_fields.+)(aes_fips197.i, 1)"
+    "{j: naturalnumbers.upto(240) | reals.<=(aes_fips197.key_bytes(aes_fips197.wide), j)}"
+    (34 48 34 53))))
+ (|extend_key_TCC14| 0
+  (|extend_key_TCC14-1| NIL 4004535048
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|extend_key| TERMINATION
+    "aes_fips197.extend_key(aes_fips197.w WITH [(aes_fips197.i) := aes_fips197.b], aes_fips197.wide, (number_fields.+)(aes_fips197.i, 1))"
+    "NIL" (34 12 34 54))))
+ (|subkey_TCC1| 0
+  (|subkey_TCC1-1| NIL 4004535048
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|subkey| SUBTYPE
+    "(number_fields.+)(number_fields.*(16, aes_fips197.r), aes_fips197.j)"
+    "below(240)" (51 29 51 39))))
+ (|encrypt_rounds_TCC1| 0
+  (|encrypt_rounds_TCC1-1| NIL 4004535048
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|encrypt_rounds| SUBTYPE "(number_fields.-)(aes_fips197.nr, aes_fips197.r)"
+    "naturalnumber" (59 12 59 18))))
+ (|encrypt_rounds_TCC2| 0
+  (|encrypt_rounds_TCC2-1| NIL 4004535048
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|encrypt_rounds| SUBTYPE "aes_fips197.r" "upto(14)" (56 65 56 66))))
+ (|encrypt_rounds_TCC3| 0
+  (|encrypt_rounds_TCC3-1| NIL 4004535048
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|encrypt_rounds| SUBTYPE "aes_fips197.r" "upto(14)" (57 51 57 52))))
+ (|encrypt_rounds_TCC4| 0
+  (|encrypt_rounds_TCC4-1| NIL 4004535048
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|encrypt_rounds| SUBTYPE "(number_fields.+)(aes_fips197.r, 1)"
+    "upto(aes_fips197.nr)" (57 63 57 68))))
+ (|encrypt_rounds_TCC5| 0
+  (|encrypt_rounds_TCC5-1| NIL 4004535048
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|encrypt_rounds| TERMINATION
+    "aes_fips197.encrypt_rounds(Rijndael.Rijndael_step(aes_fips197.a, aes_fips197.subkey(aes_fips197.w, aes_fips197.r)), aes_fips197.w, aes_fips197.nr, (number_fields.+)(aes_fips197.r, 1))"
+    "NIL" (57 9 57 69))))
+ (|decrypt_rounds_TCC1| 0
+  (|decrypt_rounds_TCC1-1| NIL 4004535048
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|decrypt_rounds| SUBTYPE "(number_fields.-)(aes_fips197.r, 1)" "upto(14)"
+    (63 62 63 67))))
+ (|decrypt_rounds_TCC2| 0
+  (|decrypt_rounds_TCC2-1| NIL 4004535048
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|decrypt_rounds| TERMINATION
+    "aes_fips197.decrypt_rounds(Rijndael.invRijndael_step(aes_fips197.a, aes_fips197.subkey(aes_fips197.w, aes_fips197.r)), aes_fips197.w, (number_fields.-)(aes_fips197.r, 1))"
+    "NIL" (63 9 63 68))))
+ (|encrypt_block_TCC1| 0
+  (|encrypt_block_TCC1-1| NIL 4004535048
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|encrypt_block| SUBTYPE "1" "upto(aes_fips197.nr)" (68 56 68 57))))
+ (|decrypt_block_TCC1| 0
+  (|decrypt_block_TCC1-1| NIL 4004535048
+   (""
+    (THEN (SKOSIMP*) (GROUND)
+     (GRIND :EXCLUDE
+      ("extend_key" "rcon" "encrypt_rounds" "decrypt_rounds" "Sbox")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|decrypt_block| SUBTYPE "(number_fields.-)(aes_fips197.nr, 1)" "upto(14)"
+    (72 22 72 28)))))
+

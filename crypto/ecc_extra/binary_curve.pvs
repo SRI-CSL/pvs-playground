@@ -1,0 +1,92 @@
+% Polynomial-basis binary Weierstrass curves, SP 800-186 sections 2.3.1, 3.3 and D.1.4.
+binary_curve: THEORY
+BEGIN
+  IMPORTING binary_parameters
+  zero(c: curve): element(c) = zero_words(words(c))
+  one(c: curve): element(c) = one_words(words(c))
+  plus(x: limbs,y: words_of(x`len)): words_of(x`len) =
+    (# len:=x`len,word:=LAMBDA(i:below(x`len)): u32xor(x`word(i),y`word(i)) #)
+  left_carry(x: limbs,i: below(x`len)): uint32 =
+    IF i=0 THEN 0 ELSE u32rshift(x`word(i-1),31) ENDIF
+  right_carry(x: limbs,i: below(x`len)): uint32 =
+    IF i+1=x`len THEN 0 ELSE u32lshift(x`word(i+1),31) ENDIF
+  left(x: limbs): words_of(x`len) =
+    (# len:=x`len,word:=LAMBDA(i:below(x`len)):
+       u32or(u32lshift(x`word(i),1),left_carry(x,i)) #)
+  right(x: limbs): words_of(x`len) =
+    (# len:=x`len,word:=LAMBDA(i:below(x`len)):
+       u32or(u32rshift(x`word(i),1),right_carry(x,i)) #)
+  times_x(c: curve,x: element(c)): element(c) =
+    LET z=left(x) IN IF bit_word(x,degree(c)-1) THEN plus(z,polynomial(c)) ELSE z ENDIF
+  multiply_from(c: curve,a,b,r: element(c),i: {j:uint16 | j<=degree(c)}):
+      RECURSIVE element(c) =
+    IF i=0 THEN r ELSE LET t=times_x(c,r) IN
+       multiply_from(c,a,b,IF bit_word(b,i-1) THEN plus(t,a) ELSE t ENDIF,i-1)
+    ENDIF MEASURE i
+  product(c: curve,a,b: element(c)): element(c) = multiply_from(c,a,b,zero(c),degree(c))
+  odd_word(x: limbs): bool = u32and(x`word(0),1)=1
+  divide_x(c: curve,x: element(c)): element(c) =
+    IF odd_word(x) THEN right(plus(x,polynomial(c))) ELSE right(x) ENDIF
+  % Binary extended Euclid. Each transition halves one nonzero polynomial.
+  % The sum of the degrees drops by at least one per transition.
+  invert_from(c: curve,u,v,g,h: element(c),fuel: uint16): RECURSIVE element(c) =
+    IF u=one(c) THEN g ELSIF v=one(c) THEN h
+    ELSIF fuel=0 OR u=zero(c) OR v=zero(c) THEN zero(c)
+    ELSIF NOT odd_word(u) THEN invert_from(c,right(u),v,divide_x(c,g),h,fuel-1)
+    ELSIF NOT odd_word(v) THEN invert_from(c,u,right(v),g,divide_x(c,h),fuel-1)
+    ELSIF ge_words(u,v) THEN invert_from(c,right(plus(u,v)),v,divide_x(c,plus(g,h)),h,fuel-1)
+    ELSE invert_from(c,u,right(plus(v,u)),g,divide_x(c,plus(h,g)),fuel-1)
+    ENDIF MEASURE fuel
+  inv(c: curve,x: element(c)): element(c) =
+    invert_from(c,x,polynomial(c),one(c),zero(c),2*degree(c)+2)
+
+  point(c: curve): TYPE = [# infinity: bool,x,y: element(c) #]
+  identity(c: curve): point(c) = (# infinity:=TRUE,x:=zero(c),y:=zero(c) #)
+  finite(c: curve,x,y: element(c)): point(c) = (# infinity:=FALSE,x:=x,y:=y #)
+  generator(c: curve): point(c) = finite(c,gx(c),gy(c))
+  coefficient(c: curve): element(c) = IF a_value(c)=1 THEN one(c) ELSE zero(c) ENDIF
+  double(c: curve,p: point(c)): point(c) =
+    IF p`infinity OR p`x=zero(c) THEN identity(c)
+    ELSE LET x=p`x, slope=plus(x,product(c,p`y,inv(c,x))),
+             xx=plus(plus(product(c,slope,slope),slope),coefficient(c)) IN
+      finite(c,xx,plus(product(c,x,x),product(c,plus(slope,one(c)),xx)))
+    ENDIF
+  add(c: curve,p,q: point(c)): point(c) =
+    IF p`infinity THEN q ELSIF q`infinity THEN p
+    ELSIF p`x=q`x THEN IF p`y=q`y THEN double(c,p) ELSE identity(c) ENDIF
+    ELSE LET d=plus(p`x,q`x), slope=product(c,plus(p`y,q`y),inv(c,d)),
+             xx=plus(plus(product(c,slope,slope),slope),plus(d,coefficient(c))) IN
+      finite(c,xx,plus(product(c,slope,plus(p`x,xx)),plus(xx,p`y)))
+    ENDIF
+  scale_from(c: curve,p: point(c),k: element(c),acc: point(c),i: {j:uint16 | j<=32*words(c)}):
+      RECURSIVE point(c) =
+    IF i=0 THEN acc ELSE LET dbl=double(c,acc) IN
+      scale_from(c,p,k,IF bit_word(k,i-1) THEN add(c,dbl,p) ELSE dbl ENDIF,i-1)
+    ENDIF MEASURE i
+  scale(c: curve,p: point(c),k: element(c)): point(c) =
+    scale_from(c,p,k,identity(c),order_bits(c))
+  % The high bits outside the degree-m polynomial encoding must be zero.
+  canonical(c: curve,x: element(c)): bool =
+    x`word(words(c)-1)<u32lshift(1,nrem(degree(c),32))
+  partial_valid(c: curve,p: point(c)): bool =
+    LET x=p`x,y=p`y,xx=product(c,x,x), cubic: element(c)=product(c,xx,x),
+        quad: element(c)=IF a_value(c)=1 THEN xx ELSE zero(c) ENDIF,
+        high: element(c)=plus(cubic,quad) IN
+      NOT p`infinity AND canonical(c,x) AND canonical(c,y) AND
+      plus(product(c,y,y),product(c,x,y))=
+        plus(high,b_value(c))
+  full_valid(c: curve,p: point(c)): bool = partial_valid(c,p) AND scale(c,p,subgroup(c))`infinity
+
+  % FIPS 186-5 §6.4.2. The input is the leftmost min(hashlen, bitlen(n))
+  % digest bits, represented as an unsigned integer.
+  verify(c: curve,q: point(c),digest,r,s: element(c)): bool =
+    LET n=subgroup(c),z=zero(c),two=one(c) WITH [`word(0):=2] IN
+      IF r=z OR s=z OR ge_words(r,n) OR ge_words(s,n) OR NOT full_valid(c,q) THEN FALSE
+      ELSE LET w=pow_mod(s,sub_words(n,two),n), e=reduce_le(to_bytes(digest,4*words(c),FALSE),n),
+               u=mul_mod(w,e,n), v=mul_mod(w,r,n), p=add(c,scale(c,generator(c),u),scale(c,q,v)) IN
+        NOT p`infinity AND reduce_le(to_bytes(p`x,4*words(c),FALSE),n)=r
+      ENDIF
+  identity_left: LEMMA FORALL(c: curve,q: point(c)): add(c,identity(c),q)=q
+  invalid_scalar: LEMMA FORALL(c: curve,q: point(c),d,r: element(c)):
+    NOT verify(c,q,d,r,zero(c))
+END binary_curve

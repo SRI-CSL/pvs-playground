@@ -1,0 +1,50 @@
+% FIPS 186-5 §6.3 and Appendix A.3. RFC 6979 §§2.3, 3.2.
+ecdsa_signing: THEORY
+BEGIN
+  hmac: LIBRARY="../hmac"
+  IMPORTING ecdsa,hmac@hmac_drbg,crypto_prelude@crypto_random_buffers
+  h256:TYPE={h:drbg_hash | h/=h_sha1}
+  active_curve:TYPE={c:curve | c/=p192}
+  rolen(c:curve):subrange(24,66) = IF c=p192 THEN 24 ELSIF c=p224 THEN 28 ELSIF c=p256 THEN 32
+                                    ELSIF c=p384 THEN 48 ELSE 66 ENDIF
+  % HMAC_DRBG represents a partial final byte in the most-significant bits.
+  % For P-521, shift the entire 66-octet big-endian candidate right by 7.
+  align_seq(b:bytestring,n:subrange(24,74),extra:below(8)):ARRAY[below(n) -> uint8] =
+    LAMBDA(i:below(n)):
+      LET curr:uint8=IF i<b`length THEN b`seq(i) ELSE 0 ENDIF,
+          prev:uint8=IF i>0 AND i-1<b`length THEN b`seq(i-1) ELSE 0 ENDIF IN
+        IF extra=0 THEN curr ELSE u8or(u8rshift(curr,extra),u8lshift(prev,8-extra)) ENDIF
+  candidate(c:curve,b:bytestring):scalar(c) =
+    LET n=rolen(c), extra:below(8)=IF c=p521 THEN 7 ELSE 0 ENDIF IN
+      from_bytes(width(c),(# length:=n,seq:=align_seq(b,n,extra) #),TRUE)
+  nonce_start(c:curve,h:h256,d:scalar(c),digest:bytestring):state =
+    LET n=rolen(c), x=to_bytes(d,n,TRUE), z=to_bytes(z_value(c,digest),n,TRUE) IN
+      instantiate(h,x,z,fill_octets(0,0))
+  % Each iteration uses the updated HMAC state after a rejected candidate.
+  % An exhausted caller-supplied retry bound returns failure.
+  deterministic_from(c:active_curve,d:scalar(c),hstate:state,digest:bytestring,tries:uint16):
+      RECURSIVE sig_result(c) =
+    IF tries=0 THEN no_sig(c) ELSE
+      LET r=generate(hstate,bits(c),fill_octets(0,0)),k=candidate(c,r`data) IN
+        IF NOT r`success THEN no_sig(c) ELSIF valid_scalar(c,k) THEN sign_digest(c,d,k,digest)
+        ELSE deterministic_from(c,d,r`current,digest,tries-1) ENDIF
+    ENDIF MEASURE tries
+  deterministic(c:active_curve,h:h256,d:scalar(c),m:bytestring,tries:uint16):sig_result(c) =
+    IF NOT valid_scalar(c,d) THEN no_sig(c) ELSE
+      LET digest=hash_message(h,m) IN deterministic_from(c,d,nonce_start(c,h,d,digest),digest,tries) ENDIF
+  % Appendix A.4.2 uses [0,n-2] and adds one. Deterministic ECDSA
+  % instead checks [1,n-1] directly in deterministic_from.
+  sampled(c:active_curve,s:stream_id): scalar(c) =
+    LET x=acquire(rolen(c),s,0),one=one_words(width(c)),n=order(c) IN
+      IF NOT x`ok THEN zero_words(width(c)) ELSE LET z=candidate(c,x`value) IN
+        IF ge_words(z,sub_words(n,one)) THEN zero_words(width(c)) ELSE add_mod(z,one,n) ENDIF ENDIF
+  % A failed scalar draw signals a failed attempt. Retries use fresh snapshots.
+  key_handle(c:curve):TYPE=[# ok:bool,d:scalar(c),q:affine(c) #]
+  keygen(c:active_curve,s:stream_id):key_handle(c) =
+    LET d=sampled(c,s) IN
+      IF valid_scalar(c,d) THEN (# ok:=TRUE,d:=d,q:=public_key(c,d) #)
+      ELSE (# ok:=FALSE,d:=zero_words(width(c)),q:=normalize(c,inf(c)) #) ENDIF
+  sign_random(c:active_curve,h:h256,d:scalar(c),m:bytestring,s:stream_id):sig_result(c) =
+    sign_digest(c,d,sampled(c,s),hash_message(h,m))
+  verify(c:curve,h:h256,q:affine(c),m:bytestring,r,s:scalar(c)):bool = verify_digest(c,q,hash_message(h,m),r,s)
+END ecdsa_signing

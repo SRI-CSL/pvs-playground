@@ -1,0 +1,5 @@
+mixed_rem: THEORY
+BEGIN
+  reduce(x:uint64,y:{j:uint32 | j>0}):uint32=nrem(x,y)
+  wide_value:_TEST_ reduce(4294967297,3)=2
+END mixed_rem
