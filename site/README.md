@@ -17,6 +17,10 @@ Write folder prose in its existing `README.md` or `README`. It appears below the
 
 The site reads these files directly. Moving a folder together with its contents moves its pages and prose. Relative Markdown links and images resolve from the Markdown file's directory. Use a fenced `pvs` block to highlight PVS in prose.
 
+## Crypto pages
+
+The `crypto/` subtree uses a dark monospace theme and a terminal-style navigation header. Its folder pages render their READMEs as the page content. Write the crypto landing page in [crypto/README.md](../crypto/README.md), and use ordinary relative Markdown links to choose which topics and specs appear there.
+
 ## Render prose from PVS comments
 
 Prefix a whole comment line with `%|` followed by a space to write Markdown directly in a PVS file:

@@ -25,6 +25,7 @@ export function discoverRepository(root, siteRoot, github) {
       const entry = {
         path,
         name: posix.basename(path),
+        theme: path.split("/")[0].toLowerCase() === "crypto" ? "crypto" : "",
         url: path === "." ? "/" : "/browse/" + encodePath(path) + "/",
         output: "browse/" + path + "/index.html",
         folders: [],
@@ -57,6 +58,7 @@ export function discoverRepository(root, siteRoot, github) {
       name,
       isPvs,
       isMarkdown,
+      theme: folder.theme,
       url: isPvs || isMarkdown ? "/source/" + encodePath(path) + "/" : "/files/" + encodePath(path),
       rawUrl: "/files/" + encodePath(path),
       rawOutput: "files/" + path,

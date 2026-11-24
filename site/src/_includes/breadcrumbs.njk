@@ -1,7 +1,18 @@
 <nav class="breadcrumbs" aria-label="Folder navigation">
   <a href="/">{{ site.name }}</a>
-  {% for folder in breadcrumbs %}
-    <span aria-hidden="true">/</span>
-    <a href="{{ folder.url }}">{{ folder.name }}</a>
-  {% endfor %}
+  {% if theme == "crypto" %}
+    <span class="terminal-path">
+      <span aria-hidden="true">~/</span>
+      {% for folder in breadcrumbs %}
+        {% if not loop.first %}<span aria-hidden="true">/</span>{% endif %}
+        <a href="{{ folder.url }}"{% if page.url == folder.url %} aria-current="page"{% endif %}>{{ folder.name }}</a>
+      {% endfor %}
+    </span>
+    <span class="terminal-prompt" aria-hidden="true">$</span>
+  {% else %}
+    {% for folder in breadcrumbs %}
+      <span aria-hidden="true">/</span>
+      <a href="{{ folder.url }}">{{ folder.name }}</a>
+    {% endfor %}
+  {% endif %}
 </nav>

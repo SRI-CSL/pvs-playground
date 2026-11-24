@@ -1,9 +1,18 @@
 ---
 layout: base.njk
 ---
-<h1>{{ site.name }}</h1>
+<div class="home-heading">
+  <h1>{{ site.name }}</h1>
+  {% if cryptoFolder %}
+    <a class="crypto-button" href="{{ cryptoFolder.url }}">crypto</a>
+  {% else %}
+    <button class="crypto-button" type="button" disabled>crypto</button>
+  {% endif %}
+</div>
 <ul class="entries">
   {% for folder in catalog.root.folders %}
-    <li><a href="{{ folder.url }}">{{ folder.name }}/</a></li>
+    {% if folder.name != cryptoFolder.name %}
+      <li><a href="{{ folder.url }}">{{ folder.name }}/</a></li>
+    {% endif %}
   {% endfor %}
 </ul>

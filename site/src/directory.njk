@@ -7,21 +7,28 @@ pagination:
 permalink: "{{ directory.output }}"
 eleventyComputed:
   title: "{{ directory.name }}"
+  theme: "{{ directory.theme }}"
 eleventyExcludeFromCollections: true
 ---
-{% set breadcrumbs = directory.breadcrumbs.slice(0, -1) %}
+{% if theme == "crypto" %}
+  {% set breadcrumbs = directory.breadcrumbs %}
+{% else %}
+  {% set breadcrumbs = directory.breadcrumbs.slice(0, -1) %}
+{% endif %}
 {% include "breadcrumbs.njk" %}
-<h1>{{ title }}/</h1>
-<ul class="entries">
-  {% for folder in directory.folders %}
-    <li><a href="{{ folder.url }}">{{ folder.name }}/</a></li>
-  {% endfor %}
-  {% for file in directory.files %}
-    <li><a href="{{ file.url }}">{{ file.name }}</a></li>
-  {% endfor %}
-</ul>
+<h1>{{ title }}{% if theme != "crypto" %}/{% endif %}</h1>
+{% if theme != "crypto" %}
+  <ul class="entries">
+    {% for folder in directory.folders %}
+      <li><a href="{{ folder.url }}">{{ folder.name }}/</a></li>
+    {% endfor %}
+    {% for file in directory.files %}
+      <li><a href="{{ file.url }}">{{ file.name }}</a></li>
+    {% endfor %}
+  </ul>
+{% endif %}
 {% if directory.readme %}
-  <div class="prose readme">
+  <div class="prose{% if theme != "crypto" %} readme{% endif %}">
     {% repositoryProse directory.readme %}
   </div>
 {% endif %}

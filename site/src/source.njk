@@ -7,6 +7,7 @@ pagination:
 permalink: "{{ source.output }}"
 eleventyComputed:
   title: "{{ source.name }}"
+  theme: "{{ source.theme }}"
 eleventyExcludeFromCollections: true
 ---
 {% set breadcrumbs = source.breadcrumbs %}

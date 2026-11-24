@@ -38,6 +38,55 @@ a { color: var(--link); text-underline-offset: 0.16em; }
 a:hover { text-decoration-thickness: 2px; }
 :focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
 
+.home-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.home-heading h1 { margin: 0; }
+
+.crypto-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.65rem 1.65rem;
+  overflow: hidden;
+  border: 1px solid #32845e;
+  border-radius: 0.25rem;
+  background: linear-gradient(115deg, #174330 0%, #071b13 75%);
+  box-shadow: inset 0 1px 0 #c0ffdd24, 0 3px 10px #051b141c;
+  color: #84ffc0;
+  font: 650 1.05rem/1.2 var(--mono);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-shadow: 0 0 12px #4dff9266;
+}
+
+.crypto-button::before {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent 0 3px, #a1ffd408 3px 4px);
+  content: "";
+  pointer-events: none;
+}
+
+a.crypto-button:hover {
+  border-color: #62d791;
+  background: linear-gradient(115deg, #1d543b 0%, #0a2419 75%);
+  box-shadow: inset 0 1px 0 #c0ffdd24, 0 0 16px #2bba6433;
+  color: #b5ffda;
+  text-decoration: none;
+}
+
+.crypto-button:focus-visible { outline-color: #207a47; }
+.crypto-button:disabled { cursor: default; }
+
 .entries { margin: 0; padding-left: 1.25rem; }
 .entries a { font: 0.875rem/1.75 var(--mono); overflow-wrap: anywhere; }
 .breadcrumbs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem; font-size: 0.875rem; }
@@ -87,3 +136,45 @@ pre code { font: inherit; }
 .pvs-comment { color: var(--muted); }
 .pvs-string { color: var(--string); }
 .pvs-record, .pvs-paren, .pvs-set, .pvs-table, .pvs-type { color: var(--link); }
+
+.theme-crypto {
+  color-scheme: dark;
+  --background: #080d0a;
+  --text: #e5eee8;
+  --muted: #a0b2a6;
+  --link: #8af0b1;
+  --border: #2b3d32;
+  --code-background: #101c14;
+  --keyword: #c4b7ff;
+  --operator: #efc78f;
+  --string: #93dfbb;
+  --font: var(--mono);
+}
+
+.theme-crypto main { margin-top: 2.5rem; }
+.theme-crypto h1 { font-size: 2.15rem; font-weight: 600; letter-spacing: -0.045em; }
+
+.theme-crypto .breadcrumbs {
+  align-items: baseline;
+  column-gap: 0.9rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+
+.theme-crypto .breadcrumbs > a {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.theme-crypto .breadcrumbs > a:hover { color: var(--link); }
+.terminal-path { display: inline-flex; flex-wrap: wrap; gap: 0; color: var(--muted); }
+.terminal-path a { color: var(--muted); text-decoration: none; }
+.terminal-path a:hover { color: var(--link); text-decoration: underline; }
+.terminal-prompt { color: var(--link); font-weight: 600; }
+.theme-crypto .prose { line-height: 1.75; }
+.theme-crypto .prose h2 { margin-top: 2rem; font-size: 1.25rem; }
+.theme-crypto .prose :not(pre) > code { padding: 0.1rem 0.3rem; background: #14271b; color: var(--link); border-radius: 0.2rem; }
+.theme-crypto .code-line:target { background: #234130; }

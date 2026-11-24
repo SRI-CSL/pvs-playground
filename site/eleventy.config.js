@@ -59,6 +59,7 @@ export default function (config) {
     }
   });
   config.addGlobalData("catalog", () => catalog);
+  config.addGlobalData("cryptoFolder", () => catalog.root.folders.find((folder) => folder.name.toLowerCase() === "crypto"));
   config.setNunjucksEnvironmentOptions({ autoescape: true });
   function createMarkdown(html) {
     const renderer = new MarkdownIt({
