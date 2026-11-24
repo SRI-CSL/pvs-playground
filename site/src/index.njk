@@ -2,13 +2,8 @@
 layout: base.njk
 ---
 <h1>{{ site.name }}</h1>
-{% for group in catalog.groups %}
-  <section class="examples" id="{{ group.directory }}">
-    <h2>{{ group.directory if group.directory != "." else "Repository root" }}</h2>
-    <ul>
-      {% for source in group.files %}
-        <li><a href="{{ source.url }}">{{ source.name }}</a></li>
-      {% endfor %}
-    </ul>
-  </section>
-{% endfor %}
+<ul class="entries">
+  {% for folder in catalog.root.folders %}
+    <li><a href="{{ folder.url }}">{{ folder.name }}/</a></li>
+  {% endfor %}
+</ul>

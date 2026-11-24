@@ -1,7 +1,7 @@
 ---
 layout: base.njk
 pagination:
-  data: catalog.sources
+  data: catalog.pages
   size: 1
   alias: source
 permalink: "{{ source.output }}"
@@ -9,11 +9,21 @@ eleventyComputed:
   title: "{{ source.name }}"
 eleventyExcludeFromCollections: true
 ---
-<a class="back" href="{{ source.indexLink }}">All examples</a>
-<h1>{{ title }}</h1>
-{% if source.note %}
+{% set breadcrumbs = source.breadcrumbs %}
+{% include "breadcrumbs.njk" %}
+<div class="source-heading">
+  <h1>{{ title }}</h1>
+  {% if source.isPvs %}<a href="{{ source.rawUrl }}">Raw source</a>{% endif %}
+</div>
+{% if source.isPvs %}
+  {% if source.prose %}
+    <div class="prose">
+      {% repositoryProse source.prose %}
+    </div>
+  {% endif %}
+  {% pvsSource source %}
+{% else %}
   <div class="prose">
-    {% renderFile source.note %}
+    {% repositoryProse source %}
   </div>
 {% endif %}
-{% pvsSource source %}

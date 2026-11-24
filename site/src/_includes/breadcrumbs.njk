@@ -1,0 +1,7 @@
+<nav class="breadcrumbs" aria-label="Folder navigation">
+  <a href="/">{{ site.name }}</a>
+  {% for folder in breadcrumbs %}
+    <span aria-hidden="true">/</span>
+    <a href="{{ folder.url }}">{{ folder.name }}</a>
+  {% endfor %}
+</nav>

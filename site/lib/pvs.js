@@ -39,6 +39,35 @@ const rules = {
 };
 const tokens = new RegExp(Object.entries(rules).map(([kind, rule]) => "(?<" + kind + ">" + rule + ")").join("|"), "giu");
 
+export function pvsSections(source) {
+  const prose = new Map();
+  for (const match of source.matchAll(tokens)) {
+    const comment = match.groups.comment;
+    if (!comment || !/^%\|(?:[ \t]|$)/.test(comment)) continue;
+    const lineStart = source.lastIndexOf("\n", match.index - 1) + 1;
+    if (!/^[ \t]*$/.test(source.slice(lineStart, match.index))) continue;
+    if (source[match.index + comment.length] === "\f") continue;
+    prose.set(lineStart, comment.replace(/^%\| ?/, ""));
+  }
+
+  const sections = [];
+  const lines = source.match(/[^\n]*\n|[^\n]+$/g) ?? [];
+  let offset = 0;
+  for (const [index, line] of lines.entries()) {
+    const documentation = prose.get(offset);
+    const kind = documentation === undefined ? "code" : "prose";
+    const text = documentation === undefined ? line : documentation + (line.endsWith("\n") ? "\n" : "");
+    if (sections.at(-1)?.kind !== kind) {
+      sections.push({ kind, start: index + 1, end: index + 1, lines: [] });
+    }
+    const section = sections.at(-1);
+    section.lines.push(text);
+    section.end = index + 1;
+    offset += line.length;
+  }
+  return sections.map(({ lines, ...section }) => ({ ...section, text: lines.join("") }));
+}
+
 export function escapeHtml(text) {
   return String(text).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;").replaceAll("'", "&#39;");
@@ -68,7 +97,7 @@ function highlightLines(source) {
   return lines;
 }
 
-export function highlightPvs(source, { label = "PVS code", start = 1, end, numbered = false } = {}) {
+export function highlightPvs(source, { label = "PVS code", start = 1, end, numbered = false, firstLine = 1 } = {}) {
   const lines = highlightLines(source);
   const last = end ?? lines.length;
   if (!Number.isInteger(start) || !Number.isInteger(last) || start < 1 || last < start || last > lines.length) {
@@ -77,7 +106,7 @@ export function highlightPvs(source, { label = "PVS code", start = 1, end, numbe
 
   const selected = lines.slice(start - 1, last).map((line, index) => {
     if (!numbered) return line;
-    const number = start + index;
+    const number = firstLine + start + index - 1;
     return '<span class="code-line" id="L' + number + '"><span class="line-number" aria-hidden="true" data-line="' +
       number + '"></span>' + line + "</span>";
   }).join("\n");

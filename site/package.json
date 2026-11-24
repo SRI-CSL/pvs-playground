@@ -6,6 +6,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "test": "node --test lib/*.test.js",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "prebuild": "npm run clean",
     "build": "eleventy --quiet",
@@ -13,6 +14,7 @@
     "dev": "eleventy --serve --quiet"
   },
   "devDependencies": {
-    "@11ty/eleventy": "3.1.8"
+    "@11ty/eleventy": "3.1.8",
+    "markdown-it": "14.3.3"
   }
 }
