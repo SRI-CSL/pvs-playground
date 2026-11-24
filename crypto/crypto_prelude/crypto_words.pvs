@@ -1,0 +1,29 @@
+% Fixed-width operations shared by FIPS 180-4 and FIPS 202.
+crypto_words: THEORY
+BEGIN
+  % FIPS 180-4 section 3.2. Avoid a C shift by the width at distance zero.
+  ror32(x: uint32, n: below(32)): uint32 =
+    IF n = 0 THEN x ELSE u32or(u32rshift(x, n), u32lshift(x, 32 - n)) ENDIF
+
+  rol32(x: uint32, n: below(32)): uint32 =
+    IF n = 0 THEN x ELSE ror32(x, 32 - n) ENDIF
+
+  ror64(x: uint64, n: below(64)): uint64 =
+    IF n = 0 THEN x ELSE u64or(u64rshift(x, n), u64lshift(x, 64 - n)) ENDIF
+
+  rol64(x: uint64, n: below(64)): uint64 =
+    IF n = 0 THEN x ELSE ror64(x, 64 - n) ENDIF
+
+  % FIPS 180-4 section 3.1. The most significant byte is at index zero.
+  be_byte32(x: uint32, i: below(4)): uint8 =
+    u32rshift(u32lshift(x, 8 * i), 24)
+
+  be_byte64(x: uint64, i: below(8)): uint8 =
+    u64rshift(u64lshift(x, 8 * i), 56)
+
+  load_be32(a, b, c, d: uint8): uint32 =
+    u32or(u32or(u32lshift(a, 24), u32lshift(b, 16)),
+          u32or(u32lshift(c, 8), d))
+
+  load_be64(h, l: uint32): uint64 = u64or(u64lshift(h, 32), l)
+END crypto_words

@@ -1,0 +1,17 @@
+abelian_byte_prerequisites : THEORY % used to prove the TCC that (byte, u8xor, 0) is an abelian group
+
+  BEGIN
+
+    XOR_associative: LEMMA FORALL (N: nat, bv1: bvec[N], bv2: bvec[N], bv3: bvec[N]): XOR(XOR(bv1, bv2), bv3) = XOR(bv1, XOR(bv2, bv3))
+
+    u8xor_associative: LEMMA FORALL (x: byte, y: byte, z: byte): u8xor(u8xor(x, y), z) = u8xor(x, u8xor(y, z))
+
+    u8xor_commutative: LEMMA commutative?(u8xor)
+
+    u8xor_0_r: LEMMA FORALL (x: byte): u8xor(x, 0) = x
+
+    u8xor_0_l: LEMMA FORALL (x: byte): u8xor(0, x) = x
+
+    u8xor_inv: LEMMA FORALL (x: byte): u8xor(x, x) = 0
+
+  END abelian_byte_prerequisites

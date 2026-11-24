@@ -1,0 +1,85 @@
+% Unsigned fixed-width arithmetic with an explicit run-time limb count.
+% Each value consists of 1..512 little-endian uint32 words (up to 16384 bits).
+crypto_limbs: THEORY
+BEGIN
+  IMPORTING crypto_words, crypto_buffers
+
+  limb_count: TYPE = subrange(1,512)
+  limbs: TYPE = [# len: limb_count, word: ARRAY[below(len) -> uint32] #]
+  words_of(n: limb_count): TYPE = {a: limbs | a`len=n}
+  zero_words(n: limb_count): words_of(n) =
+    (# len := n, word := LAMBDA (i: below(n)): 0 #)
+  one_words(n: limb_count): words_of(n) =
+    (# len := n, word := LAMBDA (i: below(n)): IF i=0 THEN 1 ELSE 0 ENDIF #)
+  ge_prefix(a: limbs,b: words_of(a`len),i: upto(a`len)): RECURSIVE bool =
+    IF i=0 THEN TRUE ELSIF a`word(i-1)=b`word(i-1) THEN ge_prefix(a,b,i-1)
+    ELSE a`word(i-1)>b`word(i-1) ENDIF MEASURE i
+  ge_words(a: limbs,b: words_of(a`len)): bool = ge_prefix(a,b,a`len)
+
+  carry_result(n: limb_count): TYPE = [# value: words_of(n), carry: bool #]
+  add_prefix(a: limbs,b,out: words_of(a`len),i: upto(a`len),carry: bool):
+      RECURSIVE carry_result(a`len) =
+    IF i=a`len THEN (# value := out, carry := carry #)
+    ELSE LET x=a`word(i), y=b`word(i), s=u32plus(x,y),
+             t=IF carry THEN u32plus(s,1) ELSE s ENDIF
+         IN add_prefix(a,b,out WITH [`word(i) := t],i+1,s<x OR t<s)
+    ENDIF MEASURE a`len-i
+  sub_prefix(a: limbs,b,out: words_of(a`len),i: upto(a`len),borrow: bool):
+      RECURSIVE words_of(a`len) =
+    IF i=a`len THEN out
+    ELSE LET x=a`word(i), y=b`word(i), d=u32minus(x,y),
+             t=IF borrow THEN u32minus(d,1) ELSE d ENDIF
+         IN sub_prefix(a,b,out WITH [`word(i) := t],i+1,x<y OR (x=y AND borrow))
+    ENDIF MEASURE a`len-i
+  sub_words(a: limbs,b: words_of(a`len)): words_of(a`len) =
+    sub_prefix(a,b,zero_words(a`len),0,FALSE)
+
+  % Input residues for addition and subtraction are canonical modulo m.
+  add_mod(a: limbs,b,m: words_of(a`len)): words_of(a`len) =
+    LET s=add_prefix(a,b,zero_words(a`len),0,FALSE)
+    IN IF s`carry OR ge_words(s`value,m) THEN sub_words(s`value,m) ELSE s`value ENDIF
+  sub_mod(a: limbs,b,m: words_of(a`len)): words_of(a`len) =
+    IF ge_words(a,b) THEN sub_words(a,b) ELSE sub_words(m,sub_words(b,a)) ENDIF
+  bit_word(a: limbs,i: {j: uint16 | j<32*a`len}): bool =
+    u32and(u32rshift(a`word(ndiv(i,32)),nrem(i,32)),1)=1
+  mul_prefix(a: limbs,b: limbs,m,acc: words_of(a`len),n: {j: uint16 | j<=32*b`len}):
+      RECURSIVE words_of(a`len) =
+    IF n=0 THEN acc
+    ELSE LET dbl=add_mod(acc,acc,m), next=IF bit_word(b,n-1) THEN add_mod(dbl,a,m) ELSE dbl ENDIF
+         IN mul_prefix(a,b,m,next,n-1)
+    ENDIF MEASURE n
+  mul_mod(a,b: limbs,m: words_of(a`len)): words_of(a`len) =
+    mul_prefix(a,b,m,zero_words(a`len),32*b`len)
+  pow_prefix(a,e: limbs,m,acc: words_of(a`len),n: {j: uint16 | j<=32*e`len}):
+      RECURSIVE words_of(a`len) =
+    IF n=0 THEN acc
+    ELSE LET sq=mul_mod(acc,acc,m), next=IF bit_word(e,n-1) THEN mul_mod(sq,a,m) ELSE sq ENDIF
+         IN pow_prefix(a,e,m,next,n-1)
+    ENDIF MEASURE n
+  pow_mod(a,e: limbs,m: words_of(a`len)): words_of(a`len) =
+    pow_prefix(a,e,m,one_words(a`len),32*e`len)
+
+  % Decode either byte order. Truncate more significant octets when the source
+  % exceeds the chosen width. Zero-extend shorter encodings.
+  source_byte(b: bytestring,i: uint32,big: bool): uint8 =
+    IF i>=b`length THEN 0 ELSIF big THEN b`seq(b`length-1-i) ELSE b`seq(i) ENDIF
+  from_bytes(n: limb_count,b: bytestring,big: bool): words_of(n) =
+    (# len := n, word := LAMBDA (i: below(n)):
+         LET j: uint32=4*i IN load_be32(source_byte(b,j+3,big),source_byte(b,j+2,big),
+                                        source_byte(b,j+1,big),source_byte(b,j,big)) #)
+  to_bytes(a: limbs,n: index,big: bool): octets_of(n) =
+    (# length := n, seq := LAMBDA (i: below(n)):
+         LET j: index = IF big THEN n-1-i ELSE i ENDIF IN
+         IF j>=4*a`len THEN 0
+         ELSE be_byte32(a`word(ndiv(j,4)),3-nrem(j,4)) ENDIF #)
+  reduce_le_from(b: bytestring,m: limbs,i: {j: uint32 | j<=8*b`length},acc: words_of(m`len)):
+      RECURSIVE words_of(m`len) =
+    IF i=0 THEN acc
+    ELSE LET j: uint32=i-1, bit=u8and(u8rshift(b`seq(ndiv(j,8)),nrem(j,8)),1),
+             dbl=add_mod(acc,acc,m), next=IF bit=1 THEN add_mod(dbl,one_words(m`len),m) ELSE dbl ENDIF
+         IN reduce_le_from(b,m,j,next)
+    ENDIF MEASURE i
+  reduce_le(b: bytestring,m: limbs): words_of(m`len) = reduce_le_from(b,m,8*b`length,zero_words(m`len))
+
+  ge_limbs_reflexive: LEMMA FORALL (i: uint16,a: limbs): i<=a`len IMPLIES ge_prefix(a,a,i)
+END crypto_limbs

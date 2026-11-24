@@ -1,0 +1,111 @@
+% FIPS 204, Algorithms 1, 3, 6 and 8. See mldsa_sign for signing.
+mldsa: THEORY
+BEGIN
+  IMPORTING mldsa_encoding
+  vec_result: TYPE = [# ok: bool, v: vec #]
+  no_vec: vec_result = (# ok:=FALSE,v:=zero_vec #)
+  sample_vec(p: profile,seed: octets_of(64),base: below(8),n: upto(8),i: upto(8),
+             v: vec): RECURSIVE vec_result =
+    IF i>=n THEN (# ok:=TRUE,v:=v #) ELSE
+      LET s=sample_small(p,seed,base+i) IN
+      IF s`ok THEN sample_vec(p,seed,base,n,i+1,v WITH [(i):=s`a]) ELSE no_vec ENDIF
+    ENDIF MEASURE 8-i
+  ntt_vec(v,out: vec,n: upto(8),i: upto(8)): RECURSIVE vec =
+    IF i>=n THEN out ELSE ntt_vec(v,out WITH [(i):=ntt(v(i))],n,i+1) ENDIF MEASURE 8-i
+  dot(p: profile,rho: octets_of(32),row: below(8),v: vec,j: upto(8),a: poly):
+      RECURSIVE sampled =
+    IF j>=cols(p) THEN (# ok:=TRUE,a:=a #) ELSE
+      LET x=matrix_entry(rho,row,j) IN
+      IF x`ok THEN dot(p,rho,row,v,j+1,add(a,product(x`a,v(j)))) ELSE rejected ENDIF
+    ENDIF MEASURE 8-j
+  encode_vec(v: vec,n: upto(8),d: bits,bias: coeff,out: bytestring,base: upto(6000),i: upto(8)):
+      RECURSIVE octets_of(out`length) =
+    IF i>=n OR base+32*d*i>8192 THEN out ELSE
+      encode_vec(v,n,d,bias,encode(v(i),d,bias,out,base+32*d*i,0),base,i+1)
+    ENDIF MEASURE 8-i
+  unpack_vec(m: bytestring,base: upto(6000),n: upto(8),d: bits,bias: coeff,
+             v: vec,i: upto(8)): RECURSIVE vec =
+    IF i>=n OR base+32*d*i>8192 THEN v ELSE
+      unpack_vec(m,base,n,d,bias,v WITH [(i):=decode(m,base+32*d*i,d,bias,FALSE)],i+1)
+    ENDIF MEASURE 8-i
+  keys: TYPE = [# ok: bool, pk: bytestring, sk: bytestring #]
+  no_keys: keys = (# ok:=FALSE,pk:=fill_octets(0,0),sk:=fill_octets(0,0) #)
+  key_rows(p: profile,rho: octets_of(32),s1hat,s2: vec,pk,sk: bytestring,i: upto(8)):
+      RECURSIVE keys =
+    IF i>=rows(p) THEN (# ok:=TRUE,pk:=pk,sk:=sk #) ELSE
+      LET m=dot(p,rho,i,s1hat,0,zero) IN IF NOT m`ok THEN no_keys ELSE
+        LET t=add(intt(m`a),s2(i)),
+            t1=transform(p,op_power_hi,t,zero,zero,0),t0=transform(p,op_power_lo,t,zero,zero,0),
+            off: offset=128+32*eta_bits(p)*(cols(p)+rows(p))+416*i IN
+        key_rows(p,rho,s1hat,s2,encode(t1,10,0,pk,32+320*i,0),encode(t0,13,4096,sk,off,0),i+1)
+      ENDIF ENDIF MEASURE 8-i
+  keygen_internal(p: profile,seed: octets_of(32)): keys =
+    LET c=absorb_byte(absorb_byte(absorb(start(136),seed),rows(p)),cols(p)),
+        g=output(finish_shake(c),128),rho=portion(g,0,32),rhop=portion(g,32,64),
+        k=portion(g,96,32),s1=sample_vec(p,rhop,0,cols(p),0,zero_vec),
+        s2=sample_vec(p,rhop,cols(p),rows(p),0,zero_vec) IN
+    IF NOT s1`ok OR NOT s2`ok THEN no_keys ELSE
+      LET pk=copy_octets(fill_octets(pk_size(p),0),0,rho,0),
+          sk=copy_octets(copy_octets(fill_octets(sk_size(p),0),0,rho,0),32,k,0),
+          sk1=encode_vec(s1`v,cols(p),eta_bits(p),eta(p),sk,128,0),
+          sk2=encode_vec(s2`v,rows(p),eta_bits(p),eta(p),sk1,128+32*eta_bits(p)*cols(p),0),
+          pair=key_rows(p,rho,ntt_vec(s1`v,zero_vec,cols(p),0),s2`v,pk,sk2,0) IN
+        IF pair`ok AND pair`sk`length>=64 THEN
+          (# ok:=TRUE,pk:=pair`pk,sk:=copy_octets(pair`sk,64,shake256(pair`pk,64),0) #)
+        ELSE no_keys ENDIF ENDIF
+
+  % Algorithms 20/21. Each row's one-bit positions must increase strictly;
+  % unused position bytes must be zero and row ends must be monotone.
+  hint_poly(m: bytestring,base: offset,first,last,j: upto(80),a: poly): RECURSIVE sampled =
+    IF j>=last THEN (# ok:=TRUE,a:=a #) ELSE
+      LET atj=at(m,base+j) IN
+      IF j>first AND at(m,base+j-1)>=atj THEN rejected ELSE
+        hint_poly(m,base,first,last,j+1,a WITH [(atj):=1]) ENDIF ENDIF MEASURE 80-j
+  zero_tail(m: bytestring,base: offset,j,n: upto(80)): RECURSIVE bool =
+    IF j>=n THEN TRUE ELSE at(m,base+j)=0 AND zero_tail(m,base,j+1,n) ENDIF MEASURE 80-j
+  hints(p: profile,m: bytestring,base: offset,row: upto(8),first: upto(80),v: vec):
+      RECURSIVE vec_result =
+    IF row>=rows(p) THEN (# ok:=zero_tail(m,base,first,omega(p)),v:=v #) ELSE
+      LET last=at(m,base+omega(p)+row) IN
+      IF last<first OR last>omega(p) THEN no_vec ELSE
+        LET h=hint_poly(m,base,first,last,first,zero) IN
+        IF h`ok THEN hints(p,m,base,row+1,last,v WITH [(row):=h`a]) ELSE no_vec ENDIF
+      ENDIF ENDIF MEASURE 8-row
+  bounded_vec(v: vec,n: upto(8),limit: uint32,i: upto(8)): RECURSIVE bool =
+    IF i>=n THEN TRUE ELSE bounded(v(i),limit,0) AND bounded_vec(v,n,limit,i+1) ENDIF
+    MEASURE 8-i
+  bytes_result: TYPE = [# ok: bool, value: bytestring #]
+  failure: bytes_result = (# ok:=FALSE,value:=fill_octets(0,0) #)
+  verification_rows(p: profile,pk: bytestring,rho: octets_of(32),zhat,h: vec,
+                    chat: poly,out: bytestring,i: upto(8)): RECURSIVE bytes_result =
+    IF i>=rows(p) THEN (# ok:=TRUE,value:=out #) ELSE
+      LET az=dot(p,rho,i,zhat,0,zero) IN IF NOT az`ok THEN failure ELSE
+        LET t=decode(pk,32+320*i,10,0,TRUE), w=intt(subtract(az`a,product(chat,ntt(t)))),
+            w1=transform(p,op_hint,w,h(i),zero,0),
+            bytes=encode(w1,wbits(p),0,out,32*wbits(p)*i,0)
+        IN verification_rows(p,pk,rho,zhat,h,chat,bytes,i+1) ENDIF ENDIF MEASURE 8-i
+  verify_mu(p: profile,pk,sig: bytestring,mu: octets_of(64)): bool =
+    IF pk`length/=pk_size(p) OR sig`length/=sig_size(p) THEN FALSE ELSE
+      LET c=portion(sig,0,cbytes(p)),rho=portion(pk,0,32),
+          z=unpack_vec(sig,cbytes(p),cols(p),zbits(p),gamma1(p),zero_vec,0),
+          h=hints(p,sig,cbytes(p)+32*zbits(p)*cols(p),0,0,zero_vec), ball=sample_in_ball(p,c) IN
+      IF NOT h`ok OR NOT ball`ok OR NOT bounded_vec(z,cols(p),gamma1(p)-beta(p),0) THEN FALSE ELSE
+        LET w=verification_rows(p,pk,rho,ntt_vec(z,zero_vec,cols(p),0),h`v,ntt(ball`a),
+                                fill_octets(32*wbits(p)*rows(p),0),0) IN
+        w`ok AND c=output(finish_shake(absorb(absorb(start(136),mu),w`value)),cbytes(p))
+      ENDIF ENDIF
+
+  % Algorithms 3, 5 and 8. mu_internal also accepts a formatted message bit tail.
+  mu_internal(tr: octets_of(64),m: bytestring,tail: uint8,used: below(8)): octets_of(64) =
+    output(finish_shake(absorb_low(absorb(absorb(start(136),tr),m),tail,used)),64)
+  mu_message(tr: octets_of(64),m,ctx: bytestring,tail: uint8,used: below(8),
+             ctxlen: uint8): octets_of(64) =
+    LET c=absorb_byte(absorb_byte(absorb(start(136),tr),0),ctxlen)
+    IN output(finish_shake(absorb_low(absorb(absorb(c,ctx),m),tail,used)),64)
+  verify(p: profile,pk,sig,m,ctx: bytestring,tail: uint8,used: below(8)): bool =
+    ctx`length<=255 AND pk`length=pk_size(p) AND
+    verify_mu(p,pk,sig,mu_message(sha3@keccak.output(finish_shake(absorb(start(136),pk)),64),
+                                 m,ctx,tail,used,ctx`length))
+  incorrect_lengths_rejected: LEMMA FORALL (p: profile,pk,sig: bytestring,mu: octets_of(64)):
+    pk`length/=pk_size(p) OR sig`length/=sig_size(p) IMPLIES NOT verify_mu(p,pk,sig,mu)
+END mldsa

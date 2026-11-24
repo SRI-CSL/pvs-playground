@@ -1,0 +1,50 @@
+% NIST SP 800-90B sections 4.4.1 and 4.4.2.
+% One call consumes exactly one raw noise-source symbol (up to 32 bits).
+% The caller chooses cutoffs from its assessed min-entropy and error rate.
+health_tests: THEORY
+BEGIN
+  IMPORTING integertypes
+  cutoff: TYPE = {c: uint32 | c >= 2}
+  symbol: TYPE = uint32
+  repetition(c: cutoff): TYPE =
+    [# last: symbol, run: {n: uint32 | n <= c} #]
+
+  repetition_start(c: cutoff): repetition(c) = (# last := 0, run := 0 #)
+  repetition_step(c: cutoff, s: repetition(c), x: symbol): repetition(c) =
+    IF s`run = c THEN s
+    ELSIF s`run = 0 OR s`last /= x THEN (# last := x, run := 1 #)
+    ELSE s WITH [`run := s`run + 1] ENDIF
+
+  % The count c is a latched alarm. Reset requires an explicit restart.
+  repetition_trip: LEMMA FORALL (c: cutoff, s: repetition(c), x: symbol):
+    s`run = c - 1 AND x = s`last IMPLIES repetition_step(c,s,x)`run = c
+  repetition_reset: LEMMA FORALL (c: cutoff, s: repetition(c), x: symbol):
+    s`run < c AND x /= s`last IMPLIES repetition_step(c,s,x)`run = 1
+  repetition_latched: LEMMA FORALL (c: cutoff, s: repetition(c), x: symbol):
+    s`run = c IMPLIES repetition_step(c,s,x) = s
+
+  window: TYPE = {w: uint16 | w = 512 OR w = 1024}
+  window_size(binary: bool): window = IF binary THEN 1024 ELSE 512 ENDIF
+  adaptive(w: window): TYPE =
+    [# reference: symbol, used: {u: uint16 | u <= w},
+       matches: {m: uint16 | m <= used}, failed: bool #]
+  adaptive_start(w: window): adaptive(w) =
+    (# reference := 0, used := 0, matches := 0, failed := FALSE #)
+  adaptive_step(w: window, c: cutoff, s: adaptive(w), x: symbol): adaptive(w) =
+    IF s`failed THEN s
+    ELSIF s`used = 0 OR s`used = w THEN
+      (# reference := x, used := 1, matches := 1, failed := FALSE #)
+    ELSE LET m: uint16 = IF x = s`reference THEN s`matches + 1 ELSE s`matches ENDIF IN
+      (# reference := s`reference, used := s`used + 1,
+         matches := m, failed := m >= c #)
+    ENDIF
+
+  adaptive_trip: LEMMA FORALL (w: window, c: cutoff, s: adaptive(w), x: symbol):
+    NOT s`failed AND 0 < s`used AND s`used < w AND
+    x = s`reference AND s`matches = c-1 IMPLIES adaptive_step(w,c,s,x)`failed
+  adaptive_new_window: LEMMA FORALL (w: window, c: cutoff, s: adaptive(w), x: symbol):
+    NOT s`failed AND s`used = w IMPLIES
+    adaptive_step(w,c,s,x) = (# reference := x, used := 1, matches := 1, failed := FALSE #)
+  adaptive_latched: LEMMA FORALL (w: window, c: cutoff, s: adaptive(w), x: symbol):
+    s`failed IMPLIES adaptive_step(w,c,s,x) = s
+END health_tests

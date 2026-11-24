@@ -1,0 +1,26 @@
+% FIPS 186-5 Appendices A.2.1, A.3.1 and A.4.1. Use N+64 random bits
+% for an order of N bits. With epsilon=2^-64 the bias test always holds:
+% 2*rho*(1-rho)<=1/2 and 2^(N+64)*epsilon >= n.
+ecdsa_extra_bits: THEORY
+BEGIN
+  IMPORTING ecdsa_signing
+  prehash: LIBRARY="../crypto_prelude/prehash"
+  IMPORTING prehash@crypto_prehash
+  little(n:subrange(24,74),v:ARRAY[below(n) -> uint8]):ARRAY[below(n) -> uint8] =
+    LAMBDA(i:below(n)):v(n-1-i)
+  sample_extra(c:active_curve,s:stream_id):scalar(c) =
+    LET n:subrange(24,74)=rolen(c)+8,v=acquire(n,s,0) IN
+      IF NOT v`ok THEN zero_words(width(c)) ELSE
+        LET a=align_seq(v`value,n,IF c=p521 THEN 7 ELSE 0 ENDIF),
+            buf:octets_of(n)=(# length:=n,seq:=little(n,a) #), one=one_words(width(c)),q=order(c),
+            x=reduce_le(buf,sub_words(q,one)) IN add_mod(x,one,q)
+      ENDIF
+  generate_extra(c:active_curve,s:stream_id):key_handle(c) =
+    LET d=sample_extra(c,s) IN IF valid_scalar(c,d) THEN (# ok:=TRUE,d:=d,q:=public_key(c,d) #)
+      ELSE (# ok:=FALSE,d:=zero_words(width(c)),q:=normalize(c,inf(c)) #) ENDIF
+  % IDs are the SHA-2/SHA-3/SHAKE OID suffixes in crypto_prehash.
+  sign_message(c:active_curve,h:crypto_prehash.hash_id,d:scalar(c),m:bytestring,s:stream_id,extra:bool):sig_result(c) =
+    LET k=IF extra THEN sample_extra(c,s) ELSE sampled(c,s) ENDIF IN sign_digest(c,d,k,pre_digest(h,m,0,0))
+  verify_message(c:curve,h:crypto_prehash.hash_id,q:affine(c),m:bytestring,r,s:scalar(c)):bool =
+    verify_digest(c,q,pre_digest(h,m,0,0),r,s)
+END ecdsa_extra_bits

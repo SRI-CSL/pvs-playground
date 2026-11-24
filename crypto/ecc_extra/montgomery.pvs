@@ -1,0 +1,94 @@
+% SP 800-186 §§3.2.2, D.1.2; RFC 7748 §5.
+montgomery: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_limbs
+
+  width(wide: bool): limb_count = IF wide THEN 14 ELSE 8 ENDIF
+  nbytes(wide: bool): subrange(32,56) = IF wide THEN 56 ELSE 32 ENDIF
+  bits(wide: bool): subrange(255,448) = IF wide THEN 448 ELSE 255 ENDIF
+  fe(wide: bool): TYPE = words_of(width(wide))
+  wire(wide: bool): TYPE = octets_of(nbytes(wide))
+  small(wide: bool,v: uint32): fe(wide) = zero_words(width(wide)) WITH [`word(0):=v]
+  prime(wide: bool): fe(wide) =
+    IF wide THEN (# len:=14, word:=[: 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+              0xffffffff, 0xffffffff, 0xffffffff, 0xfffffffe,
+              0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+              0xffffffff, 0xffffffff :] #)
+    ELSE (# len:=8, word:=[: 0xffffffed, 0xffffffff, 0xffffffff, 0xffffffff,
+              0xffffffff, 0xffffffff, 0xffffffff, 0x7fffffff :] #) ENDIF
+  order(wide: bool): fe(wide) =
+    IF wide THEN (# len:=14, word:=[: 0xab5844f3, 0x2378c292, 0x8dc58f55, 0x216cc272,
+              0xaed63690, 0xc44edb49, 0x7cca23e9, 0xffffffff,
+              0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+              0xffffffff, 0x3fffffff :] #)
+    ELSE (# len:=8, word:=[: 0x5cf5d3ed, 0x5812631a, 0xa2f79cd6, 0x14def9de,
+              0x00000000, 0x00000000, 0x00000000, 0x10000000 :] #) ENDIF
+  ed_scale(wide: bool): fe(wide) =
+    IF wide THEN (# len:=14, word:=[: 0x8aae4e6c, 0x2c85de1e, 0x54419ca5, 0xc066f7ed,
+              0xfaddbda4, 0x0734cde9, 0x2d182975, 0xc945af01,
+              0x4b71aa96, 0x43e34f71, 0x5f44d541, 0x77ed1ae4,
+              0xd649eed0, 0x45b2c5f7 :] #)
+    ELSE (# len:=8, word:=[: 0x00ba81e7, 0x3391fb55, 0xb482e57d, 0x3a5e2c2e,
+              0xfc03b081, 0x2d84f723, 0x9f5ff944, 0x70d9120b :] #) ENDIF
+  w_shift(wide: bool): fe(wide) =
+    IF wide THEN (# len:=14, word:=[: 0x0000cb8c, 0x00000000, 0x00000000, 0x00000000,
+              0x00000000, 0x00000000, 0x00000000, 0xaaaaaaaa,
+              0xaaaaaaaa, 0xaaaaaaaa, 0xaaaaaaaa, 0xaaaaaaaa,
+              0xaaaaaaaa, 0xaaaaaaaa :] #)
+    ELSE (# len:=8, word:=[: 0xaaad2451, 0xaaaaaaaa, 0xaaaaaaaa, 0xaaaaaaaa,
+              0xaaaaaaaa, 0xaaaaaaaa, 0xaaaaaaaa, 0x2aaaaaaa :] #) ENDIF
+  inverse(w: bool,x: fe(w)): fe(w) = pow_mod(x,sub_words(prime(w),small(w,2)),prime(w))
+  coord(w: bool): TYPE = [# x,z: fe(w) #]
+  pair(w: bool): TYPE = [# p,q: coord(w) #]
+  % Differential addition and doubling preserve the known affine difference u.
+  step(w: bool,u: fe(w),r: pair(w)): pair(w) =
+    LET m=prime(w), a=add_mod(r`p`x,r`p`z,m), aa=mul_mod(a,a,m),
+        b=sub_mod(r`p`x,r`p`z,m), bb=mul_mod(b,b,m), e=sub_mod(aa,bb,m),
+        c=add_mod(r`q`x,r`q`z,m), d=sub_mod(r`q`x,r`q`z,m),
+        da=mul_mod(d,a,m), cb=mul_mod(c,b,m), plus=add_mod(da,cb,m), minus=sub_mod(da,cb,m),
+        a24=small(w,IF w THEN 39081 ELSE 121665 ENDIF) IN
+      (# p:=(# x:=mul_mod(aa,bb,m), z:=mul_mod(e,add_mod(aa,mul_mod(a24,e,m),m),m) #),
+         q:=(# x:=mul_mod(plus,plus,m), z:=mul_mod(u,mul_mod(minus,minus,m),m) #) #)
+  swap(w: bool,r: pair(w),b: bool): pair(w) = IF b THEN (# p:=r`q,q:=r`p #) ELSE r ENDIF
+  ladder_from(w: bool,u,k: fe(w),r: pair(w),i: {j: uint16 | j<=32*width(w)}):
+      RECURSIVE coord(w) =
+    IF i=0 THEN r`p ELSE
+      LET b=bit_word(k,i-1), next=swap(w,step(w,u,swap(w,r,b)),b) IN
+        ladder_from(w,u,k,next,i-1)
+    ENDIF MEASURE i
+  ladder(w: bool,u,k: fe(w)): coord(w) =
+    LET one=small(w,1),zero=small(w,0),
+        r: pair(w)=(# p:=(# x:=one,z:=zero #),q:=(# x:=u,z:=one #) #) IN
+      ladder_from(w,u,k,r,bits(w))
+
+  clamp(w: bool,k: wire(w)): wire(w) =
+    LET j=nbytes(w)-1 IN
+      k WITH [`seq(0):=u8and(k`seq(0),IF w THEN 252 ELSE 248 ENDIF),
+              `seq(j):=IF w THEN u8or(k`seq(j),128) ELSE u8or(u8and(k`seq(j),127),64) ENDIF]
+  decode_u(w: bool,u: wire(w)): fe(w) =
+    LET b=IF w THEN u ELSE u WITH [`seq(31):=u8and(u`seq(31),127)] ENDIF,
+        raw=from_bytes(width(w),b,FALSE), m=prime(w) IN
+      IF ge_words(raw,m) THEN sub_words(raw,m) ELSE raw ENDIF
+  x_scalar(w: bool,k,u: wire(w)): wire(w) =
+    LET r=ladder(w,decode_u(w,u),from_bytes(width(w),clamp(w,k),FALSE)) IN
+      to_bytes(mul_mod(r`x,inverse(w,r`z),prime(w)),nbytes(w),FALSE)
+  x25519(k,u: octets_of(32)): octets_of(32) = x_scalar(FALSE,k,u)
+  x448(k,u: octets_of(56)): octets_of(56) = x_scalar(TRUE,k,u)
+
+  affine(w: bool): TYPE = [# infinity: bool, x,y: fe(w) #]
+  infinity(w: bool): affine(w) = (# infinity:=TRUE,x:=small(w,0),y:=small(w,0) #)
+  finite(w: bool,x,y: fe(w)): affine(w) = (# infinity:=FALSE,x:=x,y:=y #)
+  partial_valid(w: bool,q: affine(w)): bool =
+    LET m=prime(w), a=small(w,IF w THEN 156326 ELSE 486662 ENDIF),
+        x=q`x, y=q`y IN
+      NOT q`infinity AND NOT ge_words(x,m) AND NOT ge_words(y,m) AND
+      mul_mod(y,y,m)=mul_mod(x,add_mod(add_mod(mul_mod(x,x,m),mul_mod(a,x,m),m),small(w,1),m),m)
+  full_valid(w: bool,q: affine(w)): bool =
+    partial_valid(w,q) AND q`x/=small(w,0) AND ladder(w,q`x,order(w))`z=small(w,0)
+  % The u=0 order-two point has a degenerate differential representation.
+  % It cannot have odd prime order.
+
+  swap_involution: LEMMA FORALL (w: bool,r: pair(w),b: bool): swap(w,swap(w,r,b),b)=r
+  invalid_infinity: LEMMA FORALL(w: bool): NOT partial_valid(w,infinity(w))
+END montgomery

@@ -1,0 +1,119 @@
+% FIPS 186-5 B.9 and A.1.5/A.1.6. Separate random streams supply candidate
+% starts and Miller-Rabin bases. Both cursors advance across retries.
+rsa_auxiliary: THEORY
+BEGIN
+  IMPORTING rsa_provable
+  cursors: TYPE = [# starts,tests:uint32 #]
+  sources: TYPE = [# starts,tests:stream_id #]
+  aux_rounds(p:strength_profile,strong:bool):subrange(22,44) =
+    IF strong THEN IF p=0 THEN 38 ELSIF p=1 THEN 41 ELSE 44 ENDIF
+    ELSE IF p=0 THEN 32 ELSIF p=1 THEN 27 ELSE 22 ENDIF ENDIF
+  octet_count(bits:st_bits): subrange(1,256) = u16div(bits+7,8)
+  % Uniform bit-length samples use only the low bits of a partial first octet.
+  raw_bits(n:limb_count,bits:st_bits,b:octets_of(octet_count(bits))):words_of(n) =
+    LET used:below(8)=nrem(bits,8),masked=IF used=0 THEN b ELSE
+          b WITH [`seq(0):=u8and(b`seq(0),u8minus(u8lshift(1,used),1))] ENDIF
+    IN from_bytes(n,masked,TRUE)
+  aux_witness(c:limbs,bits:st_bits,remaining:upto(44),s:stream_id,off:uint32): RECURSIVE primality =
+    LET count=octet_count(bits) IN IF remaining=0 THEN (# ok:=TRUE,probable:=TRUE,next:=off #)
+    ELSIF off>4294967295-count THEN (# ok:=FALSE,probable:=FALSE,next:=off #) ELSE
+      LET m=acquire(count,s,off),next:uint32=off+count,one=one_words(c`len) IN
+      IF NOT m`ok THEN (# ok:=FALSE,probable:=FALSE,next:=next #) ELSE
+        LET b=raw_bits(c`len,bits,m`value) IN
+        IF ge_words(one,b) OR ge_words(b,sub_words(c,one)) THEN aux_witness(c,bits,remaining,s,next)
+        ELSIF miller_rabin_pass(c,b) THEN aux_witness(c,bits,remaining-1,s,next)
+        ELSE (# ok:=TRUE,probable:=FALSE,next:=next #) ENDIF ENDIF ENDIF MEASURE 4294967295-off
+  aux_output(n:limb_count): TYPE = [# ok:bool,v,x:words_of(n),next:cursors #]
+  aux_fail(n:limb_count,c:cursors):aux_output(n) = (# ok:=FALSE,v:=zero_words(n),x:=zero_words(n),next:=c #)
+  % Try successive odd candidates. Stop at the bit-length boundary or when
+  % the caller has exhausted its finite attempt budget.
+  next_aux(p:strength_profile,bits:st_bits,raw:words_of(st_width(bits)),s:stream_id,off:uint32,
+           strong:bool,attempts:uint32): RECURSIVE found(st_width(bits)) =
+    LET n=st_width(bits) IN IF attempts=0 OR ge_words(raw,set_one(zero_words(n),bits)) THEN unavailable(n,off) ELSE
+      LET v=IF sieve_candidate(raw,3) THEN aux_witness(raw,bits,aux_rounds(p,strong),s,off)
+            ELSE (# ok:=TRUE,probable:=FALSE,next:=off #) ENDIF IN
+      IF NOT v`ok THEN unavailable(n,v`next) ELSIF v`probable THEN (# ok:=TRUE,prime:=raw,next:=v`next #)
+      ELSE next_aux(p,bits,increment(raw,2),s,v`next,strong,attempts-1) ENDIF ENDIF MEASURE attempts
+  random_aux(p:strength_profile,bits:st_bits,n:limb_count,src:sources,c:cursors,strong:bool):aux_output(n) =
+    LET len=octet_count(bits),w=st_width(bits) IN IF c`starts>4294967295-len THEN aux_fail(n,c) ELSE
+      LET m=acquire(len,src`starts,c`starts),nc=c WITH [`starts:=c`starts+len] IN IF NOT m`ok THEN aux_fail(n,nc) ELSE
+        LET start=set_one(top_bit(raw_bits(w,bits,m`value),bits),0),r=next_aux(p,bits,start,src`tests,c`tests,strong,4294967295)
+        IN (# ok:=r`ok,v:=resize_words(r`prime,n),x:=resize_words(start,n),next:=nc WITH [`tests:=r`next] #)
+        ENDIF ENDIF
+  align_residue(y:limbs,step:words_of(y`len),mod8:residue,left:upto(3)):RECURSIVE words_of(y`len) =
+    IF mod8=0 OR nrem(y`word(0),8)=mod8 OR left=0 THEN y
+    ELSE align_residue(plus_words(y,step),step,mod8,left-1) ENDIF MEASURE left
+  window_result(n:limb_count): TYPE = [# ok,retry:bool,v:words_of(n),next:uint32 #]
+  bounded_prime(p:strength_profile,e,y,step:words_of(st_width(factor_bits(p))),src:stream_id,strong:bool,
+                tests:uint32,left:upto(40960)): RECURSIVE window_result(st_width(factor_bits(p))) =
+    LET bits=factor_bits(p),n=st_width(bits) IN
+    IF left=0 THEN (# ok:=FALSE,retry:=FALSE,v:=zero_words(n),next:=tests #)
+    ELSIF ge_words(y,set_one(zero_words(n),bits)) THEN (# ok:=FALSE,retry:=TRUE,v:=zero_words(n),next:=tests #) ELSE
+      LET v=IF sieve_candidate(y,3) AND gcd_words(sub_words(y,one_words(n)),e)=one_words(n) THEN
+          aux_witness(y,bits,rounds(p,strong),src,tests) ELSE (# ok:=TRUE,probable:=FALSE,next:=tests #) ENDIF
+      IN IF NOT v`ok THEN (# ok:=FALSE,retry:=FALSE,v:=zero_words(n),next:=v`next #)
+         ELSIF v`probable THEN (# ok:=TRUE,retry:=FALSE,v:=y,next:=v`next #)
+         ELSE bounded_prime(p,e,plus_words(y,step),step,src,strong,v`next,left-1) ENDIF ENDIF MEASURE left
+  % Distinguish exhaustion of the candidate range (B.9 step 6) from the
+  % iteration bound and provider failure. Keep X for the pair separation check.
+  factor_window(p:strength_profile,e,r,step:words_of(st_width(factor_bits(p))),mod8:residue,src:sources,
+                c:cursors,strong:bool):RECURSIVE aux_output(prime_width(p)) =
+    LET bits=factor_bits(p),n=st_width(bits),w=prime_width(p),len:uint16=4*w IN
+    IF c`starts>4294967295-len THEN aux_fail(w,c) ELSE
+      LET read=acquire(len,src`starts,c`starts),next=c WITH [`starts:=c`starts+len],raw=from_bytes(w,read`value,TRUE)
+      IN IF NOT read`ok THEN aux_fail(w,next) ELSIF NOT above_threshold(p,raw) THEN factor_window(p,e,r,step,mod8,src,next,strong)
+      ELSE LET x=resize_words(raw,n),y=plus_words(x,sub_mod(r,divide_words(x,step)`r,step)),
+               start=align_residue(y,step,mod8,3),delta=IF mod8=0 THEN step ELSE double_words(double_words(step)) ENDIF,
+               v=bounded_prime(p,e,start,delta,src`tests,strong,c`tests,20*bits),after=next WITH [`tests:=v`next]
+           IN IF v`ok THEN (# ok:=TRUE,v:=resize_words(v`v,w),x:=raw,next:=after #)
+              ELSIF v`retry THEN factor_window(p,e,r,step,mod8,src,after,strong) ELSE aux_fail(w,after) ENDIF ENDIF ENDIF
+    MEASURE 4294967295-c`starts
+  from_aux(p:strength_profile,e:bytestring,r1,r2:words_of(st_width(factor_bits(p))),mod8:residue,
+           src:sources,c:cursors,strong:bool):aux_output(prime_width(p)) =
+    LET w=prime_width(p),bits=factor_bits(p),n=st_width(bits),d=double_words(r1),
+        inv=invert_mod_odd(divide_words(d,r2)`r,r2),step=product_words(d,r2,n) IN
+    IF inv=zero_words(n) OR step=zero_words(n) THEN aux_fail(w,c) ELSE
+      LET k=sub_mod(zero_words(n),add_mod(inv,inv,r2),r2),r=increment(product_words(d,k,n),1)
+      IN factor_window(p,from_bytes(n,e,TRUE),r,step,mod8,src,c,strong) ENDIF
+  seeded_output(n:limb_count):TYPE=[# result:aux_output(n),seed:seed_string #]
+  % A.1.5 derives auxiliary primes from the evolving seed. A.1.6 draws odd
+  % starts and searches each progression with the Table B.1 auxiliary counts.
+  make_factor(p:strength_profile,h:fixed_hash,seeded:bool,s:seed_string,e:bytestring,l,r:aux_size,
+              mod8:residue,src:sources,c:cursors,strong:bool):seeded_output(prime_width(p)) =
+    LET w=prime_width(p),n=st_width(factor_bits(p)) IN
+    IF l<2 OR r<2 OR NOT pair_allowed(p,l,r,FALSE,mod8) THEN (# result:=aux_fail(w,c),seed:=s #)
+    ELSIF seeded THEN LET a=auxiliary(h,l,s,n),b=auxiliary(h,r,a`seed,n) IN
+      IF a`ok AND b`ok THEN (# result:=from_aux(p,e,a`value,b`value,mod8,src,c,strong),seed:=b`seed #)
+      ELSE (# result:=aux_fail(w,c),seed:=s #) ENDIF
+    ELSE LET a=random_aux(p,l,n,src,c,strong),b=random_aux(p,r,n,src,a`next,strong) IN
+      IF a`ok AND b`ok THEN (# result:=from_aux(p,e,a`v,b`v,mod8,src,b`next,strong),seed:=s #)
+      ELSE (# result:=aux_fail(w,b`next),seed:=s #) ENDIF ENDIF
+  auxiliary_pair(p:strength_profile,h:fixed_hash,seeded:bool,s:seed_string,e:bytestring,sz:lengths,
+                 pm,qm:residue,src:sources,strong:bool,c:cursors,prior:aux_output(prime_width(p)),remaining:uint32):
+      RECURSIVE key =
+    IF remaining=0 THEN no_key ELSE
+      LET second=prior`ok,g=make_factor(p,h,seeded,s,e,IF second THEN sz`c ELSE sz`a ENDIF,
+          IF second THEN sz`d ELSE sz`b ENDIF,IF second THEN qm ELSE pm ENDIF,src,c,strong),
+          v=g`result IN
+      IF NOT v`ok THEN no_key
+      ELSIF NOT second THEN auxiliary_pair(p,h,seeded,g`seed,e,sz,pm,qm,src,strong,v`next,v,remaining-1)
+      ELSIF NOT distant(v`v,prior`v) OR NOT distant(v`x,prior`x) THEN
+        auxiliary_pair(p,h,seeded,g`seed,e,sz,pm,qm,src,strong,v`next,prior,remaining-1)
+      ELSE LET k=derive_from_factors(p,e,prior`v,v`v) IN IF k`ok THEN k ELSE
+        auxiliary_pair(p,h,seeded,g`seed,e,sz,pm,qm,src,strong,v`next,aux_fail(prime_width(p),v`next),remaining-1)
+      ENDIF ENDIF ENDIF MEASURE remaining
+  auxiliary_key(p:strength_profile,h:fixed_hash,seeded:bool,seed,e:bytestring,sz:lengths,
+                pm,qm:residue,src:sources,strong:bool):key =
+    IF src`starts=src`tests OR NOT admissible_e(e) OR NOT pair_allowed(p,sz`a,sz`b,FALSE,pm) OR
+       NOT pair_allowed(p,sz`c,sz`d,FALSE,qm) OR
+       (seeded AND (seed`length<min_seed(p) OR seed`length>4096)) THEN no_key ELSE
+      LET s:seed_string=IF seeded THEN seed ELSE fill_octets(1,0) ENDIF,c=(# starts:=0,tests:=0 #)
+      IN auxiliary_pair(p,h,seeded,s,e,sz,pm,qm,src,strong,c,aux_fail(prime_width(p),c),4294967295) ENDIF
+  generate_auxiliary(p:strength_profile,h:fixed_hash,seeded:bool,e:bytestring,sz:lengths,pm,qm:residue,
+                     src:sources,seed_stream:stream_id,strong:bool):key =
+    IF seeded THEN IF seed_stream=src`starts OR seed_stream=src`tests THEN no_key ELSE
+      LET seed=acquire(min_seed(p),seed_stream,0) IN IF seed`ok THEN
+      auxiliary_key(p,h,TRUE,seed`value,e,sz,pm,qm,src,strong) ELSE no_key ENDIF ENDIF
+    ELSE auxiliary_key(p,h,FALSE,fill_octets(0,0),e,sz,pm,qm,src,strong) ENDIF
+  no_aux_witnesses: LEMMA FORALL (n:limbs,b:st_bits,s:stream_id,o:uint32): aux_witness(n,b,0,s,o)`probable
+END rsa_auxiliary

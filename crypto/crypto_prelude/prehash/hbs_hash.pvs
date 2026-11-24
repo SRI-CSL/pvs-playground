@@ -1,0 +1,26 @@
+% SP 800-208 sections 4 and 5. Shared hash and wire representations.
+hbs_hash: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = ".."
+  sha2: LIBRARY = "../../sha2"
+  sha3: LIBRARY = "../../sha3"
+  IMPORTING crypto_prelude@crypto_buffers,sha2@secure_hash,sha3@keccak
+  suite: TYPE = below(4) % SHA-256/256, SHA-256/192, SHAKE256/256, SHAKE256/192
+  digest_len(s: suite): subrange(24,32) = IF s=0 OR s=2 THEN 32 ELSE 24 ENDIF
+  identifier: TYPE = octets_of(16)
+  message_input: TYPE = {m: bytestring | m`length<maxsize-128}
+  get(x: bytestring,i: uint32): uint8 = IF i<x`length THEN x`seq(i) ELSE 0 ENDIF
+  take_bytes(x: bytestring,base: uint32,n: upto(20000)): ARRAY[below(n) -> uint8] =
+    LAMBDA (i: below(n)): get(x,u32plus(base,i))
+  part(x: bytestring,base: uint32,n: upto(20000)): octets_of(n) =
+    (# length:=n,seq:=take_bytes(x,base,n) #)
+  word(x: uint32): octets_of(4) =
+    fill_octets(4,0) WITH [`seq(0):=be_byte32(x,0),`seq(1):=be_byte32(x,1),
+                            `seq(2):=be_byte32(x,2),`seq(3):=be_byte32(x,3)]
+  read_word(x: bytestring,i: upto(200000)): uint32 = load_be32(get(x,i),get(x,i+1),get(x,i+2),get(x,i+3))
+  short(x: uint16): octets_of(2) = fill_octets(2,0) WITH [`seq(0):=u16rshift(x,8),`seq(1):=nrem(x,256)]
+  byte1(x: uint8): octets_of(1) = fill_octets(1,x)
+  hash(s: suite,m: bytestring): octets_of(digest_len(s)) =
+    IF s<2 THEN first_octets(sha256(m),digest_len(s))
+    ELSE output(finish_shake(absorb(start(136),m)),digest_len(s)) ENDIF
+END hbs_hash

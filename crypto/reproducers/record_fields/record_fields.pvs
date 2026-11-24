@@ -1,0 +1,9 @@
+record_fields: THEORY
+BEGIN
+  first: TYPE=[# value:uint32,carry:bool #]
+  second: TYPE=[# value:uint32,ok:bool #]
+  add(x:uint32):first=(# value:=x,carry:=x=0 #)
+  convert(x:uint32):second=
+    LET v=add(x) IN (# value:=v`value,ok:=NOT v`carry #)
+  nonzero_succeeds:_TEST_ convert(7)`ok
+END record_fields

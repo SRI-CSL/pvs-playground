@@ -1,0 +1,70 @@
+% Short Weierstrass prime curves over F_p, with a=-3. Jacobian (X:Y:Z)
+% represents (X/Z^2,Y/Z^3). A zero Z represents the point at infinity.
+prime_curve: THEORY
+BEGIN
+  IMPORTING nist_prime_curves
+  point(c: curve): TYPE = [# x,y,z: scalar(c) #]
+  affine(c: curve): TYPE = [# finite: bool, x,y: scalar(c) #]
+  inf(c: curve): point(c) = (# x:=zero_words(width(c)),y:=one_words(width(c)),z:=zero_words(width(c)) #)
+  base(c: curve): point(c) = (# x:=gx(c),y:=gy(c),z:=one_words(width(c)) #)
+  infinity(c: curve,u: point(c)): bool = u`z=zero_words(width(c))
+  twice(a: limbs,m: words_of(a`len)): words_of(a`len) = add_mod(a,a,m)
+  thrice(a: limbs,m: words_of(a`len)): words_of(a`len) = add_mod(a,twice(a,m),m)
+  sq(a: limbs,m: words_of(a`len)): words_of(a`len) = mul_mod(a,a,m)
+  inv(a: limbs,m: words_of(a`len)): words_of(a`len) =
+    LET one=one_words(a`len) IN pow_mod(a,sub_words(sub_words(m,one),one),m)
+  dbl(c: curve,u: point(c)): point(c) =
+    IF infinity(c,u) OR u`y=zero_words(width(c)) THEN inf(c) ELSE
+      LET p=prime(c), delta=sq(u`z,p), gamma=sq(u`y,p), beta=mul_mod(u`x,gamma,p),
+          alpha=thrice(mul_mod(sub_mod(u`x,delta,p),add_mod(u`x,delta,p),p),p),
+          four_beta=twice(twice(beta,p),p), x=sub_mod(sq(alpha,p),twice(four_beta,p),p),
+          y=sub_mod(mul_mod(alpha,sub_mod(four_beta,x,p),p),twice(twice(twice(sq(gamma,p),p),p),p),p),
+          z=twice(mul_mod(u`y,u`z,p),p) IN (# x:=x,y:=y,z:=z #)
+    ENDIF
+  add(c: curve,u,v: point(c)): point(c) =
+    IF infinity(c,u) THEN v ELSIF infinity(c,v) THEN u ELSE
+      LET p=prime(c), z1=sq(u`z,p), z2=sq(v`z,p),
+          u1=mul_mod(u`x,z2,p), u2=mul_mod(v`x,z1,p),
+          s1=mul_mod(u`y,mul_mod(v`z,z2,p),p), s2=mul_mod(v`y,mul_mod(u`z,z1,p),p) IN
+        IF u1=u2 THEN (IF s1=s2 THEN dbl(c,u) ELSE inf(c) ENDIF) ELSE
+          LET h=sub_mod(u2,u1,p), r=sub_mod(s2,s1,p), hh=sq(h,p), hhh=mul_mod(h,hh,p),
+              t=mul_mod(u1,hh,p), x=sub_mod(sub_mod(sq(r,p),hhh,p),twice(t,p),p),
+              y=sub_mod(mul_mod(r,sub_mod(t,x,p),p),mul_mod(s1,hhh,p),p),
+              z=mul_mod(h,mul_mod(u`z,v`z,p),p) IN (# x:=x,y:=y,z:=z #)
+        ENDIF
+    ENDIF
+  multiply_from(c: curve,k: scalar(c),v,acc: point(c),remaining: {i: uint16 | i<=32*width(c)}):
+      RECURSIVE point(c) =
+    IF remaining=0 THEN acc ELSE
+      LET d=dbl(c,acc), a=IF bit_word(k,remaining-1) THEN add(c,d,v) ELSE d ENDIF IN
+        multiply_from(c,k,v,a,remaining-1)
+    ENDIF MEASURE remaining
+  multiply(c: curve,k: scalar(c),v: point(c)): point(c) =
+    multiply_from(c,k,v,inf(c),32*width(c))
+  normalize(c: curve,u: point(c)): affine(c) =
+    IF infinity(c,u) THEN (# finite:=FALSE,x:=zero_words(width(c)),y:=zero_words(width(c)) #) ELSE
+      LET p=prime(c), z=inv(u`z,p), zz=sq(z,p) IN
+        (# finite:=TRUE,x:=mul_mod(u`x,zz,p),y:=mul_mod(u`y,mul_mod(z,zz,p),p) #)
+    ENDIF
+  valid_scalar(c: curve,d: scalar(c)): bool =
+    d/=zero_words(width(c)) AND NOT ge_words(d,order(c))
+  % SP 800-56A Rev. 3 §5.6.2.3.3. All curves in this theory have cofactor 1.
+  on_curve(c: curve,q: affine(c)): bool =
+    LET p=prime(c) IN q`finite AND NOT ge_words(q`x,p) AND NOT ge_words(q`y,p) AND
+      sq(q`y,p)=add_mod(sub_mod(mul_mod(sq(q`x,p),q`x,p),thrice(q`x,p),p),coefficient(c),p)
+  lift(c: curve,q: affine(c)): point(c) =
+    IF q`finite THEN (# x:=q`x,y:=q`y,z:=one_words(width(c)) #) ELSE inf(c) ENDIF
+  public_key(c: curve,d: {k: scalar(c) | valid_scalar(c,k)}): affine(c) = normalize(c,multiply(c,d,base(c)))
+  % §5.7.1.2 ECC CDH primitive. The returned x-coordinate is encoded at
+  % the field element's full fixed width, retaining leading zero octets.
+  secret_result: TYPE = [# valid:bool, value:bytestring #]
+  cdh(c: curve,d: scalar(c),peer: affine(c)): secret_result =
+    IF NOT valid_scalar(c,d) OR NOT on_curve(c,peer) THEN (# valid:=FALSE,value:=fill_octets(0,0) #) ELSE
+      LET q=normalize(c,multiply(c,d,lift(c,peer))) IN
+        IF q`finite THEN (# valid:=TRUE,value:=to_bytes(q`x,u16div(bits(c)+7,8),TRUE) #)
+        ELSE (# valid:=FALSE,value:=fill_octets(0,0) #) ENDIF
+    ENDIF
+  identity_left: LEMMA FORALL(c:curve,v:point(c)): add(c,inf(c),v)=v
+  invalid_peer_rejected: LEMMA FORALL(c:curve,d:scalar(c),peer:affine(c)):
+    NOT on_curve(c,peer) IMPLIES NOT cdh(c,d,peer)`valid
+END prime_curve

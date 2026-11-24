@@ -1,0 +1,114 @@
+% SP 800-90A Rev. 1, Table 3 and sections 10.2.1 and 10.3.2--3.
+% AES-128/192/256 with a full-width 128-bit counter and 2^48 reseed interval.
+ctr_drbg: THEORY
+BEGIN
+  modes: LIBRARY = "../modes"
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING modes@aes_modes, crypto_prelude@crypto_block_io, crypto_prelude@crypto_words
+
+  aes_size: TYPE = below(3)
+  nk(t: aes_size): subrange(16,32) = IF t=0 THEN 16 ELSIF t=1 THEN 24 ELSE 32 ENDIF
+  ns(t: aes_size): subrange(32,48) = nk(t)+16
+  key_of(t: aes_size, x: octets_of(nk(t))): mode_key =
+    IF t=0 THEN mk128(x`seq) ELSIF t=1 THEN mk192(x`seq) ELSE mk256(x`seq) ENDIF
+  df_data: TYPE = {x: bytestring | x`length+24 < maxsize}
+  interval: uint64 = 0x1000000000000
+  requests: TYPE = {x: uint64 | x>0 AND x<=interval+1}
+  ctr_state: TYPE = [# kind: aes_size, key: octets_of(nk(kind)), v: octet_block,
+                       derived: bool, reseed_count: requests #]
+  state_for(t: aes_size, df: bool): TYPE = {s: ctr_state | s`kind=t AND s`derived=df}
+  step_output(n: index): TYPE = [# data: octets_of(n), v: octet_block #]
+
+  % For Update/Generate increment V before AES and retain V. For the output
+  % stage of Block_Cipher_df feed the previous cipher output back into AES.
+  emit(k: mode_key, v: octet_block, incrementing: bool, out: bytestring, at: upto(out`length)):
+      RECURSIVE step_output(out`length) =
+    IF at = out`length THEN (# data := out, v := v #)
+    ELSE LET ctr = IF incrementing THEN increment(v,16) ELSE v ENDIF, b = ecb_encrypt(k,ctr),
+             next = IF incrementing THEN ctr ELSE b ENDIF
+         IN emit(k,next,incrementing,write_block(out,at,b),next_block(out`length,at))
+    ENDIF MEASURE out`length-at
+  padded_xor(a: bytestring, b: bytestring): octets_of(a`length) =
+    (# length := a`length, seq := LAMBDA (i: below(a`length)):
+       IF i<b`length THEN u8xor(a`seq(i),b`seq(i)) ELSE a`seq(i) ENDIF #)
+
+  % Section 10.2.1.2, Update, including the split for an AES-192 key.
+  ctr_update(s: ctr_state, data: octets_of(ns(s`kind))): state_for(s`kind,s`derived) =
+    LET t=s`kind, e=emit(key_of(t,s`key),s`v,TRUE,fill_octets(ns(t),0),0),
+        mixed=padded_xor(e`data,data)
+    IN s WITH [`key := first_octets(mixed,nk(t)), `v := read_block(mixed,nk(t))]
+
+  % L and N are in octets. An 0x80 octet is mandatory even when S before
+  % padding is aligned. The block cipher chaining construction starts at zero.
+  df_output: TYPE = subrange(1,64)
+  df_request(x: df_data,n: df_output): bytestring =
+    LET pad: subrange(1,16) = 16-nrem(x`length+8,16),
+        prefix: octets_of(8) = (# length := 8, seq := LAMBDA (i: below(8)):
+          IF i<4 THEN be_byte32(x`length,i) ELSE be_byte32(n,i-4) ENDIF #),
+        trailer: octets_of(pad) = (# length := pad, seq := LAMBDA (i: below(pad)):
+          IF i=0 THEN 128 ELSE 0 ENDIF #)
+    IN join_octets(prefix,join_octets(x,trailer))
+
+  df_string(t: aes_size,x: df_data): bytestring = df_request(x,ns(t))
+
+  bcc(k: mode_key, c: octet_block, s: bytestring, at: upto(s`length)): RECURSIVE octet_block =
+    IF at=s`length THEN c
+    ELSE bcc(k,cbc_encrypt(k,c,read_block(s,at)),s,next_block(s`length,at))
+    ENDIF MEASURE s`length-at
+  bcc_iv(i: uint32): octet_block = LAMBDA (j: upto(15)):
+    IF j<4 THEN be_byte32(i,j) ELSE 0 ENDIF
+  df_chains(k: mode_key,s: bytestring,i: uint32,out: bytestring,at: upto(out`length)):
+      RECURSIVE octets_of(out`length) =
+    IF at=out`length THEN out
+    ELSE LET b=bcc(k,ecb_encrypt(k,bcc_iv(i)),s,0)
+         IN df_chains(k,s,u32plus(i,1),write_block(out,at,b),next_block(out`length,at))
+    ENDIF MEASURE out`length-at
+  derive_octets(t: aes_size,x: df_data,n: df_output): octets_of(n) =
+    LET init: octets_of(nk(t)) = (# length := nk(t), seq := LAMBDA (i: below(nk(t))): i #),
+        tmp=df_chains(key_of(t,init),df_request(x,n),0,fill_octets(ns(t),0),0),
+        k=key_of(t,first_octets(tmp,nk(t))), v=read_block(tmp,nk(t))
+    IN emit(k,v,FALSE,fill_octets(n,0),0)`data
+  block_df(t: aes_size,x: df_data): octets_of(ns(t)) = derive_octets(t,x,ns(t))
+
+  start_state(t: aes_size, derived: bool, d: octets_of(ns(t))): state_for(t,derived) =
+    ctr_update((# kind := t, key := fill_octets(nk(t),0), v := zero_block,
+                  derived := derived, reseed_count := 1 #),d)
+  instantiate_df(t: aes_size,e: {x: df_data | x`length>0},
+       nonce: {x: df_data | x`length>0 AND e`length+x`length+24<maxsize},
+       personal: {x: bytestring | e`length+nonce`length+x`length+24<maxsize}): state_for(t,TRUE) =
+    start_state(t,TRUE,block_df(t,join_octets(join_octets(e,nonce),personal)))
+  instantiate_direct(t: aes_size,e: octets_of(ns(t)),p: {x: bytestring | x`length<=ns(t)}): state_for(t,FALSE) =
+    start_state(t,FALSE,padded_xor(e,p))
+
+  ctr_reseed_df(s: {v: ctr_state | v`derived},e: {x: df_data | x`length>0},
+       extra: {x: bytestring | e`length+x`length+24<maxsize}): state_for(s`kind,TRUE) =
+    ctr_update(s,block_df(s`kind,join_octets(e,extra))) WITH [`reseed_count := 1]
+  ctr_reseed_direct(s: {v: ctr_state | NOT v`derived},e: octets_of(ns(s`kind)),
+                    extra: {x: bytestring | x`length<=ns(s`kind)}): state_for(s`kind,FALSE) =
+    ctr_update(s,padded_xor(e,extra)) WITH [`reseed_count := 1]
+
+  ctr_result: TYPE = [# success: bool, current: ctr_state, data: bytestring #]
+  results_for(t: aes_size, df: bool): TYPE = {r: ctr_result | r`current`kind=t AND r`current`derived=df}
+  ctr_generate(s: ctr_state, bits: subrange(1,524288),
+               extra: {x: df_data | s`derived OR x`length<=ns(s`kind)}): results_for(s`kind,s`derived) =
+    IF s`reseed_count>interval THEN (# success := FALSE, current := s, data := fill_octets(0,0) #)
+    ELSE LET t=s`kind, d: octets_of(ns(t)) =
+               IF extra`length=0 THEN fill_octets(ns(t),0)
+               ELSIF s`derived THEN block_df(t,extra)
+               ELSE copy_octets(fill_octets(ns(t),0),0,extra,0) ENDIF,
+             init=IF extra`length=0 THEN s ELSE ctr_update(s,d) ENDIF,
+             n: index=u32rshift(bits+7,3),
+             o=emit(key_of(init`kind,init`key),init`v,TRUE,fill_octets(n,0),0),
+             used: below(8)=nrem(bits,8), data=o`data,
+             output=IF used=0 OR data`length=0 THEN data
+                    ELSE LET j: index=data`length-1 IN
+                      data WITH [`seq(j) := u8and(data`seq(j),u8lshift(255,8-used))] ENDIF,
+             temp=init WITH [`v := o`v],
+             final=ctr_update(temp,d) WITH [`reseed_count := s`reseed_count+1]
+         IN (# success := TRUE,current := final,data := output #)
+    ENDIF
+
+  ctr_expired: LEMMA FORALL (s: ctr_state, n: subrange(1,524288),
+                             a: {x: df_data | s`derived OR x`length<=ns(s`kind)}):
+    s`reseed_count>interval IMPLIES NOT ctr_generate(s,n,a)`success AND ctr_generate(s,n,a)`current = s
+END ctr_drbg

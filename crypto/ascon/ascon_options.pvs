@@ -1,0 +1,24 @@
+% SP 800-232 §§3.2, 4.2.1, 4.2.2. Bit zero is the low bit of the first lane.
+ascon_options: THEORY
+BEGIN
+  IMPORTING ascon
+  permutation(s:lanes,n:upto(16)): RECURSIVE lanes =
+    IF n<=12 THEN rounds(s,n) ELSE
+      LET rc:uint8=IF n=16 THEN 60 ELSIF n=15 THEN 45 ELSIF n=14 THEN 30 ELSE 15 ENDIF IN
+        permutation(round(s,rc),n-1)
+    ENDIF MEASURE n
+  tag_length:TYPE=subrange(32,128)
+  % Holding the tag length in the key context fixes it for both directions.
+  settings:TYPE=[# key: block, nonce_mask: block, auth_bits:tag_length #]
+  effective_nonce(k:settings,n: block): block =
+    (# lo:=u64xor(k`nonce_mask`lo,n`lo),hi:=u64xor(k`nonce_mask`hi,n`hi) #)
+  prefix_tag(t:block,n:tag_length):block=IF n=128 THEN t ELSE truncate_block(t,n) ENDIF
+  encrypt_profile(k:settings,nonce:block,ad,p:frame):sealed =
+    LET r=encrypt(k`key,effective_nonce(k,nonce),ad,p) IN r WITH [auth:=prefix_tag(r`auth,k`auth_bits)]
+  decrypt_profile(k:settings,nonce:block,ad:frame,c:sealed):opened =
+    LET s=process_ad(aead_init(k`key,effective_nonce(k,nonce)),ad),
+        r=crypt(s,k`key,c`data,0,TRUE), expected=r WITH [auth:=prefix_tag(r`auth,k`auth_bits)] IN
+      check_tag(expected,c`auth)
+  full_tag: LEMMA FORALL(t:block): prefix_tag(t,128)=t
+  permutation_12: LEMMA FORALL(s:lanes): permutation(s,12)=rounds(s,12)
+END ascon_options

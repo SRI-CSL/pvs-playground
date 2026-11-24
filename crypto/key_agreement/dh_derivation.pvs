@@ -1,0 +1,29 @@
+% SP 800-56A Rev. 3 §§5.8, 6 and SP 800-56C Rev. 2 §4.
+dh_derivation: THEORY
+BEGIN
+  kdf: LIBRARY = "../kdf"
+  IMPORTING dh_schemes,kdf@establishment_kdf
+
+  % A protocol profile with 32-bit big-endian DataLen fields, identifying
+  % AlgorithmID, PartyUInfo=(ID_U,contribution_U), PartyVInfo=(ID_V,contribution_V).
+  % A contribution may encode a nonce or ephemeral public data as agreed.
+  % For the static scheme NonceU is mandatory. In all schemes the roles
+  % are ordered U then V independently of which party performs derivation.
+  field(x: {a:bytestring | a`length+4<maxsize}): octets_of(x`length+4) =
+    join_octets(encode_counter(x`length,4),x)
+  pack_info(s:scheme,alg,idu,epu,idv,epv:bytestring):ff_agreement.result =
+    LET total:uint64=alg`length+idu`length+epu`length+idv`length+epv`length+20 IN
+      IF alg`length=0 OR idu`length=0 OR idv`length=0 OR total>=octet_limit OR
+         (s=static_unified AND epu`length=0) THEN fail
+      ELSE LET a=join_octets(field(alg),field(idu)), b=join_octets(field(epu),field(idv)),
+               c=join_octets(a,b) IN (# ok:=TRUE,z:=join_octets(c,field(epv)) #) ENDIF
+  % The caller can also provide its own agreed encoded FixedInfo. Validate
+  % the joined length and output size before entering the dependent KDF API.
+  derive(z,info:ff_agreement.result,h:hash_id,keyed:bool,salt:bytestring,n:index):ff_agreement.result =
+    IF NOT z`ok OR NOT info`ok OR z`z`length=0 OR info`z`length=0 OR n=0 OR
+       z`z`length+info`z`length+212>=octet_limit THEN fail
+    ELSE LET k=one_step(h,keyed,salt,z`z,info`z,n) IN
+      IF k`ok THEN (# ok:=TRUE,z:=k`data #) ELSE fail ENDIF ENDIF
+  failed_agreement: LEMMA FORALL(z,info:ff_agreement.result,h:hash_id,k:bool,s:bytestring,n:index):
+    NOT z`ok IMPLIES derive(z,info,h,k,s,n)=fail
+END dh_derivation

@@ -1,0 +1,85 @@
+% SP 800-90B §§5.2, 6.3.5 and 6.3.6. Prefix doubling orders suffixes.
+% Adjacent longest common prefixes identify each overlapping W-tuple group.
+entropy_substrings: THEORY
+BEGIN
+  IMPORTING entropy_binary
+  positions(n:index):TYPE=ARRAY[below(n)->uint32]
+  rank_at(n:index,r:positions(n),i:uint32):uint32=IF i<n THEN r(i) ELSE 0 ENDIF
+  precedes(n:index,r:positions(n),h,a,b:uint32):bool=
+    rank_at(n,r,a)<rank_at(n,r,b) OR (rank_at(n,r,a)=rank_at(n,r,b) AND
+      rank_at(n,r,u32plus(a,h))<rank_at(n,r,u32plus(b,h)))
+  % Stable counting passes order the second and then first rank. Each
+  % scan splits long ranges to bound the stack in generated C.
+  ranks(cap:pos_uint32):TYPE=ARRAY[below(cap)->uint32]
+  zero_ranks(cap:pos_uint32):ranks(cap)=LAMBDA(j:below(cap)):0
+  rank_key(n:index,cap:pos_uint32,r:positions(n),pos,shift:uint32):below(cap)=
+    u32min(cap-1,rank_at(n,r,u32plus(pos,shift)))
+  frequencies(n:index,cap:pos_uint32,r,ord:positions(n),shift:uint32,i,last:upto(n),v:ranks(cap)):RECURSIVE ranks(cap)=
+    IF i>=last THEN v ELSIF last-i>128 THEN LET mid:upto(n)=u32plus(i,u32div(last-i,2)) IN
+      frequencies(n,cap,r,ord,shift,mid,last,frequencies(n,cap,r,ord,shift,i,mid,v)) ELSE
+      LET j=rank_key(n,cap,r,ord(i),shift) IN frequencies(n,cap,r,ord,shift,i+1,last,v WITH [(j):=u32plus(v(j),1)])
+    ENDIF MEASURE last-i
+  % Inclusive cumulative counts are exclusive end positions. Filling from
+  % right to left makes the counting sort stable, including rank zero.
+  cumulative(cap:pos_uint32,v:ranks(cap),i,last:upto(cap)):RECURSIVE ranks(cap)=
+    IF i>=last OR i=0 THEN v ELSIF last-i>128 THEN LET mid:upto(cap)=u32plus(i,u32div(last-i,2)) IN
+      cumulative(cap,cumulative(cap,v,i,mid),mid,last) ELSE
+      cumulative(cap,v WITH [(i):=u32plus(v(i),v(i-1))],i+1,last) ENDIF MEASURE last-i
+  pass_state(n:index,cap:pos_uint32):TYPE=[# ends:ranks(cap),out:positions(n) #]
+  scatter(n:index,cap:pos_uint32,r,ord:positions(n),shift:uint32,first,i:upto(n),v:pass_state(n,cap)):RECURSIVE pass_state(n,cap)=
+    IF i<=first THEN v ELSIF i-first>128 THEN LET mid:upto(n)=u32plus(first,u32div(i-first,2)) IN
+      scatter(n,cap,r,ord,shift,first,mid,scatter(n,cap,r,ord,shift,mid,i,v)) ELSE
+      LET pos=ord(i-1),j=rank_key(n,cap,r,pos,shift),endpos=v`ends(j) IN
+      IF endpos=0 OR endpos>n THEN v ELSE scatter(n,cap,r,ord,shift,first,i-1,
+        v WITH [`ends(j):=endpos-1,`out(endpos-1):=pos]) ENDIF ENDIF MEASURE i-first
+  sort_rank(n:index,r,ord:positions(n),shift:uint32):positions(n)=
+    LET cap:pos_uint32=u32plus(u32max(n,256),1),freq=frequencies(n,cap,r,ord,shift,0,n,zero_ranks(cap)),ends=cumulative(cap,freq,1,cap) IN
+      scatter(n,cap,r,ord,shift,0,n,(# ends:=ends,out:=LAMBDA(i:below(n)):0 #))`out
+  rank_pairs(n:index,r,ord,out:positions(n),h:uint32,i,last:upto(n)):RECURSIVE positions(n)=
+    IF i>=last THEN out ELSIF last-i>128 THEN LET mid:upto(n)=u32plus(i,u32div(last-i,2)) IN
+      rank_pairs(n,r,ord,rank_pairs(n,r,ord,out,h,i,mid),h,mid,last) ELSE
+      LET j=ord(i),prev:uint32=IF i=0 THEN 0 ELSE rank_at(n,out,ord(i-1)) ENDIF,
+          k:uint32=IF i=0 OR precedes(n,r,h,ord(i-1),j) THEN u32plus(prev,1) ELSE prev ENDIF IN
+      IF j>=n THEN out ELSE rank_pairs(n,r,ord,out WITH [(j):=k],h,i+1,last) ENDIF ENDIF MEASURE last-i
+  suffix_order(n:index,r,a:positions(n),h:pos_uint32):RECURSIVE positions(n)=
+    LET sorted=sort_rank(n,r,sort_rank(n,r,a,h),0) IN
+    IF 2*h>=n OR n=0 THEN sorted ELSE LET next=rank_pairs(n,r,sorted,LAMBDA(j:below(n)):0,h,0,n) IN
+      IF rank_at(n,next,sorted(n-1))=n THEN sorted ELSE suffix_order(n,next,sorted,2*h) ENDIF ENDIF MEASURE n-h
+  invert(n:index,a,out:positions(n),i,last:upto(n)):RECURSIVE positions(n)=
+    IF i>=last THEN out ELSIF last-i>128 THEN LET mid:upto(n)=u32plus(i,u32div(last-i,2)) IN
+      invert(n,a,invert(n,a,out,i,mid),mid,last) ELSIF a(i)>=n THEN out
+    ELSE invert(n,a,out WITH [(a(i)):=i],i+1,last) ENDIF MEASURE last-i
+  common(x:bytestring,a,b:uint32,h:index):RECURSIVE index=
+    IF a+h>=x`length OR b+h>=x`length OR x`seq(a+h)/=x`seq(b+h) THEN h
+    ELSE common(x,a,b,h+1) ENDIF MEASURE x`length-h
+  kasai(x:bytestring,a,r,out:positions(x`length),i,last:upto(x`length)):RECURSIVE positions(x`length)=
+    IF i>=last THEN out ELSIF last-i>128 THEN LET mid:upto(x`length)=u32plus(i,u32div(last-i,2)) IN
+      kasai(x,a,r,kasai(x,a,r,out,i,mid),mid,last) ELSE LET j=r(i) IN
+      IF j=0 OR j>=x`length THEN kasai(x,a,r,out,i+1,last)
+      ELSE LET prev=IF i=0 THEN 0 ELSE rank_at(x`length,out,r(i-1)) ENDIF,
+          h:index=IF prev=0 OR prev>x`length THEN 0 ELSE prev-1 ENDIF,v=common(x,i,a(j-1),h) IN
+        kasai(x,a,r,out WITH [(j):=v],i+1,last) ENDIF ENDIF MEASURE last-i
+  lcp(x:bytestring):positions(x`length)=
+    LET n=x`length,r:positions(n)=LAMBDA(i:below(n)):u32plus(1,x`seq(i)),
+        a=suffix_order(n,r,LAMBDA(i:below(n)):i,1),z:positions(n)=LAMBDA(i:below(n)):0 IN
+      kasai(x,a,invert(n,a,z,0,n),z,0,n)
+  group_stats:TYPE=[# largest:uint32,pairs:uint64 #]
+  groups(n:index,l:positions(n),w:pos_uint32,i:upto(n),run:uint32,a:group_stats):RECURSIVE group_stats=
+    IF i=n THEN a ELSE LET same=l(i)>=w, k:uint32=IF same THEN u32plus(run,1) ELSE 1 ENDIF,
+      next=(# largest:=IF k>a`largest THEN k ELSE a`largest ENDIF,
+              pairs:=IF same THEN u64plus(a`pairs,run) ELSE a`pairs ENDIF #) IN
+      groups(n,l,w,i+1,k,next) ENDIF MEASURE n-i
+  tuple_results:TYPE=[# tuple_est,lrs_est:estimate_result,longest:uint32 #]
+  from_prob(p:fp,n:{i:index | i>=2}):estimate_result=
+    IF p=fl(0) THEN unavailable ELSE estimated(neglog(upper_p(p,n))) ENDIF
+  widths(n:{i:index | i>=2},l:positions(n),cutoff:subrange(2,35),w:pos_uint32,t,p:fp):RECURSIVE tuple_results=
+    LET a=groups(n,l,w,0,0,(# largest:=0,pairs:=0 #)) IN
+    IF w>=n OR a`largest<2 THEN (# tuple_est:=from_prob(t,n),lrs_est:=from_prob(p,n),longest:=w-1 #) ELSE
+      LET total=n-w+1,inv=ratio(1,w) IN
+        IF a`largest>=cutoff THEN widths(n,l,cutoff,w+1,fp_max(t,fp_pow(ratio(a`largest,total),inv)),p)
+        ELSE widths(n,l,cutoff,w+1,t,fp_max(p,fp_pow(ratio(2*a`pairs,u64times(total,total-1)),inv))) ENDIF ENDIF
+    MEASURE n-w
+  substring_estimates(x:{s:bytestring | s`length>=2}):tuple_results=widths(x`length,lcp(x),35,1,fl(0),fl(0))
+  no_equal_symbols: THEOREM FORALL(x:{s:bytestring | s`length>=2}):
+    (FORALL(i,j:below(x`length)):i/=j IMPLIES x`seq(i)/=x`seq(j)) IMPLIES substring_estimates(x)`longest=0
+END entropy_substrings

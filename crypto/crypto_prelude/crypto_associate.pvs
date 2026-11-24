@@ -1,0 +1,12 @@
+% Associate-value calculation shared by FFC and ECC MQV, SP 800-56Ar3 §5.7.2.
+crypto_associate: THEORY
+BEGIN
+  IMPORTING crypto_montgomery
+  associate(x:limbs,q:words_of(x`len)): words_of(x`len) =
+    LET w:uint16=u16div(1+significant_bits(q,32*q`len),2),
+        cut:uint16=u16div(w,32), bit:below(32)=u16rem(w,32), mark:uint32=u32lshift(1,bit) IN
+      (# len:=x`len,word:=LAMBDA(i:below(x`len)):
+          IF i<cut THEN x`word(i)
+          ELSIF i=cut THEN u32or(mark,u32and(x`word(i),u32minus(mark,1)))
+          ELSE 0 ENDIF #)
+END crypto_associate

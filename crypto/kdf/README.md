@@ -1,0 +1,11 @@
+# Key derivation
+
+| Theory | Standards and interfaces |
+| --- | --- |
+| `password_kdf` | PBKDF2 with all fixed-length SHA-1, SHA-2 and SHA-3 HMAC bindings. `storage_key` requires at least 16 salt octets and 112 output bits. The caller supplies the required random salt portion and selects the iteration count. [SP 800-132 §§5.1–5.3](https://doi.org/10.6028/NIST.SP.800-132) |
+| `prf_iteration`, `prf_kdf`, `cmac_kdf` | Counter, feedback and double-pipeline KDF with HMAC or AES-CMAC. `encode_info` formats the label, separator, context and four-octet bit length. `kbkdf_kmac` supplies context and label directly to fixed-output KMAC. [SP 800-108 Rev. 1 Update 1 §§4–5](https://doi.org/10.6028/NIST.SP.800-108r1-upd1) |
+| `establishment_kdf`, `cmac_kdf` | One-step hash, HMAC and KMAC, and two-step HMAC or CMAC extraction and expansion. HMAC retains the hash selection across both steps. AES-CMAC expansion takes its 128-bit key from extraction with AES-128, AES-192 or AES-256. [SP 800-56C Rev. 2 §§4–5](https://doi.org/10.6028/NIST.SP.800-56Cr2) |
+
+The iterative KDF accepts an already formatted fixed input and puts the counter immediately before it. It supports one-, two-, three- and four-octet counters, plus the counterless feedback and double-pipeline variants. The initial feedback value can contain up to 64 octets. The result reports failure for a zero-length request, a missing compulsory counter or an exhausted counter. The byte-oriented entry points use whole octets. `bit_derivation` adds bit-length HMAC, hash and KMAC derivation with their respective final-octet conventions. The one-step and extraction functions accept the agreed shared secret encoding. The caller supplies the agreed party information and chooses primitives appropriate to the required security strength.
+
+Run `python3 validation/check.py pbkdf2 prf-kdf` and `python3 validation/check_aes.py cmac-kdf`. The example theories include NIST KBKDFVS counter, feedback and double-pipeline values for HMAC-SHA-256 and AES-128-CMAC. Supplemental SP 800-56C cases exercise default salt, multiple output blocks and a partial final block. [NIST KBKDF vectors](https://csrc.nist.gov/projects/cryptographic-algorithm-validation-program/key-derivation)

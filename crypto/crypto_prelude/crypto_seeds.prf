@@ -1,0 +1,36 @@
+(|crypto_seeds|
+ (|read_seed32_TCC1| 0
+  (|read_seed32_TCC1-1| NIL 4004536666
+   ("" (THEN (AUTO-REWRITE "exp2") (GRIND :DEFS NIL)) NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)) "shostak"
+   (|read_seed32| SUBTYPE "crypto_seeds.base" "uint32" (7 17 7 21))))
+ (|prng_seed32_TCC1| 0
+  (|prng_seed32_TCC1-1| NIL 4004536667
+   ("" (THEN (AUTO-REWRITE "exp2") (GRIND :DEFS NIL)) NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)) "shostak"
+   (|prng_seed32| SUBTYPE "crypto_seeds.base" "uint32" (8 72 8 76))))
+ (|first_sample_failure| 0
+  (|first_sample_failure-1| NIL 4004536667
+   (""
+    (THEN (SKOSIMP*) (EXPAND "prng_seed32") (EXPAND "acquire")
+     (EXPAND "collect") (GRIND :DEFS ("u32plus")))
+    NIL)
+   ((|prng_seed32| CONST-DECL "seed32_read" |crypto_seeds| NIL)
+    (|collect| DEF-DECL "acquisition(n)" |crypto_random_buffers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|u32plus| CONST-DECL "uint32" |integertypes| NIL)
+    (|max32| CONST-DECL "uint32" |integertypes| NIL)
+    (|available| CONST-DECL "bool" |crypto_random| NIL)
+    (|unavailable| CONST-DECL "observation" |crypto_random| NIL)
+    (|prng_sample| CONST-DECL "observation" |crypto_random| NIL)
+    (|acquire| CONST-DECL "acquisition(n)" |crypto_random_buffers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   "shostak")))
+

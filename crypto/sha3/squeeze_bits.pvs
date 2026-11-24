@@ -1,0 +1,14 @@
+% FIPS 202 Appendix B.1. The first bit of an output octet is its low bit.
+squeeze_bits: THEORY
+BEGIN
+  crypto_prelude: LIBRARY="../crypto_prelude"
+  IMPORTING sp800_185,crypto_prelude@crypto_buffers
+  suffix(w:index):TYPE={r:below(8) | r=0 OR w+1<maxsize}
+  read_bits(c:squeezing,w:index,r:suffix(w)):packed =
+    IF r=0 THEN octets(output(c,w))
+    ELSE LET v=output(c,w+1) IN
+      (# octets:=first_octets(v,w),tail:=u8and(v`seq(w),u8rshift(255,8-r)),used:=r #)
+    ENDIF
+  bits_read: LEMMA FORALL(c:squeezing,w:index,r:suffix(w)):
+    bits_in(read_bits(c,w,r))=8*w+r
+END squeeze_bits

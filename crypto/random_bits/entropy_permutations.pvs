@@ -1,0 +1,91 @@
+% SP 800-90B §5.1, Figures 4 and 5. The caller assigns a fresh PRNG
+% snapshot to each permutation. Draws rejected to avoid modulo bias consume
+% four bytes. Snapshot exhaustion and compression errors invalidate a run.
+entropy_permutations: THEORY
+BEGIN
+  crypto_prelude:LIBRARY="../crypto_prelude"
+  IMPORTING entropy_iid,crypto_prelude@crypto_compression,crypto_prelude@crypto_random_buffers
+  at(x:bytestring,i:uint32):uint8=IF i<x`length THEN x`seq(i) ELSE 0 ENDIF
+  octet(x:bytestring,i:uint32,j:upto(8),acc:uint8,pop:bool):RECURSIVE uint8=
+    IF j=8 THEN acc ELSE LET b=u8and(at(x,u32plus(i,j)),1) IN
+      octet(x,i,j+1,IF pop THEN u8plus(acc,b) ELSE u8or(u8lshift(acc,1),b) ENDIF,pop) ENDIF MEASURE 8-j
+  convert(x:bytestring,pop:bool):bytestring=
+    LET n:index=u32div(x`length+7,8) IN (# length:=n,seq:=LAMBDA(i:below(n)):octet(x,8*i,0,0,pop) #)
+  quantile(h:stat_counts,i:upto(255),rank:uint32):RECURSIVE uint8=
+    IF i=255 OR rank<h(i) THEN i ELSE quantile(h,i+1,u32minus(rank,h(i))) ENDIF MEASURE 255-i
+  total(x:bytestring,i:upto(x`length),a:uint64):RECURSIVE uint64=
+    IF i=x`length THEN a ELSE total(x,i+1,u64plus(a,x`seq(i))) ENDIF MEASURE x`length-i
+  excursion_stat(x:bytestring,meanval:fp,i:upto(x`length),a:uint64,best:fp):RECURSIVE fp=
+    IF i=x`length THEN best ELSE LET s=u64plus(a,x`seq(i)),v=fp_abs(fp_sub(fl(s),fp_mul(fl(i+1),meanval))) IN
+      excursion_stat(x,meanval,i+1,s,fp_max(best,v)) ENDIF MEASURE x`length-i
+  run_info:TYPE=[# plus,minus,nruns,run,maxrun:uint32,prev:bool #]
+  empty_runs:run_info=(# plus:=0,minus:=0,nruns:=0,run:=0,maxrun:=0,prev:=FALSE #)
+  run_counts(x:bytestring,median2:uint16,directional:bool,i:upto(x`length),a:run_info):RECURSIVE run_info=
+    IF i=x`length OR (directional AND i+1=x`length) THEN a ELSE
+      LET v=IF directional THEN x`seq(i)<=x`seq(i+1) ELSE 2*x`seq(i)>=median2 ENDIF,
+          change=a`nruns=0 OR v/=a`prev,r:uint32=IF change THEN 1 ELSE u32plus(a`run,1) ENDIF IN
+        run_counts(x,median2,directional,i+1,(# prev:=v,run:=r,maxrun:=u32max(a`maxrun,r),
+          nruns:=IF change THEN u32plus(a`nruns,1) ELSE a`nruns ENDIF,
+          plus:=IF v THEN u32plus(a`plus,1) ELSE a`plus ENDIF,
+          minus:=IF v THEN a`minus ELSE u32plus(a`minus,1) ENDIF #)) ENDIF MEASURE x`length-i
+  collision_info:TYPE=[# used,total,maxlen:uint32 #]
+  collision_stats(x:bytestring,i:upto(x`length),start:uint32,h:stat_counts,a:collision_info):RECURSIVE collision_info=
+    IF i=x`length THEN a ELSE LET sym=x`seq(i),n=u32minus(i+1,start) IN
+      IF h(sym)>start THEN collision_stats(x,i+1,i+1,h,(# used:=u32plus(a`used,1),total:=u32plus(a`total,n),maxlen:=u32max(n,a`maxlen) #))
+      ELSE collision_stats(x,i+1,start,h WITH [(sym):=i+1],a) ENDIF ENDIF MEASURE x`length-i
+  lag_stat(x:bytestring,lag:uint8,product:bool,i:upto(x`length),acc:uint64):RECURSIVE uint64=
+    IF i+lag>=x`length THEN acc ELSE LET a=x`seq(i),b=x`seq(i+lag),
+      t:uint32=IF product THEN u32times(a,b) ELSIF a=b THEN 1 ELSE 0 ENDIF IN
+      lag_stat(x,lag,product,i+1,u64plus(acc,t)) ENDIF MEASURE x`length-i
+  digits(b:uint8):subrange(1,3)=IF b<10 THEN 1 ELSIF b<100 THEN 2 ELSE 3 ENDIF
+  text_size(x:bytestring,i:upto(x`length),acc:uint32):RECURSIVE uint32=
+    IF i=x`length THEN acc ELSE text_size(x,i+1,u32plus(acc,digits(x`seq(i))+IF i=0 THEN 0 ELSE 1 ENDIF)) ENDIF MEASURE x`length-i
+  write_dec(out:buffer,pos:uint32,b:uint8,n:upto(3)):RECURSIVE {z:buffer | z`length=out`length}=
+    IF n=0 OR pos+n>out`length THEN out ELSE
+      write_dec(out WITH [`seq(pos+n-1):=48+u8rem(b,10)],pos,u8div(b,10),n-1) ENDIF MEASURE n
+  serialize(x:bytestring,i:upto(x`length),pos:uint32,out:buffer):RECURSIVE buffer=
+    IF i=x`length THEN out ELSE LET gap:uint8=IF i=0 THEN 0 ELSE 1 ENDIF,j=u32plus(pos,gap),b=x`seq(i) IN
+      serialize(x,i+1,u32plus(j,digits(b)),write_dec(out,j,b,digits(b))) ENDIF MEASURE x`length-i
+  compressed(x:bytestring):uint32=
+    LET n=text_size(x,0,0),out:buffer=(# length:=n,seq:=LAMBDA(i:below(n)):32 #) IN bzip2_length(serialize(x,0,0,out))
+  statistics:TYPE=ARRAY[below(19)->fp]
+  lag_at(i:below(5)):uint8=IF i=0 THEN 1 ELSIF i=1 THEN 2 ELSIF i=2 THEN 8 ELSIF i=3 THEN 16 ELSE 32 ENDIF
+  permutation_stats(x:{s:bytestring | s`length>0},binary:bool):statistics=
+    LET h=counts(x,0,x`length,empty_counts),m:uint16=IF binary THEN 1 ELSE
+        quantile(h,0,u32div(x`length-1,2))+quantile(h,0,u32div(x`length,2)) ENDIF,
+        y=IF binary THEN as_binary(x,h) ELSE x ENDIF,
+        d=IF binary THEN convert(y,TRUE) ELSE x ENDIF,v=IF binary THEN convert(y,FALSE) ELSE x ENDIF,
+        a=run_counts(d,0,TRUE,0,empty_runs),b=run_counts(y,m,FALSE,0,empty_runs),
+        c=collision_stats(v,0,0,empty_counts,(# used:=0,total:=0,maxlen:=0 #)) IN
+      LAMBDA(j:below(19)):COND j=0 -> excursion_stat(x,ratio(total(x,0,0),x`length),0,0,fl(0)),
+        j=1 -> fl(a`nruns), j=2 -> fl(a`maxrun),j=3 -> fl(u32max(a`plus,a`minus)),j=4 -> fl(b`nruns),
+        j=5 -> fl(b`maxrun),j=6 -> IF c`used=0 THEN fl(0) ELSE ratio(c`total,c`used) ENDIF,j=7 -> fl(c`maxlen),
+        j<18 -> fl(lag_stat(d,lag_at(u8rem(j-8,5)),j>=13,0,0)),ELSE -> fl(compressed(x)) ENDCOND
+  draw:TYPE=[# ok:bool,value,cursor:uint32 #]
+  uniform(s:stream_id,bound:pos_uint32,pos:uint32):RECURSIVE draw=
+    IF pos>4294967291 THEN (# ok:=FALSE,value:=0,cursor:=pos #) ELSE LET a=acquire(4,s,pos),v=a`value`seq,
+       r:uint32=u32or(u32or(u32lshift(v(0),24),u32lshift(v(1),16)),u32or(u32lshift(v(2),8),v(3))) IN
+      IF NOT a`ok THEN (# ok:=FALSE,value:=0,cursor:=pos #)
+      ELSIF r<u64rem(4294967296,bound) THEN uniform(s,bound,pos+4)
+      ELSE (# ok:=TRUE,value:=u32rem(r,bound),cursor:=pos+4 #) ENDIF ENDIF MEASURE 4294967295-pos
+  shuffled:TYPE=[# ok:bool,value:bytestring #]
+  shuffle(x:bytestring,i:upto(x`length),s:stream_id,pos:uint32):RECURSIVE shuffled=
+    IF i<2 THEN (# ok:=TRUE,value:=x #) ELSE LET r=uniform(s,i,pos),j=r`value IN
+      IF NOT r`ok OR j>=i THEN (# ok:=FALSE,value:=fill_octets(0,0) #) ELSE
+        LET a=x`seq(i-1),b=x`seq(j),next=IF j=i-1 THEN x ELSE x WITH [`seq(i-1):=b,`seq(j):=a] ENDIF IN
+        shuffle(next,i-1,s,r`cursor) ENDIF ENDIF MEASURE i
+  rank_count:TYPE=[# greater,equal:uint16 #]
+  ranks:TYPE=ARRAY[below(19)->rank_count]
+  passed(r:ranks,i:upto(19)):RECURSIVE bool=
+    IF i=19 THEN TRUE ELSIF r(i)`greater+r(i)`equal<=5 OR r(i)`greater>=9995 THEN FALSE ELSE passed(r,i+1) ENDIF MEASURE 19-i
+  permutation_test(x:{s:bytestring | s`length>0},binary:bool,original:statistics,src:stream_id,i:upto(10000),r:ranks):RECURSIVE bool=
+    IF i=10000 THEN passed(r,0) ELSIF src>18446744073709551615-i THEN FALSE ELSE LET y=shuffle(x,x`length,u64plus(src,i),0) IN
+      IF NOT y`ok OR y`value`length=0 THEN FALSE ELSE LET v=permutation_stats(y`value,binary),
+        next:ranks=LAMBDA(j:below(19)):(# greater:=IF fp_lt(original(j),v(j)) THEN u16plus(r(j)`greater,1) ELSE r(j)`greater ENDIF,
+          equal:=IF original(j)=v(j) THEN u16plus(r(j)`equal,1) ELSE r(j)`equal ENDIF #) IN
+        v(18)/=fl(0) AND permutation_test(x,binary,original,src,i+1,next) ENDIF ENDIF MEASURE 10000-i
+  iid_permutations(x:{s:bytestring | s`length>0},binary:bool,src:stream_id):bool=
+    LET v=permutation_stats(x,binary) IN v(18)/=fl(0) AND permutation_test(x,binary,v,src,0,LAMBDA(j:below(19)):(# greater:=0,equal:=0 #))
+  shuffle_preserves_length: THEOREM FORALL(x:bytestring,s:stream_id):
+    LET y=shuffle(x,x`length,s,0) IN y`ok IMPLIES y`value`length=x`length
+END entropy_permutations

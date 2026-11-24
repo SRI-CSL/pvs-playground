@@ -1,0 +1,73 @@
+% SP 800-90A Rev. 1, Table 2 and sections 10.1.1, 10.3.1.
+hash_drbg: THEORY
+BEGIN
+  hmac: LIBRARY = "../hmac"
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING hmac@hmac_drbg, crypto_prelude@crypto_add_bytes
+
+  seed_bytes(h: drbg_hash): subrange(55,111) =
+    IF h = h_sha384 OR h = h_sha512 OR h = h_sha3_384 OR h = h_sha3_512 THEN 111 ELSE 55 ENDIF
+  hash_state: TYPE = [# algorithm: drbg_hash, v, c: octets_of(seed_bytes(algorithm)),
+                        requests: counter #]
+  df_input: TYPE = {x: bytestring | x`length + 5 < maxsize}
+  df_prefix(h: drbg_hash, i: uint8): octets_of(5) =
+    LET bits: uint32 = 8*seed_bytes(h) IN
+      (# length := 5, seq := LAMBDA (j: below(5)):
+         IF j=0 THEN i ELSE be_byte32(bits,j-1) ENDIF #)
+
+  % Hash_df is called here only for the selected mechanism's seed length.
+  df_from(h: drbg_hash, x: df_input, out: octets_of(seed_bytes(h)),
+          at: upto(seed_bytes(h)), i: uint8): RECURSIVE octets_of(seed_bytes(h)) =
+    IF at = seed_bytes(h) THEN out
+    ELSE LET d = hash_message(h,join_octets(df_prefix(h,i),x)),
+             after: upto(seed_bytes(h)) = IF at + hash_bytes(h) >= seed_bytes(h)
+                                          THEN seed_bytes(h) ELSE at + hash_bytes(h) ENDIF
+         IN df_from(h,x,copy_octets(out,at,d,0),after,u8plus(i,1))
+    ENDIF MEASURE seed_bytes(h)-at
+  hash_df(h: drbg_hash, x: df_input): octets_of(seed_bytes(h)) =
+    df_from(h,x,fill_octets(seed_bytes(h),0),0,1)
+
+  fresh_state(h: drbg_hash, x: df_input): hash_state =
+    LET v = hash_df(h,x), c = hash_df(h,join_octets(fill_octets(1,0),v))
+    IN (# algorithm := h, v := v, c := c, requests := 1 #)
+  hash_instantiate(h: drbg_hash, e: entropy_input,
+      nonce: {x: bytestring | e`length + x`length <= material_bound},
+      personal: {x: bytestring | e`length + nonce`length + x`length <= material_bound}): hash_state =
+    fresh_state(h,join_octets(join_octets(e,nonce),personal))
+  hash_reseed(s: hash_state, e: entropy_input,
+      extra: {a: bytestring | e`length + a`length <= material_bound}): hash_state =
+    fresh_state(s`algorithm,join_octets(join_octets(fill_octets(1,1),s`v),join_octets(e,extra)))
+
+  hashgen(h: drbg_hash, data: octets_of(seed_bytes(h)), out: bytestring, at: upto(out`length)):
+      RECURSIVE octets_of(out`length) =
+    IF at = out`length THEN out
+    ELSE LET b = hash_message(h,data), next = copy_octets(out,at,b,0),
+             after: index = IF at+hash_bytes(h) >= out`length THEN out`length ELSE at+hash_bytes(h) ENDIF
+         IN hashgen(h,add_be(data,fill_octets(1,1)),next,after)
+    ENDIF MEASURE out`length-at
+
+  hash_result: TYPE = [# success: bool, current: hash_state, data: bytestring #]
+  hash_generate(s: hash_state, n: request_bits, extra: material): hash_result =
+    IF s`requests > reseed_interval THEN (# success := FALSE, current := s, data := fill_octets(0,0) #)
+    ELSE LET h = s`algorithm,
+             v = IF extra`length = 0 THEN s`v
+                 ELSE add_be(s`v,hash_message(h,join_octets(join_octets(fill_octets(1,2),s`v),extra))) ENDIF,
+             out_len: index = u32rshift(n + 7,3), d = hashgen(h,v,fill_octets(out_len,0),0),
+             used: below(8) = nrem(n,8),
+             output = IF used = 0 OR d`length = 0 THEN d
+                      ELSE LET last: index = d`length-1 IN
+                        d WITH [`seq(last) := u8and(d`seq(last),u8lshift(255,8-used))] ENDIF,
+             hh = hash_message(h,join_octets(fill_octets(1,3),v)),
+             count: octets_of(8) = (# length := 8, seq := LAMBDA (j: below(8)): be_byte64(s`requests,j) #),
+             final = s WITH [`v := add_be(add_be(add_be(v,hh),s`c),count), `requests := s`requests+1]
+         IN (# success := TRUE, current := final, data := output #)
+    ENDIF
+
+  hash_reseed_generate(s: hash_state, e: entropy_input,
+      extra: {a: bytestring | e`length + a`length <= material_bound}, n: request_bits): hash_result =
+    hash_generate(hash_reseed(s,e,extra),n,fill_octets(0,0))
+
+  hash_expired: LEMMA FORALL (s: hash_state, n: request_bits, a: material):
+    s`requests > reseed_interval IMPLIES
+      NOT hash_generate(s,n,a)`success AND hash_generate(s,n,a)`current = s
+END hash_drbg

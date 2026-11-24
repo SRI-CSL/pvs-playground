@@ -1,0 +1,25 @@
+% SP 800-135r1 section 5.3; RFC 3711 sections 4.3 and B.3.
+srtp_kdf: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING aes_modes, crypto_prelude@crypto_block_io, crypto_prelude@crypto_words
+  salt112: TYPE = byv[14]
+  packet_index: TYPE = {i:uint64 | i < 281474976710656}
+  key_label: TYPE = below(6)
+  packet_for(label:key_label): TYPE = {i:packet_index | label<3 OR i<2147483648}
+  % SRTP labels 0,1,2 and SRTCP labels 3,4,5 identify their encryption,
+  % authentication and salting keys, respectively. Static derivation uses r=0.
+  first_counter(s:salt112,label:key_label,i:packet_for(label),static:bool,power:upto(24)): block =
+    LET r:uint64=IF static THEN 0 ELSE u64rshift(i,power) ENDIF,
+        label_pos:below(14)=IF label<3 THEN 7 ELSE 9 ENDIF IN
+    LAMBDA (j:below(16)):
+      IF j<label_pos THEN s(j) ELSIF j=label_pos THEN u8xor(s(j),label)
+      ELSIF j<14 THEN u8xor(s(j),be_byte64(r,j-6)) ELSE 0 ENDIF
+  write_key(k:mode_key,c:block,out:bytestring,pos:upto(out`length)): RECURSIVE octets_of(out`length) =
+    IF pos=out`length THEN out ELSE
+      write_key(k,increment(c,16),write_block(out,pos,ecb_encrypt(k,c)),next_block(out`length,pos))
+    ENDIF MEASURE out`length-pos
+  derive(k:mode_key,s:salt112,label:key_label,i:packet_for(label),static:bool,power:upto(24),
+         n:upto(1048576)): octets_of(n) =
+    write_key(k,first_counter(s,label,i,static,power),fill_octets(n,0),0)
+END srtp_kdf

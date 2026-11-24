@@ -1,0 +1,26 @@
+sums_ring [T: TYPE, +, *: [T, T -> T], zero: T]: THEORY
+  BEGIN
+
+    ASSUMING IMPORTING algebra@ring_def[T, +, *, zero]
+      ring: ASSUMPTION ring?(fullset[T])
+    ENDASSUMING
+
+    IMPORTING sums_abelian_group[T, +, zero]
+    
+    IMPORTING algebra@ring[T, +, *, zero]
+
+    a: VAR T
+
+    sum_times_const_r: LEMMA FORALL (A: ARRAY[nat -> T], n: nat):
+    		               a * sum(A, n) = sum(LAMBDA (k: nat): a * A(k), n)
+
+    sum_f_times_const_r: LEMMA FORALL (n: nat, A: ARRAY[below(n) -> T]):
+    		                 a * sum_f(n)(A) = sum_f(n)(LAMBDA (k: below(n)): a * A(k))
+
+    sum_times_const_l: LEMMA FORALL (A: ARRAY[nat -> T], n: nat):
+    		               sum(A, n) * a = sum(LAMBDA (k: nat): A(k) * a, n)     
+
+    sum_f_times_const_l: LEMMA FORALL (n: nat, A: ARRAY[below(n) -> T]):
+    		                 sum_f(n)(A) * a = sum_f(n)(LAMBDA (k: below(n)): A(k) * a)
+
+  END sums_ring

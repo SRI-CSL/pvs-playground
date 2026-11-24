@@ -1,0 +1,14 @@
+% FIPS 202 section 3. The mathematical state consists of exactly 25*w bits.
+keccak_p_claims: THEORY
+BEGIN
+  IMPORTING keccak_p
+  canonical(l:lane_log,a:lanes):bool=FORALL(i:lane_number):a(i)=u64and(a(i),lane_mask(l))
+  preserves_width: THEOREM FORALL(l:lane_log,n:{v:uint32 | v>0},a:lanes):
+    canonical(l,permute_p(l,n,a))
+  injective_permutation: THEOREM FORALL(l:lane_log,n:{v:uint32 | v>0},a,b:lanes):
+    canonical(l,a) AND canonical(l,b) AND permute_p(l,n,a)=permute_p(l,n,b) IMPLIES a=b
+  surjective_permutation: THEOREM FORALL(l:lane_log,n:{v:uint32 | v>0},b:lanes):
+    canonical(l,b) IMPLIES EXISTS(a:lanes):canonical(l,a) AND permute_p(l,n,a)=b
+  f1600_agreement: THEOREM FORALL(a:lanes):permute_f(6,a)=permute(a)
+  iota_constants_agree: THEOREM FORALL(i:below(24)):rc_word(6,i)=round_constant(i)
+END keccak_p_claims

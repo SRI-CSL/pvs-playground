@@ -1,0 +1,59 @@
+% Unsigned 256-bit values. Limb zero is least significant. All arithmetic
+% paths use bounded Prelude words and keep the carry/borrow explicit.
+crypto_u256: THEORY
+BEGIN
+  u256: TYPE = ARRAY[below(8) -> uint32]
+  limb_result: TYPE = [# value: u256, carry: bool #]
+  zero256: u256 = LAMBDA (i: below(8)): 0
+  one256: u256 = LAMBDA (i: below(8)): IF i = 0 THEN 1 ELSE 0 ENDIF
+
+  ge_from(a, b: u256, n: upto(8)): RECURSIVE bool =
+    IF n = 0 THEN TRUE
+    ELSIF a(n - 1) = b(n - 1) THEN ge_from(a, b, n - 1)
+    ELSE a(n - 1) > b(n - 1) ENDIF
+    MEASURE n
+  ge256(a, b: u256): bool = ge_from(a, b, 8)
+
+  add_from(a, b, out: u256, c: bool, i: upto(8)): RECURSIVE limb_result =
+    IF i = 8 THEN (# value := out, carry := c #)
+    ELSE LET x = a(i), y = b(i), s = u32plus(x, y),
+             sum = IF c THEN u32plus(s, 1) ELSE s ENDIF
+         IN add_from(a, b, out WITH [(i) := sum], s < x OR sum < s, i + 1)
+    ENDIF MEASURE 8 - i
+
+  sub_from(a, b, out: u256, borrow: bool, i: upto(8)): RECURSIVE u256 =
+    IF i = 8 THEN out
+    ELSE LET x = a(i), y = b(i), d = u32minus(x, y),
+             digit = IF borrow THEN u32minus(d, 1) ELSE d ENDIF
+         IN sub_from(a, b, out WITH [(i) := digit],
+                     x < y OR (x = y AND borrow), i + 1)
+    ENDIF MEASURE 8 - i
+  sub256(a, b: u256): u256 = sub_from(a, b, zero256, FALSE, 0)
+
+  % When a,b < m, subtracting m at most once gives a canonical result.
+  mod_add(a, b, m: u256): u256 =
+    LET s = add_from(a, b, zero256, FALSE, 0) IN
+      IF s`carry OR ge256(s`value, m) THEN sub256(s`value, m) ELSE s`value ENDIF
+  mod_sub(a, b, m: u256): u256 =
+    IF ge256(a, b) THEN sub256(a, b) ELSE sub256(m, sub256(b, a)) ENDIF
+
+  bit256(x: u256, i: below(256)): bool =
+    u32and(u32rshift(x(ndiv(i, 32)), nrem(i, 32)), 1) = 1
+  mul_from(a, b, m, acc: u256, n: upto(256)): RECURSIVE u256 =
+    IF n = 0 THEN acc
+    ELSE LET twice = mod_add(acc, acc, m),
+             next = IF bit256(b, n - 1) THEN mod_add(twice, a, m) ELSE twice ENDIF
+         IN mul_from(a, b, m, next, n - 1)
+    ENDIF MEASURE n
+  mod_mul(a, b, m: u256): u256 = mul_from(a, b, m, zero256, 256)
+
+  pow_from(a, exponent, m, acc: u256, n: upto(256)): RECURSIVE u256 =
+    IF n = 0 THEN acc
+    ELSE LET sq = mod_mul(acc, acc, m),
+             next = IF bit256(exponent, n - 1) THEN mod_mul(sq, a, m) ELSE sq ENDIF
+         IN pow_from(a, exponent, m, next, n - 1)
+    ENDIF MEASURE n
+  mod_pow(a, exponent, m: u256): u256 = pow_from(a, exponent, m, one256, 256)
+
+  ge_reflexive: LEMMA FORALL (a: u256, n: upto(8)): ge_from(a, a, n)
+END crypto_u256

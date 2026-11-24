@@ -1,0 +1,148 @@
+% SP 800-186 §3.2.1. Little-endian uint32 limbs, including the high
+% partial limb of P-521. All five prime curves have coefficient a=p-3 and h=1.
+nist_prime_curves: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_limbs
+  curve: TYPE = below(5)
+  p192: curve=0
+  p224: curve=1
+  p256: curve=2
+  p384: curve=3
+  p521: curve=4
+  width(c: curve): limb_count =
+    IF c=p192 THEN 6 ELSIF c=p224 THEN 7 ELSIF c=p256 THEN 8 ELSIF c=p384 THEN 12 ELSE 17 ENDIF
+  bits(c: curve): uint16 =
+    IF c=p192 THEN 192 ELSIF c=p224 THEN 224 ELSIF c=p256 THEN 256 ELSIF c=p384 THEN 384 ELSE 521 ENDIF
+  scalar(c: curve): TYPE = words_of(width(c))
+
+  p192_prime: words_of(6) =
+    (# len:=6, word:=[: 0xffffffff, 0xffffffff, 0xfffffffe, 0xffffffff,
+       0xffffffff, 0xffffffff :] #)
+  p224_prime: words_of(7) =
+    (# len:=7, word:=[: 0x00000001, 0x00000000, 0x00000000, 0xffffffff,
+       0xffffffff, 0xffffffff, 0xffffffff :] #)
+  p256_prime: words_of(8) =
+    (# len:=8, word:=[: 0xffffffff, 0xffffffff, 0xffffffff, 0x00000000,
+       0x00000000, 0x00000000, 0x00000001, 0xffffffff :] #)
+  p384_prime: words_of(12) =
+    (# len:=12, word:=[: 0xffffffff, 0x00000000, 0x00000000, 0xffffffff,
+       0xfffffffe, 0xffffffff, 0xffffffff, 0xffffffff,
+       0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff :] #)
+  p521_prime: words_of(17) =
+    (# len:=17, word:=[: 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+       0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+       0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+       0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+       0x000001ff :] #)
+  prime(c: curve): scalar(c) =
+    IF c=p192 THEN p192_prime
+    ELSIF c=p224 THEN p224_prime
+    ELSIF c=p256 THEN p256_prime
+    ELSIF c=p384 THEN p384_prime
+    ELSE p521_prime ENDIF
+
+  p192_coefficient: words_of(6) =
+    (# len:=6, word:=[: 0xc146b9b1, 0xfeb8deec, 0x72243049, 0x0fa7e9ab,
+       0xe59c80e7, 0x64210519 :] #)
+  p224_coefficient: words_of(7) =
+    (# len:=7, word:=[: 0x2355ffb4, 0x270b3943, 0xd7bfd8ba, 0x5044b0b7,
+       0xf5413256, 0x0c04b3ab, 0xb4050a85 :] #)
+  p256_coefficient: words_of(8) =
+    (# len:=8, word:=[: 0x27d2604b, 0x3bce3c3e, 0xcc53b0f6, 0x651d06b0,
+       0x769886bc, 0xb3ebbd55, 0xaa3a93e7, 0x5ac635d8 :] #)
+  p384_coefficient: words_of(12) =
+    (# len:=12, word:=[: 0xd3ec2aef, 0x2a85c8ed, 0x8a2ed19d, 0xc656398d,
+       0x5013875a, 0x0314088f, 0xfe814112, 0x181d9c6e,
+       0xe3f82d19, 0x988e056b, 0xe23ee7e4, 0xb3312fa7 :] #)
+  p521_coefficient: words_of(17) =
+    (# len:=17, word:=[: 0x6b503f00, 0xef451fd4, 0x3d2c34f1, 0x3573df88,
+       0x3bb1bf07, 0x1652c0bd, 0xec7e937b, 0x56193951,
+       0x8ef109e1, 0xb8b48991, 0x99b315f3, 0xa2da725b,
+       0xb68540ee, 0x929a21a0, 0x8e1c9a1f, 0x953eb961,
+       0x00000051 :] #)
+  coefficient(c: curve): scalar(c) =
+    IF c=p192 THEN p192_coefficient
+    ELSIF c=p224 THEN p224_coefficient
+    ELSIF c=p256 THEN p256_coefficient
+    ELSIF c=p384 THEN p384_coefficient
+    ELSE p521_coefficient ENDIF
+
+  p192_gx: words_of(6) =
+    (# len:=6, word:=[: 0x82ff1012, 0xf4ff0afd, 0x43a18800, 0x7cbf20eb,
+       0xb03090f6, 0x188da80e :] #)
+  p224_gx: words_of(7) =
+    (# len:=7, word:=[: 0x115c1d21, 0x343280d6, 0x56c21122, 0x4a03c1d3,
+       0x321390b9, 0x6bb4bf7f, 0xb70e0cbd :] #)
+  p256_gx: words_of(8) =
+    (# len:=8, word:=[: 0xd898c296, 0xf4a13945, 0x2deb33a0, 0x77037d81,
+       0x63a440f2, 0xf8bce6e5, 0xe12c4247, 0x6b17d1f2 :] #)
+  p384_gx: words_of(12) =
+    (# len:=12, word:=[: 0x72760ab7, 0x3a545e38, 0xbf55296c, 0x5502f25d,
+       0x82542a38, 0x59f741e0, 0x8ba79b98, 0x6e1d3b62,
+       0xf320ad74, 0x8eb1c71e, 0xbe8b0537, 0xaa87ca22 :] #)
+  p521_gx: words_of(17) =
+    (# len:=17, word:=[: 0xc2e5bd66, 0xf97e7e31, 0x856a429b, 0x3348b3c1,
+       0xa2ffa8de, 0xfe1dc127, 0xefe75928, 0xa14b5e77,
+       0x6b4d3dba, 0xf828af60, 0x053fb521, 0x9c648139,
+       0x2395b442, 0x9e3ecb66, 0x0404e9cd, 0x858e06b7,
+       0x000000c6 :] #)
+  gx(c: curve): scalar(c) =
+    IF c=p192 THEN p192_gx
+    ELSIF c=p224 THEN p224_gx
+    ELSIF c=p256 THEN p256_gx
+    ELSIF c=p384 THEN p384_gx
+    ELSE p521_gx ENDIF
+
+  p192_gy: words_of(6) =
+    (# len:=6, word:=[: 0x1e794811, 0x73f977a1, 0x6b24cdd5, 0x631011ed,
+       0xffc8da78, 0x07192b95 :] #)
+  p224_gy: words_of(7) =
+    (# len:=7, word:=[: 0x85007e34, 0x44d58199, 0x5a074764, 0xcd4375a0,
+       0x4c22dfe6, 0xb5f723fb, 0xbd376388 :] #)
+  p256_gy: words_of(8) =
+    (# len:=8, word:=[: 0x37bf51f5, 0xcbb64068, 0x6b315ece, 0x2bce3357,
+       0x7c0f9e16, 0x8ee7eb4a, 0xfe1a7f9b, 0x4fe342e2 :] #)
+  p384_gy: words_of(12) =
+    (# len:=12, word:=[: 0x90ea0e5f, 0x7a431d7c, 0x1d7e819d, 0x0a60b1ce,
+       0xb5f0b8c0, 0xe9da3113, 0x289a147c, 0xf8f41dbd,
+       0x9292dc29, 0x5d9e98bf, 0x96262c6f, 0x3617de4a :] #)
+  p521_gy: words_of(17) =
+    (# len:=17, word:=[: 0x9fd16650, 0x88be9476, 0xa272c240, 0x353c7086,
+       0x3fad0761, 0xc550b901, 0x5ef42640, 0x97ee7299,
+       0x273e662c, 0x17afbd17, 0x579b4468, 0x98f54449,
+       0x2c7d1bd9, 0x5c8a5fb4, 0x9a3bc004, 0x39296a78,
+       0x00000118 :] #)
+  gy(c: curve): scalar(c) =
+    IF c=p192 THEN p192_gy
+    ELSIF c=p224 THEN p224_gy
+    ELSIF c=p256 THEN p256_gy
+    ELSIF c=p384 THEN p384_gy
+    ELSE p521_gy ENDIF
+
+  p192_order: words_of(6) =
+    (# len:=6, word:=[: 0xb4d22831, 0x146bc9b1, 0x99def836, 0xffffffff,
+       0xffffffff, 0xffffffff :] #)
+  p224_order: words_of(7) =
+    (# len:=7, word:=[: 0x5c5c2a3d, 0x13dd2945, 0xe0b8f03e, 0xffff16a2,
+       0xffffffff, 0xffffffff, 0xffffffff :] #)
+  p256_order: words_of(8) =
+    (# len:=8, word:=[: 0xfc632551, 0xf3b9cac2, 0xa7179e84, 0xbce6faad,
+       0xffffffff, 0xffffffff, 0x00000000, 0xffffffff :] #)
+  p384_order: words_of(12) =
+    (# len:=12, word:=[: 0xccc52973, 0xecec196a, 0x48b0a77a, 0x581a0db2,
+       0xf4372ddf, 0xc7634d81, 0xffffffff, 0xffffffff,
+       0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff :] #)
+  p521_order: words_of(17) =
+    (# len:=17, word:=[: 0x91386409, 0xbb6fb71e, 0x899c47ae, 0x3bb5c9b8,
+       0xf709a5d0, 0x7fcc0148, 0xbf2f966b, 0x51868783,
+       0xfffffffa, 0xffffffff, 0xffffffff, 0xffffffff,
+       0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+       0x000001ff :] #)
+  order(c: curve): scalar(c) =
+    IF c=p192 THEN p192_order
+    ELSIF c=p224 THEN p224_order
+    ELSIF c=p256 THEN p256_order
+    ELSIF c=p384 THEN p384_order
+    ELSE p521_order ENDIF
+END nist_prime_curves

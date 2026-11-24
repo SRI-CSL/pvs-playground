@@ -1,0 +1,59 @@
+% SP 800-38A §§6.1–6.5, Appendix B.1; SP 800-38B §§6.1–6.3.
+% Each call processes a block or segment. Supply the previous step's feedback
+% to process the next. Octets and bits are in NIST most-significant-first order.
+aes_modes: THEORY
+BEGIN
+  aes: LIBRARY = "../aes"
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING aes@aes_fips197, crypto_prelude@crypto_blocks
+
+  mode_key: DATATYPE
+  BEGIN
+    mk128(k128: block): is128?
+    mk192(k192: key192): is192?
+    mk256(k256: key256): is256?
+  END mode_key
+  ecb_encrypt(k: mode_key, x: block): block =
+    CASES k OF mk128(a): aes128_encrypt(x,a), mk192(a): aes192_encrypt(x,a),
+               mk256(a): aes256_encrypt(x,a) ENDCASES
+  ecb_decrypt(k: mode_key, x: block): block =
+    CASES k OF mk128(a): aes128_decrypt(x,a), mk192(a): aes192_decrypt(x,a),
+               mk256(a): aes256_decrypt(x,a) ENDCASES
+  cbc_encrypt(k: mode_key, chain,p: block): block = ecb_encrypt(k,byvXOR(chain,p))
+  cbc_decrypt(k: mode_key, chain,c: block): block = byvXOR(chain,ecb_decrypt(k,c))
+
+  % CFB shift register: (I << s) || MSB_s(ciphertext).
+  shift_byte(old,ct: block, n: width, base: below(16), j: upto(8), acc: uint8): RECURSIVE uint8 =
+    IF j = 8 THEN acc
+    ELSE LET pos: uint16 = 8*base+j+n,
+             b = IF pos < 128 THEN bit_at(old,pos) ELSE bit_at(ct,pos-128) ENDIF IN
+      shift_byte(old,ct,n,base,j+1,u8or(u8lshift(acc,1),b))
+    ENDIF MEASURE 8-j
+  feedback: TYPE = [# data, next_reg: block #]
+  cfb(k: mode_key, reg, segment: block,n: width, decrypting: bool): feedback =
+    LET out = take_bits(byvXOR(ecb_encrypt(k,reg),segment),n),
+        ct = IF decrypting THEN segment ELSE out ENDIF IN
+      (# data := out, next_reg := LAMBDA (i: upto(15)): shift_byte(reg,ct,n,i,0,0) #)
+  ofb(k: mode_key, reg, segment: block,n: width): feedback =
+    LET next = ecb_encrypt(k,reg) IN
+      (# data := take_bits(byvXOR(next,segment),n), next_reg := next #)
+  % Full-width big-endian increment, modulo 2^128. Callers allocate unique
+  % counter blocks per key; a truncated final block consumes its whole counter.
+  ctr(k: mode_key, counter, segment: block,n: width): feedback =
+    (# data := take_bits(byvXOR(ecb_encrypt(k,counter),segment),n),
+       next_reg := increment(counter,16) #)
+
+  % CMAC. Start with the zero chain. Reserve the final block (possibly empty)
+  % for cmac_finish. Its n is 128 for a complete block, 0 for an empty message.
+  dbl(x: block): block = LAMBDA (i: upto(15)):
+    LET carry: uint8 = IF i = 15 THEN (IF x(0) >= 128 THEN 135 ELSE 0 ENDIF)
+                ELSE u8rshift(x(i+1),7) ENDIF IN u8xor(u8lshift(x(i),1),carry)
+  cmac_update(k: mode_key, chain, m: block): block = cbc_encrypt(k,chain,m)
+  cmac_finish(k: mode_key, chain, m: block,n: upto(128),tag_bits: width): block =
+    LET k1 = dbl(ecb_encrypt(k,zero_block)),
+        last = IF n = 128 THEN byvXOR(m,k1) ELSE byvXOR(pad10(m,n),dbl(k1)) ENDIF IN
+      take_bits(cmac_update(k,chain,last),tag_bits)
+
+  ctr_advances: LEMMA FORALL (k: mode_key, t,x: block,n: width):
+    ctr(k,t,x,n)`next_reg = increment(t,16)
+END aes_modes

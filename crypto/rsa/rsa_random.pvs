@@ -1,0 +1,40 @@
+% SP 800-56B Rev. 2 §§7.1–7.2 and FIPS 186-5 §5.4.
+rsa_random: THEORY
+BEGIN
+  IMPORTING rsa_encoding,crypto_prelude@crypto_random_buffers
+  % With a valid RSA key, RSAEP and RSADP preserve the set 2..n-2.
+  in_sve_range(n:modulus,x:bytestring): bool =
+    IF x`length/=n`length THEN FALSE ELSE
+      LET w=os2ip_width(n`length), z=from_bytes(w,x,TRUE), one=one_words(w),
+          highest=sub_words(from_bytes(w,n,TRUE),one) IN
+        NOT ge_words(one,z) AND NOT ge_words(z,highest)
+    ENDIF
+  encapsulation: TYPE = [# ok:bool,secret:bytestring,cipher:bytestring #]
+  unavailable_kem: encapsulation =
+    (# ok:=FALSE,secret:=fill_octets(0,0),cipher:=fill_octets(0,0) #)
+  sve_draw(n:modulus,e:bytestring,s:stream_id,base:uint32,tries:uint16): RECURSIVE encapsulation =
+    IF tries=0 THEN unavailable_kem ELSE
+      LET x=acquire(n`length,s,base) IN
+        IF NOT x`ok THEN unavailable_kem
+        ELSIF in_sve_range(n,x`value) THEN
+          LET c=rsa_public(n,e,x`value) IN
+            IF c`valid THEN (# ok:=TRUE,secret:=x`value,cipher:=c`data #) ELSE unavailable_kem ENDIF
+        ELSIF base>4294967295-n`length THEN unavailable_kem
+        ELSE sve_draw(n,e,s,u32plus(base,n`length),tries-1) ENDIF
+    ENDIF MEASURE tries
+  sve_generate(n:modulus,e:bytestring,s:stream_id,tries:uint16):encapsulation =
+    IF public_exponent(e) THEN sve_draw(n,e,s,0,tries) ELSE unavailable_kem ENDIF
+  sve_recover(n:modulus,d,c:bytestring):rsa_result =
+    IF in_sve_range(n,c) THEN rsa_apply(n,d,c) ELSE invalid ENDIF
+  pss_random(h:rsa_hash,id:mask_id,n:modulus,d,m:bytestring,s:stream_id,
+             salt_len:upto(digest_size(h))):rsa_result =
+    LET salt=acquire(salt_len,s,0) IN
+      IF salt`ok THEN sign_pss(h,id,n,d,m,salt`value) ELSE invalid ENDIF
+  oaep_random(h:rsa_hash,n:modulus,e,label:bytestring,
+              key:{b:bytestring | b`length+2*digest_size(h)+2<=n`length},s:stream_id):rsa_result =
+    LET seed=acquire(digest_size(h),s,0) IN
+      IF seed`ok THEN oaep_wrap(h,n,e,label,key,seed`value) ELSE invalid ENDIF
+  sve_no_draws: LEMMA FORALL(n:modulus,e:bytestring,s:stream_id): NOT sve_generate(n,e,s,0)`ok
+  sve_invalid_input: LEMMA FORALL(n:modulus,d,c:bytestring):
+    NOT in_sve_range(n,c) IMPLIES sve_recover(n,d,c)=invalid
+END rsa_random

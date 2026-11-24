@@ -1,0 +1,32 @@
+% FIPS 186-5 §6.4. Sign and verify the leftmost N bits of an approved digest.
+ecdsa: THEORY
+BEGIN
+  IMPORTING prime_curve
+  digest_prefix(c: curve,d: bytestring,limit: uint16,i: upto(limit),acc: scalar(c)): RECURSIVE scalar(c) =
+    IF i=limit OR u16div(i,8)>=d`length THEN acc ELSE
+      LET bit=u8and(u8rshift(d`seq(u16div(i,8)),7-u16rem(i,8)),1), n=order(c),
+          a=twice(acc,n), b=IF bit=1 THEN add_mod(a,one_words(width(c)),n) ELSE a ENDIF IN
+        digest_prefix(c,d,limit,i+1,b)
+    ENDIF MEASURE limit-i
+  z_value(c: curve,d: bytestring): scalar(c) = digest_prefix(c,d,bits(c),0,zero_words(width(c)))
+  % For each of the five curves p < 2n, so one subtraction suffices on x<p.
+  x_mod_n(c: curve,x: scalar(c)): scalar(c) =
+    IF ge_words(x,order(c)) THEN sub_words(x,order(c)) ELSE x ENDIF
+  sig_result(c: curve): TYPE = [# ok: bool, r,s: scalar(c) #]
+  no_sig(c: curve): sig_result(c) = (# ok:=FALSE,r:=zero_words(width(c)),s:=zero_words(width(c)) #)
+  sign_digest(c: curve,d,k: scalar(c),digest: bytestring): sig_result(c) =
+    IF NOT valid_scalar(c,d) OR NOT valid_scalar(c,k) THEN no_sig(c) ELSE
+      LET n=order(c), q=normalize(c,multiply(c,k,base(c))), r=x_mod_n(c,q`x),
+          s=mul_mod(inv(k,n),add_mod(z_value(c,digest),mul_mod(r,d,n),n),n) IN
+        IF NOT q`finite OR NOT valid_scalar(c,r) OR NOT valid_scalar(c,s) THEN no_sig(c)
+        ELSE (# ok:=TRUE,r:=r,s:=s #) ENDIF
+    ENDIF
+  verify_digest(c: curve,q: affine(c),digest: bytestring,r,s: scalar(c)): bool =
+    IF NOT valid_scalar(c,r) OR NOT valid_scalar(c,s) OR NOT on_curve(c,q) THEN FALSE ELSE
+      LET n=order(c), w=inv(s,n), u=mul_mod(z_value(c,digest),w,n), v=mul_mod(r,w,n),
+          a=normalize(c,add(c,multiply(c,u,base(c)),multiply(c,v,lift(c,q)))) IN
+        a`finite AND x_mod_n(c,a`x)=r
+    ENDIF
+  invalid_nonce_rejected: LEMMA FORALL(c:curve,d,k:scalar(c),digest:bytestring):
+    NOT valid_scalar(c,k) IMPLIES sign_digest(c,d,k,digest)=no_sig(c)
+END ecdsa

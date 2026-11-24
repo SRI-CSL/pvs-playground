@@ -1,0 +1,24 @@
+(|ff_groups|
+ (|named_TCC1| 0
+  (|named_TCC1-1| NIL 4004537638
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|named| SUBTYPE "0" "below(crypto_limbs.zero_words(ff_groups.p`len)`len)"
+    (293 55 293 56))))
+ (|named_TCC2| 0
+  (|named_TCC2-1| NIL 4004537638
+   (""
+    (THEN (SKOSIMP* :PREDS? T) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES
+      ("maxsize" "exp2" "u8rem" "u16div" "u16rem" "u32div" "u32rem")))
+    NIL)
+   NIL SHOSTAK
+   (|named| SUBTYPE "ff_groups.g" "words_of(ff_groups.p`len)"
+    (294 32 294 33)))))
+

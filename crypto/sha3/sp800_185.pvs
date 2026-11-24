@@ -1,0 +1,96 @@
+% NIST SP 800-185 (December 2016), https://doi.org/10.6028/NIST.SP.800-185
+sp800_185: THEORY
+BEGIN
+  IMPORTING keccak
+  strength: TYPE = {s: uint16 | s=128 OR s=256}
+  xof_rate(s: strength): rate_bytes = IF s=128 THEN 168 ELSE 136 ENDIF
+
+  % Bit strings are packed as in FIPS 202 Appendix B. The final octet holds
+  % zero through seven significant low bits. Each call can accept up to one
+  % Prelude bytestring of whole octets. keccak.absorb supports streaming.
+  packed: TYPE = [# octets: bytestring, tail: uint8, used: below(8) #]
+  octets(m: bytestring): packed = (# octets:=m, tail:=0, used:=0 #)
+  bits_in(m: packed): uint64 = 8*m`octets`length + m`used
+  absorb_packed(c: absorbing,m: packed): absorbing =
+    absorb_low(absorb(c,m`octets),m`tail,m`used)
+
+  % Section 2.3.1. Build the minimum big-endian encoding of a uint64; zero
+  % occupies one payload octet. Length integers in this API are at most 64 bits.
+  encoded_width(x: uint64): subrange(1,8) =
+    IF x<0x100 THEN 1 ELSIF x<0x10000 THEN 2 ELSIF x<0x1000000 THEN 3
+    ELSIF x<0x100000000 THEN 4 ELSIF x<0x10000000000 THEN 5
+    ELSIF x<0x1000000000000 THEN 6 ELSIF x<0x100000000000000 THEN 7
+    ELSE 8 ENDIF
+  put_integer(c: absorbing,x: uint64,i: upto(8)): RECURSIVE absorbing =
+    IF i=8 THEN c ELSE put_integer(absorb_byte(c,be_byte64(x,i)),x,i+1)
+    ENDIF MEASURE 8-i
+  put_left(c: absorbing,x: uint64): absorbing =
+    LET w=encoded_width(x) IN put_integer(absorb_byte(c,w),x,8-w)
+  put_right(c: absorbing,x: uint64): absorbing =
+    LET w=encoded_width(x) IN absorb_byte(put_integer(c,x,8-w),w)
+  put_string(c: absorbing,x: packed): absorbing =
+    absorb_packed(put_left(c,bits_in(x)),x)
+
+  % Section 2.3.3. The leading left_encode(w) is absorbed at the start of
+  % each bytepad. The zero suffix simply permutes an unfinished rate block.
+  finish_bytepad(c: absorbing): absorbing =
+    IF c`pos=0 THEN c ELSE (# rate:=c`rate, a:=permute(c`a), pos:=0 #) ENDIF
+  bytepad_at_boundary: LEMMA FORALL (c: absorbing): finish_bytepad(c)`pos=0
+
+  % Section 3.3. start_custom is the prefix for the nonempty (N,S) branch.
+  start_custom(s: strength,n,custom: packed): absorbing =
+    LET r=xof_rate(s), c=put_left(start(r),r)
+    IN finish_bytepad(put_string(put_string(c,n),custom))
+  cshake(s: strength,x,n,custom: packed): squeezing =
+    IF bits_in(n)=0 AND bits_in(custom)=0 THEN
+      finish_shake(absorb_packed(start(xof_rate(s)),x))
+    ELSE finish_cshake(absorb_packed(start_custom(s,n,custom),x)) ENDIF
+
+  % SP 800-185 reserves the ASCII names below (sections 4.3, 5.3, 6.3).
+  kmac_name: bytestring = (# length:=4, seq:=[:75,77,65,67:] #)
+  tuple_name: bytestring = (# length:=9, seq:=[:84,117,112,108,101,72,97,115,104:] #)
+  parallel_name: bytestring = (# length:=12, seq:=[:80,97,114,97,108,108,101,108,72,97,115,104:] #)
+  % Section 4.3, including KMACXOF. l is the number of output bits committed
+  % by fixed-length KMAC. Use l=0 for the XOF and squeeze any desired prefix.
+  kmac(s: strength,k,x,custom: packed,l: uint64): squeezing =
+    LET r=xof_rate(s), c=start_custom(s,octets(kmac_name),custom),
+        keyed=finish_bytepad(put_string(put_left(c,r),k))
+    IN finish_cshake(put_right(absorb_packed(keyed,x),l))
+
+  % Section 5.3. Tuple boundaries, including empty elements, are encoded.
+  tuple_items: TYPE = [# length: index, items: ARRAY[below(length) -> packed] #]
+  put_tuple(c: absorbing,t: tuple_items,i: upto(t`length)): RECURSIVE absorbing =
+    IF i=t`length THEN c ELSE put_tuple(put_string(c,t`items(i)),t,i+1)
+    ENDIF MEASURE t`length-i
+  tuplehash(s: strength,t: tuple_items,custom: packed,l: uint64): squeezing =
+    LET c=start_custom(s,octets(tuple_name),custom) IN
+    finish_cshake(put_right(put_tuple(c,t,0),l))
+
+  % Section 6.3. A partial final block contributes one complete chaining
+  % value, including when it consists solely of a partial octet.
+  put_range(c: absorbing,m: bytestring,stop: upto(m`length),i: upto(stop)):
+      RECURSIVE absorbing =
+    IF i=stop THEN c ELSE put_range(absorb_byte(c,m`seq(i)),m,stop,i+1)
+    ENDIF MEASURE stop-i
+  put_chain(c: absorbing,s: strength,leaf: absorbing): absorbing =
+    absorb(c,output(finish_shake(leaf),IF s=128 THEN 32 ELSE 64 ENDIF))
+  parallel_blocks(c: absorbing,s: strength,x: packed,b: pos_uint32,
+                  i: upto(x`octets`length)): RECURSIVE absorbing =
+    LET m=x`octets, remaining: uint32=m`length-i, leaf=start(xof_rate(s)) IN
+    IF remaining>=b THEN
+      LET next: upto(m`length)=i+b, block=put_range(leaf,m,next,i)
+      IN parallel_blocks(put_chain(c,s,block),s,x,b,next)
+    ELSIF remaining=0 AND x`used=0 THEN c
+    ELSE put_chain(c,s,absorb_low(put_range(leaf,m,m`length,i),x`tail,x`used))
+    ENDIF MEASURE x`octets`length-i
+  parallelhash(s: strength,x: packed,b: pos_uint32,custom: packed,l: uint64): squeezing =
+    LET c=start_custom(s,octets(parallel_name),custom),
+        blocks=parallel_blocks(put_left(c,b),s,x,b,0),
+        count: uint64 = u32div(x`octets`length,b) +
+          (IF nrem(x`octets`length,b)=0 AND x`used=0 THEN 0 ELSE 1 ENDIF)
+    IN finish_cshake(put_right(put_right(blocks,count),l))
+
+  empty_custom_is_shake: THEOREM FORALL (s: strength,x,n,custom: packed):
+    bits_in(n)=0 AND bits_in(custom)=0 IMPLIES
+      cshake(s,x,n,custom)=finish_shake(absorb_packed(start(xof_rate(s)),x))
+END sp800_185

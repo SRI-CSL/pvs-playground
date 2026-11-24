@@ -1,0 +1,391 @@
+(|rsa_keygen|
+ (|derive_from_factors_TCC1| 0
+  (|derive_from_factors_TCC1-1| NIL 4004537820
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_primes.prime_width(rsa_keygen.profile)"
+    "limb_count" (10 76 10 96))))
+ (|derive_from_factors_TCC2| 0
+  (|derive_from_factors_TCC2-1| NIL 4004537820
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "number_fields.*(2, rsa_keygen.size)"
+    "limb_count" (11 51 11 57))))
+ (|derive_from_factors_TCC3| 0
+  (|derive_from_factors_TCC3-1| NIL 4004537820
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "(number_fields.+)(rsa_keygen.full, 8)"
+    "limb_count" (11 75 11 81))))
+ (|derive_from_factors_TCC4| 0
+  (|derive_from_factors_TCC4-1| NIL 4004537820
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_keygen.q" "words_of(rsa_keygen.p`len)"
+    (13 55 13 56))))
+ (|derive_from_factors_TCC5| 0
+  (|derive_from_factors_TCC5-1| NIL 4004537820
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_keygen.size" "limb_count"
+    (14 24 14 28))))
+ (|derive_from_factors_TCC6| 0
+  (|derive_from_factors_TCC6-1| NIL 4004537820
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_keygen.one" "words_of(rsa_keygen.p`len)"
+    (14 45 14 48))))
+ (|derive_from_factors_TCC7| 0
+  (|derive_from_factors_TCC7-1| NIL 4004537820
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_keygen.one" "words_of(rsa_keygen.q`len)"
+    (14 65 14 68))))
+ (|derive_from_factors_TCC8| 0
+  (|derive_from_factors_TCC8-1| NIL 4004537820
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_keygen.qm" "words_of(rsa_keygen.pm`len)"
+    (14 85 14 87))))
+ (|derive_from_factors_TCC9| 0
+  (|derive_from_factors_TCC9-1| NIL 4004537820
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_keygen.em"
+    "words_of(rsa_keygen.lam`len)" (18 61 18 63))))
+ (|derive_from_factors_TCC10| 0
+  (|derive_from_factors_TCC10-1| NIL 4004537820
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_keygen.ew"
+    "words_of(crypto_integer_ops.resize_words(crypto_integer_ops.divide_words(rsa_keygen.lam, rsa_keygen.em)`r, 8)`len)"
+    (18 70 18 72))))
+ (|derive_from_factors_TCC11| 0
+  (|derive_from_factors_TCC11-1| NIL 4004537820
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_keygen.inv"
+    "words_of(rsa_keygen.ew`len)" (20 29 20 32))))
+ (|derive_from_factors_TCC12| 0
+  (|derive_from_factors_TCC12-1| NIL 4004537821
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "crypto_limbs.one_words(rsa_keygen.wide)"
+    "words_of(rsa_keygen.num`len)" (21 34 21 49))))
+ (|derive_from_factors_TCC13| 0
+  (|derive_from_factors_TCC13-1| NIL 4004537821
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "crypto_limbs.zero_words(rsa_keygen.wide)"
+    "words_of(rsa_keygen.num`len)" (21 50 21 66))))
+ (|derive_from_factors_TCC14| 0
+  (|derive_from_factors_TCC14-1| NIL 4004537821
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "0" "upto(rsa_keygen.num`len)"
+    (21 67 21 68))))
+ (|derive_from_factors_TCC15| 0
+  (|derive_from_factors_TCC15-1| NIL 4004537821
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE
+    "crypto_integer_ops.resize_words(rsa_keygen.ew, rsa_keygen.wide)"
+    "words_of(rsa_keygen.num1`value`len)" (22 42 22 63))))
+ (|derive_from_factors_TCC16| 0
+  (|derive_from_factors_TCC16-1| NIL 4004537821
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "number_fields.*(32, rsa_keygen.size)"
+    "{i: integertypes.uint16 | reals.<(i, number_fields.*(32, crypto_limbs.zero_words(rsa_keygen.full)`len))}"
+    (23 45 23 52))))
+ (|derive_from_factors_TCC17| 0
+  (|derive_from_factors_TCC17-1| NIL 4004537821
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_keygen.d"
+    "words_of(rsa_keygen.lower`len)" (24 72 24 73))))
+ (|derive_from_factors_TCC18| 0
+  (|derive_from_factors_TCC18-1| NIL 4004537822
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_keygen.lam" "words_of(rsa_keygen.d`len)"
+    (24 89 24 92))))
+ (|derive_from_factors_TCC19| 0
+  (|derive_from_factors_TCC19-1| NIL 4004537822
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_keygen.p" "words_of(rsa_keygen.q`len)"
+    (25 49 25 50))))
+ (|derive_from_factors_TCC20| 0
+  (|derive_from_factors_TCC20-1| NIL 4004537822
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "rsa_keygen.p"
+    "words_of(crypto_integer_ops.divide_words(rsa_keygen.q, rsa_keygen.p)`r`len)"
+    (25 54 25 55))))
+ (|derive_from_factors_TCC21| 0
+  (|derive_from_factors_TCC21-1| NIL 4004537822
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE
+    "crypto_integer_ops.resize_words(rsa_keygen.pm, rsa_keygen.full)"
+    "words_of(rsa_keygen.d`len)" (26 34 26 55))))
+ (|derive_from_factors_TCC22| 0
+  (|derive_from_factors_TCC22-1| NIL 4004537822
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE
+    "crypto_integer_ops.resize_words(rsa_keygen.qm, rsa_keygen.full)"
+    "words_of(rsa_keygen.d`len)" (26 77 26 98))))
+ (|derive_from_factors_TCC23| 0
+  (|derive_from_factors_TCC23-1| NIL 4004537822
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "number_fields.*(4, rsa_keygen.full)" "index"
+    (29 36 29 42))))
+ (|derive_from_factors_TCC24| 0
+  (|derive_from_factors_TCC24-1| NIL 4004537823
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|derive_from_factors| SUBTYPE "number_fields.*(4, rsa_keygen.size)" "index"
+    (29 65 29 71))))
+ (|generate_at_TCC1| 0
+  (|generate_at_TCC1-1| NIL 4004537823
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "off!1") (GRIND :DEFS NIL :REWRITES ("exp2")))
+    NIL NIL)
+   NIL SHOSTAK
+   (|generate_at| SUBTYPE "(number_fields.-)(4294967295, rsa_keygen.off)"
+    "naturalnumber" (41 42 41 56))))
+ (|generate_at_TCC2| 0
+  (|generate_at_TCC2-1| NIL 4004537828
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|generate_at| SUBTYPE "rsa_keygen.width" "limb_count" (34 51 34 56))))
+ (|generate_at_TCC3| 0
+  (|generate_at_TCC3-1| NIL 4004537828
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|generate_at| SUBTYPE "rsa_keygen.ew"
+    "words_of(rsa_primes.prime_width(rsa_keygen.profile))" (35 31 35 33))))
+ (|generate_at_TCC4| 0
+  (|generate_at_TCC4-1| NIL 4004537828
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|generate_at| SUBTYPE "crypto_limbs.zero_words(rsa_keygen.width)"
+    "words_of(rsa_primes.prime_width(rsa_keygen.profile))" (35 34 35 51))))
+ (|generate_at_TCC5| 0
+  (|generate_at_TCC5-1| NIL 4004537828
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|generate_at| TERMINATION
+    "rsa_keygen.generate_at(rsa_keygen.profile, rsa_keygen.e, rsa_keygen.pmod, rsa_keygen.qmod, rsa_keygen.high_assurance, rsa_keygen.stream, rsa_keygen.b`next)"
+    "NIL" (40 30 40 91))))
+ (|invalid_exponent_rejected| 0
+  (|invalid_exponent_rejected-1| NIL 4004537828
+   (""
+    (THEN (SKOSIMP*) (EXPAND "generate") (EXPAND "generate_at")
+     (EXPAND "no_key") (ASSERT))
+    NIL NIL)
+   NIL SHOSTAK))
+ (|public_components_TCC1| 0
+  (|public_components_TCC1-1| NIL 4004539013
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL)
+   ((|strength_profile| TYPE-EQ-DECL NIL |rsa_primes| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|prime_width| CONST-DECL "[strength_profile -> subrange(32, 64)]"
+     |rsa_primes| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|))
+   "shostak"
+   (|public_components| SUBTYPE "rsa_keygen.q" "words_of(rsa_keygen.p`len)"
+    (48 98 48 99))))
+ (|public_components_TCC2| 0
+  (|public_components_TCC2-1| NIL 4004539016
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL)
+   ((|strength_profile| TYPE-EQ-DECL NIL |rsa_primes| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|prime_width| CONST-DECL "[strength_profile -> subrange(32, 64)]"
+     |rsa_primes| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|))
+   "shostak"
+   (|public_components| SUBTYPE "number_fields.*(4, rsa_keygen.width)" "index"
+    (49 31 49 38))))
+ (|public_components_TCC3| 0
+  (|public_components_TCC3-1| NIL 4004539018
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|strict_total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|odd?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL)
+    (|to_bytes| CONST-DECL "octets_of(n)" |crypto_limbs| |crypto_prelude|)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|even?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|strength_profile| TYPE-EQ-DECL NIL |rsa_primes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|prime_width| CONST-DECL "[strength_profile -> subrange(32, 64)]"
+     |rsa_primes| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|))
+   "shostak"
+   (|public_components| SUBTYPE "number_fields.*(8, rsa_keygen.width)" "index"
+    (50 46 50 53))))
+ (|public_components| 0
+  (|public_components-1| NIL 4004538968
+   (""
+    (THEN (SKOSIMP* T) (EXPAND "derive_from_factors")
+     (GRIND :DEFS NIL :REWRITES ("no_key") :IF-MATCH NIL))
+    NIL NIL)
+   ((|strength_profile| TYPE-EQ-DECL NIL |rsa_primes| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|prime_width| CONST-DECL "[strength_profile -> subrange(32, 64)]"
+     |rsa_primes| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|))
+   SHOSTAK))
+ (|exponent_congruence| 0
+  (|exponent_congruence-1| NIL 4004538974
+   (""
+    (THEN (SKOSIMP*) (USE "rem_multiple2" ("b" "lam!1" "x" "k!1"))
+     (USE "rem_sum2" ("b" "lam!1" "x" "1" "y" "k!1*lam!1")) (ASSERT))
+    NIL NIL)
+   NIL SHOSTAK)))
+

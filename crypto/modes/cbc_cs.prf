@@ -1,0 +1,16 @@
+(|cbc_cs|
+ (|ciphertext_bits| 0
+  (|ciphertext_bits-1| NIL 4004536020
+   ("" (THEN (SKOSIMP*) (EXPAND "encrypt_tail") (LIFT-IF) (GROUND)) NIL)
+   ((|encrypt_tail| CONST-DECL
+     "[[mode_key, block, block, block, width, variant] -> tail]" |cbc_cs| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|plus_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|plus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL))
+   SHOSTAK)))
+

@@ -1,0 +1,66 @@
+% SP 800-90B §§6.3.7–6.3.10. All predictors score the old winner before
+% training on the current symbol. A missing prediction is a miss.
+entropy_predictors: THEORY
+BEGIN
+  IMPORTING entropy_binary
+  alphabet:TYPE=subrange(2,256)
+  hits:TYPE=[# correct,run,longest:uint32 #]
+  no_hits:hits=(# correct:=0,run:=0,longest:=0 #)
+  score(h:hits,right:bool):hits=
+    IF NOT right THEN h WITH [run:=0] ELSE LET n=u32plus(h`run,1) IN
+      (# correct:=u32plus(h`correct,1),run:=n,longest:=IF n>h`longest THEN n ELSE h`longest ENDIF #) ENDIF
+  iterate_x(p,q:fp,r:uint32,x:fp,left:upto(10)): RECURSIVE fp=
+    IF left=0 THEN x ELSE iterate_x(p,q,r,fp_add(fl(1),fp_mul(fp_mul(q,x),fp_pow(fp_mul(p,x),fl(r)))),left-1) ENDIF MEASURE left
+  local_log(p:fp,r,N:uint32):fp=
+    LET q=fp_sub(fl(1),p),x=iterate_x(p,q,r,fl(1),10),a=fp_sub(fl(1),fp_mul(p,x)),
+        b=fp_mul(q,fp_sub(fl(r+1),fp_mul(fl(r),x))) IN
+      fp_sub(fp_sub(fp_log(a),fp_log(b)),fp_mul(fl(N+1),fp_log(x)))
+  local_bound(r,N:uint32,lo,hi:fp,left:upto(56)):RECURSIVE fp=
+    LET mid=fp_div(fp_add(lo,hi),fl(2)) IN IF left=0 OR mid=lo OR mid=hi THEN hi
+    ELSIF fp_lt(fp_log(ratio(99,100)),local_log(mid,r,N)) THEN local_bound(r,N,mid,hi,left-1)
+    ELSE local_bound(r,N,lo,mid,left-1) ENDIF MEASURE left
+  prediction(k:alphabet,N:uint32,h:hits):estimate_result=
+    IF N<2 THEN unavailable ELSE LET global=IF h`correct=0 THEN fp_sub(fl(1),fp_pow(ratio(1,100),ratio(1,N)))
+          ELSE upper_p(ratio(h`correct,N),N) ENDIF,
+      base=fp_max(ratio(1,k),global), r=u32plus(h`longest,1),
+      final=IF base=fl(1) OR NOT fp_lt(fp_log(ratio(99,100)),local_log(base,r,N)) THEN base
+            ELSE local_bound(r,N,base,fl(1),56) ENDIF IN estimated(neglog(final)) ENDIF
+
+  scoreboard:TYPE=[# winner:below(128),points:ARRAY[below(128)->uint32] #]
+  fresh:scoreboard=(# winner:=0,points:=LAMBDA(j:below(128)):0 #)
+  award(s:scoreboard,j:below(128),hit:bool):scoreboard=
+    IF NOT hit THEN s ELSE LET v=u32plus(s`points(j),1),w=IF v>=s`points(s`winner) THEN j ELSE s`winner ENDIF IN
+      s WITH [winner:=w,`points(j):=v] ENDIF
+  lag_scores(x:bytestring,i:below(x`length),j:upto(128),s:scoreboard):RECURSIVE scoreboard=
+    IF j=128 OR j>=i THEN s ELSE
+      lag_scores(x,i,j+1,award(s,j,x`seq(i-1-j)=x`seq(i))) ENDIF MEASURE 128-j
+  lag_loop(x:bytestring,i:upto(x`length),s:scoreboard,h:hits):RECURSIVE hits=
+    IF i=x`length THEN h ELSE LET j=s`winner,right=j<i AND x`seq(i-1-j)=x`seq(i) IN
+      lag_loop(x,i+1,lag_scores(x,i,0,s),score(h,right)) ENDIF MEASURE x`length-i
+  lag(x:bytestring,k:alphabet):estimate_result=
+    IF x`length<3 THEN unavailable ELSE prediction(k,x`length-1,lag_loop(x,1,fresh,no_hits)) ENDIF
+
+  window(j:below(4)):pos_uint16=IF j=0 THEN 63 ELSIF j=1 THEN 255 ELSIF j=2 THEN 1023 ELSE 4095 ENDIF
+  freq:TYPE=ARRAY[uint8->uint32]
+  window_state:TYPE=[# counts,latest:freq #]
+  windows:TYPE=ARRAY[below(4)->window_state]
+  empty_window:window_state=(# counts:=LAMBDA(j:uint8):0,latest:=LAMBDA(j:uint8):0 #)
+  commonest(w:window_state,j:upto(256),best:uint8):RECURSIVE uint8=
+    IF j=256 THEN best ELSE LET b=IF w`counts(j)>w`counts(best) OR
+      (w`counts(j)=w`counts(best) AND w`latest(j)>w`latest(best)) THEN j ELSE best ENDIF IN
+      commonest(w,j+1,b) ENDIF MEASURE 256-j
+  window_step:TYPE=[# ws:windows,scores:scoreboard,hit:bool #]
+  train_windows(x:bytestring,i:below(x`length),j:upto(4),old:below(128),a:window_step): RECURSIVE window_step=
+    IF j=4 THEN a ELSE LET w=a`ws(j),width=window(j),sym=x`seq(i),
+      hit=i>=width AND commonest(w,0,0)=sym,
+      trim=IF i<width THEN w ELSE LET b=x`seq(i-width) IN w WITH [`counts(b):=u32minus(w`counts(b),1)] ENDIF,
+      next=trim WITH [`counts(sym):=u32plus(trim`counts(sym),1),`latest(sym):=i+1] IN
+      train_windows(x,i,j+1,old,a WITH [`ws(j):=next,scores:=award(a`scores,j,hit),
+                                        hit:=a`hit OR (old=j AND hit)]) ENDIF MEASURE 4-j
+  mcw_loop(x:bytestring,i:upto(x`length),ws:windows,s:scoreboard,h:hits):RECURSIVE hits=
+    IF i=x`length THEN h ELSE LET a=train_windows(x,i,0,s`winner,(# ws:=ws,scores:=s,hit:=FALSE #)) IN
+      mcw_loop(x,i+1,a`ws,a`scores,IF i<63 THEN h ELSE score(h,a`hit) ENDIF) ENDIF MEASURE x`length-i
+  multi_mcw(x:bytestring,k:alphabet):estimate_result=
+    IF x`length<4096 THEN unavailable ELSE
+      prediction(k,x`length-63,mcw_loop(x,0,LAMBDA(j:below(4)):empty_window,fresh,no_hits)) ENDIF
+END entropy_predictors

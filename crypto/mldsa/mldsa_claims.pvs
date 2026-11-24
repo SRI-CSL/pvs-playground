@@ -1,0 +1,16 @@
+% FIPS 204 correctness targets. These quantified properties are separate from
+% the executable specification and its known-answer tests.
+mldsa_claims: THEORY
+BEGIN
+  IMPORTING mldsa_prehash
+  sign_verify: THEOREM FORALL(p:profile,seed,rnd:octets_of(32),m,ctx:bytestring,tail:uint8,used:below(8)):
+    LET k=keygen_internal(p,seed),s=sign_message(p,k`sk,m,ctx,tail,used,rnd) IN
+    k`ok AND s`ok IMPLIES s`value`length=sig_size(p) AND verify(p,k`pk,s`value,m,ctx,tail,used)
+  hash_sign_verify: THEOREM FORALL(p:profile,seed,rnd:octets_of(32),id:hash_id,m,ctx:bytestring,
+                                   tail:uint8,used:below(8)):
+    LET k=keygen_internal(p,seed),s=hash_sign(p,k`sk,id,m,ctx,tail,used,rnd) IN
+    k`ok AND s`ok IMPLIES hash_verify(p,k`pk,s`value,id,m,ctx,tail,used)
+  supplied_mu_agrees: THEOREM FORALL(p:profile,seed,rnd:octets_of(32),mu:octets_of(64)):
+    LET k=keygen_internal(p,seed),s=sign_mu(p,k`sk,mu,rnd) IN
+    k`ok AND s`ok IMPLIES verify_mu(p,k`pk,s`value,mu)
+END mldsa_claims

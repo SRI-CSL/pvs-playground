@@ -1,0 +1,83 @@
+% FIPS 203, sections 2.4, 4.2 and 4.3. https://doi.org/10.6028/NIST.FIPS.203
+mlkem_ring: THEORY
+BEGIN
+  coefficient: TYPE = below(3329)
+  polynomial: TYPE = ARRAY[below(256) -> coefficient]
+  zero_poly: polynomial = LAMBDA (j: below(256)): 0
+  reduce_q(x: uint32): coefficient = nrem(x,3329)
+  plus_q(x,y: coefficient): coefficient = reduce_q(x+y)
+  minus_q(x,y: coefficient): coefficient = reduce_q(x+3329-y)
+  times_q(x,y: coefficient): coefficient = reduce_q(x*y)
+
+  % Algorithms 9 and 10 use zeta = 17 and seven-bit reversed exponents.
+  rev_acc(x: uint8,k: upto(7),a: uint8): RECURSIVE uint8 =
+    IF k=0 THEN a ELSE rev_acc(u8rshift(x,1),k-1,u8or(u8lshift(a,1),u8and(x,1)))
+    ENDIF MEASURE k
+  rev7(x: below(128)): uint8 = rev_acc(x,7,0)
+  pow_mod(x: coefficient,e: uint8): RECURSIVE coefficient =
+    IF e=0 THEN 1 ELSE
+      LET h=pow_mod(x,u8div(e,2)), sq=times_q(h,h)
+      IN IF nrem(e,2)=1 THEN times_q(x,sq) ELSE sq ENDIF
+    ENDIF MEASURE e
+  zeta(i: below(128)): coefficient = pow_mod(17,rev7(i))
+
+  % Each level has 128 butterflies. Within one level their pairs are disjoint.
+  % The inverse uses the unreversed subtraction and the descending zeta index.
+  half_width(level: below(7)): subrange(2,128) =
+    COND level=0 -> 128, level=1 -> 64, level=2 -> 32, level=3 -> 16,
+         level=4 -> 8, level=5 -> 4, ELSE -> 2 ENDCOND
+  butterflies(a: polynomial,level: below(7),inv: bool,t: upto(128)):
+      RECURSIVE polynomial =
+    IF t=128 THEN a ELSE
+      LET layer: below(7)=IF inv THEN 6-level ELSE level ENDIF, h=half_width(layer),
+          group: below(64)=u8div(t,h), offset: below(128)=nrem(t,h),
+          i: below(256)=2*h*group+offset, j: below(256)=i+h,
+          root: below(128)=IF inv THEN u16div(256,h)-1-group ELSE u8div(128,h)+group ENDIF,
+          z=zeta(root), lo=a(i), hi=a(j), v=times_q(z,hi),
+          x=IF inv THEN plus_q(lo,hi) ELSE plus_q(lo,v) ENDIF,
+          y=IF inv THEN times_q(z,minus_q(hi,lo)) ELSE minus_q(lo,v) ENDIF
+      IN butterflies(a WITH [(i):=x,(j):=y],level,inv,t+1)
+    ENDIF MEASURE 128-t
+  levels(a: polynomial,inv: bool,l: upto(7)): RECURSIVE polynomial =
+    IF l=7 THEN a ELSE levels(butterflies(a,l,inv,0),inv,l+1) ENDIF MEASURE 7-l
+
+  % Algorithms 10–12. 3303 is the inverse of 128 in Z/3329Z.
+  product_pair(a,b: polynomial,i: below(128),odd: bool): coefficient =
+    LET j: uint8=2*i, a0=a(j), a1=a(j+1), b0=b(j), b1=b(j+1) IN
+    IF odd THEN plus_q(times_q(a0,b1),times_q(a1,b0))
+    ELSE LET gamma=times_q(17,times_q(zeta(i),zeta(i)))
+         IN plus_q(times_q(a0,b0),times_q(gamma,times_q(a1,b1))) ENDIF
+  % Explicit indices keep the executable array accesses within 0..255.
+  poly_op: TYPE = below(4)
+  sum_op: poly_op = 0
+  diff_op: poly_op = 1
+  scale_op: poly_op = 2
+  product_op: poly_op = 3
+  combine(a,b,dest: polynomial,op: poly_op,j: upto(256)): RECURSIVE polynomial =
+    IF j=256 THEN dest ELSE
+      LET v=IF op=sum_op THEN plus_q(a(j),b(j))
+            ELSIF op=diff_op THEN minus_q(a(j),b(j))
+            ELSIF op=scale_op THEN times_q(a(j),3303)
+            ELSE product_pair(a,b,u16div(j,2),nrem(j,2)=1) ENDIF
+      IN combine(a,b,dest WITH [(j):=v],op,j+1)
+    ENDIF MEASURE 256-j
+  ntt(a: polynomial): polynomial = levels(a,FALSE,0)
+  intt(a: polynomial): polynomial = combine(levels(a,TRUE,0),zero_poly,zero_poly,scale_op,0)
+  add(a,b: polynomial): polynomial = combine(a,b,zero_poly,sum_op,0)
+  subtract(a,b: polynomial): polynomial = combine(a,b,zero_poly,diff_op,0)
+  multiply_ntts(a,b: polynomial): polynomial = combine(a,b,zero_poly,product_op,0)
+
+  % Section 4.2.1. Scale by 2^d and round half up, reducing cyclically.
+  width: TYPE = subrange(1,12)
+  scale(d: width): subrange(2,4096) =
+    COND d=1 -> 2, d=2 -> 4, d=3 -> 8, d=4 -> 16, d=5 -> 32,
+         d=6 -> 64, d=7 -> 128, d=8 -> 256, d=9 -> 512, d=10 -> 1024,
+         d=11 -> 2048, ELSE -> 4096 ENDCOND
+  compress(d: subrange(1,11),x: coefficient): uint16 =
+    nrem(u32div(scale(d)*x+1664,3329),scale(d))
+  decompress(d: subrange(1,11),y: uint16): coefficient =
+    reduce_q(u32div(3329*nrem(y,scale(d))+u16div(scale(d),2),scale(d)))
+
+  plus_zero: LEMMA FORALL (x: coefficient): plus_q(x,0)=x
+  normalization: LEMMA times_q(128,3303)=1
+END mlkem_ring

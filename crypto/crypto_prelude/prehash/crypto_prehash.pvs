@@ -1,0 +1,25 @@
+% FIPS 204 and 205 pre-hashes. The identifiers are DER OID suffix octets.
+crypto_prehash: THEORY
+BEGIN
+  sha2: LIBRARY = "../../sha2"
+  sha3: LIBRARY = "../../sha3"
+  IMPORTING sha2@secure_hash, sha3@keccak
+  hash_id: TYPE = subrange(1,12)
+  oid_prefix(i: below(10)): uint8 =
+    COND i=0 -> 0x06, i=1 -> 0x09, i=2 -> 0x60, i=3 -> 0x86, i=4 -> 0x48,
+         i=5 -> 0x01, i=6 -> 0x65, i=7 -> 0x03, i=8 -> 0x04, ELSE -> 0x02 ENDCOND
+  absorb_oid(c: absorbing,id: hash_id,i: upto(10)): RECURSIVE absorbing =
+    IF i=10 THEN absorb_byte(c,id) ELSE absorb_oid(absorb_byte(c,oid_prefix(i)),id,i+1)
+    ENDIF MEASURE 10-i
+  % Final partial octet follows the selected hash standard's own bit packing.
+  pre_digest(id: hash_id,m: bytestring,tail: uint8,used: below(8)): {d: bytestring | d`length<=64} =
+    COND id=1 -> sha256_bits(m,tail,used), id=2 -> sha384_bits(m,tail,used),
+         id=3 -> sha512_bits(m,tail,used), id=4 -> sha224_bits(m,tail,used),
+         id=5 -> sha512_224_bits(m,tail,used), id=6 -> sha512_256_bits(m,tail,used),
+         id=7 -> output(finish_sha3(absorb_low(absorb(start(144),m),tail,used)),28),
+         id=8 -> output(finish_sha3(absorb_low(absorb(start(136),m),tail,used)),32),
+         id=9 -> output(finish_sha3(absorb_low(absorb(start(104),m),tail,used)),48),
+         id=10 -> output(finish_sha3(absorb_low(absorb(start(72),m),tail,used)),64),
+         id=11 -> output(finish_shake(absorb_low(absorb(start(168),m),tail,used)),32),
+         ELSE -> output(finish_shake(absorb_low(absorb(start(136),m),tail,used)),64) ENDCOND
+END crypto_prehash

@@ -1,0 +1,37 @@
+% SP 800-90B §§4.3–4.4. This policy discards samples during startup and
+% latches any failure until the caller resets the source after recovery.
+entropy_health: THEORY
+BEGIN
+  crypto_prelude:LIBRARY="../crypto_prelude"
+  IMPORTING health_tests,crypto_prelude@crypto_statistics
+  monitor(c:cutoff,w:window):TYPE=[# rep:repetition(c),apt:adaptive(w),
+                                    tested:upto(1024),failed:bool #]
+  startup(c:cutoff,w:window):monitor(c,w)=
+    (# rep:=repetition_start(c),apt:=adaptive_start(w),tested:=0,failed:=FALSE #)
+  monitor_step(c,d:cutoff,w:window,a:monitor(c,w),x:symbol,custom_ok:bool):monitor(c,w)=
+    IF a`failed THEN a ELSE LET r=repetition_step(c,a`rep,x),b=adaptive_step(w,d,a`apt,x) IN
+      (# rep:=r,apt:=b,tested:=IF a`tested<1024 THEN a`tested+1 ELSE 1024 ENDIF,
+         failed:=r`run=c OR b`failed OR NOT custom_ok #) ENDIF
+  may_release(c:cutoff,w:window,a:monitor(c,w)):bool=a`tested=1024 AND NOT a`failed
+  % On-demand testing repeats the startup window. A latched failure
+  % requires a separate reset, following the source's repair procedure.
+  on_demand(c:cutoff,w:window,a:monitor(c,w)):monitor(c,w)=IF a`failed THEN a ELSE startup(c,w) ENDIF
+  % 1 + ceil(-log2(alpha)/H). The upper search bound is the largest
+  % representable cutoff, returning zero if no such cutoff exists.
+  rep_search(h,loss:fp,lo,hi:uint32):RECURSIVE uint32=
+    IF lo>=hi THEN lo ELSE LET mid:uint32=u32plus(lo,u32div(hi-lo,2)) IN
+      IF fp_lt(fp_mul(fl(mid-1),h),loss) THEN rep_search(h,loss,mid+1,hi)
+      ELSE rep_search(h,loss,lo,mid) ENDIF ENDIF MEASURE hi-lo
+  repetition_cutoff(h,alpha:fp):uint32=
+    LET loss=fp_sub(fl(0),log_two(alpha)) IN
+    IF NOT fp_lt(fl(0),h) OR NOT fp_lt(fl(0),alpha) OR NOT fp_lt(alpha,fl(1)) OR
+       fp_lt(fp_mul(fl(4294967294),h),loss) THEN 0 ELSE rep_search(h,loss,2,4294967295) ENDIF
+  apt_search(w:window,p,alpha:fp,i:subrange(2,1025)):RECURSIVE uint16=
+    IF i>w OR i=1025 THEN i ELSIF NOT fp_lt(alpha,beta_i(fl(i),fl(w+1-i),p)) THEN i
+    ELSE apt_search(w,p,alpha,i+1) ENDIF MEASURE 1025-i
+  adaptive_cutoff(w:window,h,alpha:fp):uint16=
+    IF NOT fp_lt(fl(0),h) OR NOT fp_lt(fl(0),alpha) OR NOT fp_lt(alpha,fl(1)) THEN 0
+    ELSE apt_search(w,fp_pow(ratio(1,2),h),alpha,2) ENDIF
+  startup_inhibits_output: THEOREM FORALL(c:cutoff,w:window,a:monitor(c,w)):
+    a`tested<1024 OR a`failed IMPLIES NOT may_release(c,w,a)
+END entropy_health

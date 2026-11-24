@@ -1,0 +1,102 @@
+% SP 800-135 Rev. 1 sections 4 and 5. Wire fields have explicit encodings.
+% The finite profile reserves space for concatenation in the Prelude bytestring.
+protocol_kdf: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING prf_kdf, crypto_prelude@crypto_buffer_lengths
+  field: TYPE = {x:bytestring | x`length <= 16777216}
+  cookie: TYPE = octets_of(8)
+  nonce20: TYPE = octets_of(20)
+  protocol_hash: TYPE = {h:hash_id | h<=h_sha512}
+  digest(h:protocol_hash): TYPE = octets_of(hash_bytes(h))
+  session_fields: TYPE = [# ni,nr:field,ci,cr:cookie #]
+
+  % IKEv1, RFC 2409 section 5. The three authentications use different
+  % extraction functions, followed by a common three-step feedback expansion.
+  ike1_signature(h:protocol_hash,s:session_fields,dh:field): digest(h) =
+    hmac(h,join_octets(s`ni,s`nr),dh)
+  ike1_public_key(h:protocol_hash,s:session_fields): digest(h) =
+    hmac(h,hash_message(h,join_octets(s`ni,s`nr)),join_octets(s`ci,s`cr))
+  ike1_preshared(h:protocol_hash,s:session_fields,psk:field): digest(h) =
+    hmac(h,psk,join_octets(s`ni,s`nr))
+  ike1_keys(h:protocol_hash): TYPE = [# derivation,authentication,encryption:digest(h) #]
+  ike1_sa(h:protocol_hash,s:session_fields,dh:field,skeyid:digest(h)): ike1_keys(h) =
+    LET info=join_octets(dh,join_octets(s`ci,s`cr)),
+        d=hmac(h,skeyid,join_octets(info,fill_octets(1,0))),
+        a=hmac(h,skeyid,join_octets(d,join_octets(info,fill_octets(1,1)))),
+        e=hmac(h,skeyid,join_octets(a,join_octets(info,fill_octets(1,2))))
+    IN (# derivation:=d,authentication:=a,encryption:=e #)
+  ike1_keymat(h:protocol_hash,d:digest(h),pfs:field,protocol:uint8,spi:field,
+              s:session_fields,n:index): octets_of(n) =
+    LET fixed=join_octets(pfs,join_octets(fill_octets(1,protocol),join_octets(spi,join_octets(s`ni,s`nr)))) IN
+      iterate(hash_bytes(h),bind_hmac(h,d),feedback_mode,0,fixed,fill_octets(0,0),fill_octets(n,0),0)
+
+  % IKEv2 SKEYSEED is identical to IKEv1 signature extraction with HMAC.
+  ike2_seed(h:protocol_hash,ni,nr,dh:field): digest(h) =
+    hmac(h,join_octets(ni,nr),dh)
+  ike2_rekey(h:protocol_hash,sk_d:digest(h),dh,ni,nr:field): digest(h) =
+    hmac(h,sk_d,join_octets(dh,join_octets(ni,nr)))
+  ike2_limit(h:protocol_hash): TYPE = {n:uint16 | n<=255*hash_bytes(h)}
+  ike2_blocks(h:protocol_hash,key:bytestring,seed:fixed_data,prior:prior_block,
+              counter:uint8,out:bytestring,pos:upto(out`length)): RECURSIVE octets_of(out`length) =
+    IF pos=out`length THEN out ELSE
+      LET part=hmac(h,key,join_octets(prior,join_octets(seed,fill_octets(1,counter)))),
+          next:index=IF pos+hash_bytes(h)>=out`length THEN out`length ELSE pos+hash_bytes(h) ENDIF
+      IN ike2_blocks(h,key,seed,part,u8plus(counter,1),copy_octets(out,pos,part,0),next)
+    ENDIF MEASURE out`length-pos
+  ike2_sa(h:protocol_hash,skeyseed:digest(h),ni,nr:field,spi_i,spi_r:cookie,n:ike2_limit(h)): octets_of(n) =
+    LET fixed=join_octets(ni,join_octets(nr,join_octets(spi_i,spi_r))) IN
+      ike2_blocks(h,skeyseed,fixed,fill_octets(0,0),1,fill_octets(n,0),0)
+  ike2_child(h:protocol_hash,sk_d:digest(h),dh,ni,nr:field,n:ike2_limit(h)): octets_of(n) =
+    ike2_blocks(h,sk_d,join_octets(dh,join_octets(ni,nr)),fill_octets(0,0),1,fill_octets(n,0),0)
+
+  % TLS 1.2 P_hash is double-pipeline iteration without a counter. Supply
+  % label and seed in wire order (client_random || server_random for the
+  % master secret, reversed for key expansion), per RFC 5246 section 6.3.
+  tls12_hash: TYPE = {h:protocol_hash | h=h_sha256 OR h=h_sha384 OR h=h_sha512}
+  tls12(h:tls12_hash,secret,label,seed:field,n:index): octets_of(n) =
+    iterate(hash_bytes(h),bind_hmac(h,secret),pipeline_mode,0,join_octets(label,seed),
+            fill_octets(0,0),fill_octets(n,0),0)
+
+  % X9.63 hashes ZZ || [counter]_32 || SharedInfo. X9.42 uses the DER
+  % encoding of OtherInfo, with [counter]_32 inside its KeySpecificInfo.
+  % Pass the encoded parts before and after the four counter-value octets.
+  ansi_blocks(h:protocol_hash,prefix,suffix:field,i:pos_uint32,out:bytestring,pos:upto(out`length)):
+    RECURSIVE octets_of(out`length) =
+    IF pos=out`length THEN out ELSE
+      LET b=hash_message(h,join_octets(prefix,join_octets(encode_counter(i,4),suffix))),
+          j:pos_uint32=IF i=0xffffffff THEN i ELSE i+1 ENDIF,
+          next:index=IF pos+hash_bytes(h)>=out`length THEN out`length ELSE pos+hash_bytes(h) ENDIF IN
+      ansi_blocks(h,prefix,suffix,j,copy_octets(out,pos,b,0),next)
+    ENDIF MEASURE out`length-pos
+  x963(h:protocol_hash,z,shared_info:field,n:index): octets_of(n) =
+    ansi_blocks(h,z,shared_info,1,fill_octets(n,0),0)
+  x942(h:protocol_hash,z:field,before:{s:field | z`length+s`length<=16777216},
+       after:field,n:index): octets_of(n) =
+    ansi_blocks(h,join_octets(z,before),after,1,fill_octets(n,0),0)
+
+  % RFC 4253 section 7.2: K includes its SSH mpint length prefix. H and
+  % session_id are raw hash results. A..F identify the six directions/usages.
+  ssh_label: TYPE = subrange(65,70)
+  ssh_blocks(h:protocol_hash,k:field,eh,sid:digest(h),label:ssh_label,out:field,pos:upto(out`length)):
+    RECURSIVE octets_of(out`length) =
+    IF pos=out`length THEN out ELSE
+      LET prefix=join_octets(k,eh),
+          suffix=IF pos=0 THEN join_octets(fill_octets(1,label),sid) ELSE first_octets(out,pos) ENDIF,
+          b=hash_message(h,join_octets(prefix,suffix)),
+          next:index=IF pos+hash_bytes(h)>=out`length THEN out`length ELSE pos+hash_bytes(h) ENDIF IN
+      ssh_blocks(h,k,eh,sid,label,copy_octets(out,pos,b,0),next)
+    ENDIF MEASURE out`length-pos
+  ssh(h:protocol_hash,encoded_k:field,eh,sid:digest(h),label:ssh_label,n:upto(16777216)): octets_of(n) =
+    ssh_blocks(h,encoded_k,eh,sid,label,fill_octets(n,0),0)
+
+  % The SNMPv3 USM SHA-1 profile in section 5.4, RFC 3414 Appendix A.2.2.
+  password: TYPE = {p:field | p`length>=8}
+  engine_id: TYPE = {e:bytestring | 5<=e`length AND e`length<=32}
+  repeated_password(p:password): octets_of(1048576) =
+    (# length:=1048576,seq:=LAMBDA(i:below(1048576)): p`seq(u32rem(i,p`length)) #)
+  snmp_sha1(p:password,engine:engine_id): octets_of(20) =
+    LET ku=sha1(repeated_password(p)) IN sha1(join_octets(ku,join_octets(engine,ku)))
+  tpm12(auth,even_nonce,odd_nonce:nonce20): octets_of(20) =
+    hmac(h_sha1,auth,join_octets(even_nonce,odd_nonce))
+END protocol_kdf

@@ -1,0 +1,27 @@
+% MSB-first operations on 128-bit blocks for the SP 800-38 series.
+crypto_blocks: THEORY
+BEGIN
+  IMPORTING crypto_octets
+  octet_block: TYPE = byv[16]
+  zero_block: octet_block = LAMBDA (i: upto(15)): 0
+  width: TYPE = {n: uint8 | 1 <= n AND n <= 128}
+  % Keep the leading n bits. Bytes outside a short segment are zero.
+  take_bits(x: octet_block, n: upto(128)): octet_block =
+    LAMBDA (i: upto(15)):
+      IF 8*i >= n THEN 0 ELSIF 8*i+8 <= n THEN x(i)
+      ELSE u8and(x(i),u8lshift(255,8+8*i-n)) ENDIF
+
+  bit_at(x: octet_block, j: below(128)): uint8 =
+    u8and(u8rshift(x(u16div(j,8)),7-u16rem(j,8)),1)
+  increment(x: octet_block, remaining: upto(16)): RECURSIVE octet_block =
+    IF remaining = 0 THEN x ELSE
+      LET j: below(16) = remaining-1 IN
+        IF x(j) = 255 THEN increment(x WITH [(j) := 0],j)
+        ELSE x WITH [(j) := u8plus(x(j),1)] ENDIF
+    ENDIF MEASURE remaining
+  pad10(x: octet_block,n: below(128)): octet_block =
+    LET b = take_bits(x,n), j: below(16) = u16div(n,8) IN
+      b WITH [(j) := u8or(b(j),u8rshift(128,u16rem(n,8)))]
+  full_segment: LEMMA FORALL (x: octet_block): take_bits(x,128) = x
+  zero_segment: LEMMA FORALL (x: octet_block): take_bits(x,0) = zero_block
+END crypto_blocks

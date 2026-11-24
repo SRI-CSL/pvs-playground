@@ -1,0 +1,76 @@
+% SP 800-90B §§6.3.9 and 6.3.10. Keys refer to substrings in the same
+% immutable sample. Hash collisions are resolved by checking all key bytes.
+entropy_context: THEORY
+BEGIN
+  IMPORTING entropy_predictors
+  depth:TYPE=subrange(1,17)
+  entry:TYPE=[# ending:index,width:depth,v:uint64 #]
+  bucket:DATATYPE
+  BEGIN
+    vacant:vacant?
+    link(head:entry,tail:bucket):link?
+  END bucket
+  slots:TYPE=subrange(1,65536)
+  page:TYPE=ARRAY[uint8->bucket]
+  empty_page:page=LAMBDA(i:uint8):vacant
+  dictionary:TYPE=[# n:slots,chains:ARRAY[uint8->page] #]
+  init_dict(n:slots):dictionary=(# n:=n,chains:=LAMBDA(i:uint8):empty_page #)
+  key_hash(x:bytestring,i:upto(x`length),d:upto(17),h:uint32):RECURSIVE uint32=
+    IF d=0 OR i=0 THEN h ELSE key_hash(x,i-1,d-1,u32times(u32xor(h,x`seq(i-1)),16777619)) ENDIF MEASURE d
+  same_key(x:bytestring,i,j:upto(x`length),d:upto(17)):RECURSIVE bool=
+    IF d=0 THEN TRUE ELSIF i=0 OR j=0 OR x`seq(i-1)/=x`seq(j-1) THEN FALSE
+    ELSE same_key(x,i-1,j-1,d-1) ENDIF MEASURE d
+  same(x:bytestring,i:upto(x`length),d:depth,e:entry):bool=
+    d=e`width AND e`ending<=x`length AND same_key(x,i,e`ending,d)
+  lookup(x:bytestring,i:upto(x`length),d:depth,b:bucket):RECURSIVE uint64=
+    IF vacant?(b) THEN 0 ELSIF same(x,i,d,head(b)) THEN head(b)`v ELSE lookup(x,i,d,tail(b)) ENDIF MEASURE b BY <<
+  write_key(x:bytestring,i:upto(x`length),d:depth,b:bucket,v:uint64):RECURSIVE bucket=
+    IF vacant?(b) THEN link((# ending:=i,width:=d,v:=v #),vacant)
+    ELSIF same(x,i,d,head(b)) THEN link(head(b) WITH [v:=v],tail(b))
+    ELSE link(head(b),write_key(x,i,d,tail(b),v)) ENDIF MEASURE b BY <<
+  slot(x:bytestring,i:upto(x`length),d:depth,b:dictionary):below(b`n)=
+    u32rem(key_hash(x,i,d,d),b`n)
+  get(x:bytestring,i:upto(x`length),d:depth,b:dictionary):uint64=
+    LET j=slot(x,i,d,b) IN lookup(x,i,d,b`chains(u32rshift(j,8))(u32rem(j,256)))
+  put(x:bytestring,i:upto(x`length),d:depth,b:dictionary,v:uint64):dictionary=
+    LET j=slot(x,i,d,b),hi:uint8=u32rshift(j,8),lo:uint8=u32rem(j,256) IN
+      b WITH [`chains(hi)(lo):=write_key(x,i,d,b`chains(hi)(lo),v)]
+  counters:TYPE=ARRAY[below(16)->uint32]
+  models:TYPE=[# prefixes,pairs:dictionary,entries:counters,total:uint32 #]
+  train(x:bytestring,i:below(x`length),d:subrange(1,16),lz:bool,a:models):models=
+    IF i<d THEN a ELSE LET best=get(x,i,d,a`prefixes),count=get(x,i+1,d+1,a`pairs),j=d-1,
+       sym=x`seq(i),next=u64plus(count,1),packed=u64plus(u64times(next,256),sym) IN
+      IF (lz AND best=0 AND a`total>=65536) OR (NOT lz AND count=0 AND a`entries(j)>=100000) THEN a ELSE
+        (# prefixes:=IF packed>best THEN put(x,i,d,a`prefixes,packed) ELSE a`prefixes ENDIF,
+          pairs:=put(x,i+1,d+1,a`pairs,next),
+          total:=IF lz AND best=0 THEN u32plus(a`total,1) ELSE a`total ENDIF,
+          entries:=IF NOT lz AND count=0 THEN a`entries WITH [(j):=u32plus(a`entries(j),1)] ELSE a`entries ENDIF #) ENDIF ENDIF
+  % Update each depth using the preceding symbol, then predict this symbol.
+  % LZ visits depths in ascending order for insertion and descending order
+  % for ties in prediction (a longer context wins equal occurrence counts).
+  model_step:TYPE=[# state:models,scores:scoreboard,winner_hit:bool,largest:uint32,guess:uint16 #]
+  depths(x:bytestring,i:below(x`length),d:subrange(1,17),limit:subrange(1,16),lz:bool,
+         old:below(128),a:model_step):RECURSIVE model_step=
+    IF d>limit OR d>=i THEN a ELSE LET m=train(x,i-1,d,lz,a`state),v=get(x,i,d,m`prefixes),
+      count:uint32=u64div(v,256),sym:uint8=u64rem(v,256),hit=count>0 AND sym=x`seq(i),
+      better=count>0 AND count>=a`largest IN
+      depths(x,i,d+1,limit,lz,old,(# state:=m,scores:=IF lz THEN a`scores ELSE award(a`scores,d-1,hit) ENDIF,
+          winner_hit:=a`winner_hit OR (old=d-1 AND hit),largest:=IF better THEN count ELSE a`largest ENDIF,
+          guess:=IF better THEN sym ELSE a`guess ENDIF #)) ENDIF MEASURE 17-d
+  predictor_state:TYPE=[# m:models,s:scoreboard,h:hits #]
+  model_loop(x:bytestring,limit:subrange(1,16),lz:bool,i,stop:upto(x`length),v:predictor_state):RECURSIVE predictor_state=
+    IF i>=stop THEN v ELSIF stop-i>64 THEN LET mid:upto(x`length)=u32plus(i,u32div(stop-i,2)) IN
+      model_loop(x,limit,lz,mid,stop,model_loop(x,limit,lz,i,mid,v))
+    ELSE LET a=depths(x,i,1,limit,lz,v`s`winner,(# state:=v`m,scores:=v`s,winner_hit:=FALSE,largest:=0,guess:=256 #)),
+      hit=IF lz THEN a`guess=x`seq(i) ELSE a`winner_hit ENDIF IN
+      model_loop(x,limit,lz,i+1,stop,(# m:=a`state,s:=a`scores,h:=score(v`h,hit) #)) ENDIF MEASURE stop-i
+  context_hits(x:bytestring,d:subrange(1,16),lz:bool):hits=
+    LET first:uint8=IF lz THEN d+1 ELSE 2 ENDIF,n:slots=IF x`length>=65536 THEN 65536 ELSE x`length+1 ENDIF,
+      m:models=(# prefixes:=init_dict(n),pairs:=init_dict(n),entries:=LAMBDA(j:below(16)):0,total:=0 #) IN
+      IF x`length<=first THEN no_hits ELSE model_loop(x,d,lz,first,x`length,(# m:=m,s:=fresh,h:=no_hits #))`h ENDIF
+  context_estimate(x:bytestring,k:alphabet,lz:bool):estimate_result=
+    LET skip:uint8=IF lz THEN 17 ELSE 2 ENDIF IN IF x`length<=skip+1 THEN unavailable
+      ELSE prediction(k,x`length-skip,context_hits(x,16,lz)) ENDIF
+  all_predictions_counted: THEOREM FORALL(x:bytestring,lz:bool,d:subrange(1,16)):
+    context_hits(x,d,lz)`correct<=x`length
+END entropy_context

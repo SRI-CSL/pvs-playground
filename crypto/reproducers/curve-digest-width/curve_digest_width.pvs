@@ -1,0 +1,13 @@
+% Reduced from digest truncation in ecc_extra/appendix_h_ecc.
+curve_digest_width: THEORY
+BEGIN
+  width(w: bool): subrange(7,16) = IF w THEN 16 ELSE 7 ENDIF
+  inferred(w: bool,len: uint32): uint32 =
+    LET n=4*width(w) IN IF len>n THEN n ELSE len ENDIF
+  bounded(w: bool,len: uint32): uint32 =
+    LET n: uint16=4*width(w) IN IF len>n THEN n ELSE len ENDIF
+  inferred_short: _TEST_ inferred(FALSE,3)=3
+  inferred_long: _TEST_ inferred(FALSE,40)=28
+  bounded_short: _TEST_ bounded(FALSE,3)=3
+  bounded_long: _TEST_ bounded(FALSE,40)=28
+END curve_digest_width

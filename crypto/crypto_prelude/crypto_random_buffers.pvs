@@ -1,0 +1,19 @@
+% Read a bounded, immutable snapshot. A failed byte discards the prefix.
+crypto_random_buffers: THEORY
+BEGIN
+  IMPORTING crypto_random, crypto_buffers
+  acquisition(n: index): TYPE = [# ok: bool, value: octets_of(n) #]
+  collect(n: index,s: stream_id,base: uint32,out: octets_of(n),i: upto(n),entropy: bool):
+      RECURSIVE acquisition(n) =
+    IF i=n THEN (# ok:=TRUE, value:=out #)
+    ELSIF base>4294967295-i THEN (# ok:=FALSE, value:=fill_octets(n,0) #)
+    ELSE LET j=u32plus(base,i), v=IF entropy THEN entropy_sample(s,j) ELSE prng_sample(s,j) ENDIF IN
+      IF available(v) THEN collect(n,s,base,out WITH [`seq(i):=sample_byte(v)],i+1,entropy)
+      ELSE (# ok:=FALSE, value:=fill_octets(n,0) #) ENDIF
+    ENDIF MEASURE n-i
+  acquire(n: index,s: stream_id,base: uint32): acquisition(n) =
+    collect(n,s,base,fill_octets(n,0),0,FALSE)
+  entropy_bytes(n: index,s: stream_id,base: uint32): acquisition(n) =
+    collect(n,s,base,fill_octets(n,0),0,TRUE)
+  empty_acquisition: LEMMA FORALL (s: stream_id,base: uint32): acquire(0,s,base)`ok
+END crypto_random_buffers

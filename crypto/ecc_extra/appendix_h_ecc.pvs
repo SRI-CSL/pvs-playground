@@ -1,0 +1,83 @@
+% General-a Jacobian doubling and mixed affine addition. SP 800-186 Appendix H.
+appendix_h_ecc: THEORY
+BEGIN
+  IMPORTING appendix_h
+  affine(c: curve): TYPE = [# finite:bool,x,y:element(c) #]
+  jacobian(c: curve): TYPE = [# x,y,z:element(c) #]
+  origin(c: curve): jacobian(c) =
+    (# x:=zero_words(width(c)),y:=one_words(width(c)),z:=zero_words(width(c)) #)
+  generator(c: curve): affine(c) = (# finite:=TRUE,x:=gx(c),y:=gy(c) #)
+  lift(c: curve,q: affine(c)): jacobian(c) =
+    IF q`finite THEN (# x:=q`x,y:=q`y,z:=one_words(width(c)) #) ELSE origin(c) ENDIF
+  twice(x: limbs,m:words_of(x`len)): words_of(x`len) = add_mod(x,x,m)
+  square(x:limbs,m:words_of(x`len)): words_of(x`len) = mul_mod(x,x,m)
+  inverse(x:limbs,m:words_of(x`len)): words_of(x`len) =
+    LET one=one_words(x`len) IN pow_mod(x,sub_words(sub_words(m,one),one),m)
+  double(c: curve,q: jacobian(c)): jacobian(c) =
+    IF q`z=zero_words(width(c)) OR q`y=zero_words(width(c)) THEN origin(c)
+    ELSE LET p=prime(c), xx=square(q`x,p), yy=square(q`y,p), yyyy=square(yy,p), zz=square(q`z,p),
+             s=twice(twice(mul_mod(q`x,yy,p),p),p),
+             m=add_mod(add_mod(twice(xx,p),xx,p),mul_mod(coefficient_a(c),square(zz,p),p),p),
+             x=sub_mod(square(m,p),twice(s,p),p),
+             y=sub_mod(mul_mod(m,sub_mod(s,x,p),p),twice(twice(twice(yyyy,p),p),p),p) IN
+      (# x:=x,y:=y,z:=twice(mul_mod(q`y,q`z,p),p) #)
+    ENDIF
+  mixed_add(c: curve,q: jacobian(c),v: affine(c)): jacobian(c) =
+    IF NOT v`finite THEN q ELSIF q`z=zero_words(width(c)) THEN lift(c,v)
+    ELSE LET p=prime(c), zz=square(q`z,p), h=sub_mod(mul_mod(v`x,zz,p),q`x,p),
+             r=sub_mod(mul_mod(v`y,mul_mod(zz,q`z,p),p),q`y,p) IN
+      IF h=zero_words(width(c)) THEN IF r=zero_words(width(c)) THEN double(c,q) ELSE origin(c) ENDIF
+      ELSE LET hh=square(h,p), hhh=mul_mod(hh,h,p), xhh=mul_mod(q`x,hh,p),
+               x=sub_mod(sub_mod(square(r,p),hhh,p),twice(xhh,p),p),
+               y=sub_mod(mul_mod(r,sub_mod(xhh,x,p),p),mul_mod(q`y,hhh,p),p) IN
+        (# x:=x,y:=y,z:=mul_mod(q`z,h,p) #)
+      ENDIF
+    ENDIF
+  linear(c: curve,p,q: affine(c),k,l:element(c),r:jacobian(c),i:{j:uint16|j<=32*width(c)}):
+      RECURSIVE jacobian(c) =
+    IF i=0 THEN r ELSE LET dbl=double(c,r), t=IF bit_word(k,i-1) THEN mixed_add(c,dbl,p) ELSE dbl ENDIF,
+                            v=IF bit_word(l,i-1) THEN mixed_add(c,t,q) ELSE t ENDIF IN
+      linear(c,p,q,k,l,v,i-1)
+    ENDIF MEASURE i
+  normalize(c:curve,q:jacobian(c)): affine(c) =
+    IF q`z=zero_words(width(c)) THEN (# finite:=FALSE,x:=zero_words(width(c)),y:=zero_words(width(c)) #)
+    ELSE LET p=prime(c), z=inverse(q`z,p), zz=square(z,p) IN
+      (# finite:=TRUE,x:=mul_mod(q`x,zz,p),y:=mul_mod(q`y,mul_mod(z,zz,p),p) #) ENDIF
+  multiply(c:curve,q:affine(c),k:element(c)): affine(c) =
+    normalize(c,linear(c,q,q,k,zero_words(width(c)),origin(c),32*width(c)))
+  on_curve(c: curve,q: affine(c)): bool =
+    LET p=prime(c), x=q`x IN q`finite AND NOT ge_words(x,p) AND NOT ge_words(q`y,p) AND
+      square(q`y,p)=add_mod(mul_mod(x,add_mod(square(x,p),coefficient_a(c),p),p),coefficient_b(c),p)
+  valid_scalar(c:curve,k:element(c)):bool = k/=zero_words(width(c)) AND NOT ge_words(k,order(c))
+  result: TYPE = [# ok:bool,value:bytestring #]
+  cdh(c:curve,k:element(c),peer:affine(c)): result =
+    IF valid_scalar(c,k) AND on_curve(c,peer) THEN
+      LET q=multiply(c,peer,k) IN
+      IF q`finite THEN (# ok:=TRUE,value:=to_bytes(q`x,4*width(c),TRUE) #)
+      ELSE (# ok:=FALSE,value:=fill_octets(0,0) #) ENDIF
+    ELSE (# ok:=FALSE,value:=fill_octets(0,0) #) ENDIF
+  % Every order has a whole-octet length. Digest conversion takes its left prefix.
+  digest_int(c:curve,d:bytestring):element(c) =
+    LET n: uint16=4*width(c),b=IF d`length>n THEN first_octets(d,n) ELSE d ENDIF,
+        x=from_bytes(width(c),b,TRUE) IN
+      IF ge_words(x,order(c)) THEN sub_words(x,order(c)) ELSE x ENDIF
+  reduced_x(c:curve,x:element(c)):element(c) =
+    IF ge_words(x,order(c)) THEN sub_words(x,order(c)) ELSE x ENDIF
+  components(c:curve):TYPE = [# r,s:element(c) #]
+  signature(c:curve):TYPE = [# ok:bool,value:components(c) #]
+  rejected(c:curve):signature(c) = (# ok:=FALSE,value:=(# r:=zero_words(width(c)),s:=zero_words(width(c)) #) #)
+  sign(c:curve,d,k:element(c),h:bytestring):signature(c) =
+    IF NOT valid_scalar(c,d) OR NOT valid_scalar(c,k) THEN rejected(c)
+    ELSE LET n=order(c), p=multiply(c,generator(c),k),r=reduced_x(c,p`x),
+             s=mul_mod(inverse(k,n),add_mod(digest_int(c,h),mul_mod(d,r,n),n),n) IN
+      IF p`finite AND valid_scalar(c,r) AND valid_scalar(c,s) THEN (# ok:=TRUE,value:=(# r:=r,s:=s #) #)
+      ELSE rejected(c) ENDIF
+    ENDIF
+  verify(c:curve,q:affine(c),h:bytestring,r,s:element(c)):bool =
+    IF NOT valid_scalar(c,r) OR NOT valid_scalar(c,s) OR NOT on_curve(c,q) THEN FALSE
+    ELSE LET n=order(c),w=inverse(s,n),u=mul_mod(digest_int(c,h),w,n),v=mul_mod(r,w,n),
+             x=normalize(c,linear(c,generator(c),q,u,v,origin(c),32*width(c))) IN
+      x`finite AND reduced_x(c,x`x)=r ENDIF
+  invalid_nonce: LEMMA FORALL(c:curve,d,k:element(c),h:bytestring):
+    NOT valid_scalar(c,k) IMPLIES NOT sign(c,d,k,h)`ok
+END appendix_h_ecc

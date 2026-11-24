@@ -1,0 +1,1266 @@
+(|mlkem|
+ (|slice_array_TCC1| 0
+  (|slice_array_TCC1-1| NIL 4004535103
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|slice_array| SUBTYPE "(number_fields.+)(mlkem.base, mlkem.i)" "uint32"
+    (11 31 11 37))))
+ (|portion_TCC1| 0
+  (|portion_TCC1-1| NIL 4004535103
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK (|portion| SUBTYPE "mlkem.n" "index" (12 64 12 65))))
+ (|noise_vector_TCC1| 0
+  (|noise_vector_TCC1-1| NIL 4004535103
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|noise_vector| SUBTYPE "(number_fields.-)(4, mlkem.j)" "naturalnumber"
+    (20 18 20 21))))
+ (|noise_vector_TCC2| 0
+  (|noise_vector_TCC2-1| NIL 4004535103
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|noise_vector| SUBTYPE "(number_fields.+)(mlkem.j, 1)" "upto(4)"
+    (19 26 19 29))))
+ (|noise_vector_TCC3| 0
+  (|noise_vector_TCC3-1| NIL 4004535103
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|noise_vector| SUBTYPE "mlkem.j" "below(4)" (19 39 19 40))))
+ (|noise_vector_TCC4| 0
+  (|noise_vector_TCC4-1| NIL 4004535103
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|noise_vector| SUBTYPE "mlkem.j" "uint8" (19 58 19 59))))
+ (|noise_vector_TCC5| 0
+  (|noise_vector_TCC5-1| NIL 4004535103
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|noise_vector| TERMINATION
+    "mlkem.noise_vector(mlkem.seed, mlkem.k, (number_fields.+)(mlkem.j, 1), mlkem.v WITH [(mlkem.j) := mlkem_ring.ntt(mlkem_encoding.noise(mlkem.seed, mlkem.j, mlkem_encoding.eta1(mlkem.k)))])"
+    "NIL" (19 6 19 71))))
+ (|product_rows_TCC1| 0
+  (|product_rows_TCC1-1| NIL 4004535103
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|product_rows| SUBTYPE "(number_fields.+)(mlkem.k, mlkem.j)" "uint8"
+    (40 77 40 80))))
+ (|product_rows_TCC2| 0
+  (|product_rows_TCC2-1| NIL 4004535103
+   ("" (SKOSIMP* T)
+    (("" (CASE "k!1=2 OR k!1=3 OR k!1=4")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|du| CONST-DECL "[rank -> subrange(10, 11)]" |mlkem_encoding| NIL)
+    (|eta| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|fixed| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|rank| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL))
+   SHOSTAK
+   (|product_rows| SUBTYPE "mlkem_encoding.du(mlkem.k)" "width"
+    (42 33 42 38))))
+ (|product_rows_TCC3| 0
+  (|product_rows_TCC3-1| NIL 4004535106
+   ("" (SKOSIMP*)
+    (("" (CASE "j!1=0 OR j!1=1 OR j!1=2 OR j!1=3")
+      (("1" (GRIND :DEFS NIL :REWRITES ("exp2")) NIL NIL)
+       ("2" (GRIND :DEFS NIL :REWRITES ("exp2")) NIL NIL))
+      NIL))
+    NIL)
+   ((|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|product_rows| SUBTYPE
+    "number_fields.*(number_fields.*(32, mlkem.d), mlkem.j)" "base_offset"
+    (43 41 43 47))))
+ (|encode_secret_TCC1| 0
+  (|encode_secret_TCC1-1| NIL 4004535109
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|encode_secret| SUBTYPE "(number_fields.-)(4, mlkem.j)" "naturalnumber"
+    (49 18 49 21))))
+ (|encode_secret_TCC2| 0
+  (|encode_secret_TCC2-1| NIL 4004535109
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK (|encode_secret| SUBTYPE "mlkem.j" "below(4)" (48 58 48 59))))
+ (|encode_secret_TCC3| 0
+  (|encode_secret_TCC3-1| NIL 4004535109
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|encode_secret| SUBTYPE "number_fields.*(384, mlkem.j)" "base_offset"
+    (48 74 48 79))))
+ (|encode_secret_TCC4| 0
+  (|encode_secret_TCC4-1| NIL 4004535109
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|encode_secret| SUBTYPE "(number_fields.+)(mlkem.j, 1)" "upto(4)"
+    (48 83 48 86))))
+ (|encode_secret_TCC5| 0
+  (|encode_secret_TCC5-1| NIL 4004535109
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|encode_secret| TERMINATION
+    "mlkem.encode_secret(mlkem.v, mlkem.k, mlkem_encoding.encode_into(mlkem.v(mlkem.j), 12, booleans.FALSE, mlkem.out, number_fields.*(384, mlkem.j), 0), (number_fields.+)(mlkem.j, 1))"
+    "NIL" (48 26 48 87))))
+ (|encode_secret_TCC6| 0
+  (|encode_secret_TCC6-1| NIL 4004535109
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|encode_secret| SUBTYPE
+    "mlkem.encode_secret(mlkem.v, mlkem.k, mlkem_encoding.encode_into(mlkem.v(mlkem.j), 12, booleans.FALSE, mlkem.out, number_fields.*(384, mlkem.j), 0), (number_fields.+)(mlkem.j, 1))"
+    "fixed(mlkem.out`length)" (48 26 48 87))))
+ (|keygen_internal_TCC1| 0
+  (|keygen_internal_TCC1-1| NIL 4004535109
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|keygen_internal| SUBTYPE "mlkem.k" "uint8" (54 61 54 62))))
+ (|keygen_internal_TCC2| 0
+  (|keygen_internal_TCC2-1| NIL 4004535109
+   ("" (SKOSIMP* T)
+    (("" (CASE "k!1=2 OR k!1=3 OR k!1=4")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|ek_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|rank| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|fixed| TYPE-EQ-DECL NIL |mlkem_encoding| NIL))
+   SHOSTAK
+   (|keygen_internal| SUBTYPE "mlkem_encoding.ek_size(mlkem.k)" "index"
+    (56 30 56 40))))
+ (|keygen_internal_TCC3| 0
+  (|keygen_internal_TCC3-1| NIL 4004535112
+   ("" (SKOSIMP* T)
+    (("" (CASE "k!1=2 OR k!1=3 OR k!1=4")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|zeros| CONST-DECL "[n: index -> fixed(n)]" |mlkem_encoding| NIL)
+    (|ek_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|rank| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|fixed| TYPE-EQ-DECL NIL |mlkem_encoding| NIL))
+   SHOSTAK
+   (|keygen_internal| SUBTYPE "number_fields.*(384, mlkem.k)"
+    "upto(mlkem_encoding.zeros(mlkem_encoding.ek_size(mlkem.k))`length)"
+    (56 42 56 47))))
+ (|keygen_internal_TCC4| 0
+  (|keygen_internal_TCC4-1| NIL 4004535115
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|keygen_internal| SUBTYPE "0" "upto(mlkem.rho`length)" (56 52 56 53))))
+ (|keygen_internal_TCC5| 0
+  (|keygen_internal_TCC5-1| NIL 4004535115
+   ("" (SKOSIMP* T)
+    (("" (CASE "k!1=2 OR k!1=3 OR k!1=4")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|dk_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|rank| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|fixed| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|zeros| CONST-DECL "[n: index -> fixed(n)]" |mlkem_encoding| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|ek_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|))
+   SHOSTAK
+   (|keygen_internal| SUBTYPE "mlkem_encoding.dk_size(mlkem.k)" "index"
+    (59 38 59 48))))
+ (|keygen_internal_TCC6| 0
+  (|keygen_internal_TCC6-1| NIL 4004535118
+   ("" (SKOSIMP* T)
+    (("" (CASE "k!1=2 OR k!1=3 OR k!1=4")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|dk_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|rank| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|fixed| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|zeros| CONST-DECL "[n: index -> fixed(n)]" |mlkem_encoding| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|ek_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|))
+   SHOSTAK
+   (|keygen_internal| SUBTYPE "number_fields.*(384, mlkem.k)"
+    "upto(mlkem.dk0`length)" (60 30 60 35))))
+ (|keygen_internal_TCC7| 0
+  (|keygen_internal_TCC7-1| NIL 4004535121
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|keygen_internal| SUBTYPE "0" "upto(mlkem.t`value`length)" (60 44 60 45))))
+ (|keygen_internal_TCC8| 0
+  (|keygen_internal_TCC8-1| NIL 4004535122
+   ("" (SKOSIMP* T)
+    (("" (CASE "k!1=2 OR k!1=3 OR k!1=4")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|dk_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|rank| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|fixed| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|zeros| CONST-DECL "[n: index -> fixed(n)]" |mlkem_encoding| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|ek_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|))
+   SHOSTAK
+   (|keygen_internal| SUBTYPE
+    "(number_fields.+)(number_fields.*(768, mlkem.k), 32)"
+    "upto(mlkem.dk1`length)" (61 30 61 38))))
+ (|keygen_internal_TCC9| 0
+  (|keygen_internal_TCC9-1| NIL 4004535125
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|keygen_internal| SUBTYPE "0" "upto(keccak.sha3_256(mlkem.t`value)`length)"
+    (61 57 61 58))))
+ (|keygen_internal_TCC10| 0
+  (|keygen_internal_TCC10-1| NIL 4004535125
+   ("" (SKOSIMP* T)
+    (("" (CASE "k!1=2 OR k!1=3 OR k!1=4")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|dk_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|rank| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|fixed| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|zeros| CONST-DECL "[n: index -> fixed(n)]" |mlkem_encoding| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|ek_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|))
+   SHOSTAK
+   (|keygen_internal| SUBTYPE
+    "(number_fields.+)(number_fields.*(768, mlkem.k), 64)"
+    "upto(mlkem.dk2`length)" (62 53 62 61))))
+ (|keygen_internal_TCC11| 0
+  (|keygen_internal_TCC11-1| NIL 4004535128
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|keygen_internal| SUBTYPE "0" "upto(mlkem.z`length)" (62 64 62 65))))
+ (|dot_encoded_TCC1| 0
+  (|dot_encoded_TCC1-1| NIL 4004535128
+   ("" (SKOSIMP*)
+    (("" (CASE "j!1=0 OR j!1=1 OR j!1=2 OR j!1=3")
+      (("1" (GRIND :DEFS NIL :REWRITES ("exp2")) NIL NIL)
+       ("2" (GRIND :DEFS NIL :REWRITES ("exp2")) NIL NIL))
+      NIL))
+    NIL)
+   ((|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|dot_encoded| SUBTYPE
+    "number_fields.*(number_fields.*(32, mlkem.d), mlkem.j)" "base_offset"
+    (70 21 70 27))))
+ (|encrypt_TCC1| 0
+  (|encrypt_TCC1-1| NIL 4004535128
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|encrypt| SUBTYPE "number_fields.*(384, mlkem.k)" "base_offset"
+    (75 23 75 28))))
+ (|encrypt_TCC2| 0
+  (|encrypt_TCC2-1| NIL 4004535128
+   ("" (SKOSIMP* T)
+    (("" (CASE "k!1=2 OR k!1=3 OR k!1=4")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|ct_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|dv| CONST-DECL "[rank -> subrange(4, 5)]" |mlkem_encoding| NIL)
+    (|du| CONST-DECL "[rank -> subrange(10, 11)]" |mlkem_encoding| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|rank| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|fixed| TYPE-EQ-DECL NIL |mlkem_encoding| NIL))
+   SHOSTAK
+   (|encrypt| SUBTYPE "mlkem_encoding.ct_size(mlkem.k)" "index"
+    (76 46 76 56))))
+ (|encrypt_TCC3| 0
+  (|encrypt_TCC3-1| NIL 4004535131
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|encrypt| SUBTYPE "number_fields.*(2, mlkem.k)" "uint8" (79 30 79 33))))
+ (|encrypt_TCC4| 0
+  (|encrypt_TCC4-1| NIL 4004535131
+   ("" (SKOSIMP* T)
+    (("" (CASE "k!1=2 OR k!1=3 OR k!1=4")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|zeros| CONST-DECL "[n: index -> fixed(n)]" |mlkem_encoding| NIL)
+    (|ct_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|dv| CONST-DECL "[rank -> subrange(4, 5)]" |mlkem_encoding| NIL)
+    (|du| CONST-DECL "[rank -> subrange(10, 11)]" |mlkem_encoding| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|rank| TYPE-EQ-DECL NIL |mlkem_encoding| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|fixed| TYPE-EQ-DECL NIL |mlkem_encoding| NIL))
+   SHOSTAK
+   (|encrypt| SUBTYPE "mlkem_encoding.dv(mlkem.k)" "width" (80 42 80 47))))
+ (|encrypt_TCC5| 0
+  (|encrypt_TCC5-1| NIL 4004535134
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|encrypt| SUBTYPE
+    "number_fields.*(number_fields.*(32, mlkem_encoding.du(mlkem.k)), mlkem.k)"
+    "base_offset" (80 61 80 71))))
+ (|decrypt_TCC1| 0
+  (|decrypt_TCC1-1| NIL 4004535134
+   ("" (SKOSIMP* T)
+    (("" (CASE "k!1=2 OR k!1=3 OR k!1=4")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|du| CONST-DECL "[rank -> subrange(10, 11)]" |mlkem_encoding| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|rank| TYPE-EQ-DECL NIL |mlkem_encoding| NIL))
+   SHOSTAK
+   (|decrypt| SUBTYPE "mlkem_encoding.du(mlkem.k)" "width" (88 32 88 37))))
+ (|decrypt_TCC2| 0
+  (|decrypt_TCC2-1| NIL 4004535137
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|decrypt| SUBTYPE
+    "number_fields.*(number_fields.*(32, mlkem_encoding.du(mlkem.k)), mlkem.k)"
+    "base_offset" (89 20 89 30))))
+ (|decrypt_TCC3| 0
+  (|decrypt_TCC3-1| NIL 4004535137
+   ("" (SKOSIMP* T)
+    (("" (CASE "k!1=2 OR k!1=3 OR k!1=4")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|dv| CONST-DECL "[rank -> subrange(4, 5)]" |mlkem_encoding| NIL)
+    (|du| CONST-DECL "[rank -> subrange(10, 11)]" |mlkem_encoding| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|rank| TYPE-EQ-DECL NIL |mlkem_encoding| NIL))
+   SHOSTAK
+   (|decrypt| SUBTYPE "mlkem_encoding.dv(mlkem.k)" "width" (89 31 89 36))))
+ (|decrypt_TCC4| 0
+  (|decrypt_TCC4-1| NIL 4004535140
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|decrypt| SUBTYPE
+    "mlkem_encoding.encode_into(mlkem_ring.subtract(mlkem.v, mlkem.u), 1, booleans.TRUE, mlkem_encoding.zeros(32), 0, 0)"
+    "fixed(32)" (90 7 90 54))))
+ (|valid_dk_TCC1| 0
+  (|valid_dk_TCC1-1| NIL 4004535140
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|valid_dk| SUBTYPE "number_fields.*(384, mlkem.k)" "base_offset"
+    (110 24 110 29))))
+ (|valid_dk_TCC2| 0
+  (|valid_dk_TCC2-1| NIL 4004535140
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|dk_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|ek_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|valid_dk| SUBTYPE "mlkem_encoding.ek_size(mlkem.k)" "upto(4096)"
+    (110 30 110 40))))
+ (|valid_dk_TCC3| 0
+  (|valid_dk_TCC3-1| NIL 4004535140
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|valid_dk| SUBTYPE "(number_fields.+)(number_fields.*(768, mlkem.k), 32)"
+    "base_offset" (110 54 110 62))))
+ (|differences_TCC1| 0
+  (|differences_TCC1-1| NIL 4004535140
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|differences| SUBTYPE "(number_fields.-)(mlkem.a`length, mlkem.i)"
+    "naturalnumber" (113 73 113 83))))
+ (|differences_TCC2| 0
+  (|differences_TCC2-1| NIL 4004535140
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|differences| SUBTYPE "(number_fields.+)(mlkem.i, 1)"
+    "upto(mlkem.a`length)" (113 22 113 25))))
+ (|differences_TCC3| 0
+  (|differences_TCC3-1| NIL 4004535140
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|differences| SUBTYPE "mlkem.i" "below(mlkem.a`length)" (113 45 113 46))))
+ (|differences_TCC4| 0
+  (|differences_TCC4-1| NIL 4004535140
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "a!1`length" "i!1")
+     (GRIND :DEFS NIL :REWRITES ("exp2")))
+    NIL)
+   ((|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|differences| SUBTYPE "mlkem.i" "uint32" (113 53 113 54))))
+ (|differences_TCC5| 0
+  (|differences_TCC5-1| NIL 4004535141
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|differences| TERMINATION
+    "mlkem.differences(mlkem.a, mlkem.b, (number_fields.+)(mlkem.i, 1), integer_bv_ops.u8or(mlkem.v, integer_bv_ops.u8xor(mlkem.a`seq(mlkem.i), mlkem_encoding.at(mlkem.b, mlkem.i))))"
+    "NIL" (113 6 113 58))))
+ (|select_bytes_TCC1| 0
+  (|select_bytes_TCC1-1| NIL 4004535141
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|select_bytes| SUBTYPE "(number_fields.-)(32, mlkem.i)" "naturalnumber"
+    (118 18 118 22))))
+ (|select_bytes_TCC2| 0
+  (|select_bytes_TCC2-1| NIL 4004535141
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|select_bytes| SUBTYPE "mlkem.i" "below(mlkem.out`length)"
+    (117 46 117 47))))
+ (|select_bytes_TCC3| 0
+  (|select_bytes_TCC3-1| NIL 4004535141
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   NIL SHOSTAK
+   (|select_bytes| SUBTYPE "mlkem.out WITH [`seq(mlkem.i) := mlkem.v]"
+    "fixed(32)" (117 31 117 52))))
+ (|select_bytes_TCC4| 0
+  (|select_bytes_TCC4-1| NIL 4004535141
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|select_bytes| SUBTYPE "(number_fields.+)(mlkem.i, 1)" "upto(32)"
+    (117 58 117 61))))
+ (|select_bytes_TCC5| 0
+  (|select_bytes_TCC5-1| NIL 4004535141
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|select_bytes| TERMINATION
+    "mlkem.select_bytes(mlkem.good, mlkem.bad, mlkem.out WITH [`seq(mlkem.i) := mlkem.v], mlkem.mask, (number_fields.+)(mlkem.i, 1))"
+    "NIL" (117 9 117 62))))
+ (|select_bytes_TCC6| 0
+  (|select_bytes_TCC6-1| NIL 4004535141
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|select_bytes| SUBTYPE "mlkem.i" "below(mlkem.good`length)"
+    (116 37 116 38))))
+ (|select_bytes_TCC7| 0
+  (|select_bytes_TCC7-1| NIL 4004535141
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|select_bytes| SUBTYPE "mlkem.i" "below(mlkem.bad`length)"
+    (116 67 116 68))))
+ (|decaps_TCC1| 0
+  (|decaps_TCC1-1| NIL 4004535141
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|decaps| SUBTYPE "number_fields.*(384, mlkem.k)" "base_offset"
+    (123 24 123 29))))
+ (|decaps_TCC2| 0
+  (|decaps_TCC2-1| NIL 4004535141
+   ("" (SKOSIMP* T)
+    (("" (CASE "k!1=2 OR k!1=3 OR k!1=4")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("du" "dv" "dk_size" "ek_size" "ct_size" "exp2" "zeros"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|ek_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|ct_size| CONST-DECL "[rank -> uint16]" |mlkem_encoding| NIL)
+    (|dv| CONST-DECL "[rank -> subrange(4, 5)]" |mlkem_encoding| NIL)
+    (|du| CONST-DECL "[rank -> subrange(10, 11)]" |mlkem_encoding| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|rank| TYPE-EQ-DECL NIL |mlkem_encoding| NIL))
+   SHOSTAK
+   (|decaps| SUBTYPE "mlkem_encoding.ek_size(mlkem.k)" "upto(4096)"
+    (123 30 123 40))))
+ (|decaps_TCC3| 0
+  (|decaps_TCC3-1| NIL 4004535144
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|decaps| SUBTYPE "(number_fields.+)(number_fields.*(768, mlkem.k), 32)"
+    "base_offset" (123 56 123 64))))
+ (|decaps_TCC4| 0
+  (|decaps_TCC4-1| NIL 4004535144
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|decaps| SUBTYPE "(number_fields.+)(number_fields.*(768, mlkem.k), 64)"
+    "base_offset" (124 23 124 31))))
+ (|decaps_TCC5| 0
+  (|decaps_TCC5-1| NIL 4004535144
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :DEFS ("exp2") :IF-MATCH NIL)) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|decaps| SUBTYPE "0" "upto(mlkem.ct`length)" (128 91 128 92)))))
+

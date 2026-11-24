@@ -1,0 +1,79 @@
+% SP 800-90B §§6.3.2–6.3.4, using the equivalent collision equation
+% E[T]=2+2p(1-p) and the Appendix G compression expectation.
+entropy_binary: THEORY
+BEGIN
+  crypto_prelude:LIBRARY="../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_statistics
+  estimate_result:TYPE=[# usable:bool,bits_per_sample:fp #]
+  unavailable:estimate_result=(# usable:=FALSE,bits_per_sample:=fl(0) #)
+  estimated(h:fp):estimate_result=(# usable:=TRUE,bits_per_sample:=fp_max(fl(0),h) #)
+  neglog(p:fp):fp=fp_sub(fl(0),log_two(p))
+  z99:fp=ratio(2576,1000)
+  upper_p(p:fp,n:{a:uint32 | a>1}):fp=
+    fp_min(fl(1),fp_add(p,fp_mul(z99,fp_sqrt(fp_div(fp_mul(p,fp_sub(fl(1),p)),fl(n-1))))))
+  binary?(x:bytestring,i:upto(x`length)):RECURSIVE bool=
+    IF i=x`length THEN TRUE ELSIF x`seq(i)>1 THEN FALSE ELSE binary?(x,i+1) ENDIF MEASURE x`length-i
+  binary_data:TYPE={x:bytestring | binary?(x,0)}
+  waits:TYPE=[# two,three:uint32 #]
+  collisions(x:binary_data,i:upto(x`length),a:waits):RECURSIVE waits=
+    IF i+1>=x`length THEN a ELSIF x`seq(i)=x`seq(i+1) THEN
+      collisions(x,i+2,a WITH [two:=u32plus(a`two,1)])
+    ELSIF i+2>=x`length THEN a ELSE collisions(x,i+3,a WITH [three:=u32plus(a`three,1)]) ENDIF MEASURE x`length-i
+  collision(x:binary_data):estimate_result=
+    LET a=collisions(x,0,(# two:=0,three:=0 #)),v=u32plus(a`two,a`three) IN
+    IF v<2 THEN unavailable ELSE LET t=ratio(a`three,v),
+      % Unbiased variance of a binary wait indicator is v*t*(1-t)/(v-1).
+      bound=fp_max(fl(2),fp_sub(fp_add(fl(2),t),fp_mul(z99,fp_sqrt(fp_div(fp_mul(t,fp_sub(fl(1),t)),fl(v-1)))))),
+      p=fp_add(ratio(1,2),fp_sqrt(fp_max(fl(0),fp_sub(ratio(5,4),fp_div(bound,fl(2)))))) IN estimated(neglog(p)) ENDIF
+  transitions:TYPE=ARRAY[below(4)->uint32]
+  tally(x:binary_data,i,stop:upto(x`length),a:transitions):RECURSIVE transitions=
+    IF i>=stop OR i+1>=x`length THEN a ELSIF stop-i>128 THEN LET mid:upto(x`length)=u32plus(i,u32div(stop-i,2)) IN
+      tally(x,mid,stop,tally(x,i,mid,a)) ELSE LET j:below(4)=2*x`seq(i)+x`seq(i+1) IN
+      tally(x,i+1,stop,a WITH [(j):=u32plus(a(j),1)]) ENDIF MEASURE stop-i
+  conditional(a,b:uint32):fp=IF b=0 THEN fl(0) ELSE ratio(a,b) ENDIF
+  % Dynamic programming finds the largest probability of any 128-bit path.
+  path(p:ARRAY[below(4)->fp],a,b:fp,left:upto(127)):RECURSIVE fp=
+    IF left=0 THEN fp_max(a,b) ELSE path(p,fp_max(fp_mul(a,p(0)),fp_mul(b,p(2))),
+      fp_max(fp_mul(a,p(1)),fp_mul(b,p(3))),left-1) ENDIF MEASURE left
+  markov(x:binary_data):estimate_result=
+    IF x`length<2 THEN unavailable ELSE LET c=tally(x,0,x`length,LAMBDA(i:below(4)):0),
+      z=u32plus(c(0),c(1)),o=u32plus(c(2),c(3)),
+      p:ARRAY[below(4)->fp]=[:conditional(c(0),z),conditional(c(1),z),conditional(c(2),o),conditional(c(3),o):],
+      ones=ratio(u32plus(o,x`seq(x`length-1)),x`length),prob=path(p,fp_sub(fl(1),ones),ones,127) IN
+      estimated(fp_min(fl(1),fp_div(neglog(prob),fl(128)))) ENDIF
+  dict64:TYPE=ARRAY[below(64)->uint32]
+  log_stats:TYPE=[# total,squares:fp #]
+  group6(x:binary_data,i:uint32):below(64)=IF i+5>=x`length THEN 0 ELSE
+    32*x`seq(i)+16*x`seq(i+1)+8*x`seq(i+2)+4*x`seq(i+3)+2*x`seq(i+4)+x`seq(i+5) ENDIF
+  distances(x:binary_data,N:uint32,i:upto(N),t:dict64,a:log_stats):RECURSIVE log_stats=
+    IF i=N THEN a ELSE LET sym=group6(x,u32times(6,i)),v=log_two(fl(u32minus(i+1,t(sym)))),
+      next=IF i<1000 THEN a ELSE (# total:=fp_add(a`total,v),squares:=fp_add(a`squares,sq(v)) #) ENDIF IN
+      distances(x,N,i+1,t WITH [(sym):=i+1],next) ENDIF MEASURE N-i
+  % Sum the expected log-distance over all test blocks, collapsing the
+  % double sum by counting how many blocks can have a given distance.
+  gsum(N:{n:uint32 | n>1000},z,q:fp,i:uint32,weight,acc:fp):RECURSIVE fp=
+    IF i>N OR weight=fl(0) THEN acc ELSE
+      LET count:uint32=IF i<=1000 THEN N-1000 ELSE N-i ENDIF,
+          coefficient=fp_add(fp_mul(z,fl(count)),IF i>1000 THEN fl(1) ELSE fl(0) ENDIF),
+          term=fp_mul(fp_mul(log_two(fl(i)),weight),coefficient) IN
+      gsum(N,z,q,i+1,fp_mul(weight,q),fp_add(acc,term)) ENDIF MEASURE N+1-i
+  G(N:{n:uint32 | n>1000},z:fp):fp=
+    LET q=fp_sub(fl(1),z) IN fp_mul(fp_div(z,fl(N-1000)),gsum(N,z,q,2,q,fl(0)))
+  expectation(N:{n:uint32 | n>1000},p:fp):fp=
+    fp_add(G(N,p),fp_mul(fl(63),G(N,fp_div(fp_sub(fl(1),p),fl(63)))))
+  solve(N:{n:uint32 | n>1000},meanval,lo,hi:fp,left:upto(55)):RECURSIVE fp=
+    LET mid=fp_div(fp_add(lo,hi),fl(2)) IN
+    IF left=0 OR mid=lo OR mid=hi THEN hi
+    ELSIF fp_lt(meanval,expectation(N,mid)) THEN solve(N,meanval,mid,hi,left-1)
+    ELSE solve(N,meanval,lo,mid,left-1) ENDIF MEASURE left
+  compression(x:binary_data):estimate_result=
+    LET N=u32div(x`length,6) IN IF N<1002 THEN unavailable ELSE
+      LET v:uint32=u32minus(N,1000),a=distances(x,N,0,LAMBDA(j:below(64)):0,(# total:=fl(0),squares:=fl(0) #)),
+          avg=fp_div(a`total,fl(v)),sigma=fp_mul(ratio(5907,10000),
+              fp_sqrt(fp_max(fl(0),fp_sub(fp_div(a`squares,fl(u32minus(v,1))),sq(avg))))),
+          bound=fp_sub(avg,fp_div(fp_mul(z99,sigma),fp_sqrt(fl(v)))),
+          p=IF fp_lt(bound,expectation(N,ratio(1,64))) THEN solve(N,bound,ratio(1,64),fl(1),55) ELSE ratio(1,64) ENDIF IN
+      estimated(fp_div(neglog(p),fl(6))) ENDIF
+  collision_partition: THEOREM FORALL(x:binary_data):
+    LET a=collisions(x,0,(# two:=0,three:=0 #)) IN 2*a`two+3*a`three<=x`length AND x`length-(2*a`two+3*a`three)<=2
+END entropy_binary

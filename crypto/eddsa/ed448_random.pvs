@@ -1,0 +1,13 @@
+% FIPS 186-5 section 7.4. The caller provides a fresh, appropriately seeded
+% RBG stream at the required security strength.
+ed448_random: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING ed448, crypto_prelude@crypto_random_buffers
+  keys: TYPE = [# ok: bool, private_seed, verification_key: key_bytes #]
+  generate_keys(s: stream_id): keys =
+    LET d=acquire(57,s,0) IN IF d`ok THEN
+      (# ok := TRUE,private_seed := d`value,verification_key := public_key(d`value) #)
+    ELSE (# ok := FALSE,private_seed := fill_octets(57,0),verification_key := fill_octets(57,0) #) ENDIF
+  seed_failure: LEMMA FORALL (s: stream_id): NOT acquire(57,s,0)`ok IMPLIES NOT generate_keys(s)`ok
+END ed448_random

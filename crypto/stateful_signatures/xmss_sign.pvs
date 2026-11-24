@@ -1,0 +1,74 @@
+% SP 800-208 section 6.2 and modified Algorithms 10', 12', 15' and 16'.
+xmss_sign: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING xmss,crypto_prelude@crypto_random_buffers
+  tree_node(s: suite,secret,seed: octets_of(digest_len(s)),layer: below(12),tree: uint64,
+            index: uint32,level: upto(20)): RECURSIVE octets_of(digest_len(s)) =
+    IF level=0 THEN LET a=zero_addr(layer,tree,index),
+        v=wots(s,secret,seed,a,fill_octets(0,0),fill_octets(0,0),0)
+      IN ltree(s,seed,a,v,len_wots(s),0) ELSE
+      LET left=u32plus(index,index),a=zero_addr(layer,tree,0) WITH [`kind:=2,`first:=level-1,`second:=index]
+      IN rand_hash(s,seed,a,tree_node(s,secret,seed,layer,tree,left,level-1),
+                            tree_node(s,secret,seed,layer,tree,u32plus(left,1),level-1)) ENDIF MEASURE level
+  root_key(p: xmss_params,secret,seed: octets_of(digest_len(p`s))): octets_of(digest_len(p`s)) =
+    tree_node(p`s,secret,seed,p`layers-1,0,0,p`h)
+  vk(multi: bool,oid: uint32,secret,seed: bytestring): bytestring =
+    LET p=params(multi,oid),n=digest_len(p`s) IN
+    IF NOT p`ok OR secret`length/=n OR seed`length/=n THEN fill_octets(0,0) ELSE
+      join_octets(word(oid),join_octets(root_key(p,secret,seed),seed)) ENDIF
+  path(p: xmss_params,secret,seed: octets_of(digest_len(p`s)),layer: below(12),tree: uint64,idx: uint32,
+       i: upto(20),out: bytestring): RECURSIVE octets_of(out`length) =
+    IF i>=p`h THEN out ELSE LET s=p`s,n=digest_len(s),off: uint16=i*n,
+       sib=u32xor(idx,1),v=tree_node(s,secret,seed,layer,tree,sib,i) IN
+       IF off>out`length THEN out ELSE path(p,secret,seed,layer,tree,u32rshift(idx,1),i+1,copy_octets(out,off,v,0))
+       ENDIF ENDIF MEASURE 20-i
+  write_layer(p: xmss_params,secret,seed: octets_of(digest_len(p`s)),out: bytestring,off: upto(40000),
+              idx: uint64,msg: octets_of(digest_len(p`s)),layer: upto(12)): RECURSIVE octets_of(out`length) =
+    IF layer>=p`layers THEN out ELSE LET s=p`s,n=digest_len(s),tree=u64rshift(idx,p`h),
+      leaf: uint32=leaf_index(p,idx),a=zero_addr(layer,tree,leaf),
+      ws=wots(s,secret,seed,a,wdigits(s,msg),fill_octets(0,0),1),
+      au=path(p,secret,seed,layer,tree,leaf,0,fill_octets(n*p`h,0)),
+      dest: uint32=off+ws`length,next: uint32=dest+au`length IN
+      IF off>out`length OR dest>out`length OR next>40000 THEN out ELSE
+        LET signed=copy_octets(copy_octets(out,off,ws,0),dest,au,0) IN
+        IF layer+1=p`layers THEN signed ELSE
+          LET full=wots(s,secret,seed,a,fill_octets(0,0),fill_octets(0,0),0),
+              root=ascend_x(s,seed,a,p`h,leaf,au,ltree(s,seed,a,full,len_wots(s),0),0)
+          IN write_layer(p,secret,seed,signed,next,tree,root,layer+1) ENDIF ENDIF ENDIF
+    MEASURE 12-layer
+  signature: TYPE = [# ok: bool, value: bytestring #]
+  bad_signature: signature = (# ok:=FALSE,value:=fill_octets(0,0) #)
+  sign_xmss(multi: bool,oid: uint32,secret,skprf,seed,pk: bytestring,idx: uint64,m: message_input): signature =
+    LET p=params(multi,oid),s=p`s,n=digest_len(s),ib=idxbytes(p) IN
+    IF NOT p`ok OR secret`length/=n OR skprf`length/=n OR seed`length/=n OR
+       pk`length/=4+2*n OR read_word(pk,0)/=oid OR idx>=u64lshift(1,p`total) OR siglen(p)>40000 THEN bad_signature ELSE
+      LET r=hashkey(s,3,skprf,to_bytes(idx,32)),root=part(pk,4,n),d=message_hash(p,r,root,idx,m),
+          head=join_octets(to_bytes(idx,ib),r),out=copy_octets(fill_octets(siglen(p),0),0,head,0)
+      IN (# ok:=TRUE,value:=write_layer(p,secret,seed,out,ib+n,idx,d,0) #) ENDIF
+  reservation: TYPE = [# ok:bool, slot,following:uint64 #]
+  reserve_xmss(p: xmss_params,next: uint64): reservation =
+    IF NOT p`ok OR next>=u64lshift(1,p`total) THEN (# ok:=FALSE,slot:=0,following:=next #)
+    ELSE (# ok:=TRUE,slot:=next,following:=u64plus(next,1) #) ENDIF
+  material: TYPE = [# ok: bool,secret,skprf,seed: bytestring #]
+  % Distinct portions of a fresh stream produce S_XMSS, SK_PRF and SEED.
+  gen_material(s: suite,stream: stream_id): material =
+    LET n=digest_len(s),a=acquire(n,stream,0),b=acquire(n,stream,n),c=acquire(n,stream,2*n) IN
+    IF a`ok AND b`ok AND c`ok THEN (# ok:=TRUE,secret:=a`value,skprf:=b`value,seed:=c`value #)
+    ELSE (# ok:=FALSE,secret:=fill_octets(0,0),skprf:=fill_octets(0,0),seed:=fill_octets(0,0) #) ENDIF
+  key_state: TYPE = [# ok,multi: bool,oid: uint32,secret,skprf,seed,pk: bytestring,next: uint64 #]
+  generate_xmss(multi: bool,oid: uint32,stream: stream_id): key_state =
+    LET p=params(multi,oid), material=gen_material(p`s,stream),empty=fill_octets(0,0) IN
+    IF NOT p`ok OR NOT material`ok THEN
+      (# ok:=FALSE,multi:=multi,oid:=oid,secret:=empty,skprf:=empty,seed:=empty,pk:=empty,next:=0 #)
+    ELSE (# ok:=TRUE,multi:=multi,oid:=oid,secret:=material`secret,skprf:=material`skprf,
+            seed:=material`seed,pk:=vk(multi,oid,material`secret,material`seed),next:=0 #) ENDIF
+  issued: TYPE = [# state: key_state,sig: signature #]
+  issue_xmss(k: key_state,m: message_input): issued =
+    LET p=params(k`multi,k`oid),a=reserve_xmss(p,k`next) IN
+    IF NOT k`ok OR NOT a`ok THEN (# state:=k,sig:=bad_signature #) ELSE
+      (# state:=k WITH [`next:=a`following],
+         sig:=sign_xmss(k`multi,k`oid,k`secret,k`skprf,k`seed,k`pk,a`slot,m) #) ENDIF
+  terminal_xmss_rejected: LEMMA FORALL (p: xmss_params):
+    NOT reserve_xmss(p,u64lshift(1,p`total))`ok
+END xmss_sign

@@ -1,0 +1,117 @@
+% NIST SP 800-232 (August 2025), sections 3-5 and appendix A.
+% Words encode the first bit in bit 0. Inputs may end on any bit boundary.
+ascon: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_words
+  lane: TYPE = uint64
+  lanes: TYPE = [# x0, x1, x2, x3, x4: lane #]
+  block: TYPE = [# lo, hi: lane #]
+  empty_block: block = (# lo := 0, hi := 0 #)
+  low_mask(n: below(64)): lane = u64minus(u64lshift(1,n),1)
+  low_bits(x: lane, n: below(64)): lane = u64and(x,low_mask(n))
+  pad_word(x: lane, n: below(64)): lane = u64or(low_bits(x,n),u64lshift(1,n))
+
+  % Figure 3 and equations (8)-(12).
+  diffuse(x: lane, a,b: below(64)): lane = u64xor(x,u64xor(ror64(x,a),ror64(x,b)))
+  round(s: lanes, rc: uint8): lanes =
+    LET a = u64xor(s`x0,s`x4), b = s`x1, c = u64xor(u64xor(s`x2,rc),b),
+        d = s`x3, e = u64xor(s`x4,d),
+        u = u64xor(a,u64and(u64not(b),c)), v = u64xor(b,u64and(u64not(c),d)),
+        w = u64xor(c,u64and(u64not(d),e)), y = u64xor(d,u64and(u64not(e),a)),
+        z = u64xor(e,u64and(u64not(a),b)) IN
+      (# x0 := diffuse(u64xor(u,z),19,28), x1 := diffuse(u64xor(v,u),61,39),
+         x2 := diffuse(u64not(w),1,6), x3 := diffuse(u64xor(y,w),10,17),
+         x4 := diffuse(z,7,41) #)
+
+  % Table 5. The two modes use the last 8 or the last 12 constants.
+  rounds(s: lanes, remaining: upto(12)): RECURSIVE lanes =
+    IF remaining = 0 THEN s ELSE
+      LET i: uint8 = 12 - remaining, rc: uint8 = 240 - 15*i IN
+        rounds(round(s,rc),remaining-1)
+    ENDIF MEASURE remaining
+
+  % Algorithms 5-7. Each absorb consumes 64 bits. finish_hash consumes
+  % the remaining 0..63 bits, including an empty tail on an aligned input.
+  sponge_init(iv: lane): lanes =
+    rounds((# x0 := iv, x1 := 0, x2 := 0, x3 := 0, x4 := 0 #),12)
+  hash256_init: lanes = sponge_init(8800401358850)
+  xof128_init: lanes = sponge_init(8796106391555)
+  absorb(s: lanes, x: lane): lanes = rounds(s WITH [`x0 := u64xor(s`x0,x)],12)
+  finish_hash(s: lanes, tail: lane, n: below(64)): lanes = absorb(s,pad_word(tail,n))
+  squeeze_next(s: lanes): lanes = rounds(s,12)
+  digest256: TYPE = [# w0, w1, w2, w3: lane #]
+  hash256_finish(s: lanes, tail: lane, n: below(64)): digest256 =
+    LET a = finish_hash(s,tail,n), b = squeeze_next(a), c = squeeze_next(b),
+        d = squeeze_next(c) IN (# w0 := a`x0, w1 := b`x0, w2 := c`x0, w3 := d`x0 #)
+  % XOF output is successive x0 lanes, low bit first. Truncate the final
+  % lane to the requested number of bits. Customization is at most 2048 bits.
+  custom_words: TYPE = ARRAY[below(32) -> lane]
+  custom_absorb(s: lanes, z: custom_words, done: upto(32), total: {t: upto(32) | done <= t}): RECURSIVE lanes =
+    IF done = total THEN s ELSE custom_absorb(absorb(s,z(done)),z,done+1,total)
+    ENDIF MEASURE total-done
+  cxof128_init(z: custom_words, n: upto(2048)): lanes =
+    LET whole: upto(32) = u16div(n,64), bits: below(64) = u16rem(n,64),
+        init = absorb(sponge_init(8796106391556),n),
+        s = custom_absorb(init,z,0,whole),
+        tail: lane = IF whole < 32 THEN z(whole) ELSE (0::lane) ENDIF IN
+      finish_hash(s,tail,bits)
+
+  % Algorithms 3 and 4. The contiguous interface carries a prefix of full
+  % 128-bit blocks and a final partial block. Unused high input bits are ignored.
+  frame: TYPE = [# blocks: size, body: ARRAY[below(blocks) -> block],
+                   tail_bits: below(128), tail: block #]
+  empty_frame: frame =
+    (# blocks := 0, body := LAMBDA (i: below(0)): empty_block,
+       tail_bits := 0, tail := empty_block #)
+  truncate_block(p: block, n: below(128)): block =
+    IF n < 64 THEN (# lo := low_bits(p`lo,n), hi := 0 #)
+    ELSE (# lo := p`lo, hi := low_bits(p`hi,n-64) #) ENDIF
+  padded(p: block, n: below(128)): block =
+    IF n < 64 THEN (# lo := pad_word(p`lo,n), hi := 0 #)
+    ELSE (# lo := p`lo, hi := pad_word(p`hi,n-64) #) ENDIF
+  combine(s: lanes, b: block): block = (# lo := u64xor(s`x0,b`lo), hi := u64xor(s`x1,b`hi) #)
+  rate(s: lanes, b: block): lanes = s WITH [`x0 := b`lo, `x1 := b`hi]
+  aead_init(k,nonce: block): lanes =
+    LET s = rounds((# x0 := 17594342703105, x1 := k`lo, x2 := k`hi,
+                      x3 := nonce`lo, x4 := nonce`hi #),12) IN
+      s WITH [`x3 := u64xor(s`x3,k`lo), `x4 := u64xor(s`x4,k`hi)]
+  ad_block(s: lanes,b: block): lanes = rounds(rate(s,combine(s,b)),8)
+  ad_prefix(s: lanes, ad: frame, i: upto(ad`blocks)): RECURSIVE lanes =
+    IF i = ad`blocks THEN s ELSE ad_prefix(ad_block(s,ad`body(i)),ad,i+1)
+    ENDIF MEASURE ad`blocks-i
+  process_ad(s: lanes, ad: frame): lanes =
+    LET last = IF ad`blocks = 0 AND ad`tail_bits = 0 THEN s
+               ELSE ad_block(ad_prefix(s,ad,0),padded(ad`tail,ad`tail_bits)) ENDIF IN
+      last WITH [`x4 := u64xor(last`x4,u64lshift(1,63))]
+  tag(s: lanes,k: block): block =
+    LET t = rounds(s WITH [`x2 := u64xor(s`x2,k`lo), `x3 := u64xor(s`x3,k`hi)],12) IN
+      (# lo := u64xor(t`x3,k`lo), hi := u64xor(t`x4,k`hi) #)
+
+  sealed: TYPE = [# data: frame, auth: block #]
+  % The ciphertext is fed back in either direction. The final state absorbs
+  % the recovered plaintext with its padding and no intervening permutation.
+  crypt(s: lanes,k: block, m: frame, i: upto(m`blocks), decrypting: bool): RECURSIVE sealed =
+    IF i = m`blocks THEN
+      LET out = truncate_block(combine(s,m`tail),m`tail_bits),
+          p = IF decrypting THEN out ELSE m`tail ENDIF,
+          last = rate(s,combine(s,padded(p,m`tail_bits))) IN
+        (# data := m WITH [`tail := out], auth := tag(last,k) #)
+    ELSE LET out = combine(s,m`body(i)), ct = IF decrypting THEN m`body(i) ELSE out ENDIF IN
+      crypt(rounds(rate(s,ct),8),k,m WITH [`body(i) := out],i+1,decrypting)
+    ENDIF MEASURE m`blocks-i
+  encrypt(k,nonce: block, ad,p: frame): sealed =
+    crypt(process_ad(aead_init(k,nonce),ad),k,p,0,FALSE)
+  opened: TYPE = [# valid: bool, plaintext: frame #]
+  check_tag(candidate: sealed, supplied: block): opened =
+    IF candidate`auth = supplied THEN (# valid := TRUE, plaintext := candidate`data #)
+    ELSE (# valid := FALSE, plaintext := empty_frame #) ENDIF
+  decrypt(k,nonce: block, ad: frame, c: sealed): opened =
+    check_tag(crypt(process_ad(aead_init(k,nonce),ad),k,c`data,0,TRUE),c`auth)
+
+  reject_mismatch: LEMMA FORALL (candidate: sealed, supplied: block):
+    candidate`auth /= supplied IMPLIES check_tag(candidate,supplied) =
+      (# valid := FALSE, plaintext := empty_frame #)
+  release_match: LEMMA FORALL (candidate: sealed):
+    check_tag(candidate,candidate`auth)`plaintext = candidate`data
+END ascon

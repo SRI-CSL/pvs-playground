@@ -1,0 +1,51 @@
+% Incremental SHA-256 and SHA-512 for computations over multiple buffers.
+sha2_stream: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING secure_hash, crypto_prelude@crypto_buffers
+
+  block_width(wide: bool): subrange(64,128) = IF wide THEN 128 ELSE 64 ENDIF
+  % The 128-octet array also holds the narrower SHA-256 block.
+  stream: TYPE = [# wide: bool, h32: shs32_state, h64: shs64_state, buf: octets_of(128),
+                     pos: below(block_width(wide)), total_lo, total_hi: uint64 #]
+  stream_for(w: bool): TYPE = {s: stream | s`wide = w}
+  stream_start(wide: bool): stream_for(wide) =
+    (# wide:=wide,h32:=iv256,h64:=iv512,buf:=fill_octets(128,0),pos:=0,total_lo:=0,total_hi:=0 #)
+  read32(b: octets_of(128),j: upto(31)): uint32 =
+    LET i: upto(124)=4*j IN load_be32(b`seq(i),b`seq(i+1),b`seq(i+2),b`seq(i+3))
+  block32(b: octets_of(128)): ARRAY[below(16) -> uint32] =
+    LAMBDA (i: below(16)): read32(b,nrem(i,16))
+  block64(b: octets_of(128)): ARRAY[below(16) -> uint64] =
+    LAMBDA (i: below(16)): LET j: upto(30)=2*nrem(i,16) IN load_be64(read32(b,j),read32(b,j+1))
+
+  % byte updates do not change the saved message length. Padding uses the same
+  % compressor without incrementing the length encoded in the final block.
+  put_byte(s: stream,b: uint8): stream_for(s`wide) =
+    LET v=s`buf WITH [`seq(s`pos):=b] IN
+    IF s`pos+1=block_width(s`wide) THEN
+      IF s`wide THEN s WITH [`h64:=shs64_compress(s`h64,block64(v)),`pos:=0]
+      ELSE s WITH [`h32:=shs32_compress(s`h32,block32(v)),`pos:=0] ENDIF
+    ELSE s WITH [`buf:=v,`pos:=s`pos+1] ENDIF
+  put_from(s: stream,b: bytestring,i: upto(b`length)): RECURSIVE stream_for(s`wide) =
+    IF i=b`length THEN s ELSE put_from(put_byte(s,b`seq(i)),b,i+1) ENDIF MEASURE b`length-i
+  stream_add(s: stream,b: bytestring): stream_for(s`wide) =
+    LET c=put_from(s,b,0),lo=u64plus(s`total_lo,b`length),
+        hi=IF lo<s`total_lo THEN u64plus(s`total_hi,1) ELSE s`total_hi ENDIF
+    IN c WITH [`total_lo:=lo,`total_hi:=hi]
+  zero_pad(s: stream,n: upto(128)): RECURSIVE stream_for(s`wide) =
+    IF n=0 THEN s ELSE zero_pad(put_byte(s,0),n-1) ENDIF MEASURE n
+  finish_block(s: stream): stream_for(s`wide) =
+    LET n=block_width(s`wide),field: uint8=IF s`wide THEN 16 ELSE 8 ENDIF,
+        after=put_byte(s,128), target: uint8=n-field,
+        need: upto(128)=IF after`pos<=target THEN target-after`pos ELSE n+target-after`pos ENDIF,
+        padded=zero_pad(after,need),
+        high=u64or(u64lshift(s`total_hi,3),u64rshift(s`total_lo,61)),low=u64lshift(s`total_lo,3),
+        len: octets_of(field)=(# length:=field,seq:= LAMBDA (j: below(field)):
+            IF s`wide AND j<8 THEN be_byte64(high,nrem(j,8)) ELSE be_byte64(low,nrem(j,8)) ENDIF #)
+    IN put_from(padded,len,0)
+  stream_digest(s: stream,n: upto(IF s`wide THEN 64 ELSE 32 ENDIF)): octets_of(n) =
+    LET f=finish_block(s) IN
+    (# length:=n,seq:=LAMBDA (j: below(n)):
+         IF s`wide THEN be_byte64(f`h64(ndiv(j,8)),nrem(j,8))
+         ELSE be_byte32(f`h32(ndiv(j,4)),nrem(j,4)) ENDIF #)
+END sha2_stream

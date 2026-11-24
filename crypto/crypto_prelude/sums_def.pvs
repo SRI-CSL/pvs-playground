@@ -1,0 +1,45 @@
+sums_def [T: TYPE, +: [T, T -> T], zero: T]: THEORY
+  BEGIN
+
+    ASSUMING IMPORTING algebra@group_def[T, +, zero]
+      group: ASSUMPTION group?(fullset[T])
+    ENDASSUMING
+
+    IMPORTING algebra@group[T, +, zero]
+
+    n: VAR nat
+
+    sum(X: ARRAY[nat -> T], n): RECURSIVE T = %sum from 0 to n-1
+      IF n = 0 THEN zero
+      	       ELSE sum(X, n-1) + X(n-1)
+      ENDIF
+    MEASURE n
+
+    pad(n)(X_f: ARRAY[below(n) -> T]): ARRAY[nat -> T] = LAMBDA (i: nat): IF i < n THEN X_f(i) ELSE zero ENDIF
+
+    sum_f(n)(X_f: ARRAY[below(n) -> T]): T = sum(pad(n)(X_f), n)
+
+    sum_equiv: LEMMA FORALL (n: nat, X, Y: ARRAY[nat -> T]):
+    		       (FORALL (k: below(n)): X(k) = Y(k)) IMPLIES
+			 sum(X, n) = sum(Y, n)
+
+    sum_sum_f_equiv: LEMMA FORALL (n: nat, X: ARRAY[nat -> T], Y: ARRAY[below(n) -> T]):
+    		             (FORALL (k: below(n)): X(k) = Y(k)) IMPLIES
+			       sum(X, n) = sum_f(n)(Y)
+
+    sum_f_add_indexn: LEMMA FORALL (n: nat, X: ARRAY[below(n + 1) -> T]):
+     		      	      sum_f(n + 1)(X) = sum_f(n)(LAMBDA (k: below(n)): X(k)) + X(n)
+
+    sum_add_index0: LEMMA FORALL (n: nat, X: ARRAY[nat -> T]):
+    		    	    X(0) + sum(LAMBDA (k: nat): X(k + 1), n) = sum(X, n + 1)
+
+    sum_f_add_index0: LEMMA FORALL (n: nat, X: ARRAY[below(n + 1) -> T]):
+    		    	      X(0) + sum_f(n)(LAMBDA (k: below(n)): X(k + 1)) = sum_f(n + 1)(X)
+
+    sum_zero: LEMMA FORALL (n: nat): sum(LAMBDA (k: nat): zero, n) = zero
+
+    sum_f_zero: LEMMA FORALL (n: nat): sum_f(n)(LAMBDA (k: below(n)): zero) = zero
+
+    sum_f_cut: LEMMA FORALL (n: nat): FORALL (m: upto(n), X: ARRAY[below(n) -> T]): sum_f(n)(X) = sum_f(m)(LAMBDA(k: below(m)): X(k)) + sum_f(n - m)(LAMBDA (k: below(n - m)): X(k + m))
+
+  END sums_def

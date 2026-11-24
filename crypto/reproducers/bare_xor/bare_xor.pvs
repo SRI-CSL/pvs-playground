@@ -1,0 +1,5 @@
+bare_xor: THEORY
+BEGIN
+  word_xor(x,y:uint64):uint64=u64xor(x,y)
+  high_bits: _TEST_ word_xor(0x100000001,1)=0x100000000
+END bare_xor

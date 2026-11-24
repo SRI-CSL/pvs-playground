@@ -1,0 +1,103 @@
+% SP 800-90C §§4–7. Each result returns the state to use on the next call.
+% A provider handle names a fresh immutable acquisition for this request.
+rbg_instances: THEORY
+BEGIN
+  IMPORTING rbg_mechanisms
+  role:TYPE=below(8)
+  rbg1:role=0
+  sub_drbg:role=1
+  rbg2_p:role=2
+  rbg2_np:role=3
+  rbg3_x:role=4
+  rbg3_r:role=5
+  rbgc:role=6
+  rbgc_child:role=7
+  instance:TYPE=[# kind:role,level:strength,drbg:machine,after_rs:bool #]
+  returned:TYPE=[# ok:bool,current:instance,data:bytestring #]
+  attach(kind:role,s:strength,m:machine):instance=(# kind:=kind,level:=s,drbg:=m,after_rs:=FALSE #)
+  is_three(k:role):bool=k=rbg3_x OR k=rbg3_r
+  % RBG2(P) and both RBG3 profiles require physical entropy. RBG2(NP)
+  % requires a Method 2 source. The Boolean describes the supplied snapshot.
+  init(k:role,d:design,wanted:strength,p:bytestring,src:stream_id,physical_only,external_rbg:bool):instance=
+    LET s=IF is_three(k) THEN highest(d) ELSE wanted ENDIF IN
+    IF wanted>highest(d) OR k=sub_drbg OR k=rbgc_child OR (is_three(k) AND NOT rbg3_design(d))
+      OR (k=rbg1 AND NOT external_rbg) OR (external_rbg AND k/=rbg1 AND k/=rbgc)
+      OR ((is_three(k) OR k=rbg2_p) AND NOT physical_only) OR (k=rbg2_np AND physical_only)
+    THEN attach(k,s,offline) ELSE attach(k,s,from_source(d,s,p,src,external_rbg)) ENDIF
+  wrap(a:instance,r:step,after:bool):returned=
+    (# ok:=r`ok,current:=a WITH [drbg:=r`next,after_rs:=after],data:=r`data #)
+  expired(m:machine):bool=CASES m OF offline:TRUE,hashing(h):h`requests>reseed_interval,
+    key_hashing(h):h`requests>reseed_interval,counting(c):c`reseed_count>interval ENDCASES
+  ordinary_reseed(a:instance,src:stream_id,e:material):machine=
+    IF a`kind=rbg1 OR a`kind=sub_drbg OR a`kind=rbgc_child OR offline?(a`drbg) THEN offline ELSE
+      LET n=seed_size(profile(a`drbg),a`level,FALSE),v=entropy_bytes(n,src,0) IN
+        IF v`ok THEN refresh(a`drbg,a`level,v`value,e) ELSE offline ENDIF ENDIF
+  direct_generate(a:instance,n:request_bits,wanted:strength,e:material,src:stream_id,pr,method_b:bool):returned=
+    IF wanted>a`level OR offline?(a`drbg) OR ((a`kind=rbg1 OR a`kind=sub_drbg OR a`kind=rbgc_child) AND pr)
+      THEN wrap(a,reject(a`drbg),a`after_rs) ELSE
+      LET barrier=a`kind=rbg3_r AND a`after_rs,
+          need=pr OR expired(a`drbg),
+          m=IF barrier THEN rs_reseed(a`drbg,a`level,e,src,0,method_b)
+            ELSIF need THEN ordinary_reseed(a,src,e) ELSE a`drbg ENDIF,
+          r=emit_bits(m,n,IF pr OR need THEN empty ELSE e ENDIF) IN wrap(a,r,FALSE) ENDIF
+  full_generate(a:instance,n:request_bits,e:material,src,reseed_src:stream_id,method_b:bool):returned=
+    IF NOT is_three(a`kind) OR offline?(a`drbg) OR a`level/=highest(profile(a`drbg)) THEN wrap(a,reject(a`drbg),a`after_rs)
+    ELSIF a`kind=rbg3_r THEN wrap(a,reseed_construction(a`drbg,n,e,src,method_b),TRUE)
+    ELSIF expired(a`drbg) AND src=reseed_src THEN wrap(a,reject(a`drbg),FALSE)
+    ELSE LET m=IF expired(a`drbg) THEN ordinary_reseed(a,reseed_src,empty) ELSE a`drbg ENDIF IN
+      wrap(a,xor_construction(m,n,e,src),FALSE) ENDIF
+  branch:TYPE=[# ok:bool,parent,child:instance #]
+  child(parent:instance,d:design,s:strength,p:bytestring,a:material):branch=
+    LET k=IF parent`kind=rbg1 THEN sub_drbg ELSE rbgc_child ENDIF,bad=attach(k,s,offline) IN
+    IF (parent`kind/=rbg1 AND parent`kind/=rbgc AND parent`kind/=rbgc_child) OR s>parent`level OR s>highest(d)
+      OR (parent`kind=rbg1 AND profile(parent`drbg)/=d) THEN (# ok:=FALSE,parent:=parent,child:=bad #)
+    ELSE LET n=seed_size(d,s,TRUE),r=emit_bits(parent`drbg,8*n,a),
+        m=IF r`ok THEN start(d,s,r`data,p) ELSE offline ENDIF IN
+      (# ok:=NOT offline?(m),parent:=parent WITH [drbg:=r`next],child:=attach(k,s,m) #) ENDIF
+  refresh_child(parent,node:instance,e,a:material):branch=
+    IF (parent`kind/=rbgc AND parent`kind/=rbgc_child) OR node`kind/=rbgc_child OR offline?(node`drbg) OR node`level>parent`level
+      THEN (# ok:=FALSE,parent:=parent,child:=node #) ELSE
+      LET n=seed_size(profile(node`drbg),node`level,FALSE),r=emit_bits(parent`drbg,8*n,a),
+          m=IF r`ok THEN refresh(node`drbg,node`level,r`data,e) ELSE offline ENDIF IN
+        (# ok:=NOT offline?(m),parent:=parent WITH [drbg:=r`next],child:=IF offline?(m) THEN node ELSE node WITH [drbg:=m] ENDIF #) ENDIF
+  % §§4.1.1 and 7.2.1.1.1. For an RBG1 seeded by a root RBGC,
+  % eligible_root records that the root is reseeded by an RBG3 or a
+  % physical full-entropy source. The source and destination states are
+  % both returned. External validation and identity belong to the caller.
+  provide_seed(k:role,parent:instance,n:request_bits,s:strength,a:material,src,rsrc:stream_id,
+               eligible_root,reseed_source,method_b:bool):returned=
+    IF (k/=rbg1 AND k/=rbgc AND k/=rbgc_child) OR offline?(parent`drbg) THEN
+      wrap(parent,reject(parent`drbg),parent`after_rs)
+    ELSIF is_three(parent`kind) THEN full_generate(parent,n,a,src,rsrc,method_b)
+    ELSIF s>parent`level OR NOT (parent`kind=rbg2_p OR
+        (k/=rbg1 AND parent`kind=rbg2_np) OR (k=rbg1 AND parent`kind=rbgc AND eligible_root))
+      THEN wrap(parent,reject(parent`drbg),parent`after_rs)
+    ELSE LET force=k=rbg1 OR reseed_source OR expired(parent`drbg),
+             m=IF force THEN ordinary_reseed(parent,rsrc,empty) ELSE parent`drbg ENDIF IN
+      wrap(parent,emit_bits(m,n,a),FALSE) ENDIF
+  seed_from_rbg(k:role,parent:instance,d:design,s:strength,p:bytestring,a:material,
+                src,rsrc:stream_id,eligible_root,reseed_source,method_b:bool):branch=
+    LET bad=attach(k,s,offline) IN IF (k/=rbg1 AND k/=rbgc) OR s>highest(d) THEN
+      (# ok:=FALSE,parent:=parent,child:=bad #)
+    ELSE LET r=provide_seed(k,parent,8*seed_size(d,s,TRUE),s,a,src,rsrc,eligible_root,reseed_source,method_b),
+             m=IF r`ok THEN start(d,s,r`data,p) ELSE offline ENDIF IN
+      (# ok:=NOT offline?(m),parent:=r`current,child:=attach(k,s,m) #) ENDIF
+  % §7.2.3. A non-root may use its initial source when its parent is
+  % unavailable. In refresh_child the supplied source is its parent or
+  % an authorized, validated ancestor or sibling of that parent.
+  reseed_from_initial(node,parent:instance,unavailable_parent:bool,e,a:material,
+                      src,rsrc:stream_id,reseed_source,method_b:bool):branch=
+    IF offline?(node`drbg) OR (node`kind/=rbgc AND (node`kind/=rbgc_child OR NOT unavailable_parent)) THEN
+      (# ok:=FALSE,parent:=parent,child:=node #)
+    ELSE LET d=profile(node`drbg),r=provide_seed(node`kind,parent,8*seed_size(d,node`level,FALSE),
+             node`level,a,src,rsrc,FALSE,reseed_source,method_b),
+             m=IF r`ok THEN refresh(node`drbg,node`level,r`data,e) ELSE offline ENDIF IN
+      (# ok:=NOT offline?(m),parent:=r`current,child:=IF offline?(m) THEN node ELSE node WITH [drbg:=m] ENDIF #) ENDIF
+  uninstantiate(a:instance):instance=attach(a`kind,a`level,offline)
+  deactivated_silent: THEOREM FORALL(a:instance,n:request_bits,s:strength,e:material,src:stream_id,pr,b:bool):
+    NOT direct_generate(uninstantiate(a),n,s,e,src,pr,b)`ok
+  subordinate_depth: THEOREM FORALL(a:instance,d:design,s:strength,p:bytestring,e:material):
+    a`kind=sub_drbg IMPLIES NOT child(a,d,s,p,e)`ok
+  strength_gate: THEOREM FORALL(a:instance,n:request_bits,s:strength,e:material,src:stream_id,pr,b:bool):
+    s>a`level IMPLIES NOT direct_generate(a,n,s,e,src,pr,b)`ok
+END rbg_instances

@@ -1,0 +1,33 @@
+% SP 800-186 Appendix B.4; RFC 7748 section 4.2.
+edwards_isogeny: THEORY
+BEGIN
+  IMPORTING curve_maps
+  field448: TYPE = fe(TRUE)
+  point448: TYPE = affine(TRUE)
+  addf(a,b: field448): field448 = add_mod(a,b,prime(TRUE))
+  subf(a,b: field448): field448 = sub_mod(a,b,prime(TRUE))
+  mulf(a,b: field448): field448 = mul_mod(a,b,prime(TRUE))
+  quotient(a,b: field448): field448 = mulf(a,inverse(TRUE,b))
+  twice(x: field448): field448 = addf(x,x)
+  four(x: field448): field448 = twice(twice(x))
+  zero: field448 = small(TRUE,0)
+  one: field448 = small(TRUE,1)
+  edwards_identity: point448 = finite(TRUE,zero,one)
+
+  % The dual isogeny sends (0,±1) to infinity and (±1,0) to (0,0).
+  edwards_to_curve448(q: point448): point448 =
+    IF q`x=zero THEN infinity(TRUE)
+    ELSE LET x=q`x, y=q`y, xx=mulf(x,x),yy=mulf(y,y) IN
+      finite(TRUE,quotient(yy,xx),quotient(mulf(subf(subf(twice(one),xx),yy),y),mulf(xx,x)))
+    ENDIF
+  % Both u=0 and u=-1 are in the degree-four kernel where applicable.
+  curve448_to_edwards(q: point448): point448 =
+    IF q`infinity OR q`x=zero OR q`x=subf(zero,one) THEN edwards_identity
+    ELSE LET u=q`x,v=q`y,uu=mulf(u,u),vv=mulf(v,v),um=subf(uu,one),
+             sq=mulf(um,um),dx=addf(sq,four(vv)),nx=four(mulf(v,um)),
+             t=mulf(u,sq),ny=subf(four(mulf(u,vv)),t),
+             dy=subf(t,twice(mulf(vv,addf(uu,one)))) IN
+      finite(TRUE,quotient(nx,dx),quotient(ny,dy))
+    ENDIF
+  isogeny_identity: LEMMA curve448_to_edwards(infinity(TRUE))=edwards_identity
+END edwards_isogeny

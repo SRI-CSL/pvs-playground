@@ -1,0 +1,14 @@
+% Big-endian addition modulo 2^(8 * a.length), retaining the width of a.
+crypto_add_bytes: THEORY
+BEGIN
+  IMPORTING crypto_buffers
+  add_be_from(a, b: bytestring, i: upto(a`length), carry: upto(1)): RECURSIVE octets_of(a`length) =
+    IF i=0 THEN a
+    ELSE LET j: index = i-1, from_right: index = a`length-j,
+             digit: uint8 = IF from_right <= b`length THEN b`seq(b`length-from_right) ELSE 0 ENDIF,
+             sum: uint16 = u16plus(u16plus(a`seq(j),digit),carry),
+             next = a WITH [`seq(j) := u8plus(u8plus(a`seq(j),digit),carry)]
+         IN add_be_from(next,b,j,IF sum >= 256 THEN 1 ELSE 0 ENDIF)
+    ENDIF MEASURE i
+  add_be(a,b: bytestring): octets_of(a`length) = add_be_from(a,b,a`length,0)
+END crypto_add_bytes

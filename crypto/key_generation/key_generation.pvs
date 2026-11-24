@@ -1,0 +1,42 @@
+% SP 800-133 Rev. 2 §§4, 6.1 and 6.3. Component keys must be independent.
+key_generation: THEORY
+BEGIN
+  hmac: LIBRARY="../hmac"
+  crypto_prelude: LIBRARY="../crypto_prelude"
+  IMPORTING hmac@keyed_hash,crypto_prelude@crypto_random_buffers,crypto_prelude@crypto_xor
+  key_result: TYPE = [# ok:bool,data:bytestring #]
+  failed: key_result = (# ok:=FALSE,data:=fill_octets(0,0) #)
+  % Components 0..keys-1 contain keys, followed by optional other data.
+  parts: TYPE = [# size:uint8, keys:{k:uint8 | k<=size}, item:ARRAY[below(size) -> bytestring] #]
+  append_all(p:parts,i:upto(p`size),out:bytestring): RECURSIVE key_result =
+    IF i=p`size THEN (# ok:=TRUE,data:=out #)
+    ELSIF out`length+p`item(i)`length>=maxsize THEN failed
+    ELSE append_all(p,i+1,join_octets(out,p`item(i))) ENDIF MEASURE p`size-i
+  concatenate(p:parts):key_result =
+    IF p`keys<2 OR p`keys/=p`size THEN failed ELSE append_all(p,0,fill_octets(0,0)) ENDIF
+  direct(s:stream_id,v:bytestring):key_result =
+    LET u=acquire(v`length,s,0) IN
+      IF NOT u`ok THEN failed ELSE (# ok:=TRUE,data:=mixed(v,u`value) #) ENDIF
+  mix_from(p:parts,i:upto(p`size),out:bytestring): RECURSIVE key_result =
+    IF i=p`size THEN (# ok:=TRUE,data:=out #)
+    ELSIF p`item(i)`length/=out`length THEN failed
+    ELSE mix_from(p,i+1,mixed(out,p`item(i))) ENDIF MEASURE p`size-i
+  xor_components(p:parts):key_result =
+    IF p`keys=0 OR p`size<2 THEN failed ELSE
+      LET k=p`item(0),tail=mix_from(p,1,fill_octets(k`length,0)) IN
+        IF NOT tail`ok OR tail`data`length/=k`length OR
+           (p`keys=1 AND strcmp(tail`data,fill_octets(k`length,0))=0) THEN failed
+        ELSE (# ok:=TRUE,data:=mixed(k,tail`data) #) ENDIF
+    ENDIF
+  % T takes the leftmost bits. The unused bits in the last octet are zero.
+  extract(h:hash_id,salt:bytestring,p:parts,bits:{b:uint16 | b>=1 AND b<=8*hash_bytes(h)}):key_result =
+    IF p`keys=0 THEN failed ELSE LET xs=append_all(p,0,fill_octets(0,0)) IN
+      IF NOT xs`ok OR xs`data`length+block_bytes(h)>=maxsize THEN failed ELSE
+        LET mac=hmac(h,salt,xs`data), n=u16div(bits+7,8), tail=u16rem(bits,8) IN
+          IF n=0 OR n>mac`length THEN failed ELSE LET out=first_octets(mac,n) IN
+            (# ok:=TRUE,data:=IF tail=0 THEN out ELSE
+                 out WITH [`seq(n-1):=u8and(out`seq(n-1),u8lshift(255,8-tail))] ENDIF #)
+          ENDIF
+      ENDIF ENDIF
+  no_keys: LEMMA FORALL(p:parts): p`keys=0 IMPLIES xor_components(p)=failed AND concatenate(p)=failed
+END key_generation

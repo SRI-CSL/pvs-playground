@@ -1,0 +1,54 @@
+% FIPS 186-5 A.1.1 and A.1.3. Values are unsigned, big-endian wire octets.
+rsa_keygen: THEORY
+BEGIN
+  IMPORTING rsa_primes
+  key: TYPE = [# ok: bool,p,q,n,e,d,dp,dq,qinv: bytestring #]
+  no_key: key =
+    LET z=fill_octets(0,0) IN (# ok:=FALSE,p:=z,q:=z,n:=z,e:=z,d:=z,dp:=z,dq:=z,qinv:=z #)
+  % Given the factors, reconstruct the least inverse modulo lcm(p-1,q-1).
+  % Write d=(1+k*lambda)/e. Since e is odd, compute k as -lambda^-1 mod e.
+  derive_from_factors(profile: strength_profile,e: bytestring,p,q: words_of(prime_width(profile))): key =
+    LET size=prime_width(profile),full: limb_count=2*size,wide: limb_count=full+8 IN
+    IF NOT admissible_e(e) OR is_even(p) OR is_even(q) OR NOT above_threshold(profile,p) OR
+       NOT above_threshold(profile,q) OR NOT distant(p,q) THEN no_key ELSE
+      LET one=one_words(size),pm=sub_words(p,one),qm=sub_words(q,one),g=gcd_words(pm,qm) IN
+      IF g=zero_words(size) THEN no_key ELSE
+        LET lam=product_words(divide_words(pm,g)`q,qm,full),
+            ew=from_bytes(8,e,TRUE),em=resize_words(ew,full),
+            inv=invert_mod_odd(resize_words(divide_words(lam,em)`r,8),ew)
+        IN IF inv=zero_words(8) THEN no_key ELSE
+          LET k=sub_words(ew,inv),num=product_words(lam,k,wide),
+              num1=add_prefix(num,one_words(wide),zero_words(wide),0,FALSE),
+              div=divide_words(num1`value,resize_words(ew,wide)),d=resize_words(div`q,full),
+              lower=set_one(zero_words(full),32*size)
+          IN IF num1`carry OR div`r/=zero_words(wide) OR ge_words(lower,d) OR ge_words(d,lam) THEN no_key ELSE
+            LET iq=invert_mod_odd(divide_words(q,p)`r,p),n=product_words(p,q,full),
+                dp=divide_words(d,resize_words(pm,full))`r,dq=divide_words(d,resize_words(qm,full))`r IN
+            IF iq=zero_words(size) THEN no_key ELSE
+              (# ok:=TRUE,p:=to_bytes(p,4*size,TRUE),q:=to_bytes(q,4*size,TRUE),n:=to_bytes(n,4*full,TRUE),
+                 e:=e,d:=to_bytes(d,4*full,TRUE),dp:=to_bytes(dp,4*size,TRUE),dq:=to_bytes(dq,4*size,TRUE),
+                 qinv:=to_bytes(iq,4*size,TRUE) #) ENDIF ENDIF ENDIF ENDIF ENDIF
+  generate_at(profile: strength_profile,e: bytestring,pmod,qmod: residue,high_assurance: bool,
+              stream: stream_id,off: uint32): RECURSIVE key =
+    IF NOT admissible_e(e) THEN no_key ELSE
+      LET width=prime_width(profile),ew=from_bytes(width,e,TRUE),
+          a=draw_prime(profile,ew,zero_words(width),FALSE,pmod,high_assurance,stream,off,0) IN
+      IF NOT a`ok THEN no_key ELSE
+        LET b=draw_prime(profile,ew,a`prime,TRUE,qmod,high_assurance,stream,a`next,0) IN
+        IF NOT b`ok OR b`next<=off THEN no_key ELSE
+          LET k=derive_from_factors(profile,e,a`prime,b`prime) IN
+          IF k`ok THEN k ELSE generate_at(profile,e,pmod,qmod,high_assurance,stream,b`next)
+          ENDIF ENDIF ENDIF ENDIF MEASURE 4294967295-off
+  generate(profile: strength_profile,e: bytestring,pmod,qmod: residue,high_assurance: bool,
+           stream: stream_id): key = generate_at(profile,e,pmod,qmod,high_assurance,stream,0)
+  invalid_exponent_rejected: LEMMA FORALL (p:strength_profile,e:bytestring,r,s:residue,h:bool,stream:stream_id):
+    NOT admissible_e(e) IMPLIES NOT generate(p,e,r,s,h,stream)`ok
+  public_components: LEMMA FORALL (profile:strength_profile,e:bytestring,p,q:words_of(prime_width(profile))):
+    LET width=prime_width(profile),k=derive_from_factors(profile,e,p,q) IN k`ok IMPLIES
+      admissible_e(e) AND above_threshold(profile,p) AND above_threshold(profile,q) AND distant(p,q) AND
+      k`e=e AND k`p=to_bytes(p,4*width,TRUE) AND k`q=to_bytes(q,4*width,TRUE) AND
+      k`n=to_bytes(product_words(p,q,2*width),8*width,TRUE)
+  % A.1.1. The exact division d=(1+k*lambda)/e supplies the inverse congruence.
+  exponent_congruence: LEMMA FORALL (lam:posnat,e,k,d:nat):
+    e*d=1+k*lam IMPLIES rem(lam)(e*d)=rem(lam)(1)
+END rsa_keygen

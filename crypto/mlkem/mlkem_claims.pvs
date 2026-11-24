@@ -1,0 +1,16 @@
+% FIPS 203 sections 3.2, 6.3 and 7.3. Agreement is conditioned on successful
+% K-PKE message recovery. Table 1 gives nonzero decapsulation-failure rates.
+mlkem_claims: THEORY
+BEGIN
+  IMPORTING mlkem
+  generated_key_checks: THEOREM FORALL(k:rank,d,z:fixed(32)):
+    LET pair=keygen_internal(k,d,z) IN pair`ok IMPLIES valid_ek(k,pair`ek) AND valid_dk(k,pair`dk)
+  agreement_after_recovery: THEOREM FORALL(k:rank,d,z,m:fixed(32)):
+    LET pair=keygen_internal(k,d,z),en=encaps_internal(k,pair`ek,m),de=decaps(k,pair`dk,en`ct) IN
+    pair`ok AND en`ok AND decrypt(k,pair`dk,en`ct)=m IMPLIES de`ok AND de`value=en`secret
+  implicit_rejection: THEOREM FORALL(k:rank,dk,c:bytestring):
+    LET ek=portion(dk,384*k,ek_size(k)),h=portion(dk,768*k+32,32),z=portion(dk,768*k+64,32),
+        m=decrypt(k,dk,c),kr=hash_pair(m,h),check=encrypt(k,ek,m,portion(kr,32,32)),s=decaps(k,dk,c)
+    IN valid_dk(k,dk) AND c`length=ct_size(k) AND check`ok AND check`value/=c IMPLIES
+       s`ok AND s`value=output(finish_shake(absorb(absorb(start(136),z),c)),32)
+END mlkem_claims

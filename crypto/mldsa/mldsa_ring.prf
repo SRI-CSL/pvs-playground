@@ -1,0 +1,2290 @@
+(|mldsa_ring|
+ (|beta_TCC1| 0
+  (|beta_TCC1-1| NIL 4004535789
+   ("" (SKOSIMP* T)
+    (("" (CASE "p!1=0 OR p!1=1 OR p!1=2")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+          "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau" "exp2"
+          "fill_octets"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+          "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau" "exp2"
+          "fill_octets"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|eta| CONST-DECL "[profile -> subrange(2, 4)]" |mldsa_ring| NIL)
+    (|tau| CONST-DECL "[profile -> subrange(39, 60)]" |mldsa_ring| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|profile| TYPE-EQ-DECL NIL |mldsa_ring| NIL))
+   SHOSTAK
+   (|beta| SUBTYPE
+    "number_fields.*(mldsa_ring.tau(mldsa_ring.p), mldsa_ring.eta(mldsa_ring.p))"
+    "uint16" (17 29 17 42))))
+ (|pk_size_TCC1| 0
+  (|pk_size_TCC1-1| NIL 4004535790
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK
+   (|pk_size| SUBTYPE
+    "(number_fields.+)(32, number_fields.*(320, mldsa_ring.rows(mldsa_ring.p)))"
+    "uint16" (18 32 18 46))))
+ (|sk_size_TCC1| 0
+  (|sk_size_TCC1-1| NIL 4004535790
+   ("" (SKOSIMP* T)
+    (("" (CASE "p!1=0 OR p!1=1 OR p!1=2")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+          "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau" "exp2"
+          "fill_octets"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+          "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau" "exp2"
+          "fill_octets"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_plus_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|rows| CONST-DECL "[profile -> subrange(4, 8)]" |mldsa_ring| NIL)
+    (|cols| CONST-DECL "[profile -> subrange(4, 7)]" |mldsa_ring| NIL)
+    (|eta_bits| CONST-DECL "[profile -> subrange(3, 4)]" |mldsa_ring| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|profile| TYPE-EQ-DECL NIL |mldsa_ring| NIL))
+   SHOSTAK
+   (|sk_size| SUBTYPE
+    "(number_fields.+)(128, number_fields.*(32, ((number_fields.+)(number_fields.*(mldsa_ring.eta_bits(mldsa_ring.p), ((number_fields.+)(mldsa_ring.cols(mldsa_ring.p), mldsa_ring.rows(mldsa_ring.p)))), number_fields.*(13, mldsa_ring.rows(mldsa_ring.p))))))"
+    "uint16" (19 32 19 81))))
+ (|sig_size_TCC1| 0
+  (|sig_size_TCC1-1| NIL 4004535790
+   ("" (SKOSIMP* T)
+    (("" (CASE "p!1=0 OR p!1=1 OR p!1=2")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+          "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau" "exp2"
+          "fill_octets"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+          "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau" "exp2"
+          "fill_octets"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|rows| CONST-DECL "[profile -> subrange(4, 8)]" |mldsa_ring| NIL)
+    (|omega| CONST-DECL "[profile -> subrange(55, 80)]" |mldsa_ring| NIL)
+    (|zbits| CONST-DECL "[profile -> subrange(18, 20)]" |mldsa_ring| NIL)
+    (|cols| CONST-DECL "[profile -> subrange(4, 7)]" |mldsa_ring| NIL)
+    (|cbytes| CONST-DECL "[profile -> subrange(32, 64)]" |mldsa_ring| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|profile| TYPE-EQ-DECL NIL |mldsa_ring| NIL))
+   SHOSTAK
+   (|sig_size| SUBTYPE
+    "(number_fields.+)((number_fields.+)((number_fields.+)(mldsa_ring.cbytes(mldsa_ring.p), number_fields.*(number_fields.*(32, mldsa_ring.cols(mldsa_ring.p)), mldsa_ring.zbits(mldsa_ring.p))), mldsa_ring.omega(mldsa_ring.p)), mldsa_ring.rows(mldsa_ring.p))"
+    "uint16" (20 33 20 79))))
+ (|mulq_TCC1| 0
+  (|mulq_TCC1-1| NIL 4004535791
+   (""
+    (THEN (SKOSIMP*)
+     (USE "le_times_le_pos"
+          ("nnx" "x!1" "nnz" "y!1" "y" "8380416" "w" "8380416"))
+     (GRIND :DEFS NIL :REWRITES ("exp2")))
+    NIL NIL)
+   ((|le_times_le_pos| FORMULA-DECL NIL |real_props| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_real| NONEMPTY-TYPE-EQ-DECL NIL |real_types| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|coeff| TYPE-EQ-DECL NIL |mldsa_ring| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|times_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK
+   (|mulq| SUBTYPE "number_fields.*(mldsa_ring.x, mldsa_ring.y)" "uint64"
+    (30 35 30 38))))
+ (|mulq_TCC2| 0
+  (|mulq_TCC2-1| NIL 4004535792
+   ("" (THEN (SKOSIMP*) (EXPAND "u64rem") (ASSERT)) NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|u64rem| CONST-DECL "[[uint64, {uy64 | uy64 /= 0}] -> uint64]"
+     |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|mulq| SUBTYPE
+    "integertypes.u64rem(number_fields.*(mldsa_ring.x, mldsa_ring.y), 8380417)"
+    "coeff" (30 28 30 47))))
+ (|center_TCC1| 0
+  (|center_TCC1-1| NIL 4004535792
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK
+   (|center| SUBTYPE "(number_fields.-)(mldsa_ring.x, 8380417)" "int32"
+    (31 46 31 55))))
+ (|center_TCC2| 0
+  (|center_TCC2-1| NIL 4004535792
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK (|center| SUBTYPE "mldsa_ring.x" "int32" (31 61 31 62))))
+ (|magnitude_TCC1| 0
+  (|magnitude_TCC1-1| NIL 4004535793
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|magnitude| SUBTYPE "(number_fields.-)(8380417, mldsa_ring.x)" "uint32"
+    (32 50 32 59))))
+ (|magnitude_TCC2| 0
+  (|magnitude_TCC2-1| NIL 4004535793
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|magnitude| SUBTYPE "mldsa_ring.x" "uint32" (32 65 32 66))))
+ (|power_high_TCC1| 0
+  (|power_high_TCC1-1| NIL 4004535793
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL))
+   SHOSTAK
+   (|power_high| SUBTYPE "(number_fields.+)(mldsa_ring.x, 4095)" "uint32"
+    (35 45 35 51))))
+ (|power_high_TCC2| 0
+  (|power_high_TCC2-1| NIL 4004535793
+   (""
+    (THEN (SKOSIMP*) (USE "ndiv_lt" ("x" "x!1+4095" "b" "8192"))
+     (EXPAND "u32div") (GRIND :DEFS NIL :REWRITES ("exp2")))
+    NIL NIL)
+   ((|coeff| TYPE-EQ-DECL NIL |mldsa_ring| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|ndiv_lt| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|posrat_div_posrat_is_posrat| APPLICATION-JUDGEMENT "posrat" |rationals|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|u32div| CONST-DECL "[[uint32, {uy32 | uy32 /= 0}] -> uint32]"
+     |integertypes| NIL))
+   SHOSTAK
+   (|power_high| SUBTYPE
+    "integertypes.u32div((number_fields.+)(mldsa_ring.x, 4095), 8192)"
+    "below(1024)" (35 38 35 57))))
+ (|high_TCC1| 0
+  (|high_TCC1-1| NIL 4004535793
+   ("" (SKOSIMP* T)
+    (("" (CASE "p!1=0 OR p!1=1 OR p!1=2")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+          "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau" "exp2"
+          "fill_octets"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+          "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau" "exp2"
+          "fill_octets"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|gamma2| CONST-DECL "[profile -> uint32]" |mldsa_ring| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|profile| TYPE-EQ-DECL NIL |mldsa_ring| NIL)
+    (|coeff| TYPE-EQ-DECL NIL |mldsa_ring| NIL))
+   SHOSTAK
+   (|high| SUBTYPE
+    "(number_fields.-)((number_fields.+)(mldsa_ring.x, mldsa_ring.gamma2(mldsa_ring.p)), 1)"
+    "uint32" (38 25 38 38))))
+ (|high_TCC2| 0
+  (|high_TCC2-1| NIL 4004535794
+   ("" (SKOSIMP* T)
+    (("" (CASE "p!1=0 OR p!1=1 OR p!1=2")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+          "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau" "exp2"
+          "fill_octets"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+          "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau" "exp2"
+          "fill_octets"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|times_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|times_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|gamma2| CONST-DECL "[profile -> uint32]" |mldsa_ring| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|profile| TYPE-EQ-DECL NIL |mldsa_ring| NIL)
+    (|coeff| TYPE-EQ-DECL NIL |mldsa_ring| NIL))
+   SHOSTAK
+   (|high| SUBTYPE "number_fields.*(2, mldsa_ring.gamma2(mldsa_ring.p))"
+    "{uy32 | integertypes.uy32 /= 0}" (38 39 38 50))))
+ (|high_TCC3| 0
+  (|high_TCC3-1| NIL 4004535794
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|times_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|times_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_u32_i32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|high| SUBTYPE "mldsa_ring.h" "below(44)" (39 39 39 40))))
+ (|low_TCC1| 0
+  (|low_TCC1-1| NIL 4004535794
+   ("" (SKOSIMP* T)
+    (("" (CASE "p!1=0 OR p!1=1 OR p!1=2")
+      (("1"
+        (GRIND :DEFS NIL :REWRITES
+         ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+          "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau" "exp2"
+          "fill_octets"))
+        NIL NIL)
+       ("2"
+        (GRIND :DEFS NIL :REWRITES
+         ("pk_size" "sk_size" "sig_size" "gamma1" "gamma2" "eta_bits" "eta"
+          "rows" "cols" "wbits" "zbits" "cbytes" "omega" "beta" "tau" "exp2"
+          "fill_octets"))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|times_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|times_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|gamma2| CONST-DECL "[profile -> uint32]" |mldsa_ring| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|profile| TYPE-EQ-DECL NIL |mldsa_ring| NIL)
+    (|coeff| TYPE-EQ-DECL NIL |mldsa_ring| NIL))
+   SHOSTAK
+   (|low| SUBTYPE
+    "number_fields.*(number_fields.*(2, mldsa_ring.gamma2(mldsa_ring.p)), mldsa_ring.high(mldsa_ring.p, mldsa_ring.x))"
+    "uint64" (40 50 40 71))))
+ (|low_TCC2| 0
+  (|low_TCC2-1| NIL 4004535795
+   ("" (THEN (SKOSIMP*) (EXPAND "u64rem") (ASSERT)) NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|u64rem| CONST-DECL "[[uint64, {uy64 | uy64 /= 0}] -> uint64]"
+     |integertypes| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|low| SUBTYPE
+    "integertypes.u64rem(number_fields.*(number_fields.*(2, mldsa_ring.gamma2(mldsa_ring.p)), mldsa_ring.high(mldsa_ring.p, mldsa_ring.x)), 8380417)"
+    "coeff" (40 43 40 80))))
+ (|use_hint_TCC1| 0
+  (|use_hint_TCC1-1| NIL 4004535795
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK
+   (|use_hint| SUBTYPE
+    "modulo_arithmetic.nrem((number_fields.+)(mldsa_ring.h, 1), mldsa_ring.m)"
+    "below(44)" (43 53 43 64))))
+ (|use_hint_TCC2| 0
+  (|use_hint_TCC2-1| NIL 4004535795
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK
+   (|use_hint| SUBTYPE
+    "modulo_arithmetic.nrem((number_fields.-)((number_fields.+)(mldsa_ring.h, mldsa_ring.m), 1), mldsa_ring.m)"
+    "below(44)" (44 9 44 22))))
+ (|rev8_TCC1| 0
+  (|rev8_TCC1-1| NIL 4004535796
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|rev8| SUBTYPE "(number_fields.-)(mldsa_ring.k, 1)" "upto(8)"
+    (48 42 48 45))))
+ (|rev8_TCC2| 0
+  (|rev8_TCC2-1| NIL 4004535796
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|rev8| TERMINATION
+    "mldsa_ring.rev8(integertypes.u8rshift(mldsa_ring.x, 1), (number_fields.-)(mldsa_ring.k, 1), integer_bv_ops.u8or(integertypes.u8lshift(mldsa_ring.a, 1), integer_bv_ops.u8and(mldsa_ring.x, 1)))"
+    "NIL" (48 23 48 77))))
+ (|power_TCC1| 0
+  (|power_TCC1-1| NIL 4004535796
+   (""
+    (THEN (SKOSIMP*) (USE "ndiv_lt" ("x" "e!1" "b" "2")) (EXPAND "u8div")
+     (GRIND :DEFS NIL :REWRITES ("exp2")))
+    NIL NIL)
+   ((|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|ndiv_lt| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnrat_div_posrat_is_nnrat| APPLICATION-JUDGEMENT "nonneg_rat" |rationals|
+     NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|u8div| CONST-DECL "[[uint8, {uy8 | uy8 /= 0}] -> uint8]" |integertypes|
+     NIL))
+   SHOSTAK
+   (|power| TERMINATION
+    "mldsa_ring.power(mldsa_ring.x, integertypes.u8div(mldsa_ring.e, 2))" "NIL"
+    (51 29 51 48))))
+ (|butterflies_TCC1| 0
+  (|butterflies_TCC1-1| NIL 4004535796
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|butterflies| SUBTYPE "(number_fields.-)(128, mldsa_ring.t)"
+    "naturalnumber" (67 18 67 23))))
+ (|butterflies_TCC2| 0
+  (|butterflies_TCC2-1| NIL 4004535796
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL))
+   SHOSTAK (|butterflies| SUBTYPE "mldsa_ring.t" "uint8" (60 51 60 52))))
+ (|butterflies_TCC3| 0
+  (|butterflies_TCC3-1| NIL 4004535796
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL))
+   SHOSTAK
+   (|butterflies| SUBTYPE "mldsa_ring.h" "{uy8 | integertypes.uy8 /= 0}"
+    (60 53 60 54))))
+ (|butterflies_TCC4| 0
+  (|butterflies_TCC4-1| NIL 4004535796
+   ("" (SKOSIMP*)
+    (("" (CASE "h!1=1")
+      (("1" (REPLACE -1)
+        (("1" (USE "ndiv_lt" ("x" "t!1" "b" "1"))
+          (("1" (TYPEPRED "t!1" "nrem(t!1,1)" "ndiv(t!1,1)")
+            (("1" (USE "ndiv_floor_div" ("x" "256" "b" "1"))
+              (("1" (USE "floor_val" ("i" "256" "j" "1" "k" "256"))
+                (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                  (("1" (EXPAND "u8div")
+                    (("1" (CASE "ndiv(t!1,1)<=127 OR ndiv(t!1,1)>=128")
+                      (("1"
+                        (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                         :IF-MATCH NIL)
+                        NIL NIL)
+                       ("2"
+                        (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                         :IF-MATCH NIL)
+                        NIL NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (CASE "h!1=2")
+        (("1" (REPLACE -1)
+          (("1" (USE "ndiv_lt" ("x" "t!1" "b" "2"))
+            (("1" (TYPEPRED "t!1" "nrem(t!1,2)" "ndiv(t!1,2)")
+              (("1" (USE "ndiv_floor_div" ("x" "256" "b" "2"))
+                (("1" (USE "floor_val" ("i" "256" "j" "2" "k" "128"))
+                  (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                    (("1" (EXPAND "u8div")
+                      (("1" (CASE "ndiv(t!1,2)<=63 OR ndiv(t!1,2)>=64")
+                        (("1"
+                          (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                           :IF-MATCH NIL)
+                          NIL NIL)
+                         ("2"
+                          (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                           :IF-MATCH NIL)
+                          NIL NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL)
+         ("2" (CASE "h!1=4")
+          (("1" (REPLACE -1)
+            (("1" (USE "ndiv_lt" ("x" "t!1" "b" "4"))
+              (("1" (TYPEPRED "t!1" "nrem(t!1,4)" "ndiv(t!1,4)")
+                (("1" (USE "ndiv_floor_div" ("x" "256" "b" "4"))
+                  (("1" (USE "floor_val" ("i" "256" "j" "4" "k" "64"))
+                    (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                      (("1" (EXPAND "u8div")
+                        (("1" (CASE "ndiv(t!1,4)<=31 OR ndiv(t!1,4)>=32")
+                          (("1"
+                            (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                             :IF-MATCH NIL)
+                            NIL NIL)
+                           ("2"
+                            (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                             :IF-MATCH NIL)
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (CASE "h!1=8")
+            (("1" (REPLACE -1)
+              (("1" (USE "ndiv_lt" ("x" "t!1" "b" "8"))
+                (("1" (TYPEPRED "t!1" "nrem(t!1,8)" "ndiv(t!1,8)")
+                  (("1" (USE "ndiv_floor_div" ("x" "256" "b" "8"))
+                    (("1" (USE "floor_val" ("i" "256" "j" "8" "k" "32"))
+                      (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                        (("1" (EXPAND "u8div")
+                          (("1" (CASE "ndiv(t!1,8)<=15 OR ndiv(t!1,8)>=16")
+                            (("1"
+                              (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                               :IF-MATCH NIL)
+                              NIL NIL)
+                             ("2"
+                              (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                               :IF-MATCH NIL)
+                              NIL NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (CASE "h!1=16")
+              (("1" (REPLACE -1)
+                (("1" (USE "ndiv_lt" ("x" "t!1" "b" "16"))
+                  (("1" (TYPEPRED "t!1" "nrem(t!1,16)" "ndiv(t!1,16)")
+                    (("1" (USE "ndiv_floor_div" ("x" "256" "b" "16"))
+                      (("1" (USE "floor_val" ("i" "256" "j" "16" "k" "16"))
+                        (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                          (("1" (EXPAND "u8div")
+                            (("1" (CASE "ndiv(t!1,16)<=7 OR ndiv(t!1,16)>=8")
+                              (("1"
+                                (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                                 :IF-MATCH NIL)
+                                NIL NIL)
+                               ("2"
+                                (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                                 :IF-MATCH NIL)
+                                NIL NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL)
+               ("2" (CASE "h!1=32")
+                (("1" (REPLACE -1)
+                  (("1" (USE "ndiv_lt" ("x" "t!1" "b" "32"))
+                    (("1" (TYPEPRED "t!1" "nrem(t!1,32)" "ndiv(t!1,32)")
+                      (("1" (USE "ndiv_floor_div" ("x" "256" "b" "32"))
+                        (("1" (USE "floor_val" ("i" "256" "j" "32" "k" "8"))
+                          (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                            (("1" (EXPAND "u8div")
+                              (("1" (CASE "ndiv(t!1,32)<=3 OR ndiv(t!1,32)>=4")
+                                (("1"
+                                  (GRIND :DEFS NIL :REWRITES
+                                   ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                  NIL NIL)
+                                 ("2"
+                                  (GRIND :DEFS NIL :REWRITES
+                                   ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                  NIL NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL)
+                 ("2" (CASE "h!1=64")
+                  (("1" (REPLACE -1)
+                    (("1" (USE "ndiv_lt" ("x" "t!1" "b" "64"))
+                      (("1" (TYPEPRED "t!1" "nrem(t!1,64)" "ndiv(t!1,64)")
+                        (("1" (USE "ndiv_floor_div" ("x" "256" "b" "64"))
+                          (("1" (USE "floor_val" ("i" "256" "j" "64" "k" "4"))
+                            (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                              (("1" (EXPAND "u8div")
+                                (("1"
+                                  (CASE "ndiv(t!1,64)<=1 OR ndiv(t!1,64)>=2")
+                                  (("1"
+                                    (GRIND :DEFS NIL :REWRITES
+                                     ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                    NIL NIL)
+                                   ("2"
+                                    (GRIND :DEFS NIL :REWRITES
+                                     ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                    NIL NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL)
+                   ("2" (CASE "h!1=128")
+                    (("1" (REPLACE -1)
+                      (("1" (USE "ndiv_lt" ("x" "t!1" "b" "128"))
+                        (("1" (TYPEPRED "t!1" "nrem(t!1,128)" "ndiv(t!1,128)")
+                          (("1" (USE "ndiv_floor_div" ("x" "256" "b" "128"))
+                            (("1"
+                              (USE "floor_val" ("i" "256" "j" "128" "k" "2"))
+                              (("1"
+                                (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                                (("1" (EXPAND "u8div")
+                                  (("1"
+                                    (CASE
+                                        "ndiv(t!1,128)<=0 OR ndiv(t!1,128)>=1")
+                                    (("1"
+                                      (GRIND :DEFS NIL :REWRITES
+                                       ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                      NIL NIL)
+                                     ("2"
+                                      (GRIND :DEFS NIL :REWRITES
+                                       ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                      NIL NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL)
+                     ("2" (EXPAND "level_width")
+                      (("2" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)) NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|ndiv_lt| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|ndiv_floor_div| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|u8div| CONST-DECL "[[uint8, {uy8 | uy8 /= 0}] -> uint8]" |integertypes|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|odd_times_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|times_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|times_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|even_plus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|plus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|plus_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|rem_nrem| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|times_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|nnrat_div_posrat_is_nnrat| APPLICATION-JUDGEMENT "nonneg_rat" |rationals|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posrat_div_posrat_is_posrat| APPLICATION-JUDGEMENT "posrat" |rationals|
+     NIL)
+    (|nonneg_floor_is_nat| APPLICATION-JUDGEMENT "nat" |floor_ceil| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|floor_val| FORMULA-DECL NIL |floor_ceil| NIL)
+    (|integer| NONEMPTY-TYPE-FROM-DECL NIL |integers| NIL)
+    (/= CONST-DECL "[[T, T] -> boolean]" |notequal| NIL)
+    (|nonzero_integer| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|mod| NONEMPTY-TYPE-EQ-DECL NIL |euclidean_division| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nrem| CONST-DECL
+     "[d: [int, posnat] -> {r: mod(d`2) | EXISTS (q: int): d`1 = r + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|rem| CONST-DECL
+     "[b: posnat -> [x: int -> {r: mod(b) | EXISTS (q: int): x = r + b * q}]]"
+     |modulo_arithmetic| NIL)
+    (|ndiv| CONST-DECL
+     "[d: [int, posnat] -> {q: int | d`1 = rem(d`2)(d`1) + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|level_width| CONST-DECL "[below(8) -> subrange(1, 128)]" |mldsa_ring|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|times_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK
+   (|butterflies| SUBTYPE
+    "(number_fields.+)(number_fields.*(number_fields.*(2, mldsa_ring.h), mldsa_ring.group), modulo_arithmetic.nrem(mldsa_ring.t, mldsa_ring.h))"
+    "below(256)" (61 24 61 43))))
+ (|butterflies_TCC5| 0
+  (|butterflies_TCC5-1| NIL 4004535796
+   ("" (SKOSIMP*)
+    (("" (CASE "h!1=1")
+      (("1" (REPLACE -1)
+        (("1" (USE "ndiv_lt" ("x" "t!1" "b" "1"))
+          (("1" (TYPEPRED "t!1" "nrem(t!1,1)" "ndiv(t!1,1)")
+            (("1" (USE "ndiv_floor_div" ("x" "256" "b" "1"))
+              (("1" (USE "floor_val" ("i" "256" "j" "1" "k" "256"))
+                (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                  (("1" (EXPAND "u8div")
+                    (("1" (CASE "ndiv(t!1,1)<=127 OR ndiv(t!1,1)>=128")
+                      (("1"
+                        (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                         :IF-MATCH NIL)
+                        NIL NIL)
+                       ("2"
+                        (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                         :IF-MATCH NIL)
+                        NIL NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (CASE "h!1=2")
+        (("1" (REPLACE -1)
+          (("1" (USE "ndiv_lt" ("x" "t!1" "b" "2"))
+            (("1" (TYPEPRED "t!1" "nrem(t!1,2)" "ndiv(t!1,2)")
+              (("1" (USE "ndiv_floor_div" ("x" "256" "b" "2"))
+                (("1" (USE "floor_val" ("i" "256" "j" "2" "k" "128"))
+                  (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                    (("1" (EXPAND "u8div")
+                      (("1" (CASE "ndiv(t!1,2)<=63 OR ndiv(t!1,2)>=64")
+                        (("1"
+                          (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                           :IF-MATCH NIL)
+                          NIL NIL)
+                         ("2"
+                          (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                           :IF-MATCH NIL)
+                          NIL NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL)
+         ("2" (CASE "h!1=4")
+          (("1" (REPLACE -1)
+            (("1" (USE "ndiv_lt" ("x" "t!1" "b" "4"))
+              (("1" (TYPEPRED "t!1" "nrem(t!1,4)" "ndiv(t!1,4)")
+                (("1" (USE "ndiv_floor_div" ("x" "256" "b" "4"))
+                  (("1" (USE "floor_val" ("i" "256" "j" "4" "k" "64"))
+                    (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                      (("1" (EXPAND "u8div")
+                        (("1" (CASE "ndiv(t!1,4)<=31 OR ndiv(t!1,4)>=32")
+                          (("1"
+                            (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                             :IF-MATCH NIL)
+                            NIL NIL)
+                           ("2"
+                            (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                             :IF-MATCH NIL)
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (CASE "h!1=8")
+            (("1" (REPLACE -1)
+              (("1" (USE "ndiv_lt" ("x" "t!1" "b" "8"))
+                (("1" (TYPEPRED "t!1" "nrem(t!1,8)" "ndiv(t!1,8)")
+                  (("1" (USE "ndiv_floor_div" ("x" "256" "b" "8"))
+                    (("1" (USE "floor_val" ("i" "256" "j" "8" "k" "32"))
+                      (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                        (("1" (EXPAND "u8div")
+                          (("1" (CASE "ndiv(t!1,8)<=15 OR ndiv(t!1,8)>=16")
+                            (("1"
+                              (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                               :IF-MATCH NIL)
+                              NIL NIL)
+                             ("2"
+                              (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                               :IF-MATCH NIL)
+                              NIL NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (CASE "h!1=16")
+              (("1" (REPLACE -1)
+                (("1" (USE "ndiv_lt" ("x" "t!1" "b" "16"))
+                  (("1" (TYPEPRED "t!1" "nrem(t!1,16)" "ndiv(t!1,16)")
+                    (("1" (USE "ndiv_floor_div" ("x" "256" "b" "16"))
+                      (("1" (USE "floor_val" ("i" "256" "j" "16" "k" "16"))
+                        (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                          (("1" (EXPAND "u8div")
+                            (("1" (CASE "ndiv(t!1,16)<=7 OR ndiv(t!1,16)>=8")
+                              (("1"
+                                (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                                 :IF-MATCH NIL)
+                                NIL NIL)
+                               ("2"
+                                (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                                 :IF-MATCH NIL)
+                                NIL NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL)
+               ("2" (CASE "h!1=32")
+                (("1" (REPLACE -1)
+                  (("1" (USE "ndiv_lt" ("x" "t!1" "b" "32"))
+                    (("1" (TYPEPRED "t!1" "nrem(t!1,32)" "ndiv(t!1,32)")
+                      (("1" (USE "ndiv_floor_div" ("x" "256" "b" "32"))
+                        (("1" (USE "floor_val" ("i" "256" "j" "32" "k" "8"))
+                          (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                            (("1" (EXPAND "u8div")
+                              (("1" (CASE "ndiv(t!1,32)<=3 OR ndiv(t!1,32)>=4")
+                                (("1"
+                                  (GRIND :DEFS NIL :REWRITES
+                                   ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                  NIL NIL)
+                                 ("2"
+                                  (GRIND :DEFS NIL :REWRITES
+                                   ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                  NIL NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL)
+                 ("2" (CASE "h!1=64")
+                  (("1" (REPLACE -1)
+                    (("1" (USE "ndiv_lt" ("x" "t!1" "b" "64"))
+                      (("1" (TYPEPRED "t!1" "nrem(t!1,64)" "ndiv(t!1,64)")
+                        (("1" (USE "ndiv_floor_div" ("x" "256" "b" "64"))
+                          (("1" (USE "floor_val" ("i" "256" "j" "64" "k" "4"))
+                            (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                              (("1" (EXPAND "u8div")
+                                (("1"
+                                  (CASE "ndiv(t!1,64)<=1 OR ndiv(t!1,64)>=2")
+                                  (("1"
+                                    (GRIND :DEFS NIL :REWRITES
+                                     ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                    NIL NIL)
+                                   ("2"
+                                    (GRIND :DEFS NIL :REWRITES
+                                     ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                    NIL NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL)
+                   ("2" (CASE "h!1=128")
+                    (("1" (REPLACE -1)
+                      (("1" (USE "ndiv_lt" ("x" "t!1" "b" "128"))
+                        (("1" (TYPEPRED "t!1" "nrem(t!1,128)" "ndiv(t!1,128)")
+                          (("1" (USE "ndiv_floor_div" ("x" "256" "b" "128"))
+                            (("1"
+                              (USE "floor_val" ("i" "256" "j" "128" "k" "2"))
+                              (("1"
+                                (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                                (("1" (EXPAND "u8div")
+                                  (("1"
+                                    (CASE
+                                        "ndiv(t!1,128)<=0 OR ndiv(t!1,128)>=1")
+                                    (("1"
+                                      (GRIND :DEFS NIL :REWRITES
+                                       ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                      NIL NIL)
+                                     ("2"
+                                      (GRIND :DEFS NIL :REWRITES
+                                       ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                      NIL NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL)
+                     ("2" (EXPAND "level_width")
+                      (("2" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)) NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|ndiv_lt| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|ndiv_floor_div| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|u8div| CONST-DECL "[[uint8, {uy8 | uy8 /= 0}] -> uint8]" |integertypes|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|odd_times_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|times_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|times_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|even_plus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|plus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|plus_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|rem_nrem| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|times_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|nnrat_div_posrat_is_nnrat| APPLICATION-JUDGEMENT "nonneg_rat" |rationals|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posrat_div_posrat_is_posrat| APPLICATION-JUDGEMENT "posrat" |rationals|
+     NIL)
+    (|nonneg_floor_is_nat| APPLICATION-JUDGEMENT "nat" |floor_ceil| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|floor_val| FORMULA-DECL NIL |floor_ceil| NIL)
+    (|integer| NONEMPTY-TYPE-FROM-DECL NIL |integers| NIL)
+    (/= CONST-DECL "[[T, T] -> boolean]" |notequal| NIL)
+    (|nonzero_integer| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|mod| NONEMPTY-TYPE-EQ-DECL NIL |euclidean_division| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nrem| CONST-DECL
+     "[d: [int, posnat] -> {r: mod(d`2) | EXISTS (q: int): d`1 = r + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|rem| CONST-DECL
+     "[b: posnat -> [x: int -> {r: mod(b) | EXISTS (q: int): x = r + b * q}]]"
+     |modulo_arithmetic| NIL)
+    (|ndiv| CONST-DECL
+     "[d: [int, posnat] -> {q: int | d`1 = rem(d`2)(d`1) + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|level_width| CONST-DECL "[below(8) -> subrange(1, 128)]" |mldsa_ring|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|times_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK
+   (|butterflies| SUBTYPE "(number_fields.+)(mldsa_ring.i, mldsa_ring.h)"
+    "below(256)" (61 59 61 62))))
+ (|butterflies_TCC6| 0
+  (|butterflies_TCC6-1| NIL 4004535797
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK
+   (|butterflies| SUBTYPE "mldsa_ring.h" "{uy16 | integertypes.uy16 /= 0}"
+    (62 42 62 43))))
+ (|butterflies_TCC7| 0
+  (|butterflies_TCC7-1| NIL 4004535797
+   ("" (SKOSIMP*)
+    (("" (CASE "h!1=1")
+      (("1" (REPLACE -1)
+        (("1" (USE "ndiv_lt" ("x" "t!1" "b" "1"))
+          (("1" (TYPEPRED "t!1" "nrem(t!1,1)" "ndiv(t!1,1)")
+            (("1" (USE "ndiv_floor_div" ("x" "256" "b" "1"))
+              (("1" (USE "floor_val" ("i" "256" "j" "1" "k" "256"))
+                (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                  (("1" (EXPAND "u8div")
+                    (("1" (EXPAND "u16div")
+                      (("1" (CASE "ndiv(t!1,1)<=127 OR ndiv(t!1,1)>=128")
+                        (("1"
+                          (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                           :IF-MATCH NIL)
+                          NIL NIL)
+                         ("2"
+                          (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                           :IF-MATCH NIL)
+                          NIL NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (CASE "h!1=2")
+        (("1" (REPLACE -1)
+          (("1" (USE "ndiv_lt" ("x" "t!1" "b" "2"))
+            (("1" (TYPEPRED "t!1" "nrem(t!1,2)" "ndiv(t!1,2)")
+              (("1" (USE "ndiv_floor_div" ("x" "256" "b" "2"))
+                (("1" (USE "floor_val" ("i" "256" "j" "2" "k" "128"))
+                  (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                    (("1" (EXPAND "u8div")
+                      (("1" (EXPAND "u16div")
+                        (("1" (CASE "ndiv(t!1,2)<=63 OR ndiv(t!1,2)>=64")
+                          (("1"
+                            (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                             :IF-MATCH NIL)
+                            NIL NIL)
+                           ("2"
+                            (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                             :IF-MATCH NIL)
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL)
+         ("2" (CASE "h!1=4")
+          (("1" (REPLACE -1)
+            (("1" (USE "ndiv_lt" ("x" "t!1" "b" "4"))
+              (("1" (TYPEPRED "t!1" "nrem(t!1,4)" "ndiv(t!1,4)")
+                (("1" (USE "ndiv_floor_div" ("x" "256" "b" "4"))
+                  (("1" (USE "floor_val" ("i" "256" "j" "4" "k" "64"))
+                    (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                      (("1" (EXPAND "u8div")
+                        (("1" (EXPAND "u16div")
+                          (("1" (CASE "ndiv(t!1,4)<=31 OR ndiv(t!1,4)>=32")
+                            (("1"
+                              (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                               :IF-MATCH NIL)
+                              NIL NIL)
+                             ("2"
+                              (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                               :IF-MATCH NIL)
+                              NIL NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (CASE "h!1=8")
+            (("1" (REPLACE -1)
+              (("1" (USE "ndiv_lt" ("x" "t!1" "b" "8"))
+                (("1" (TYPEPRED "t!1" "nrem(t!1,8)" "ndiv(t!1,8)")
+                  (("1" (USE "ndiv_floor_div" ("x" "256" "b" "8"))
+                    (("1" (USE "floor_val" ("i" "256" "j" "8" "k" "32"))
+                      (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                        (("1" (EXPAND "u8div")
+                          (("1" (EXPAND "u16div")
+                            (("1" (CASE "ndiv(t!1,8)<=15 OR ndiv(t!1,8)>=16")
+                              (("1"
+                                (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                                 :IF-MATCH NIL)
+                                NIL NIL)
+                               ("2"
+                                (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                                 :IF-MATCH NIL)
+                                NIL NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (CASE "h!1=16")
+              (("1" (REPLACE -1)
+                (("1" (USE "ndiv_lt" ("x" "t!1" "b" "16"))
+                  (("1" (TYPEPRED "t!1" "nrem(t!1,16)" "ndiv(t!1,16)")
+                    (("1" (USE "ndiv_floor_div" ("x" "256" "b" "16"))
+                      (("1" (USE "floor_val" ("i" "256" "j" "16" "k" "16"))
+                        (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                          (("1" (EXPAND "u8div")
+                            (("1" (EXPAND "u16div")
+                              (("1" (CASE "ndiv(t!1,16)<=7 OR ndiv(t!1,16)>=8")
+                                (("1"
+                                  (GRIND :DEFS NIL :REWRITES
+                                   ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                  NIL NIL)
+                                 ("2"
+                                  (GRIND :DEFS NIL :REWRITES
+                                   ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                  NIL NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL)
+               ("2" (CASE "h!1=32")
+                (("1" (REPLACE -1)
+                  (("1" (USE "ndiv_lt" ("x" "t!1" "b" "32"))
+                    (("1" (TYPEPRED "t!1" "nrem(t!1,32)" "ndiv(t!1,32)")
+                      (("1" (USE "ndiv_floor_div" ("x" "256" "b" "32"))
+                        (("1" (USE "floor_val" ("i" "256" "j" "32" "k" "8"))
+                          (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                            (("1" (EXPAND "u8div")
+                              (("1" (EXPAND "u16div")
+                                (("1"
+                                  (CASE "ndiv(t!1,32)<=3 OR ndiv(t!1,32)>=4")
+                                  (("1"
+                                    (GRIND :DEFS NIL :REWRITES
+                                     ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                    NIL NIL)
+                                   ("2"
+                                    (GRIND :DEFS NIL :REWRITES
+                                     ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                    NIL NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL)
+                 ("2" (CASE "h!1=64")
+                  (("1" (REPLACE -1)
+                    (("1" (USE "ndiv_lt" ("x" "t!1" "b" "64"))
+                      (("1" (TYPEPRED "t!1" "nrem(t!1,64)" "ndiv(t!1,64)")
+                        (("1" (USE "ndiv_floor_div" ("x" "256" "b" "64"))
+                          (("1" (USE "floor_val" ("i" "256" "j" "64" "k" "4"))
+                            (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                              (("1" (EXPAND "u8div")
+                                (("1" (EXPAND "u16div")
+                                  (("1"
+                                    (CASE "ndiv(t!1,64)<=1 OR ndiv(t!1,64)>=2")
+                                    (("1"
+                                      (GRIND :DEFS NIL :REWRITES
+                                       ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                      NIL NIL)
+                                     ("2"
+                                      (GRIND :DEFS NIL :REWRITES
+                                       ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                      NIL NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL)
+                   ("2" (CASE "h!1=128")
+                    (("1" (REPLACE -1)
+                      (("1" (USE "ndiv_lt" ("x" "t!1" "b" "128"))
+                        (("1" (TYPEPRED "t!1" "nrem(t!1,128)" "ndiv(t!1,128)")
+                          (("1" (USE "ndiv_floor_div" ("x" "256" "b" "128"))
+                            (("1"
+                              (USE "floor_val" ("i" "256" "j" "128" "k" "2"))
+                              (("1"
+                                (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                                (("1" (EXPAND "u8div")
+                                  (("1" (EXPAND "u16div")
+                                    (("1"
+                                      (CASE
+                                          "ndiv(t!1,128)<=0 OR ndiv(t!1,128)>=1")
+                                      (("1"
+                                        (GRIND :DEFS NIL :REWRITES
+                                         ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                        NIL NIL)
+                                       ("2"
+                                        (GRIND :DEFS NIL :REWRITES
+                                         ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                        NIL NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL)
+                     ("2" (EXPAND "level_width")
+                      (("2" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)) NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|ndiv_lt| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|ndiv_floor_div| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|u8div| CONST-DECL "[[uint8, {uy8 | uy8 /= 0}] -> uint8]" |integertypes|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|u16div| CONST-DECL "[[uint16, {uy16 | uy16 /= 0}] -> uint16]"
+     |integertypes| NIL)
+    (|odd_times_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|times_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|times_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|even_plus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|plus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|plus_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|rem_nrem| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|times_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|nnrat_div_posrat_is_nnrat| APPLICATION-JUDGEMENT "nonneg_rat" |rationals|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posrat_div_posrat_is_posrat| APPLICATION-JUDGEMENT "posrat" |rationals|
+     NIL)
+    (|nonneg_floor_is_nat| APPLICATION-JUDGEMENT "nat" |floor_ceil| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|floor_val| FORMULA-DECL NIL |floor_ceil| NIL)
+    (|integer| NONEMPTY-TYPE-FROM-DECL NIL |integers| NIL)
+    (/= CONST-DECL "[[T, T] -> boolean]" |notequal| NIL)
+    (|nonzero_integer| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|mod| NONEMPTY-TYPE-EQ-DECL NIL |euclidean_division| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nrem| CONST-DECL
+     "[d: [int, posnat] -> {r: mod(d`2) | EXISTS (q: int): d`1 = r + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|rem| CONST-DECL
+     "[b: posnat -> [x: int -> {r: mod(b) | EXISTS (q: int): x = r + b * q}]]"
+     |modulo_arithmetic| NIL)
+    (|ndiv| CONST-DECL
+     "[d: [int, posnat] -> {q: int | d`1 = rem(d`2)(d`1) + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|minus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|level_width| CONST-DECL "[below(8) -> subrange(1, 128)]" |mldsa_ring|
+     NIL)
+    (|times_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK
+   (|butterflies| SUBTYPE
+    "(number_fields.-)((number_fields.-)(integertypes.u16div(256, mldsa_ring.h), 1), mldsa_ring.group)"
+    "uint8" (62 31 62 52))))
+ (|butterflies_TCC8| 0
+  (|butterflies_TCC8-1| NIL 4004535797
+   ("" (SKOSIMP*)
+    (("" (CASE "h!1=1")
+      (("1" (REPLACE -1)
+        (("1" (USE "ndiv_lt" ("x" "t!1" "b" "1"))
+          (("1" (TYPEPRED "t!1" "nrem(t!1,1)" "ndiv(t!1,1)")
+            (("1" (USE "ndiv_floor_div" ("x" "256" "b" "1"))
+              (("1" (USE "floor_val" ("i" "256" "j" "1" "k" "256"))
+                (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                  (("1" (EXPAND "u8div")
+                    (("1" (CASE "ndiv(t!1,1)<=127 OR ndiv(t!1,1)>=128")
+                      (("1"
+                        (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                         :IF-MATCH NIL)
+                        NIL NIL)
+                       ("2"
+                        (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                         :IF-MATCH NIL)
+                        NIL NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (CASE "h!1=2")
+        (("1" (REPLACE -1)
+          (("1" (USE "ndiv_lt" ("x" "t!1" "b" "2"))
+            (("1" (TYPEPRED "t!1" "nrem(t!1,2)" "ndiv(t!1,2)")
+              (("1" (USE "ndiv_floor_div" ("x" "256" "b" "2"))
+                (("1" (USE "floor_val" ("i" "256" "j" "2" "k" "128"))
+                  (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                    (("1" (EXPAND "u8div")
+                      (("1" (CASE "ndiv(t!1,2)<=63 OR ndiv(t!1,2)>=64")
+                        (("1"
+                          (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                           :IF-MATCH NIL)
+                          NIL NIL)
+                         ("2"
+                          (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                           :IF-MATCH NIL)
+                          NIL NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL)
+         ("2" (CASE "h!1=4")
+          (("1" (REPLACE -1)
+            (("1" (USE "ndiv_lt" ("x" "t!1" "b" "4"))
+              (("1" (TYPEPRED "t!1" "nrem(t!1,4)" "ndiv(t!1,4)")
+                (("1" (USE "ndiv_floor_div" ("x" "256" "b" "4"))
+                  (("1" (USE "floor_val" ("i" "256" "j" "4" "k" "64"))
+                    (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                      (("1" (EXPAND "u8div")
+                        (("1" (CASE "ndiv(t!1,4)<=31 OR ndiv(t!1,4)>=32")
+                          (("1"
+                            (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                             :IF-MATCH NIL)
+                            NIL NIL)
+                           ("2"
+                            (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                             :IF-MATCH NIL)
+                            NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (CASE "h!1=8")
+            (("1" (REPLACE -1)
+              (("1" (USE "ndiv_lt" ("x" "t!1" "b" "8"))
+                (("1" (TYPEPRED "t!1" "nrem(t!1,8)" "ndiv(t!1,8)")
+                  (("1" (USE "ndiv_floor_div" ("x" "256" "b" "8"))
+                    (("1" (USE "floor_val" ("i" "256" "j" "8" "k" "32"))
+                      (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                        (("1" (EXPAND "u8div")
+                          (("1" (CASE "ndiv(t!1,8)<=15 OR ndiv(t!1,8)>=16")
+                            (("1"
+                              (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                               :IF-MATCH NIL)
+                              NIL NIL)
+                             ("2"
+                              (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                               :IF-MATCH NIL)
+                              NIL NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (CASE "h!1=16")
+              (("1" (REPLACE -1)
+                (("1" (USE "ndiv_lt" ("x" "t!1" "b" "16"))
+                  (("1" (TYPEPRED "t!1" "nrem(t!1,16)" "ndiv(t!1,16)")
+                    (("1" (USE "ndiv_floor_div" ("x" "256" "b" "16"))
+                      (("1" (USE "floor_val" ("i" "256" "j" "16" "k" "16"))
+                        (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                          (("1" (EXPAND "u8div")
+                            (("1" (CASE "ndiv(t!1,16)<=7 OR ndiv(t!1,16)>=8")
+                              (("1"
+                                (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                                 :IF-MATCH NIL)
+                                NIL NIL)
+                               ("2"
+                                (GRIND :DEFS NIL :REWRITES ("rem_nrem" "exp2")
+                                 :IF-MATCH NIL)
+                                NIL NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL)
+               ("2" (CASE "h!1=32")
+                (("1" (REPLACE -1)
+                  (("1" (USE "ndiv_lt" ("x" "t!1" "b" "32"))
+                    (("1" (TYPEPRED "t!1" "nrem(t!1,32)" "ndiv(t!1,32)")
+                      (("1" (USE "ndiv_floor_div" ("x" "256" "b" "32"))
+                        (("1" (USE "floor_val" ("i" "256" "j" "32" "k" "8"))
+                          (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                            (("1" (EXPAND "u8div")
+                              (("1" (CASE "ndiv(t!1,32)<=3 OR ndiv(t!1,32)>=4")
+                                (("1"
+                                  (GRIND :DEFS NIL :REWRITES
+                                   ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                  NIL NIL)
+                                 ("2"
+                                  (GRIND :DEFS NIL :REWRITES
+                                   ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                  NIL NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL)
+                 ("2" (CASE "h!1=64")
+                  (("1" (REPLACE -1)
+                    (("1" (USE "ndiv_lt" ("x" "t!1" "b" "64"))
+                      (("1" (TYPEPRED "t!1" "nrem(t!1,64)" "ndiv(t!1,64)")
+                        (("1" (USE "ndiv_floor_div" ("x" "256" "b" "64"))
+                          (("1" (USE "floor_val" ("i" "256" "j" "64" "k" "4"))
+                            (("1" (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                              (("1" (EXPAND "u8div")
+                                (("1"
+                                  (CASE "ndiv(t!1,64)<=1 OR ndiv(t!1,64)>=2")
+                                  (("1"
+                                    (GRIND :DEFS NIL :REWRITES
+                                     ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                    NIL NIL)
+                                   ("2"
+                                    (GRIND :DEFS NIL :REWRITES
+                                     ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                    NIL NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL)
+                   ("2" (CASE "h!1=128")
+                    (("1" (REPLACE -1)
+                      (("1" (USE "ndiv_lt" ("x" "t!1" "b" "128"))
+                        (("1" (TYPEPRED "t!1" "nrem(t!1,128)" "ndiv(t!1,128)")
+                          (("1" (USE "ndiv_floor_div" ("x" "256" "b" "128"))
+                            (("1"
+                              (USE "floor_val" ("i" "256" "j" "128" "k" "2"))
+                              (("1"
+                                (USE "ndiv_floor_div" ("x" "128" "b" "h!1"))
+                                (("1" (EXPAND "u8div")
+                                  (("1"
+                                    (CASE
+                                        "ndiv(t!1,128)<=0 OR ndiv(t!1,128)>=1")
+                                    (("1"
+                                      (GRIND :DEFS NIL :REWRITES
+                                       ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                      NIL NIL)
+                                     ("2"
+                                      (GRIND :DEFS NIL :REWRITES
+                                       ("rem_nrem" "exp2") :IF-MATCH NIL)
+                                      NIL NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL)
+                     ("2" (EXPAND "level_width")
+                      (("2" (GRIND :DEFS NIL :IF-MATCH NIL) NIL NIL)) NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|ndiv_lt| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|ndiv_floor_div| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|u8div| CONST-DECL "[[uint8, {uy8 | uy8 /= 0}] -> uint8]" |integertypes|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|odd_times_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|times_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|times_u32_u32| APPLICATION-JUDGEMENT "uint64" |integertypes| NIL)
+    (|even_plus_odd_is_odd| APPLICATION-JUDGEMENT "odd_int" |integers| NIL)
+    (|plus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|plus_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|rem_nrem| FORMULA-DECL NIL |modulo_arithmetic| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|times_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|times_u16_u16| APPLICATION-JUDGEMENT "uint32" |integertypes| NIL)
+    (|nnrat_div_posrat_is_nnrat| APPLICATION-JUDGEMENT "nonneg_rat" |rationals|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|posrat_div_posrat_is_posrat| APPLICATION-JUDGEMENT "posrat" |rationals|
+     NIL)
+    (|nonneg_floor_is_nat| APPLICATION-JUDGEMENT "nat" |floor_ceil| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (OR CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|floor_val| FORMULA-DECL NIL |floor_ceil| NIL)
+    (|integer| NONEMPTY-TYPE-FROM-DECL NIL |integers| NIL)
+    (/= CONST-DECL "[[T, T] -> boolean]" |notequal| NIL)
+    (|nonzero_integer| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "upto(n)" |modulo_arithmetic| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|mod| NONEMPTY-TYPE-EQ-DECL NIL |euclidean_division| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nrem| CONST-DECL
+     "[d: [int, posnat] -> {r: mod(d`2) | EXISTS (q: int): d`1 = r + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|rem| CONST-DECL
+     "[b: posnat -> [x: int -> {r: mod(b) | EXISTS (q: int): x = r + b * q}]]"
+     |modulo_arithmetic| NIL)
+    (|ndiv| CONST-DECL
+     "[d: [int, posnat] -> {q: int | d`1 = rem(d`2)(d`1) + d`2 * q}]"
+     |modulo_arithmetic| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|plus_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|level_width| CONST-DECL "[below(8) -> subrange(1, 128)]" |mldsa_ring|
+     NIL)
+    (|times_i16_u16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK
+   (|butterflies| SUBTYPE
+    "(number_fields.+)(integertypes.u8div(128, mldsa_ring.h), mldsa_ring.group)"
+    "uint8" (62 58 62 76))))
+ (|butterflies_TCC9| 0
+  (|butterflies_TCC9-1| NIL 4004535798
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK
+   (|butterflies| SUBTYPE "(number_fields.+)(mldsa_ring.t, 1)" "upto(128)"
+    (66 50 66 53))))
+ (|butterflies_TCC10| 0
+  (|butterflies_TCC10-1| NIL 4004535798
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|int_times_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL))
+   SHOSTAK
+   (|butterflies| TERMINATION
+    "mldsa_ring.butterflies(mldsa_ring.a WITH [(mldsa_ring.i) := mldsa_ring.x, (mldsa_ring.j) := mldsa_ring.y], mldsa_ring.l, mldsa_ring.inv, (number_fields.+)(mldsa_ring.t, 1))"
+    "NIL" (66 9 66 54))))
+ (|butterflies_TCC11| 0
+  (|butterflies_TCC11-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|butterflies| SUBTYPE "(number_fields.-)(7, mldsa_ring.l)" "below(8)"
+    (59 38 59 41))))
+ (|levels_TCC1| 0
+  (|levels_TCC1-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|levels| SUBTYPE "(number_fields.-)(8, mldsa_ring.l)" "naturalnumber"
+    (69 76 69 79))))
+ (|levels_TCC2| 0
+  (|levels_TCC2-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|levels| SUBTYPE "mldsa_ring.l" "below(8)" (69 44 69 45))))
+ (|levels_TCC3| 0
+  (|levels_TCC3-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|levels| SUBTYPE "(number_fields.+)(mldsa_ring.l, 1)" "upto(8)"
+    (69 57 69 60))))
+ (|levels_TCC4| 0
+  (|levels_TCC4-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|levels| TERMINATION
+    "mldsa_ring.levels(mldsa_ring.butterflies(mldsa_ring.a, mldsa_ring.l, mldsa_ring.inv, 0), mldsa_ring.inv, (number_fields.+)(mldsa_ring.l, 1))"
+    "NIL" (69 23 69 61))))
+ (|transform_TCC1| 0
+  (|transform_TCC1-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|transform| SUBTYPE "(number_fields.-)(256, mldsa_ring.i)" "naturalnumber"
+    (87 18 87 23))))
+ (|transform_TCC2| 0
+  (|transform_TCC2-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|transform| SUBTYPE "mldsa_ring.i" "below(256)" (81 21 81 22))))
+ (|transform_TCC3| 0
+  (|transform_TCC3-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|transform| SUBTYPE "mldsa_ring.power_high(mldsa_ring.x)" "coeff"
+    (84 34 84 47))))
+ (|transform_TCC4| 0
+  (|transform_TCC4-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|transform| SUBTYPE "mldsa_ring.high(mldsa_ring.p, mldsa_ring.x)" "coeff"
+    (85 30 85 39))))
+ (|transform_TCC5| 0
+  (|transform_TCC5-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|transform| SUBTYPE
+    "mldsa_ring.use_hint(mldsa_ring.p, mldsa_ring.x, mldsa_ring.y /= 0)"
+    "coeff" (85 45 85 63))))
+ (|transform_TCC6| 0
+  (|transform_TCC6-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|transform| SUBTYPE "(number_fields.+)(mldsa_ring.i, 1)" "upto(256)"
+    (86 46 86 49))))
+ (|transform_TCC7| 0
+  (|transform_TCC7-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|transform| TERMINATION
+    "mldsa_ring.transform(mldsa_ring.p, mldsa_ring.op, mldsa_ring.a, mldsa_ring.b, mldsa_ring.out WITH [(mldsa_ring.i) := mldsa_ring.v], (number_fields.+)(mldsa_ring.i, 1))"
+    "NIL" (86 9 86 50))))
+ (|transform_TCC8| 0
+  (|transform_TCC8-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|transform| SUBTYPE "mldsa_ring.i" "below(256)" (81 14 81 15))))
+ (|bounded_TCC1| 0
+  (|bounded_TCC1-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|bounded| SUBTYPE "(number_fields.-)(256, mldsa_ring.i)" "naturalnumber"
+    (94 89 94 94))))
+ (|bounded_TCC2| 0
+  (|bounded_TCC2-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|bounded| SUBTYPE "mldsa_ring.i" "below(256)" (94 40 94 41))))
+ (|bounded_TCC3| 0
+  (|bounded_TCC3-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|bounded| SUBTYPE "(number_fields.+)(mldsa_ring.i, 1)" "upto(256)"
+    (94 70 94 73))))
+ (|bounded_TCC4| 0
+  (|bounded_TCC4-1| NIL 4004535799
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|bounded| TERMINATION
+    "mldsa_ring.bounded(mldsa_ring.a, mldsa_ring.bound, (number_fields.+)(mldsa_ring.i, 1))"
+    "NIL" (94 54 94 74)))))

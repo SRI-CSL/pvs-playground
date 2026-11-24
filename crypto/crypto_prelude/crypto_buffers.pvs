@@ -1,0 +1,31 @@
+% Bounded byte buffers for HMAC, random bit generation and key derivation.
+crypto_buffers: THEORY
+BEGIN
+  octets_of(n: index): TYPE = {b: bytestring | b`length = n}
+
+  fill_octets(n: index, value: uint8): octets_of(n) =
+    (# length := n, seq := LAMBDA (i: below(n)): value #)
+
+  join_octets(a: bytestring, b: {s: bytestring | a`length + s`length < maxsize}):
+    octets_of(a`length + b`length) =
+    LET n: index = a`length + b`length IN
+    (# length := n, seq := LAMBDA (i: below(n)):
+         IF i < a`length THEN a`seq(i) ELSE b`seq(i - a`length) ENDIF #)
+
+  copy_octets(out: bytestring, base: upto(out`length), v: bytestring, j: upto(v`length)):
+    RECURSIVE octets_of(out`length) =
+    IF j = v`length OR base + j >= out`length THEN out
+    ELSE copy_octets(out WITH [`seq(base + j) := v`seq(j)], base, v, j + 1)
+    ENDIF MEASURE v`length - j
+
+  first_octets(a: bytestring, n: upto(a`length)): octets_of(n) =
+    copy_octets(fill_octets(n, 0), 0, a, 0)
+
+  join_left: LEMMA FORALL (a: bytestring, b: {s: bytestring | a`length + s`length < maxsize},
+                             i: below(a`length)):
+    join_octets(a, b)`seq(i) = a`seq(i)
+
+  join_right: LEMMA FORALL (a: bytestring, b: {s: bytestring | a`length + s`length < maxsize},
+                              i: below(b`length)):
+    join_octets(a, b)`seq(a`length + i) = b`seq(i)
+END crypto_buffers

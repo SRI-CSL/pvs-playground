@@ -1,0 +1,101 @@
+% SP 800-38F sections 6.1--6.3, Algorithms 1--6. Either AES direction may be designated as
+% the cipher for a wrapping key. Octet strings use the bounded Prelude bytestring carrier.
+key_wrap: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING aes_modes, crypto_prelude@crypto_words, crypto_prelude@crypto_buffers
+
+  result: DATATYPE
+  BEGIN
+    success(data: bytestring): success?
+    failure: failure?
+  END result
+
+  wire: TYPE = {s: bytestring | s`length >= 16}
+  kw_iv: uint64 = 0xA6A6A6A6A6A6A6A6
+  kwp_iv: uint32 = 0xA65959A6
+
+  % Place the integrity check in the first semiblock and pad the data with zeros.
+  seed(iv: uint64, p: bytestring, n: {j: index | 16 <= j}): wire =
+    (# length := n, seq := LAMBDA (i: below(n)):
+      IF i < 8 THEN be_byte64(iv,i)
+      ELSIF i-8 < p`length THEN p`seq(i-8) ELSE 0 ENDIF #)
+
+  % Extract A and the current R[i]. The public entry points select whole semiblocks.
+  pair(x: wire, base: uint32, mask: uint64): block =
+    LAMBDA (j: below(16)):
+      IF j < 8 THEN u8xor(x`seq(j),be_byte64(mask,j))
+      ELSIF base+j-8 < x`length THEN x`seq(base+j-8) ELSE 0 ENDIF
+
+  put_half(x: wire, base: uint32, b: block, high: bool, mask: uint64,
+           j: upto(8)): RECURSIVE {s: wire | s`length = x`length} =
+    IF j = 8 OR base+j >= x`length THEN x
+    ELSE LET v = IF high THEN u8xor(b(j),be_byte64(mask,j)) ELSE b(8+j) ENDIF
+         IN put_half(x WITH [`seq(base+j) := v],base,b,high,mask,j+1)
+    ENDIF MEASURE 8-j
+
+  semis(x: wire): pos_uint32 = u32div(x`length,8)-1
+  steps(x: wire): uint32 = 6 * semis(x)
+
+  transform(k: mode_key, x: wire, inverse, inverse_cipher: bool, left: upto(steps(x))):
+    RECURSIVE {s: wire | s`length=x`length} =
+    IF left=0 THEN x ELSE
+      LET t: uint32 = IF inverse THEN left ELSE steps(x)-left+1 ENDIF,
+          base: uint32 = u32plus(8,u32times(8,u32rem(t-1,semis(x)))),
+          input = pair(x,base,IF inverse THEN t ELSE 0 ENDIF),
+          b = IF inverse /= inverse_cipher THEN ecb_decrypt(k,input) ELSE ecb_encrypt(k,input) ENDIF,
+          first = put_half(x,0,b,TRUE,IF inverse THEN 0 ELSE t ENDIF,0),
+          both = put_half(first,base,b,FALSE,0,0)
+      IN transform(k,both,inverse,inverse_cipher,left-1)
+    ENDIF MEASURE left
+
+  head64(x: wire): uint64 =
+    load_be64(load_be32(x`seq(0),x`seq(1),x`seq(2),x`seq(3)),
+              load_be32(x`seq(4),x`seq(5),x`seq(6),x`seq(7)))
+
+  payload(x: wire, n: {i:index | i <= x`length-8}): octets_of(n) =
+    (# length := n, seq := LAMBDA (i: below(n)): x`seq(i+8) #)
+
+  kw_wrap(k: mode_key, p: bytestring, inverse_cipher: bool): result =
+    IF p`length < 16 OR u32rem(p`length,8) /= 0 OR p`length+8 >= maxsize
+    THEN failure ELSE
+      LET x = seed(kw_iv,p,p`length+8) IN success(transform(k,x,FALSE,inverse_cipher,steps(x)))
+    ENDIF
+
+  kw_unwrap(k: mode_key, c: bytestring, inverse_cipher: bool): result =
+    IF c`length < 24 OR u32rem(c`length,8) /= 0 THEN failure
+    ELSE LET x = transform(k,c,TRUE,inverse_cipher,steps(c)) IN
+      IF head64(x) = kw_iv THEN success(payload(x,x`length-8)) ELSE failure ENDIF
+    ENDIF
+
+  % A single padded semiblock goes through one AES call (Algorithms 5 and 6).
+  one_block(k: mode_key, x: wire, inverse: bool): {s:wire | s`length=x`length} =
+    LET b = IF inverse THEN ecb_decrypt(k,pair(x,8,0)) ELSE ecb_encrypt(k,pair(x,8,0)) ENDIF
+    IN put_half(put_half(x,0,b,TRUE,0,0),8,b,FALSE,0,0)
+
+  kwp_wrap(k: mode_key, p: bytestring, inverse_cipher: bool): result =
+    LET n: uint32 = p`length, pad: below(8) = u32rem(8-u32rem(n,8),8),
+        size: uint32 = IF n <= 8 THEN 16 ELSE 8+n+pad ENDIF IN
+    IF n=0 OR size>=maxsize THEN failure
+    ELSE LET x = seed(load_be64(kwp_iv,n),p,size) IN
+      success(IF size=16 THEN one_block(k,x,inverse_cipher) ELSE transform(k,x,FALSE,inverse_cipher,steps(x)) ENDIF)
+    ENDIF
+
+  zero_tail(x: wire, n: upto(7)): RECURSIVE bool =
+    IF n=0 THEN TRUE ELSE x`seq(x`length-n)=0 AND zero_tail(x,n-1) ENDIF MEASURE n
+
+  kwp_unwrap(k: mode_key,c: bytestring, inverse_cipher: bool): result =
+    IF c`length < 16 OR u32rem(c`length,8)/=0 THEN failure ELSE
+      LET x = IF c`length=16 THEN one_block(k,c,NOT inverse_cipher) ELSE transform(k,c,TRUE,inverse_cipher,steps(c)) ENDIF,
+          hi = load_be32(x`seq(0),x`seq(1),x`seq(2),x`seq(3)),
+          n = load_be32(x`seq(4),x`seq(5),x`seq(6),x`seq(7)),
+          cap: uint32 = x`length-8 IN
+      IF hi/=kwp_iv OR n=0 OR n>cap OR cap-n>7 THEN failure
+      ELSIF zero_tail(x,cap-n) THEN success(payload(x,n)) ELSE failure ENDIF
+    ENDIF
+
+  reject_short_kw: LEMMA FORALL (k:mode_key,c:bytestring,inv:bool):
+    c`length<24 IMPLIES failure?(kw_unwrap(k,c,inv))
+  reject_short_kwp: LEMMA FORALL (k:mode_key,c:bytestring,inv:bool):
+    c`length<16 IMPLIES failure?(kwp_unwrap(k,c,inv))
+END key_wrap

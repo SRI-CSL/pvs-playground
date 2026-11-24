@@ -1,0 +1,12 @@
+% Length equations for reasoning about nested credential and protocol encodings.
+crypto_buffer_lengths: THEORY
+BEGIN
+  IMPORTING crypto_buffers
+  joined_length: LEMMA FORALL (a:bytestring,b:{s:bytestring | a`length+s`length<maxsize}):
+    join_octets(a,b)`length=a`length+b`length
+  filled_length: LEMMA FORALL (n:index,b:uint8): fill_octets(n,b)`length=n
+  copied_length: LEMMA FORALL (a:bytestring,p:upto(a`length),b:bytestring,j:upto(b`length)):
+    copy_octets(a,p,b,j)`length=a`length
+  prefix_length: LEMMA FORALL (a:bytestring,n:upto(a`length)): first_octets(a,n)`length=n
+  AUTO_REWRITE+ joined_length, filled_length, copied_length, prefix_length
+END crypto_buffer_lengths

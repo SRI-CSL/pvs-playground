@@ -1,0 +1,30 @@
+% SP 800-186 Appendices D.2.2 and E.1--E.2, polynomial basis, odd field degree.
+binary_encoding: THEORY
+BEGIN
+  IMPORTING binary_curve
+  compressed(c: curve): TYPE = [# infinity: bool, x: element(c), sign: bool #]
+  decoded(c: curve): TYPE = [# valid: bool, value: point(c) #]
+  compress(c: curve,q: point(c)): compressed(c) =
+    IF q`infinity THEN (# infinity:=TRUE, x:=zero(c), sign:=FALSE #)
+    ELSE (# infinity:=FALSE, x:=q`x,
+            sign:=q`x/=zero(c) AND odd_word(product(c,q`y,inv(c,q`x))) #) ENDIF
+  squares(c: curve,r: element(c),n: uint16): RECURSIVE element(c) =
+    IF n=0 THEN r ELSE squares(c,product(c,r,r),n-1) ENDIF MEASURE n
+  % The half-trace at odd m gives a solution when the absolute trace is zero.
+  half_trace(c: curve,w,r: element(c),n: uint16): RECURSIVE element(c) =
+    IF n=0 THEN r ELSE half_trace(c,w,plus(squares(c,r,2),w),n-1) ENDIF MEASURE n
+  decompress(c: curve,q: compressed(c)): decoded(c) =
+    LET bad: decoded(c)=(# valid:=FALSE,value:=identity(c) #), x=q`x IN
+    IF q`infinity THEN (# valid:=TRUE,value:=identity(c) #)
+    ELSIF NOT canonical(c,x) THEN bad
+    ELSIF x=zero(c) THEN
+      IF q`sign THEN bad ELSE (# valid:=TRUE,value:=finite(c,x,squares(c,b_value(c),degree(c)-1)) #) ENDIF
+    ELSE LET invx=inv(c,x), t=product(c,b_value(c),product(c,invx,invx)), w=plus(plus(x,coefficient(c)),t),
+             a=half_trace(c,w,w,ndiv(degree(c)-1,2)) IN
+      IF plus(product(c,a,a),a)/=w THEN bad
+      ELSE LET z=IF odd_word(a)=q`sign THEN a ELSE plus(a,one(c)) ENDIF IN
+        (# valid:=TRUE,value:=finite(c,x,product(c,x,z)) #) ENDIF
+    ENDIF
+  invalid_zero_sign: LEMMA FORALL(c: curve):
+    NOT decompress(c,(# infinity:=FALSE,x:=zero(c),sign:=TRUE #))`valid
+END binary_encoding

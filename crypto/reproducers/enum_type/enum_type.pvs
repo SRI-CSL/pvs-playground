@@ -1,0 +1,6 @@
+enum_type: THEORY
+BEGIN
+  direction:TYPE={left,right}
+  next(d:direction):direction=IF d=left THEN right ELSE left ENDIF
+  changes:_TEST_ next(left)=right
+END enum_type

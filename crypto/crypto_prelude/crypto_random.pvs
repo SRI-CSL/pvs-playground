@@ -1,0 +1,30 @@
+% An immutable observation stream identified by the caller. Each (stream,index)
+% has one result, including acquisition failure. A new acquisition uses a new
+% stream. No independence, entropy estimate, or prediction-resistance axioms.
+crypto_random: THEORY
+BEGIN
+  IMPORTING integertypes
+  stream_id: TYPE = uint64
+  sample_index: TYPE = uint32
+  observation: TYPE = {v: uint16 | v <= 256}
+  unavailable: observation = 256
+
+  % External source and externally instantiated PRNG, respectively.
+  % Provider responses 0..255 are octets; all other responses signal failure.
+  entropy_lookup(s: stream_id, i: sample_index): uint16
+  prng_lookup(s: stream_id, i: sample_index): uint16
+
+  checked_sample(raw: uint16): observation =
+    IF raw <= 255 THEN raw ELSE unavailable ENDIF
+  entropy_sample(s: stream_id, i: sample_index): observation =
+    checked_sample(entropy_lookup(s, i))
+  prng_sample(s: stream_id, i: sample_index): observation =
+    checked_sample(prng_lookup(s, i))
+
+  available(v: observation): bool = v < unavailable
+  sample_byte(v: (available)): uint8 = v
+
+  octet_preserved: LEMMA FORALL (v: uint8): checked_sample(v) = v
+  errors_rejected: LEMMA FORALL (v: uint16):
+    v > 255 IMPLIES NOT available(checked_sample(v))
+END crypto_random

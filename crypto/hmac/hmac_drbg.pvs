@@ -1,0 +1,90 @@
+% NIST SP 800-90A Rev. 1, Table 2 and section 10.1.2.
+% https://doi.org/10.6028/NIST.SP.800-90Ar1
+hmac_drbg: THEORY
+BEGIN
+  IMPORTING keyed_hash
+
+  % SP 800-90A Rev. 1 Table 2 and the SHA-3 mechanisms in NIST ACVP.
+  drbg_hash: TYPE = {h: hash_id | h = h_sha1 OR h = h_sha224 OR h = h_sha256
+                      OR h = h_sha384 OR h = h_sha512 OR h = h_sha512_224 OR h = h_sha512_256 OR h>=h_sha3_224}
+  reseed_interval: uint64 = 0x1000000000000
+  counter: TYPE = {n: uint64 | n >= 1 AND n <= reseed_interval + 1}
+  state: TYPE = [# algorithm: drbg_hash, key, v: octets_of(hash_bytes(algorithm)),
+                   requests: counter #]
+  % Reserve space for V, the domain octet, and the HMAC inner hash prefix.
+  material_bound: uint32 = maxsize - 210
+  material: TYPE = {s: bytestring | s`length <= material_bound}
+  entropy_input: TYPE = {s: material | s`length > 0}
+  request_bits: TYPE = subrange(1, 524288)
+
+  % Section 10.1.2.2. Both calls use the newest K. An empty provided_data
+  % suppresses only the second pair of calls.
+  update_round(s: state, marker: uint8, data: material): state =
+    LET prefix = join_octets(s`v, fill_octets(1, marker)),
+        k = hmac(s`algorithm, s`key, join_octets(prefix, data)),
+        v = hmac(s`algorithm, k, s`v)
+    IN s WITH [`key := k, `v := v]
+
+  drbg_update(s: state, data: material): state =
+    LET first = update_round(s, 0, data) IN
+    IF data`length = 0 THEN first ELSE update_round(first, 1, data) ENDIF
+
+  % Section 10.1.2.3, deterministic instantiate algorithm. Entropy and nonce
+  % quality are preconditions on the external section 9.1 collection process.
+  instantiate(h: drbg_hash, e: entropy_input,
+              nonce: {n: bytestring | e`length + n`length <= material_bound},
+              personal: {p: bytestring | e`length + nonce`length + p`length <= material_bound}): state =
+    LET s: state = (# algorithm := h, key := fill_octets(hash_bytes(h), 0),
+                      v := fill_octets(hash_bytes(h), 1), requests := 1 #)
+    IN drbg_update(s, join_octets(join_octets(e, nonce), personal))
+
+  % Section 10.1.2.4, deterministic reseed algorithm.
+  reseed(s: state, e: entropy_input,
+         extra: {a: bytestring | e`length + a`length <= material_bound}): state =
+    drbg_update(s, join_octets(e, extra)) WITH [`requests := 1]
+
+  % Section 10.1.2.5, steps 3--5. Fill a single preallocated output array
+  % and retain the last complete V even when the output uses only its prefix.
+  produced: TYPE = [# current: state, data: bytestring #]
+  generate_blocks(s: state, out: bytestring, i: upto(out`length)):
+    RECURSIVE produced =
+    IF i = out`length THEN (# current := s, data := out #)
+    ELSE LET v = hmac(s`algorithm, s`key, s`v),
+             next = s WITH [`v := v],
+             updated = copy_octets(out, i, v, 0),
+             after: index = IF i + v`length >= out`length THEN out`length ELSE i + v`length ENDIF
+         IN generate_blocks(next, updated, after)
+    ENDIF MEASURE out`length - i
+
+  result: TYPE = [# success: bool, current: state, data: bytestring #]
+  % requested_bits also identifies the significant high bits in the final octet.
+  generate(s: state, n: request_bits, extra: material): result =
+    IF s`requests > reseed_interval THEN
+      (# success := FALSE, current := s, data := fill_octets(0, 0) #)
+    ELSE LET initial = IF extra`length = 0 THEN s ELSE drbg_update(s, extra) ENDIF,
+             octets: index = u32rshift(n + 7, 3),
+             r = generate_blocks(initial, fill_octets(octets, 0), 0),
+             used: below(8) = nrem(n, 8),
+             d = r`data,
+             output = IF used = 0 OR d`length = 0 THEN d
+                      ELSE LET last: index = d`length - 1 IN
+                        d WITH [`seq(last) := u8and(d`seq(last), u8lshift(0xff, 8 - used))]
+                      ENDIF,
+             final = drbg_update(r`current, extra) WITH [`requests := s`requests + 1]
+         IN (# success := TRUE, current := final, data := output #)
+    ENDIF
+
+  % Section 9.3. A caller requesting prediction resistance supplies fresh
+  % entropy; additional input is consumed at reseed and then cleared.
+  reseed_and_generate(s: state, e: entropy_input,
+      extra: {a: bytestring | e`length + a`length <= material_bound}, n: request_bits): result =
+    generate(reseed(s, e, extra), n, fill_octets(0, 0))
+
+  expired_no_output: LEMMA FORALL (s: state, n: request_bits, a: material):
+    s`requests > reseed_interval IMPLIES
+      NOT generate(s, n, a)`success AND generate(s, n, a)`data`length = 0 AND
+      generate(s, n, a)`current = s
+  reseed_resets_counter: LEMMA FORALL (s: state, e: entropy_input,
+                 a: {b: bytestring | e`length + b`length <= material_bound}):
+    reseed(s, e, a)`requests = 1
+END hmac_drbg

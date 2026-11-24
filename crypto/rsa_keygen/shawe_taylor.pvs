@@ -1,0 +1,81 @@
+% FIPS 186-5 Appendix B.6, with deterministic trial division for short primes.
+shawe_taylor: THEORY
+BEGIN
+  prehash: LIBRARY = "../crypto_prelude/prehash"
+  IMPORTING rsa_primes,prehash@crypto_prehash
+  fixed_hash: TYPE = subrange(1,10)
+  hlen(h: fixed_hash): subrange(28,64) =
+    COND h=1 OR h=6 OR h=8 -> 32, h=2 OR h=9 -> 48, h=3 OR h=10 -> 64, ELSE -> 28 ENDCOND
+  seed_string: TYPE = {s: bytestring | s`length>=1 AND s`length<=4096}
+  advance_seed(s: bytestring,i: upto(s`length),carry: uint16): RECURSIVE octets_of(s`length) =
+    IF i=0 OR carry=0 THEN s ELSE
+      LET v:uint32=s`seq(i-1)+carry IN
+      advance_seed(s WITH [`seq(i-1):=nrem(v,256)],i-1,u32rshift(v,8)) ENDIF MEASURE i
+  seed_plus(s: seed_string,n:uint16): octets_of(s`length) = advance_seed(s,s`length,n)
+  % The extra word can represent 2^bits and the first overflowing candidate.
+  st_bits: TYPE = subrange(2,2048)
+  st_width(bits:st_bits): {n:subrange(1,65) | bits<32*n} = u16div(bits,32)+1
+  blocks(h:fixed_hash,bits:st_bits): subrange(1,10) = 1+u16div(bits-1,8*hlen(h))
+  fill_hashes(h:fixed_hash,s:seed_string,nb:subrange(1,10),out:bytestring,i:upto(10)):
+      RECURSIVE octets_of(out`length) =
+    IF i>=nb THEN out ELSE
+      LET digest=pre_digest(h,seed_plus(s,i),0,0),off:uint16=(nb-1-i)*hlen(h) IN
+      IF off>out`length THEN out ELSE fill_hashes(h,s,nb,copy_octets(out,off,digest,0),i+1) ENDIF ENDIF
+    MEASURE 10-i
+  hash_series(h:fixed_hash,s:seed_string,nb:subrange(1,10)): octets_of(nb*hlen(h)) =
+    fill_hashes(h,s,nb,fill_octets(nb*hlen(h),0),0)
+  % Evaluate a whole concatenation modulo m with leading hash bytes retained.
+  hash_residue(h:fixed_hash,s:seed_string,nb:subrange(1,10),m:limbs): words_of(m`len) =
+    LET bytes=hash_series(h,s,nb),wordcount:uint32=u32div(bytes`length+3,4),
+        n:limb_count=IF wordcount>m`len AND wordcount<=512 THEN wordcount ELSE m`len ENDIF,
+        d=divide_words(from_bytes(n,bytes,TRUE),resize_words(m,n))
+    IN resize_words(d`r,m`len)
+  st_result(n:limb_count): TYPE = [# ok:bool,value:words_of(n),seed:seed_string,counter:uint32 #]
+  st_fail(n:limb_count,s:seed_string): st_result(n) =
+    (# ok:=FALSE,value:=zero_words(n),seed:=fill_octets(s`length,0),counter:=0 #)
+  small_prime(c:uint32,d:{i:uint32 | i>=3}): RECURSIVE bool =
+    IF c=2 THEN TRUE ELSIF c<2 OR u32and(c,1)=0 THEN FALSE
+    ELSIF d>u32div(c,d) THEN TRUE ELSIF u32rem(c,d)=0 THEN FALSE ELSE small_prime(c,d+2) ENDIF MEASURE 4294967295-d
+  st_short(h:fixed_hash,bits:subrange(2,32),s:seed_string,count:upto(129)): RECURSIVE st_result(st_width(bits)) =
+    LET n=st_width(bits),x=from_bytes(1,pre_digest(h,s,0,0),TRUE),
+        y=from_bytes(1,pre_digest(h,seed_plus(s,1),0,0),TRUE),
+        m=u32lshift(1,bits-1),c=u32or(u32or(m,1),u32and(u32xor(x`word(0),y`word(0)),u32minus(m,1))),
+        sn=seed_plus(s,2)
+    IN IF small_prime(c,3) THEN (# ok:=TRUE,value:=zero_words(n) WITH [`word(0):=c],seed:=sn,counter:=count+1 #)
+       ELSIF count>=4*bits THEN st_fail(n,s) ELSE st_short(h,bits,sn,count+1) ENDIF MEASURE 129-count
+  % Small-factor sieving skips a certificate that cannot succeed. The caller
+  % advances the seed exactly as for an explicit certificate computation.
+  sieve_remainder(a:limbs,d:subrange(3,2047),i:upto(a`len),r:uint32): RECURSIVE uint32 =
+    IF i=0 THEN r ELSE LET v=u64or(u64lshift(r,32),a`word(i-1)) IN
+      sieve_remainder(a,d,i-1,lo32(u64rem(v,d))) ENDIF MEASURE i
+  sieve_candidate(c:limbs,d:subrange(3,2049)): RECURSIVE bool =
+    IF d>2047 THEN TRUE ELSIF sieve_remainder(c,d,c`len,0)=0 THEN FALSE
+    ELSE sieve_candidate(c,d+2) ENDIF MEASURE 2049-d
+  certificate(h:fixed_hash,s:seed_string,nb:subrange(1,10),c:limbs,
+              exponent,factor:words_of(c`len)): bool =
+    IF NOT sieve_candidate(c,3) THEN FALSE ELSE
+      LET one=one_words(c`len),three=increment(one,2),a=increment(hash_residue(h,s,nb,sub_words(c,three)),2),
+          z=mont_power(a,exponent,c)
+      IN z/=zero_words(c`len) AND gcd_words(sub_words(z,one),c)=one AND mont_power(z,factor,c)=one ENDIF
+  st_search(h:fixed_hash,bits:st_bits,s:seed_string,factor,t,start:words_of(st_width(bits)),
+            count:upto(8192),prior:uint32): RECURSIVE st_result(st_width(bits)) =
+    LET n=st_width(bits),limit=set_one(zero_words(n),bits),step=double_words(factor),
+        raw=increment(product_words(t,step,n),1),reset=ge_words(raw,limit),
+        tt=IF reset THEN start ELSE t ENDIF,
+        c=IF reset THEN increment(product_words(start,step,n),1) ELSE raw ENDIF,
+        nb=blocks(h,bits),sn=seed_plus(s,nb) IN
+    IF certificate(h,s,nb,c,double_words(tt),factor) THEN
+      (# ok:=TRUE,value:=c,seed:=sn,counter:=u32plus(prior,count+1) #)
+    ELSIF count+1>=4*bits THEN st_fail(n,s) ELSE st_search(h,bits,sn,factor,increment(tt,1),start,count+1,prior)
+    ENDIF MEASURE 8192-count
+  st_prime(h:fixed_hash,bits:st_bits,s:seed_string): RECURSIVE st_result(st_width(bits)) =
+    IF bits<33 THEN st_short(h,bits,s,0) ELSE
+      LET n=st_width(bits),small:st_bits=u16div(bits+1,2)+1,r=st_prime(h,small,s) IN
+      IF NOT r`ok THEN st_fail(n,s) ELSE
+        LET f=resize_words(r`value,n),step=double_words(f),nb=blocks(h,bits),
+            x=top_bit(from_bytes(n,hash_series(h,r`seed,nb),TRUE),bits),
+            start=ceiling_divide(set_one(zero_words(n),bits-1),step)
+        IN st_search(h,bits,seed_plus(r`seed,nb),f,ceiling_divide(x,step),start,0,r`counter) ENDIF ENDIF
+    MEASURE bits
+  seed_zero_step: LEMMA FORALL(s:seed_string): seed_plus(s,0)=s
+END shawe_taylor

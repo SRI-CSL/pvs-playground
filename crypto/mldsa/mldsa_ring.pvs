@@ -1,0 +1,95 @@
+% FIPS 204 (August 2024), sections 4, 7.4 and 7.5. https://doi.org/10.6028/NIST.FIPS.204
+mldsa_ring: THEORY
+BEGIN
+  profile: TYPE = below(3) % 0 = ML-DSA-44, 1 = ML-DSA-65, 2 = ML-DSA-87.
+  rows(p: profile): subrange(4,8) = IF p=0 THEN 4 ELSIF p=1 THEN 6 ELSE 8 ENDIF
+  cols(p: profile): subrange(4,7) = IF p=0 THEN 4 ELSIF p=1 THEN 5 ELSE 7 ENDIF
+  eta(p: profile): subrange(2,4) = IF p=1 THEN 4 ELSE 2 ENDIF
+  eta_bits(p: profile): subrange(3,4) = IF p=1 THEN 4 ELSE 3 ENDIF
+  tau(p: profile): subrange(39,60) = IF p=0 THEN 39 ELSIF p=1 THEN 49 ELSE 60 ENDIF
+  omega(p: profile): subrange(55,80) = IF p=0 THEN 80 ELSIF p=1 THEN 55 ELSE 75 ENDIF
+  cbytes(p: profile): subrange(32,64) = IF p=0 THEN 32 ELSIF p=1 THEN 48 ELSE 64 ENDIF
+  zbits(p: profile): subrange(18,20) = IF p=0 THEN 18 ELSE 20 ENDIF
+  wbits(p: profile): subrange(4,6) = IF p=0 THEN 6 ELSE 4 ENDIF
+  gamma1(p: profile): uint32 = IF p=0 THEN 131072 ELSE 524288 ENDIF
+  gamma2(p: profile): uint32 = IF p=0 THEN 95232 ELSE 261888 ENDIF
+  high_count(p: profile): subrange(16,44) = IF p=0 THEN 44 ELSE 16 ENDIF
+  beta(p: profile): uint16 = tau(p)*eta(p)
+  pk_size(p: profile): uint16 = 32+320*rows(p)
+  sk_size(p: profile): uint16 = 128+32*(eta_bits(p)*(cols(p)+rows(p))+13*rows(p))
+  sig_size(p: profile): uint16 = cbytes(p)+32*cols(p)*zbits(p)+omega(p)+rows(p)
+
+  q: uint32 = 8380417
+  coeff: TYPE = below(8380417)
+  poly: TYPE = ARRAY[below(256) -> coeff]
+  vec: TYPE = ARRAY[below(8) -> poly]
+  zero: poly = LAMBDA (i: below(256)): 0
+  zero_vec: vec = LAMBDA (i: below(8)): zero
+  addq(x,y: coeff): coeff = nrem(x+y,8380417)
+  subq(x,y: coeff): coeff = nrem(x+8380417-y,8380417)
+  mulq(x,y: coeff): coeff = u64rem(x*y,8380417)
+  center(x: coeff): int32 = IF x>4190208 THEN x-8380417 ELSE x ENDIF
+  magnitude(x: coeff): uint32 = IF x>4190208 THEN 8380417-x ELSE x ENDIF
+
+  % Algorithms 35–40. A tie maps to the positive representative of the low part.
+  power_high(x: coeff): below(1024) = u32div(x+4095,8192)
+  power_low(x: coeff): coeff = subq(x,nrem(8192*power_high(x),8380417))
+  high(p: profile,x: coeff): below(44) =
+    LET h: uint32=u32div(x+gamma2(p)-1,2*gamma2(p))
+    IN IF h>=high_count(p) THEN 0 ELSE h ENDIF
+  low(p: profile,x: coeff): coeff = subq(x,u64rem(2*gamma2(p)*high(p,x),8380417))
+  use_hint(p: profile,x: coeff,hint: bool): below(44) =
+    LET h=high(p,x), m=high_count(p) IN
+    IF NOT hint THEN h ELSIF center(low(p,x))>0 THEN nrem(h+1,m)
+    ELSE nrem(h+m-1,m) ENDIF
+
+  % Algorithms 41–43. Positive powers of 1753 use the 8-bit reversed index.
+  rev8(x: uint8,k: upto(8),a: uint8): RECURSIVE uint8 =
+    IF k=0 THEN a ELSE rev8(u8rshift(x,1),k-1,u8or(u8lshift(a,1),u8and(x,1)))
+    ENDIF MEASURE k
+  power(x: coeff,e: uint8): RECURSIVE coeff =
+    IF e=0 THEN 1 ELSE LET h=power(x,u8div(e,2)), t=mulq(h,h)
+    IN IF nrem(e,2)=1 THEN mulq(t,x) ELSE t ENDIF ENDIF MEASURE e
+  zeta(i: uint8): coeff = power(1753,rev8(i,8,0))
+  level_width(l: below(8)): subrange(1,128) =
+    COND l=0 -> 128, l=1 -> 64, l=2 -> 32, l=3 -> 16, l=4 -> 8,
+         l=5 -> 4, l=6 -> 2, ELSE -> 1 ENDCOND
+  butterflies(a: poly,l: below(8),inv: bool,t: upto(128)): RECURSIVE poly =
+    IF t=128 THEN a ELSE
+      LET layer: below(8)=IF inv THEN 7-l ELSE l ENDIF,
+          h=level_width(layer), group: uint8=u8div(t,h),
+          i: below(256)=2*h*group+nrem(t,h), j: below(256)=i+h,
+          k: uint8=IF inv THEN u16div(256,h)-1-group ELSE u8div(128,h)+group ENDIF,
+          z=zeta(k), lo=a(i), hi=a(j), v=mulq(z,hi),
+          x=IF inv THEN addq(lo,hi) ELSE addq(lo,v) ENDIF,
+          y=IF inv THEN mulq(z,subq(hi,lo)) ELSE subq(lo,v) ENDIF
+      IN butterflies(a WITH [(i):=x,(j):=y],l,inv,t+1)
+    ENDIF MEASURE 128-t
+  levels(a: poly,inv: bool,l: upto(8)): RECURSIVE poly =
+    IF l=8 THEN a ELSE levels(butterflies(a,l,inv,0),inv,l+1) ENDIF MEASURE 8-l
+  operation: TYPE = below(8)
+  op_add: operation=0
+  op_sub: operation=1
+  op_mul: operation=2
+  op_scale: operation=3
+  op_power_hi: operation=4
+  op_power_lo: operation=5
+  op_high: operation=6
+  op_hint: operation=7
+  transform(p: profile,op: operation,a,b,out: poly,i: upto(256)): RECURSIVE poly =
+    IF i=256 THEN out ELSE
+      LET x=a(i),y=b(i),v: coeff=
+        IF op=op_add THEN addq(x,y) ELSIF op=op_sub THEN subq(x,y)
+        ELSIF op=op_mul THEN mulq(x,y) ELSIF op=op_scale THEN mulq(x,8347681)
+        ELSIF op=op_power_hi THEN power_high(x) ELSIF op=op_power_lo THEN power_low(x)
+        ELSIF op=op_high THEN high(p,x) ELSE use_hint(p,x,y/=0) ENDIF
+      IN transform(p,op,a,b,out WITH [(i):=v],i+1)
+    ENDIF MEASURE 256-i
+  ntt(a: poly): poly = levels(a,FALSE,0)
+  intt(a: poly): poly = transform(0,op_scale,levels(a,TRUE,0),zero,zero,0)
+  add(a,b: poly): poly = transform(0,op_add,a,b,zero,0)
+  subtract(a,b: poly): poly = transform(0,op_sub,a,b,zero,0)
+  product(a,b: poly): poly = transform(0,op_mul,a,b,zero,0)
+  bounded(a: poly,bound: uint32,i: upto(256)): RECURSIVE bool =
+    IF i=256 THEN TRUE ELSE magnitude(a(i))<bound AND bounded(a,bound,i+1) ENDIF MEASURE 256-i
+END mldsa_ring

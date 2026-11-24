@@ -1,0 +1,598 @@
+(|sp800_185|
+ (|bits_in_TCC1| 0
+  (|bits_in_TCC1-1| NIL 4004534619
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "m!1`octets`length" "m!1`used")
+     (GRIND :DEFS ("exp2")))
+    NIL NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|packed| TYPE-EQ-DECL NIL |sp800_185| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|nnint_times_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|nnint_plus_nnint_is_nnint| APPLICATION-JUDGEMENT "nonneg_int" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|bits_in| SUBTYPE
+    "(number_fields.+)(number_fields.*(8, sp800_185.m`octets`length), sp800_185.m`used)"
+    "uint64" (13 31 13 57))))
+ (|absorb_packed_TCC1| 0
+  (|absorb_packed_TCC1-1| NIL 4004534619
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|absorb_packed| SUBTYPE "sp800_185.m`used" "upto(8)" (15 41 15 47))))
+ (|put_integer_TCC1| 0
+  (|put_integer_TCC1-1| NIL 4004534619
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|put_integer| SUBTYPE "(number_fields.-)(8, sp800_185.i)" "naturalnumber"
+    (26 18 26 21))))
+ (|put_integer_TCC2| 0
+  (|put_integer_TCC2-1| NIL 4004534619
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK (|put_integer| SUBTYPE "sp800_185.i" "below(8)" (25 61 25 62))))
+ (|put_integer_TCC3| 0
+  (|put_integer_TCC3-1| NIL 4004534619
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|put_integer| SUBTYPE "(number_fields.+)(sp800_185.i, 1)" "upto(8)"
+    (25 67 25 70))))
+ (|put_integer_TCC4| 0
+  (|put_integer_TCC4-1| NIL 4004534619
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|put_integer| TERMINATION
+    "sp800_185.put_integer(keccak.absorb_byte(sp800_185.c, crypto_words.be_byte64(sp800_185.x, sp800_185.i)), sp800_185.x, (number_fields.+)(sp800_185.i, 1))"
+    "NIL" (25 23 25 71))))
+ (|put_left_TCC1| 0
+  (|put_left_TCC1-1| NIL 4004534619
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|put_left| SUBTYPE "sp800_185.w" "uint8" (28 56 28 57))))
+ (|put_left_TCC2| 0
+  (|put_left_TCC2-1| NIL 4004534619
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|put_left| SUBTYPE "(number_fields.-)(8, sp800_185.w)" "upto(8)"
+    (28 61 28 64))))
+ (|finish_bytepad_TCC1| 0
+  (|finish_bytepad_TCC1-1| NIL 4004534619
+   ("" (THEN (SKOSIMP*) (TYPEPRED "c!1`rate") (ASSERT)) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|lanes| TYPE-EQ-DECL NIL |keccak| NIL)
+    (|rate_bytes| TYPE-EQ-DECL NIL |keccak| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|absorbing| TYPE-EQ-DECL NIL |keccak| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|finish_bytepad| SUBTYPE "0"
+    "{p: integertypes.uint16 | reals.<(p, number_fields.*(8, sp800_185.c`rate))}"
+    (37 66 37 67))))
+ (|bytepad_at_boundary| 0
+  (|bytepad_at_boundary-1| NIL 4004534619
+   ("" (THEN (SKOSIMP*) (EXPAND "finish_bytepad") (LIFT-IF) (GROUND)) NIL NIL)
+   ((|finish_bytepad| CONST-DECL "[absorbing -> absorbing]" |sp800_185| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK))
+ (|start_custom_TCC1| 0
+  (|start_custom_TCC1-1| NIL 4004534619
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|xof_rate| CONST-DECL "[strength -> rate_bytes]" |sp800_185| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|start_custom| SUBTYPE "sp800_185.r" "uint64" (42 43 42 44))))
+ (|tuple_name_TCC1| 0
+  (|tuple_name_TCC1-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK
+   (|tuple_name| SUBTYPE "[: 84, 117, 112, 108, 101, 72, 97, 115, 104 :]"
+    "ARRAY[below(9) -> byte]" (51 46 51 82))))
+ (|parallel_name_TCC1| 0
+  (|parallel_name_TCC1-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL))
+   SHOSTAK
+   (|parallel_name| SUBTYPE
+    "[: 80, 97, 114, 97, 108, 108, 101, 108, 72, 97, 115, 104 :]"
+    "ARRAY[below(12) -> byte]" (52 50 52 96))))
+ (|put_tuple_TCC1| 0
+  (|put_tuple_TCC1-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|put_tuple| SUBTYPE "(number_fields.-)(sp800_185.t`length, sp800_185.i)"
+    "naturalnumber" (64 18 64 28))))
+ (|put_tuple_TCC2| 0
+  (|put_tuple_TCC2-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|put_tuple| SUBTYPE "sp800_185.i" "below(sp800_185.t`length)"
+    (63 61 63 62))))
+ (|put_tuple_TCC3| 0
+  (|put_tuple_TCC3-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|put_tuple| SUBTYPE "(number_fields.+)(sp800_185.i, 1)"
+    "upto(sp800_185.t`length)" (63 67 63 70))))
+ (|put_tuple_TCC4| 0
+  (|put_tuple_TCC4-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|put_tuple| TERMINATION
+    "sp800_185.put_tuple(sp800_185.put_string(sp800_185.c, sp800_185.t`items(sp800_185.i)), sp800_185.t, (number_fields.+)(sp800_185.i, 1))"
+    "NIL" (63 30 63 71))))
+ (|tuplehash_TCC1| 0
+  (|tuplehash_TCC1-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (TYPEPRED "t!1`length") (ASSERT)) NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|packed| TYPE-EQ-DECL NIL |sp800_185| NIL)
+    (|tuple_items| TYPE-EQ-DECL NIL |sp800_185| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK (|tuplehash| SUBTYPE "0" "upto(sp800_185.t`length)" (67 42 67 43))))
+ (|put_range_TCC1| 0
+  (|put_range_TCC1-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|put_range| SUBTYPE "(number_fields.-)(sp800_185.stop, sp800_185.i)"
+    "naturalnumber" (74 18 74 24))))
+ (|put_range_TCC2| 0
+  (|put_range_TCC2-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|put_range| SUBTYPE "sp800_185.i" "below(sp800_185.m`length)"
+    (73 56 73 57))))
+ (|put_range_TCC3| 0
+  (|put_range_TCC3-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL))
+   SHOSTAK
+   (|put_range| SUBTYPE "(number_fields.+)(sp800_185.i, 1)"
+    "upto(sp800_185.stop)" (73 67 73 70))))
+ (|put_range_TCC4| 0
+  (|put_range_TCC4-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|put_range| TERMINATION
+    "sp800_185.put_range(keccak.absorb_byte(sp800_185.c, sp800_185.m`seq(sp800_185.i)), sp800_185.m, sp800_185.stop, (number_fields.+)(sp800_185.i, 1))"
+    "NIL" (73 26 73 71))))
+ (|parallel_blocks_TCC1| 0
+  (|parallel_blocks_TCC1-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|parallel_blocks| SUBTYPE
+    "(number_fields.-)(sp800_185.x`octets`length, sp800_185.i)" "naturalnumber"
+    (85 18 85 35))))
+ (|parallel_blocks_TCC2| 0
+  (|parallel_blocks_TCC2-0| "" 4004534673
+   (""
+    (APPLY
+     (RERUN
+      ("" (APPLY (RERUN ("" (SKOLEM 1 ("s!1" "x!1" "i!1" "m!1")) (POSTPONE))))
+       (APPLY (RERUN ("" (FLATTEN-DISJUNCT NIL NIL) (POSTPONE)))) (POSTPONE))))
+    (("" (TYPEPRED "m!1`length" "i!1")
+      ((""
+        (APPLY
+         (RERUN
+          ("" (APPLY (RERUN ("" (AUTO-REWRITE "exp2.exp2") (POSTPONE))))
+           (BDDSIMP)
+           (("1"
+             (APPLY
+              (RERUN
+               ("1"
+                (SIMPLIFY * T T :REWRITE-FLAG NIL :FLUSH? NIL :CASES-REWRITE?
+                          NIL :TYPE-CONSTRAINTS? T :IGNORE-PROVER-OUTPUT? NIL
+                          :LET-REDUCE? T :QUANT-SIMP? NIL :IMPLICIT-TYPEPREDS?
+                          NIL :IGNORE-TYPEPREDS? NIL)))))
+            ("2"
+             (APPLY
+              (RERUN
+               ("2"
+                (SIMPLIFY * T T :REWRITE-FLAG NIL :FLUSH? NIL :CASES-REWRITE?
+                          NIL :TYPE-CONSTRAINTS? T :IGNORE-PROVER-OUTPUT? NIL
+                          :LET-REDUCE? T :QUANT-SIMP? NIL :IMPLICIT-TYPEPREDS?
+                          NIL :IGNORE-TYPEPREDS? NIL)))))))))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|upto| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|packed| TYPE-EQ-DECL NIL |sp800_185| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|parallel_blocks| SUBTYPE
+    "(number_fields.-)(sp800_185.m`length, sp800_185.i)" "uint32"
+    (79 38 79 48)))
+  (|parallel_blocks_TCC2-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL) NIL SHOSTAK
+   (|parallel_blocks| SUBTYPE
+    "(number_fields.-)(sp800_185.m`length, sp800_185.i)" "uint32"
+    (79 38 79 48))))
+ (|parallel_blocks_TCC3| 0
+  (|parallel_blocks_TCC3-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|parallel_blocks| SUBTYPE "(number_fields.+)(sp800_185.i, sp800_185.b)"
+    "upto(sp800_185.m`length)" (81 31 81 34))))
+ (|parallel_blocks_TCC4| 0
+  (|parallel_blocks_TCC4-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|parallel_blocks| SUBTYPE "sp800_185.i" "upto(sp800_185.next)"
+    (81 64 81 65))))
+ (|parallel_blocks_TCC5| 0
+  (|parallel_blocks_TCC5-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|parallel_blocks| SUBTYPE "sp800_185.next"
+    "upto(sp800_185.x`octets`length)" (82 52 82 56))))
+ (|parallel_blocks_TCC6| 0
+  (|parallel_blocks_TCC6-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|nnint_plus_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|parallel_blocks| TERMINATION
+    "sp800_185.parallel_blocks(sp800_185.put_chain(sp800_185.c, sp800_185.s, sp800_185.block), sp800_185.s, sp800_185.x, sp800_185.b, sp800_185.next)"
+    "NIL" (82 9 82 57))))
+ (|parallel_blocks_TCC7| 0
+  (|parallel_blocks_TCC7-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|parallel_blocks| SUBTYPE "sp800_185.m`length" "upto(sp800_185.m`length)"
+    (84 51 84 59))))
+ (|parallel_blocks_TCC8| 0
+  (|parallel_blocks_TCC8-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|parallel_blocks| SUBTYPE "sp800_185.i" "upto(sp800_185.m`length)"
+    (84 60 84 61))))
+ (|parallelhash_TCC1| 0
+  (|parallelhash_TCC1-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (ASSERT) (GRIND :IF-MATCH NIL)) NIL NIL)
+   ((|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|parallelhash| SUBTYPE "0" "upto(sp800_185.x`octets`length)"
+    (88 51 88 52))))
+ (|parallelhash_TCC2| 0
+  (|parallelhash_TCC2-1| NIL 4004534620
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "x!1`octets`length" "b!1") (ASSERT)
+     (GRIND :DEFS ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|packed| TYPE-EQ-DECL NIL |sp800_185| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|pos_uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|parallelhash| SUBTYPE "sp800_185.x`octets`length" "uint32"
+    (89 31 89 46))))
+ (|parallelhash_TCC3| 0
+  (|parallelhash_TCC3-1| NIL 4004534620
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "x!1`octets`length" "b!1") (ASSERT)
+     (GRIND :DEFS ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   ((|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|uint8| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|packed| TYPE-EQ-DECL NIL |sp800_185| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|pos_uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|parallelhash| SUBTYPE "sp800_185.b" "{uy32 | integertypes.uy32 /= 0}"
+    (89 47 89 48))))
+ (|empty_custom_is_shake| 0
+  (|empty_custom_is_shake-1| NIL 4004534620
+   ("" (THEN (SKOSIMP*) (EXPAND "cshake") (ASSERT)) NIL NIL)
+   ((|cshake| CONST-DECL "[[strength, packed, packed, packed] -> squeezing]"
+     |sp800_185| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK)))
+

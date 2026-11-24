@@ -1,0 +1,87 @@
+% FIPS 204, Algorithms 2, 4 and 7. The core accepts a 64-octet representative.
+mldsa_sign: THEORY
+BEGIN
+  IMPORTING mldsa
+  secret_ntt: TYPE = [# rho: octets_of(32), s1,s2,t0: vec #]
+  unpack_secret(p: profile,sk: bytestring): secret_ntt =
+    LET d=eta_bits(p), l=cols(p), k=rows(p),
+        s1=unpack_vec(sk,128,l,d,eta(p),zero_vec,0),
+        s2=unpack_vec(sk,128+32*l*d,k,d,eta(p),zero_vec,0),
+        t0=unpack_vec(sk,128+32*(l+k)*d,k,13,4096,zero_vec,0) IN
+    (# rho:=portion(sk,0,32),s1:=ntt_vec(s1,zero_vec,l,0),s2:=ntt_vec(s2,zero_vec,k,0),
+       t0:=ntt_vec(t0,zero_vec,k,0) #)
+  masks(p: profile,seed: octets_of(64),base: upto(6000),v: vec,i: upto(8)): RECURSIVE vec =
+    IF i>=cols(p) THEN v ELSE
+      masks(p,seed,base,v WITH [(i):=sample_mask(p,seed,base+i)],i+1)
+    ENDIF MEASURE 8-i
+  commitments: TYPE = [# ok: bool, w: vec, packed: bytestring #]
+  commit_rows(p: profile,rho: octets_of(32),yhat,w: vec,b: bytestring,i: upto(8)):
+      RECURSIVE commitments =
+    IF i>=rows(p) THEN (# ok:=TRUE,w:=w,packed:=b #) ELSE
+      LET a=dot(p,rho,i,yhat,0,zero) IN
+      IF NOT a`ok THEN (# ok:=FALSE,w:=zero_vec,packed:=fill_octets(0,0) #) ELSE
+        LET wi=intt(a`a),hi=transform(p,op_high,wi,zero,zero,0) IN
+        commit_rows(p,rho,yhat,w WITH [(i):=wi],encode(hi,wbits(p),0,b,32*wbits(p)*i,0),i+1)
+      ENDIF ENDIF MEASURE 8-i
+  z_vector(p: profile,y,s1,v: vec,chat: poly,i: upto(8)): RECURSIVE vec_result =
+    IF i>=cols(p) THEN (# ok:=TRUE,v:=v #) ELSE
+      LET z=add(y(i),intt(product(chat,s1(i)))) IN
+      IF bounded(z,gamma1(p)-beta(p),0) THEN z_vector(p,y,s1,v WITH [(i):=z],chat,i+1)
+      ELSE no_vec ENDIF ENDIF MEASURE 8-i
+  bounded_low(p: profile,r: poly,i: upto(256)): RECURSIVE bool =
+    IF i=256 THEN TRUE ELSE magnitude(low(p,r(i)))<gamma2(p)-beta(p) AND bounded_low(p,r,i+1)
+    ENDIF MEASURE 256-i
+  hint_result: TYPE = [# ok: bool, weight: upto(80), out: bytestring #]
+  no_hint: hint_result = (# ok:=FALSE,weight:=0,out:=fill_octets(0,0) #)
+  hint_indices(p: profile,r,sum: poly,i: upto(256),base: offset,n: upto(80),out: bytestring):
+      RECURSIVE hint_result =
+    IF i=256 THEN (# ok:=TRUE,weight:=n,out:=out #)
+    ELSIF high(p,r(i))=high(p,sum(i)) THEN hint_indices(p,r,sum,i+1,base,n,out)
+    ELSIF n>=omega(p) OR base+n>=out`length THEN no_hint ELSE
+      hint_indices(p,r,sum,i+1,base,n+1,out WITH [`seq(base+n):=i])
+    ENDIF MEASURE 256-i
+  sign_hints(p: profile,ws,s2,t0: vec,chat: poly,i: upto(8),base: offset,n: upto(80),
+             out: bytestring): RECURSIVE bytes_result =
+    IF i>=rows(p) THEN (# ok:=TRUE,value:=out #) ELSE
+      LET r=subtract(ws(i),intt(product(chat,s2(i)))), t=intt(product(chat,t0(i))) IN
+      IF NOT bounded_low(p,r,0) OR NOT bounded(t,gamma2(p),0) THEN failure ELSE
+        LET h=hint_indices(p,r,add(r,t),0,base,n,out), endpos: uint16=base+omega(p)+i IN
+        IF NOT h`ok OR endpos>=h`out`length THEN failure ELSE
+          sign_hints(p,ws,s2,t0,chat,i+1,base,h`weight,h`out WITH [`seq(endpos):=h`weight])
+        ENDIF ENDIF ENDIF MEASURE 8-i
+  trial_result: TYPE = [# retry: bool, signature: bytes_result #]
+  try_again: trial_result = (# retry:=TRUE,signature:=failure #)
+  abort_trial: trial_result = (# retry:=FALSE,signature:=failure #)
+  trial(p: profile,secret: secret_ntt,mu,seed: octets_of(64),attempt: below(814)): trial_result =
+    LET y=masks(p,seed,cols(p)*attempt,zero_vec,0),
+        w=commit_rows(p,secret`rho,ntt_vec(y,zero_vec,cols(p),0),zero_vec,
+                      fill_octets(32*wbits(p)*rows(p),0),0) IN
+    IF NOT w`ok THEN abort_trial ELSE
+      LET c=output(finish_shake(absorb(absorb(start(136),mu),w`packed)),cbytes(p)),
+          ball=sample_in_ball(p,c) IN IF NOT ball`ok THEN abort_trial ELSE
+        LET chat=ntt(ball`a), z=z_vector(p,y,secret`s1,zero_vec,chat,0) IN
+        IF NOT z`ok THEN try_again ELSE
+          LET out=copy_octets(fill_octets(sig_size(p),0),0,c,0),
+              encoded=encode_vec(z`v,cols(p),zbits(p),gamma1(p),out,cbytes(p),0),
+              signed=sign_hints(p,w`w,secret`s2,secret`t0,chat,0,
+                                cbytes(p)+32*zbits(p)*cols(p),0,encoded)
+          IN (# retry:=NOT signed`ok,signature:=signed #) ENDIF ENDIF ENDIF
+  trials(p: profile,secret: secret_ntt,mu,seed: octets_of(64),attempt: upto(814)):
+      RECURSIVE bytes_result =
+    IF attempt=814 THEN failure ELSE LET t=trial(p,secret,mu,seed,attempt) IN
+      IF t`retry THEN trials(p,secret,mu,seed,attempt+1) ELSE t`signature ENDIF
+    ENDIF MEASURE 814-attempt
+  sign_mu(p: profile,sk: bytestring,mu: octets_of(64),rnd: octets_of(32)): bytes_result =
+    IF sk`length/=sk_size(p) THEN failure ELSE
+      LET skey=portion(sk,32,32), seed=output(finish_shake(absorb(absorb(absorb(start(136),
+                 skey),rnd),mu)),64)
+      IN trials(p,unpack_secret(p,sk),mu,seed,0) ENDIF
+  sign_message(p: profile,sk,m,ctx: bytestring,tail: uint8,used: below(8),rnd: octets_of(32)):
+      bytes_result =
+    IF ctx`length>255 OR sk`length/=sk_size(p) THEN failure ELSE
+      sign_mu(p,sk,mu_message(portion(sk,64,64),m,ctx,tail,used,ctx`length),rnd) ENDIF
+  sign_deterministic(p: profile,sk,m,ctx: bytestring,tail: uint8,used: below(8)): bytes_result =
+    sign_message(p,sk,m,ctx,tail,used,fill_octets(32,0))
+  exhausted_trials: LEMMA FORALL (p: profile,secret: secret_ntt,mu,seed: octets_of(64)):
+    trials(p,secret,mu,seed,814)=failure
+END mldsa_sign

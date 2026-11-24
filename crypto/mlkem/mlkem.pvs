@@ -1,0 +1,130 @@
+% FIPS 203 (August 2024), sections 5–7, Algorithms 13–21.
+% https://doi.org/10.6028/NIST.FIPS.203
+mlkem: THEORY
+BEGIN
+  IMPORTING mlkem_encoding
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_buffers
+
+  % Each fixed-size buffer is laid out in the byte order of Algorithms 5 and 6.
+  slice_array(m: bytestring,base: base_offset,n: upto(4096)): ARRAY[below(n) -> uint8] =
+    LAMBDA (i: below(n)): at(m,base+i)
+  portion(m: bytestring,base: base_offset,n: upto(4096)): fixed(n) =
+    (# length:=n, seq:=slice_array(m,base,n) #)
+  vec: TYPE = ARRAY[below(4) -> polynomial]
+  zero_vec: vec = LAMBDA (i: below(4)): zero_poly
+
+  noise_vector(seed: fixed(32),k: rank,j: upto(4),v: vec): RECURSIVE vec =
+    IF j>=k THEN v ELSE
+      noise_vector(seed,k,j+1,v WITH [(j):=ntt(noise(seed,j,eta1(k)))])
+    ENDIF MEASURE 4-j
+  % Matrix coefficients are generated in NTT order. Transposition swaps the
+  % coordinates encoded after rho (standard writes A[i,j]=SampleNTT(rho||j||i)).
+  matrix_row(rho: fixed(32),k: rank,row: below(4),transposed: bool,v: vec,
+             j: upto(4),sum: polynomial): RECURSIVE sample =
+    IF j>=k THEN (# ok:=TRUE, poly:=sum #) ELSE
+      LET a=IF transposed THEN matrix_entry(rho,row,j) ELSE matrix_entry(rho,j,row) ENDIF IN
+      IF a`ok THEN matrix_row(rho,k,row,transposed,v,j+1,add(sum,multiply_ntts(a`poly,v(j))))
+      ELSE rejected ENDIF ENDIF MEASURE 4-j
+
+  % Failures have empty payloads and carry no part of a rejected sample.
+  sized_result: TYPE = [# ok: bool, value: bytestring #]
+  failure: sized_result = (# ok:=FALSE, value:=zeros(0) #)
+  % KeyGen writes t_hat= A_hat*s_hat + e_hat. Encryption writes
+  % Compress_du(INTT(A_hat^T*y_hat)+e1) in each corresponding row.
+  product_rows(rho,noise_seed: fixed(32),k: rank,v: vec,enc: bool,
+               j: upto(4),out: bytestring): RECURSIVE sized_result =
+    IF j>=k THEN (# ok:=TRUE,value:=out #) ELSE
+      LET row=matrix_row(rho,k,j,enc,v,0,zero_poly) IN
+      IF NOT row`ok THEN failure ELSE
+        LET ewidth: eta=IF enc THEN 2 ELSE eta1(k) ENDIF, e=noise(noise_seed,k+j,ewidth),
+            p=IF enc THEN add(intt(row`poly),e) ELSE add(row`poly,ntt(e)) ENDIF,
+            d: width=IF enc THEN du(k) ELSE 12 ENDIF,
+            next=encode_into(p,d,enc,out,32*d*j,0)
+        IN product_rows(rho,noise_seed,k,v,enc,j+1,next)
+      ENDIF ENDIF MEASURE 4-j
+
+  encode_secret(v: vec,k: rank,out: bytestring,j: upto(4)): RECURSIVE fixed(out`length) =
+    IF j>=k THEN out ELSE encode_secret(v,k,encode_into(v(j),12,FALSE,out,384*j,0),j+1)
+    ENDIF MEASURE 4-j
+  % Section 6.1 includes the parameter-set domain separator in G(d||k).
+  keys: TYPE = [# ok: bool, ek: bytestring, dk: bytestring #]
+  no_keys: keys = (# ok:=FALSE,ek:=zeros(0),dk:=zeros(0) #)
+  keygen_internal(k: rank,d,z: fixed(32)): keys =
+    LET g=output(finish_sha3(absorb_byte(absorb(start(72),d),k)),64),
+        rho=portion(g,0,32), sigma=portion(g,32,32), s=noise_vector(sigma,k,0,zero_vec),
+        ek0=copy_octets(zeros(ek_size(k)),384*k,rho,0),
+        t=product_rows(rho,sigma,k,s,FALSE,0,ek0)
+    IN IF NOT t`ok THEN no_keys ELSE
+      LET dk0=encode_secret(s,k,zeros(dk_size(k)),0),
+          dk1=copy_octets(dk0,384*k,t`value,0),
+          dk2=copy_octets(dk1,768*k+32,sha3_256(t`value),0)
+      IN (# ok:=TRUE,ek:=t`value,dk:=copy_octets(dk2,768*k+64,z,0) #)
+    ENDIF
+
+  % Compute the dot product with a serialized vector. Decryption first
+  % decompresses and transforms the ciphertext polynomials into the NTT domain.
+  dot_encoded(m: bytestring,k: rank,d: width,from_ct: bool,v: vec,j: upto(4),
+              sum: polynomial): RECURSIVE polynomial =
+    IF j>=k THEN sum ELSE
+      LET p=decode(m,32*d*j,d,from_ct),
+          t=IF from_ct THEN ntt(p) ELSE p ENDIF
+      IN dot_encoded(m,k,d,from_ct,v,j+1,add(sum,multiply_ntts(t,v(j))))
+    ENDIF MEASURE 4-j
+  encrypt(k: rank,ek: bytestring,m,r: fixed(32)): sized_result =
+    LET rho=portion(ek,384*k,32), y=noise_vector(r,k,0,zero_vec),
+        u=product_rows(rho,r,k,y,TRUE,0,zeros(ct_size(k)))
+    IN IF NOT u`ok THEN failure ELSE
+      LET v=intt(dot_encoded(ek,k,12,FALSE,y,0,zero_poly)),
+          p=add(add(v,noise(r,2*k,2)),decode(m,0,1,TRUE))
+      IN (# ok:=TRUE,value:=encode_into(p,dv(k),TRUE,u`value,32*du(k)*k,0) #)
+    ENDIF
+  decode_secret(dk: bytestring,k: rank,j: upto(4),v: vec): RECURSIVE vec =
+    IF j>=k THEN v ELSE
+      decode_secret(dk,k,j+1,v WITH [(j):=decode(dk,384*j,12,FALSE)])
+    ENDIF MEASURE 4-j
+  decrypt(k: rank,dk,ct: bytestring): fixed(32) =
+    LET s=decode_secret(dk,k,0,zero_vec),
+        u=intt(dot_encoded(ct,k,du(k),TRUE,s,0,zero_poly)),
+        v=decode(ct,32*du(k)*k,dv(k),TRUE)
+    IN encode_into(subtract(v,u),1,TRUE,zeros(32),0,0)
+
+  % Section 7.2. The modulus check is applied to the encapsulation key.
+  valid_ek(k: rank,ek: bytestring): bool =
+    ek`length=ek_size(k) AND canonical_rows(ek,k,0)
+  encapsulation: TYPE = [# ok: bool, ct: bytestring, secret: bytestring #]
+  no_encapsulation: encapsulation = (# ok:=FALSE,ct:=zeros(0),secret:=zeros(0) #)
+  hash_pair(m,h: fixed(32)): fixed(64) =
+    output(finish_sha3(absorb(absorb(start(72),m),h)),64)
+  encaps_internal(k: rank,ek: bytestring,m: fixed(32)): encapsulation =
+    IF NOT valid_ek(k,ek) THEN no_encapsulation ELSE
+      LET kr=hash_pair(m,sha3_256(ek)), c=encrypt(k,ek,m,portion(kr,32,32))
+      IN IF c`ok THEN (# ok:=TRUE, ct:=c`value, secret:=portion(kr,0,32) #)
+         ELSE no_encapsulation ENDIF ENDIF
+
+  % Section 7.3. Hash the embedded ek and compare it with the stored hash.
+  % Algorithm 18 compares re-encryptions over the entire ciphertext and
+  % selects K or J(z||c). The result does not expose this comparison.
+  valid_dk(k: rank,dk: bytestring): bool =
+    dk`length=dk_size(k) AND
+    sha3_256(portion(dk,384*k,ek_size(k)))=portion(dk,768*k+32,32)
+  differences(a,b: bytestring,i: upto(a`length),v: uint8): RECURSIVE uint8 =
+    IF i=a`length THEN v ELSE
+      differences(a,b,i+1,u8or(v,u8xor(a`seq(i),at(b,i)))) ENDIF MEASURE a`length-i
+  select_bytes(good,bad,out: fixed(32),mask: uint8,i: upto(32)): RECURSIVE fixed(32) =
+    IF i=32 THEN out ELSE
+      LET v=u8or(u8and(mask,good`seq(i)),u8and(u8not(mask),bad`seq(i)))
+      IN select_bytes(good,bad,out WITH [`seq(i):=v],mask,i+1)
+    ENDIF MEASURE 32-i
+  select_key(good,bad: fixed(32),diff: uint8): fixed(32) =
+    LET mask: uint8=IF diff=0 THEN 255 ELSE 0 ENDIF IN select_bytes(good,bad,zeros(32),mask,0)
+  decaps(k: rank,dk,ct: bytestring): sized_result =
+    IF ct`length/=ct_size(k) OR NOT valid_dk(k,dk) THEN failure ELSE
+      LET ek=portion(dk,384*k,ek_size(k)), h=portion(dk,768*k+32,32),
+          z=portion(dk,768*k+64,32), m=decrypt(k,dk,ct), kr=hash_pair(m,h),
+          fallback=output(finish_shake(absorb(absorb(start(136),z),ct)),32),
+          c=encrypt(k,ek,m,portion(kr,32,32))
+      IN IF c`ok THEN
+           (# ok:=TRUE, value:=select_key(portion(kr,0,32),fallback,differences(ct,c`value,0,0)) #)
+         ELSE failure ENDIF ENDIF
+END mlkem

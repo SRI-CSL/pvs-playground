@@ -1,0 +1,62 @@
+% SP 800-208 Tables 10–17 and RFC 8391 Algorithms 13, 14, 15, 17.
+xmss: THEORY
+BEGIN
+  IMPORTING xmss_wots
+  xmss_params: TYPE = [# ok,multi: bool,s: suite,h: subrange(5,20),layers: subrange(1,12),
+                         total: subrange(10,60) #]
+  invalid: xmss_params = (# ok:=FALSE,multi:=FALSE,s:=0,h:=10,layers:=1,total:=10 #)
+  params(multi: bool,oid: uint32): xmss_params =
+    IF NOT multi THEN
+      IF oid=0 OR (oid>3 AND oid<13) OR oid>21 THEN invalid ELSE
+        LET s: suite=IF oid<=3 THEN 0 ELSIF oid<=15 THEN 1 ELSIF oid<=18 THEN 2 ELSE 3 ENDIF,
+            i: below(3)=nrem(oid-1,3),h: subrange(10,20)=IF i=0 THEN 10 ELSIF i=1 THEN 16 ELSE 20 ENDIF
+        IN (# ok:=TRUE,multi:=FALSE,s:=s,h:=h,layers:=1,total:=h #) ENDIF
+    ELSIF oid=0 OR (oid>8 AND oid<33) OR oid>56 THEN invalid ELSE
+      LET s: suite=IF oid<=8 THEN 0 ELSIF oid<=40 THEN 1 ELSIF oid<=48 THEN 2 ELSE 3 ENDIF,
+          i: below(8)=nrem(oid-1,8),
+          ht: subrange(10,60)=IF i<2 THEN 20 ELSIF i<5 THEN 40 ELSE 60 ENDIF,
+          h: subrange(5,20)=COND i=0 OR i=3 OR i=6 -> 10,i=2 OR i=5 -> 20,ELSE -> 5 ENDCOND,
+          layers: subrange(1,12)=COND i=0 OR i=2 -> 2,i=1 OR i=3 -> 4,
+                                     i=4 -> 8,i=5 -> 3,i=6 -> 6,ELSE -> 12 ENDCOND
+      IN (# ok:=TRUE,multi:=TRUE,s:=s,h:=h,layers:=layers,total:=ht #) ENDIF
+  idxbytes(p: xmss_params): subrange(2,8) = IF p`multi THEN u8div(p`total+7,8) ELSE 4 ENDIF
+  siglen(p: xmss_params): uint32 =
+    idxbytes(p)+digest_len(p`s)*(1+p`layers*len_wots(p`s)+p`total)
+  read_index(m: bytestring,n: subrange(2,8),i: upto(8),a: uint64): RECURSIVE uint64 =
+    IF i>=n THEN a ELSE read_index(m,n,i+1,u64or(u64lshift(a,8),get(m,i))) ENDIF MEASURE 8-i
+  leaf_index(p: xmss_params,idx: uint64): uint32 =
+    LET low=load_be32(be_byte64(idx,4),be_byte64(idx,5),be_byte64(idx,6),be_byte64(idx,7))
+    IN u32and(low,u32rshift(0xffffffff,32-p`h))
+  zero_addr(layer: below(12),tree: uint64,leaf: uint32): address =
+    (# layer:=layer,tree:=tree,kind:=0,leaf:=leaf,first:=0,second:=0 #)
+  ascend_x(s: suite,seed: octets_of(digest_len(s)),a: address,h: subrange(5,20),
+           idx: uint32,auth: bytestring,v: octets_of(digest_len(s)),i: upto(20)):
+      RECURSIVE octets_of(digest_len(s)) =
+    IF i>=h THEN v ELSE
+      LET parent=u32rshift(idx,1),b=a WITH [`kind:=2,`leaf:=0,`first:=i,`second:=parent],
+          sib=part(auth,i*digest_len(s),digest_len(s)),
+          node=IF nrem(idx,2)=0 THEN rand_hash(s,seed,b,v,sib) ELSE rand_hash(s,seed,b,sib,v) ENDIF
+      IN ascend_x(s,seed,a,h,parent,auth,node,i+1) ENDIF MEASURE 20-i
+  message_hash(p: xmss_params,r,root: octets_of(digest_len(p`s)),idx: uint64,
+               m: message_input): octets_of(digest_len(p`s)) =
+    hashkey(p`s,2,join_octets(join_octets(r,root),to_bytes(idx,digest_len(p`s))),m)
+  verify_layers(p: xmss_params,seed: octets_of(digest_len(p`s)),sig: bytestring,off: upto(40000),
+                idx: uint64,msg: octets_of(digest_len(p`s)),layer: upto(12)):
+      RECURSIVE octets_of(digest_len(p`s)) =
+    IF layer>=p`layers THEN msg ELSE
+      LET s=p`s,n=digest_len(s),tree=u64rshift(idx,p`h),
+          leaf: uint32=leaf_index(p,idx),a=zero_addr(layer,tree,leaf),
+          wlen: uint16=n*len_wots(s),alen: uint16=n*p`h,enc=part(sig,off,wlen),
+          auth=part(sig,off+wlen,alen),
+          ws=wots(s,fill_octets(n,0),seed,a,wdigits(s,msg),enc,2),
+          v=ltree(s,seed,a,ws,len_wots(s),0),
+          root=ascend_x(s,seed,a,p`h,leaf,auth,v,0),next: uint32=off+wlen+alen
+      IN IF next>40000 THEN fill_octets(n,0) ELSE verify_layers(p,seed,sig,next,tree,root,layer+1) ENDIF
+    ENDIF MEASURE 12-layer
+  verify_xmss(multi: bool,pk,sig: bytestring,m: message_input): bool =
+    LET p=params(multi,read_word(pk,0)),s=p`s,n=digest_len(s),ib=idxbytes(p)
+    IN IF NOT p`ok OR pk`length/=4+2*n OR sig`length/=siglen(p) THEN FALSE ELSE
+      LET idx=read_index(sig,ib,0,0),root=part(pk,4,n),seed=part(pk,4+n,n),r=part(sig,ib,n)
+      IN idx<u64lshift(1,p`total) AND root=verify_layers(p,seed,sig,ib+n,idx,message_hash(p,r,root,idx,m),0)
+    ENDIF
+END xmss

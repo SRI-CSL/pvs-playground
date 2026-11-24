@@ -1,0 +1,33 @@
+% SP 800-38A Addendum, sections 2--4. Use ordinary CBC on the preceding
+% full blocks. Pass the last chaining value (the IV for a two-block message)
+% to encrypt_tail or decrypt_tail. A single full block uses ordinary CBC.
+cbc_cs: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING aes_modes, crypto_prelude@crypto_bit_splice
+  variant: TYPE = {cs1, cs2, cs3}
+  tail: TYPE = [# first, second: block, first_bits, second_bits: width #]
+  swapped?(v:variant,n:width): bool = v=cs3 OR (v=cs2 AND n<128)
+
+  % Each output field is left-aligned. Concatenate the indicated bits
+  % of first and second to obtain the final ciphertext segment on the wire.
+  encrypt_tail(k:mode_key,chain,a,b:block,n:width,v:variant): tail =
+    LET c1 = cbc_encrypt(k,chain,a), c2 = cbc_encrypt(k,c1,take_bits(b,n)),
+        short = take_bits(c1,n) IN
+    IF swapped?(v,n)
+    THEN (# first:=c2, second:=short, first_bits:=128, second_bits:=n #)
+    ELSE (# first:=short, second:=c2, first_bits:=n, second_bits:=128 #)
+    ENDIF
+
+  % n is the number of meaningful bits of the final plaintext block.
+  decrypt_tail(k:mode_key,chain,first,second:block,n:width,v:variant): tail =
+    LET short = IF swapped?(v,n) THEN second ELSE first ENDIF,
+        c2 = IF swapped?(v,n) THEN first ELSE second ENDIF,
+        z = ecb_decrypt(k,c2),
+        c1 = splice(short,z,n)
+    IN (# first := cbc_decrypt(k,chain,c1), second := take_bits(byvXOR(z,c1),n),
+          first_bits:=128, second_bits:=n #)
+
+  ciphertext_bits: LEMMA FORALL(k:mode_key,iv,a,b:block,n:width,v:variant):
+    LET x=encrypt_tail(k,iv,a,b,n,v) IN x`first_bits + x`second_bits = 128+n
+END cbc_cs

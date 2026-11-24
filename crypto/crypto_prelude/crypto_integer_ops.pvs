@@ -1,0 +1,81 @@
+% Fixed-width unsigned operations for key generation. Products retain the
+% requested number of least-significant words. Division returns both fields.
+crypto_integer_ops: THEORY
+BEGIN
+  IMPORTING crypto_montgomery
+  resize_words(a: limbs,n: limb_count): words_of(n) =
+    (# len:=n,word:=LAMBDA (i:below(n)): IF i<a`len THEN a`word(i) ELSE 0 ENDIF #)
+  is_even(a: limbs): bool = u32and(a`word(0),1)=0
+  half_words(a: limbs,carry: bool): words_of(a`len) =
+    (# len:=a`len,word:=LAMBDA (i:below(a`len)):
+       LET high: uint32=IF i+1<a`len THEN u32lshift(a`word(i+1),31)
+                          ELSIF carry THEN 0x80000000 ELSE 0 ENDIF
+       IN u32or(u32rshift(a`word(i),1),high) #)
+  double_words(a: limbs): words_of(a`len) = add_prefix(a,a,zero_words(a`len),0,FALSE)`value
+  shifted_left(a: limbs,n: uint16): RECURSIVE words_of(a`len) =
+    IF n=0 THEN a ELSE shifted_left(double_words(a),n-1) ENDIF MEASURE n
+  odd_part(a: limbs,fuel: uint16): RECURSIVE words_of(a`len) =
+    IF fuel=0 OR NOT is_even(a) THEN a ELSE odd_part(half_words(a,FALSE),fuel-1) ENDIF MEASURE fuel
+  trailing(a: limbs,i: {j:uint16 | j<=32*a`len}): RECURSIVE {j:uint16 | j<=32*a`len} =
+    IF i=32*a`len OR bit_word(a,i) THEN i ELSE trailing(a,i+1) ENDIF MEASURE 32*a`len-i
+  product_row(d: uint32,b: limbs,out: limbs,start: upto(512),j: upto(b`len),carry: uint32):
+      RECURSIVE words_of(out`len) =
+    LET pos: uint16=start+j IN
+    IF pos>=out`len THEN out ELSIF j=b`len THEN out WITH [`word(pos):=carry] ELSE
+      LET v=u64plus(u64times(d,b`word(j)),u64plus(out`word(pos),carry))
+      IN product_row(d,b,out WITH [`word(pos):=lo32(v)],start,j+1,hi32(v)) ENDIF MEASURE b`len-j
+  product_rows(a,b,out: limbs,i: upto(a`len)): RECURSIVE words_of(out`len) =
+    IF i=a`len THEN out ELSE product_rows(a,b,product_row(a`word(i),b,out,i,0,0),i+1)
+    ENDIF MEASURE a`len-i
+  product_words(a,b: limbs,n: limb_count): words_of(n) = product_rows(a,b,zero_words(n),0)
+  set_one(a: limbs,pos:{i:uint16 | i<32*a`len}): words_of(a`len) =
+    LET w: uint16=u16rshift(pos,5) IN
+    IF w>=a`len THEN a ELSE a WITH [`word(w):=u32or(a`word(w),u32lshift(1,nrem(pos,32)))] ENDIF
+  division(n: limb_count): TYPE = [# q,r: words_of(n) #]
+  divide_bits(a: limbs,d,q,r: words_of(a`len),bits:{i:uint16 | i<=32*a`len}):
+      RECURSIVE division(a`len) =
+    IF bits=0 THEN (# q:=q,r:=r #) ELSE
+      LET doubled=add_prefix(r,r,zero_words(a`len),0,FALSE),
+          rem0=doubled`value,
+          rem1=IF bit_word(a,bits-1) THEN rem0 WITH [`word(0):=u32or(rem0`word(0),1)] ELSE rem0 ENDIF,
+          subtract=doubled`carry OR ge_words(rem1,d)
+      IN divide_bits(a,d,IF subtract THEN set_one(q,bits-1) ELSE q ENDIF,
+                     IF subtract THEN sub_words(rem1,d) ELSE rem1 ENDIF,bits-1) ENDIF MEASURE bits
+  divide_words(a: limbs,d: words_of(a`len)): division(a`len) =
+    divide_bits(a,d,zero_words(a`len),zero_words(a`len),significant_bits(a,32*a`len))
+  % Binary GCD. Each odd subtraction followed by a halving removes at least
+  % one bit from the larger operand. Zero has a separate terminating case.
+  gcd_odd(a: limbs,b: words_of(a`len),fuel: uint32): RECURSIVE words_of(a`len) =
+    IF a=b OR b=zero_words(a`len) THEN a ELSIF a=zero_words(a`len) THEN b
+    ELSIF fuel=0 THEN zero_words(a`len)
+    ELSIF is_even(a) THEN gcd_odd(half_words(a,FALSE),b,fuel-1)
+    ELSIF is_even(b) THEN gcd_odd(a,half_words(b,FALSE),fuel-1)
+    ELSIF ge_words(a,b) THEN gcd_odd(sub_words(a,b),b,fuel-1)
+    ELSE gcd_odd(a,sub_words(b,a),fuel-1) ENDIF MEASURE fuel
+  gcd_words(a: limbs,b: words_of(a`len)): words_of(a`len) =
+    IF a=zero_words(a`len) THEN b ELSIF b=zero_words(a`len) THEN a ELSE
+      LET t=trailing(a,0),u=trailing(b,0),common: uint16=IF t<u THEN t ELSE u ENDIF
+      IN shifted_left(gcd_odd(odd_part(a,t),odd_part(b,u),128*a`len+2),common) ENDIF
+  half_mod(x: limbs,m: words_of(x`len)): words_of(x`len) =
+    IF is_even(x) THEN half_words(x,FALSE) ELSE
+      LET sum=add_prefix(x,m,zero_words(x`len),0,FALSE) IN half_words(sum`value,sum`carry) ENDIF
+  inverse_odd(u: limbs,v,m,x,y: words_of(u`len),fuel:uint32): RECURSIVE words_of(u`len) =
+    IF u=one_words(u`len) THEN x ELSIF v=one_words(u`len) THEN y
+    ELSIF fuel=0 OR u=zero_words(u`len) OR v=zero_words(u`len) THEN zero_words(u`len)
+    ELSIF is_even(u) THEN inverse_odd(half_words(u,FALSE),v,m,half_mod(x,m),y,fuel-1)
+    ELSIF is_even(v) THEN inverse_odd(u,half_words(v,FALSE),m,x,half_mod(y,m),fuel-1)
+    ELSIF ge_words(u,v) THEN inverse_odd(sub_words(u,v),v,m,sub_mod(x,y,m),y,fuel-1)
+    ELSE inverse_odd(u,sub_words(v,u),m,x,sub_mod(y,x,m),fuel-1) ENDIF MEASURE fuel
+  invert_mod_odd(a: limbs,m: words_of(a`len)): words_of(a`len) =
+    inverse_odd(a,m,m,one_words(a`len),zero_words(a`len),128*a`len+2)
+  divide_zero_bits: LEMMA FORALL(a:limbs,d,q,r:words_of(a`len)):
+    divide_bits(a,d,q,r,0)=(# q:=q,r:=r #)
+  plus_words(a:limbs,b:words_of(a`len)): words_of(a`len) = add_prefix(a,b,zero_words(a`len),0,FALSE)`value
+  increment(a:limbs,d:uint32): words_of(a`len) = plus_words(a,zero_words(a`len) WITH [`word(0):=d])
+  ceiling_divide(a:limbs,b:words_of(a`len)): words_of(a`len) =
+    LET v=divide_words(a,b) IN IF v`r=zero_words(a`len) THEN v`q ELSE increment(v`q,1) ENDIF
+  top_bit(a:limbs,bits:{i:uint16 | i>0 AND i<32*a`len}): words_of(a`len) =
+    LET w:uint16=ndiv(bits-1,32),b:below(32)=nrem(bits-1,32),high=u32lshift(1,b) IN
+    (# len:=a`len,word:=LAMBDA(i:below(a`len)): IF i<w THEN a`word(i) ELSIF i>w THEN 0 ELSE
+      u32or(high,u32and(a`word(i),u32minus(high,1))) ENDIF #)
+END crypto_integer_ops

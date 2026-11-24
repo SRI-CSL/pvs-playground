@@ -1,0 +1,41 @@
+% SP 800-56Ar3 §§5.6.2.3.1--2, 5.7.1.1, 5.7.2.1. Parameters are supplied
+% by an assured domain. ff_groups supplies the standardized safe-prime sets.
+ff_agreement: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_associate
+  domain: TYPE = [# p:limbs,q,g:words_of(p`len) #]
+  integer_of(d:domain): TYPE = words_of(d`p`len)
+  result: TYPE = [# ok:bool,z:bytestring #]
+  fail: result = (# ok:=FALSE,z:=fill_octets(0,0) #)
+  exponent_ok(d:domain,x:integer_of(d)): bool =
+    x/=zero_words(d`p`len) AND NOT ge_words(x,d`q)
+  public_range(d:domain,y:integer_of(d)): bool =
+    LET one=one_words(d`p`len) IN ge_words(y,one) AND y/=one AND NOT ge_words(y,sub_words(d`p,one))
+  domain_shape(d:domain): bool =
+    LET one=one_words(d`p`len) IN u32and(d`p`word(0),1)=1 AND u32and(d`q`word(0),1)=1
+      AND ge_words(d`q,one) AND d`q/=one AND NOT ge_words(d`q,d`p) AND public_range(d,d`g)
+  % Full validation additionally checks membership in the order-q subgroup.
+  public_valid(d:domain,y:integer_of(d)): bool =
+    domain_shape(d) AND public_range(d,y) AND mont_power(y,d`q,d`p)=one_words(d`p`len)
+  encode_secret(d:domain,x:integer_of(d)): result =
+    IF public_range(d,x) THEN
+      (# ok:=TRUE,z:=to_bytes(x,u16div(significant_bits(d`p,32*d`p`len)+7,8),TRUE) #)
+    ELSE fail ENDIF
+  dh(d:domain,x,y:integer_of(d)): result =
+    IF exponent_ok(d,x) AND public_valid(d,y) THEN encode_secret(d,mont_power(y,x,d`p))
+    ELSE fail ENDIF
+
+  % MQV2 uses distinct static and ephemeral pairs. In MQV1 the recipient's
+  % static pair serves in both roles. Derive the local second public key from
+  % its private key to bind the associate value to the correct key pair.
+  mqv(d:domain,x,r,y,t:integer_of(d)): result =
+    IF NOT exponent_ok(d,x) OR NOT exponent_ok(d,r) OR NOT public_valid(d,y) OR NOT public_valid(d,t)
+    THEN fail ELSE
+      LET ta=mont_power(d`g,r,d`p),s=add_mod(r,mul_mod(x,associate(ta,d`q),d`q),d`q),
+          v=mul_mod(t,mont_power(y,associate(t,d`q),d`p),d`p)
+      IN encode_secret(d,mont_power(v,s,d`p))
+    ENDIF
+  rejected_peer: LEMMA FORALL(d:domain,x,y:integer_of(d)):
+    NOT public_valid(d,y) IMPLIES NOT dh(d,x,y)`ok
+END ff_agreement

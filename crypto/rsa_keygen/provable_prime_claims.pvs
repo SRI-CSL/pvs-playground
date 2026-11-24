@@ -1,0 +1,20 @@
+% FIPS 186-5 B.6, B.9 and B.10 correctness targets.
+provable_prime_claims: THEORY
+BEGIN
+  IMPORTING rsa_auxiliary,rsa_key_claims
+  unsigned_value(x:limbs):nat=num(to_bytes(x,4*x`len,TRUE))
+  prime_integer(n:nat):bool = n>=2 AND (FORALL(d:posnat):multiple_of(n,d) IMPLIES d=1 OR d=n)
+  shawe_taylor_sound: THEOREM FORALL(h:fixed_hash,b:st_bits,s:seed_string):
+    LET r=st_prime(h,b,s),x=unsigned_value(r`value) IN
+    r`ok IMPLIES prime_integer(x) AND exp2(b-1)<=x AND x<exp2(b)
+  generated_factors_are_prime: THEOREM FORALL(p:strength_profile,h:fixed_hash,e,s:bytestring,sz:lengths):
+    LET k=from_provable_seed(p,h,e,s,sz) IN
+    k`ok IMPLIES prime_integer(num(k`p)) AND prime_integer(num(k`q))
+  auxiliary_congruences: THEOREM FORALL(p:strength_profile,e:bytestring,
+    r1,r2:words_of(st_width(factor_bits(p))),m:residue,src:sources,c:cursors,strong:bool):
+    LET a=unsigned_value(r1),b=unsigned_value(r2),res=from_aux(p,e,r1,r2,m,src,c,strong),
+        x=unsigned_value(res`v) IN
+    prime_integer(a) AND prime_integer(b) AND a>2 AND b>2 AND a/=b AND
+    8*a*b<exp2(factor_bits(p)) AND res`ok IMPLIES multiple_of(x-1,a) AND
+      multiple_of(x+1,b) AND (m=0 OR multiple_of(x-m,8))
+END provable_prime_claims

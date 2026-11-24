@@ -1,0 +1,63 @@
+% NIST SP 800-38C §6, including the octet formatting in Appendix A.
+ccm: THEORY
+BEGIN
+  IMPORTING aes_modes, crypto_prelude@crypto_block_io, crypto_prelude@crypto_words
+  ccm_nonce: TYPE = {b: bytestring | 7 <= b`length AND b`length <= 13}
+  ccm_tag_size: TYPE = {s: uint8 | s=4 OR s=6 OR s=8 OR s=10 OR s=12 OR s=14 OR s=16}
+  % The Prelude bounds a bytestring to fewer than 2^28 octets. Only q=2 or 3
+  % can further constrain that length.
+  fits(n: ccm_nonce, len: index): bool =
+    IF n`length=13 THEN len<65536 ELSIF n`length=12 THEN len<16777216 ELSE TRUE ENDIF
+  qflag(n: ccm_nonce): uint8 = 14-n`length
+  control(flags: uint8, n: ccm_nonce, value: uint32): block =
+    LAMBDA (j: upto(15)):
+      IF j=0 THEN flags ELSIF j<=n`length THEN n`seq(j-1)
+      ELSIF j<12 THEN 0 ELSE be_byte32(value,j-12) ENDIF
+  first_block(n: ccm_nonce,p,a: index,t: ccm_tag_size): block =
+    LET tagfield: uint8 = u8lshift(u8div(t-2,2),3),
+        adata: uint8 = IF a=0 THEN 0 ELSE 64 ENDIF IN
+      control(u8plus(adata,u8plus(tagfield,qflag(n))),n,p)
+  % Encoded associated-data length occupies 2 or 6 octets for Prelude buffers.
+  prefix_length(a: index): uint8 = IF a<65280 THEN 2 ELSE 6 ENDIF
+  aad_byte(a: bytestring,i: uint32): uint8 =
+    LET p: uint8 = prefix_length(a`length) IN
+    IF i<p THEN
+      IF p=2 THEN IF i=0 THEN be_byte32(a`length,2) ELSE be_byte32(a`length,3) ENDIF
+      ELSIF i=0 THEN 255 ELSIF i=1 THEN 254
+      ELSIF i<6 THEN be_byte32(a`length,i-2) ELSE 0 ENDIF
+    ELSIF i-p<a`length THEN a`seq(i-p) ELSE 0 ENDIF
+  aad_block(a: bytestring,base: uint32): block =
+    LAMBDA (j: upto(15)): aad_byte(a,u32plus(base,j))
+  mac_aad(k: mode_key, y: block,a: bytestring,i: uint32): RECURSIVE block =
+    IF a`length=0 OR i>=a`length+prefix_length(a`length) THEN y
+    ELSE mac_aad(k,cbc_encrypt(k,y,aad_block(a,i)),a,i+16)
+    ENDIF MEASURE IF i>=a`length+prefix_length(a`length) THEN 0
+                  ELSE a`length+prefix_length(a`length)-i ENDIF
+  mac_payload(k: mode_key,y: block,p: bytestring,i: upto(p`length)): RECURSIVE block =
+    IF i=p`length THEN y ELSE mac_payload(k,cbc_encrypt(k,y,read_block(p,i)),p,next_block(p`length,i))
+    ENDIF MEASURE p`length-i
+  ccm_tag(k: mode_key,n: ccm_nonce,a,p: bytestring,t: ccm_tag_size): octets_of(t) =
+    LET y=ecb_encrypt(k,first_block(n,p`length,a`length,t)),
+        z=mac_payload(k,mac_aad(k,y,a,0),p,0),
+        s0=ecb_encrypt(k,control(qflag(n),n,0)) IN block_bytes(byvXOR(z,s0),t)
+  payload_ctr(k: mode_key,n: ccm_nonce,p: bytestring,i: upto(p`length),ctr: uint32):
+      RECURSIVE octets_of(p`length) =
+    IF i=p`length THEN p ELSE
+      LET s=ecb_encrypt(k,control(qflag(n),n,ctr)),
+          next=write_block(p,i,byvXOR(s,read_block(p,i))) IN
+        payload_ctr(k,n,next,next_block(p`length,i),u32plus(ctr,1))
+    ENDIF MEASURE p`length-i
+  sealed: TYPE = [# ciphertext,auth: bytestring #]
+  opened: TYPE = [# valid: bool, plaintext: bytestring #]
+  invalid: opened = (# valid:=FALSE, plaintext:=fill_octets(0,0) #)
+  encrypt(k: mode_key,n: ccm_nonce,a: bytestring,p: {v: bytestring | fits(n,v`length)},t: ccm_tag_size): sealed =
+    (# ciphertext:=payload_ctr(k,n,p,0,1), auth:=ccm_tag(k,n,a,p,t) #)
+  decrypt(k: mode_key,n: ccm_nonce,a: bytestring,input: sealed,t: ccm_tag_size): opened =
+    IF input`auth`length/=t OR NOT fits(n,input`ciphertext`length) THEN invalid ELSE
+      LET p=payload_ctr(k,n,input`ciphertext,0,1) IN
+        IF strcmp(input`auth,ccm_tag(k,n,a,p,t))=0 THEN (# valid:=TRUE, plaintext:=p #)
+        ELSE invalid ENDIF
+    ENDIF
+  invalid_size_rejected: LEMMA FORALL (k: mode_key,n: ccm_nonce,a: bytestring,input: sealed,t: ccm_tag_size):
+    input`auth`length/=t IMPLIES decrypt(k,n,a,input,t)=invalid
+END ccm

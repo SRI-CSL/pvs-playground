@@ -1,0 +1,14 @@
+% SP 800-90B §3.1.5.1.1 and SP 800-90C §3.2.1.3. For CBC-MAC in
+% CTR_DRBG instantiation/reseeding the calling profile must also apply the
+% restrictions on personalization and additional input in §3.2.1.3.
+aes_conditioning: THEORY
+BEGIN
+  kdf: LIBRARY = "../kdf"
+  IMPORTING ctr_drbg,kdf@cmac_kdf
+  aligned_entropy: TYPE = {x:bytestring | x`length>0 AND nrem(x`length,16)=0}
+  cbc_condition(k:mode_key,x:aligned_entropy):octets_of(16) = block_bytes(bcc(k,zero_block,x,0),16)
+  cmac_condition(k:mode_key,x:bytestring):octets_of(16) = cmac_bytes(k,x)
+  internal_df(t:aes_size,x:df_data):octets_of(nk(t)) = derive_octets(t,x,nk(t))
+  external_df(t:aes_size,x:df_data):octets_of(16) = derive_octets(t,x,16)
+  aes128_df_agreement: LEMMA FORALL(x:df_data): external_df(0,x)=internal_df(0,x)
+END aes_conditioning

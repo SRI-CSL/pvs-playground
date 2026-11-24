@@ -1,0 +1,30 @@
+pol_modulo[T: TYPE, +, *: [T, T -> T], zero, one:T, P: sequence[T]]: THEORY
+  BEGIN
+
+  ASSUMING IMPORTING algebra@field_def[T, +, *, zero, one]
+    field: ASSUMPTION field?(fullset[T])
+    	   IMPORTING polynomials_division[T, +, *, zero, one]
+    pol: ASSUMPTION polynomials?(P)
+    nonconst_pol: ASSUMPTION nonconst_polynomials?(P)
+  ENDASSUMING
+
+  IMPORTING polynomials_division[T, +, *, zero, one]
+
+  A, B, C: VAR mod(P)
+
+  ;++(A, B): mod(P) = prem(A + B, P)
+  ;**(A, B): mod(P) = prem(A * B, P)
+
+  IMPORTING ring_def[mod(P), ++, **, pol_zero]
+  IMPORTING ring_with_one_def[mod(P), ++, **, pol_zero, pol_one]
+
+  modP: NONEMPTY_TYPE = mod(P) 
+
+  pol_modulo_ring: LEMMA ring?(fullset[modP])
+
+  pol_modulo_commutative_ring_with_one: LEMMA commutative_ring_with_one?(fullset[modP])
+
+  IMPORTING commutative_ring_with_one[mod(P), ++, **, pol_zero, pol_one]
+  
+
+  END pol_modulo

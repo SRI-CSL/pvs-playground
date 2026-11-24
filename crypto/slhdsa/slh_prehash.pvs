@@ -1,0 +1,19 @@
+% FIPS 205 Algorithms 23 and 25. The prehash is domain-separated from pure SLH-DSA.
+slh_prehash: THEORY
+BEGIN
+  prehash: LIBRARY = "../crypto_prelude/prehash"
+  IMPORTING slh_sign, prehash@crypto_prehash
+  oid_seq(id: hash_id): ARRAY[below(11) -> uint8] =
+    LAMBDA (j: upto(10)): IF j<10 THEN oid_prefix(j) ELSE id ENDIF
+  encoded(id: hash_id,ctx: context_t,m: bytestring,tail: uint8,used: below(8)): bytestring =
+    LET ph=pre_digest(id,m,tail,used), clen=ctx`length,
+        out=fill_octets(13+clen+ph`length,0),
+        head=out WITH [`seq(0):=1, `seq(1):=clen],
+        a=put(head,2,ctx), b=put(a,2+clen,(# length:=11,seq:=oid_seq(id) #)) IN
+      put(b,13+clen,ph)
+  hash_verify(p: profile,pk,sig,ctx,m: bytestring,id: hash_id,tail: uint8,used: below(8)): bool =
+    IF ctx`length>255 THEN FALSE ELSE verify_internal(p,pk,sig,encoded(id,ctx,m,tail,used)) ENDIF
+  hash_sign(p: profile,key: private_key(p),opt: octets_of(node_bytes(p)),
+            ctx: context_t,m: bytestring,id: hash_id,tail: uint8,used: below(8)): bytestring =
+    sign_message(p,key,opt,fill_octets(0,0),encoded(id,ctx,m,tail,used),FALSE)
+END slh_prehash

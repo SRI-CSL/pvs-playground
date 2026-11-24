@@ -1,0 +1,11 @@
+% FIPS 186-5 §§7.3–7.7. Both claims use an accepted verification key.
+ed448_claims: THEORY
+BEGIN
+  IMPORTING ed448
+  accepted_seed(seed:key_bytes): bool =
+    LET p=decompress(public_key(seed)) IN p`valid AND valid_key(p`p)
+  pure_correct: THEOREM FORALL (seed:(accepted_seed),m:bytestring,c:ctx_bytes):
+    verify(public_key(seed),m,sign(seed,m,c),c)
+  prehash_correct: THEOREM FORALL (seed:(accepted_seed),m:bytestring,c:ctx_bytes):
+    verify_ph(public_key(seed),m,sign_ph(seed,m,c),c)
+END ed448_claims

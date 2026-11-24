@@ -1,0 +1,117 @@
+% FIPS 205, Table 1 and Algorithms 5 through 8. SHAKE and SHA2 instantiations (§11).
+slh_wots: THEORY
+BEGIN
+  sha3: LIBRARY = "../sha3"
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  sha2: LIBRARY = "../sha2"
+  IMPORTING sha3@keccak, sha2@sha2_stream, crypto_prelude@crypto_buffers
+  node_size: TYPE = {s: uint8 | s=16 OR s=24 OR s=32}
+  posn: TYPE = [# use_sha2: bool, layer: uint32, tree: uint64, leaf: uint32 #]
+  % All standardized tree indices fit the low 64 bits of the 96-bit ADRS field.
+  address: TYPE = [# loc: posn, kind: uint32, chain_or_height, hash_or_index: uint32 #]
+  addr(p: posn, kind, ch, hi: uint32): address =
+    (# loc := p, kind := kind, chain_or_height := ch, hash_or_index := hi #)
+  addr_byte(a: address,j: below(32)): uint8 =
+    IF j<4 THEN be_byte32(a`loc`layer,j) ELSIF j<8 THEN 0
+    ELSIF j<16 THEN be_byte64(a`loc`tree,j-8) ELSIF j<20 THEN be_byte32(a`kind,j-16)
+    ELSIF j<24 THEN be_byte32(a`loc`leaf,j-20)
+    ELSIF j<28 THEN be_byte32(a`chain_or_height,j-24)
+    ELSE be_byte32(a`hash_or_index,j-28) ENDIF
+  addr_octets(a: address): ARRAY[below(32) -> uint8] = LAMBDA (j: upto(31)): addr_byte(a,j)
+  % SHA2 omits leading zeroes in the layer, tree and type fields (§11.2).
+  compressed_address(a: address): octets_of(22) =
+    (# length:=22, seq:=LAMBDA (j: below(22)):
+      addr_byte(a,IF j=0 THEN 3 ELSIF j<=8 THEN j+7 ELSE j+10 ENDIF) #)
+  hash_context: DATATYPE
+    BEGIN
+      shake_state(sponge: absorbing): shake_state?
+      sha2_state(digest_state: stream): sha2_state?
+    END hash_context
+  feed(h: hash_context,x: bytestring): hash_context =
+    CASES h OF
+      shake_state(s): shake_state(absorb(s,x)),
+      sha2_state(s): sha2_state(stream_add(s,x))
+    ENDCASES
+  node_output(h: hash_context,n: node_size): octets_of(n) =
+    CASES h OF
+      shake_state(s): output(finish_shake(s),n),
+      sha2_state(s): stream_digest(s,n)
+    ENDCASES
+  domain_for(n: node_size,seed: octets_of(n),a: address,long_hash: bool): hash_context =
+    IF a`loc`use_sha2 THEN
+      LET wide=long_hash AND n>16, pad=fill_octets(block_width(wide)-n,0),
+          h=stream_add(stream_add(stream_start(wide),seed),pad) IN
+        sha2_state(stream_add(h,compressed_address(a)))
+    ELSE shake_state(absorb(absorb(start(136),seed),(# length:=32, seq:=addr_octets(a) #))) ENDIF
+  % The single-node F and PRF always use SHA-256. H and T_l use the
+  % parameter set's longer hash at the 192- and 256-bit levels.
+  domain(n: node_size,seed: octets_of(n),a: address): hash_context = domain_for(n,seed,a,TRUE)
+  thash(n: node_size,seed: octets_of(n),a: address,x: bytestring): octets_of(n) =
+    node_output(feed(domain_for(n,seed,a,FALSE),x),n)
+  hash_pair(n: node_size,seed: octets_of(n),a: address,x,y: octets_of(n)): octets_of(n) =
+    node_output(feed(feed(domain(n,seed,a),x),y),n)
+
+  % Chain uses an exclusive endpoint, so it omits the application at stop.
+  chain(n: node_size,seed: octets_of(n),p: posn,j: uint32,x: octets_of(n),
+        i: upto(15), stop: {s: upto(15) | i<=s}): RECURSIVE octets_of(n) =
+    IF i=stop THEN x ELSE
+      chain(n,seed,p,j,thash(n,seed,addr(p,0,j,i),x),i+1,stop)
+    ENDIF MEASURE stop-i
+  secret(n: node_size, sk,seed: octets_of(n),p: posn,j: uint32): octets_of(n) =
+    thash(n,seed,addr(p,5,j,0),sk)
+
+  nibble(b: uint8,high: bool): below(16) =
+    IF high THEN u8div(b,16) ELSE u8rem(b,16) ENDIF
+  msg_digit(n: node_size,m: octets_of(n),i: {v: uint8 | v<2*n}): below(16) =
+    nibble(m`seq(u8div(i,2)),u8rem(i,2)=0)
+  checksum(n: node_size,m: octets_of(n),i: {v: uint8 | v<=2*n}): RECURSIVE uint16 =
+    IF i=0 THEN 0 ELSE u16plus(checksum(n,m,i-1),15-msg_digit(n,m,i-1)) ENDIF
+    MEASURE i
+  wots_len(n: node_size): uint8 = 2*n+3
+  digit(n: node_size,m: octets_of(n),sum: uint16,j: below(wots_len(n))): below(16) =
+    IF j<2*n THEN msg_digit(n,m,j)
+    ELSIF j=2*n THEN u16rem(u16div(sum,256),16)
+    ELSIF j=2*n+1 THEN u16rem(u16div(sum,16),16) ELSE u16rem(sum,16) ENDIF
+
+  % A WOTS signature is len*n octets on the wire (35, 51, or 67 chains).
+  wots_sig(n: node_size): TYPE = octets_of(wots_len(n)*n)
+  put_node(n: node_size,sig: wots_sig(n),j: below(wots_len(n)),x: octets_of(n)): wots_sig(n) =
+    copy_octets(sig,j*n,x,0)
+  node_part(n: node_size,b: bytestring,base: {i: index | i+n<=b`length}):
+      ARRAY[below(n) -> uint8] = LAMBDA (k: below(n)): b`seq(base+k)
+  get_node(n: node_size,b: bytestring,base: {i: index | i+n<=b`length}): octets_of(n) =
+    (# length:=n, seq:=node_part(n,b,base) #)
+
+  sign_from(n: node_size,sk,seed,m: octets_of(n),p: posn,sum: uint16,
+            sig: wots_sig(n), j: upto(wots_len(n))): RECURSIVE wots_sig(n) =
+    IF j=wots_len(n) THEN sig ELSE
+      LET x=chain(n,seed,p,j,secret(n,sk,seed,p,j),0,digit(n,m,sum,j)) IN
+        sign_from(n,sk,seed,m,p,sum,put_node(n,sig,j,x),j+1)
+    ENDIF MEASURE wots_len(n)-j
+  wots_sign(n: node_size,sk,seed,m: octets_of(n),p: posn): wots_sig(n) =
+    sign_from(n,sk,seed,m,p,checksum(n,m,2*n),fill_octets(wots_len(n)*n,0),0)
+
+  % PK compression (WOTS_PK, address type 1) hashes the chain ends in order.
+  pk_from(n: node_size,seed,m: octets_of(n),p: posn,sum: uint16,
+          sig: wots_sig(n),h: hash_context,j: upto(wots_len(n))): RECURSIVE octets_of(n) =
+    IF j=wots_len(n) THEN node_output(h,n) ELSE
+      LET x=chain(n,seed,p,j,get_node(n,sig,j*n),digit(n,m,sum,j),15) IN
+        pk_from(n,seed,m,p,sum,sig,feed(h,x),j+1)
+    ENDIF MEASURE wots_len(n)-j
+  wots_recover(n: node_size,seed,m: octets_of(n),p: posn,sig: wots_sig(n)): octets_of(n) =
+    pk_from(n,seed,m,p,checksum(n,m,2*n),sig,domain(n,seed,addr(p,1,0,0)),0)
+  gen_from(n: node_size,sk,seed: octets_of(n),p: posn,h: hash_context,j: upto(wots_len(n))):
+      RECURSIVE octets_of(n) =
+    IF j=wots_len(n) THEN node_output(h,n) ELSE
+      LET x=chain(n,seed,p,j,secret(n,sk,seed,p,j),0,15) IN
+        gen_from(n,sk,seed,p,feed(h,x),j+1)
+    ENDIF MEASURE wots_len(n)-j
+  wots_pk(n: node_size,sk,seed: octets_of(n),p: posn): octets_of(n) =
+    gen_from(n,sk,seed,p,domain(n,seed,addr(p,1,0,0)),0)
+
+  % Algebraic composition, independent of any assumption on the hash functions.
+  chain_split: LEMMA FORALL (n: node_size,seed,x: octets_of(n),p: posn,j: uint32,
+                              a: upto(15), b: {v: upto(15) | a<=v},
+                              c: {v: upto(15) | b<=v}):
+    chain(n,seed,p,j,chain(n,seed,p,j,x,a,b),b,c) = chain(n,seed,p,j,x,a,c)
+END slh_wots

@@ -1,0 +1,189 @@
+(|slh_claims|
+ (|generated_key_width| 0
+  (|generated_key_width-0| "" 4004540321
+   (""
+    (APPLY
+     (RERUN
+      (""
+       (APPLY
+        (RERUN
+         ("" (SKOLEM 1 ("p!1" "x!1" "y!1" "z!1"))
+          (TYPEPRED "p!1" "x!1" "y!1" "z!1") (POSTPONE))))
+       (POSTPONE))))
+    (("" (EXPAND "keygen_internal")
+      ((""
+        (APPLY
+         (RERUN
+          (""
+           (APPLY
+            (RERUN
+             ("" (AUTO-REWRITE "slh_verify.node_bytes")
+              (AUTO-REWRITE "crypto_buffers.join_octets")
+              (AUTO-REWRITE "slh_wots.wots_len")
+              (AUTO-REWRITE "slh_wots.chain") (AUTO-REWRITE "slh_wots.thash")
+              (AUTO-REWRITE "slh_wots.secret")
+              (AUTO-REWRITE "slh_wots.gen_from")
+              (AUTO-REWRITE "slh_wots.wots_pk") (AUTO-REWRITE "keccak.advance")
+              (AUTO-REWRITE "keccak.digest_byte")
+              (AUTO-REWRITE "keccak.fill_output") (AUTO-REWRITE "keccak.blank")
+              (AUTO-REWRITE "keccak.output") (AUTO-REWRITE "keccak.pad")
+              (AUTO-REWRITE "keccak.finish_shake")
+              (AUTO-REWRITE "sha2_stream.zero_pad")
+              (AUTO-REWRITE "sha2_stream.finish_block")
+              (AUTO-REWRITE "sha2_stream.stream_digest")
+              (AUTO-REWRITE "slh_wots.node_output")
+              (AUTO-REWRITE "slh_wots.feed")
+              (AUTO-REWRITE "secure_hash.sigma0_64")
+              (AUTO-REWRITE "secure_hash.maj64")
+              (AUTO-REWRITE "secure_hash.sigma1_64")
+              (AUTO-REWRITE "secure_hash.ch64")
+              (AUTO-REWRITE "secure_hash.k64")
+              (AUTO-REWRITE "secure_hash.shs64_rounds")
+              (AUTO-REWRITE "integertypes.max64")
+              (AUTO-REWRITE "integertypes.u64plus")
+              (AUTO-REWRITE "secure_hash.small_sigma1_64")
+              (AUTO-REWRITE "secure_hash.small_sigma0_64")
+              (AUTO-REWRITE "secure_hash.shs64_extend")
+              (AUTO-REWRITE "secure_hash.shs64_compress")
+              (AUTO-REWRITE "crypto_words.load_be64")
+              (AUTO-REWRITE "sha2_stream.block64")
+              (AUTO-REWRITE "secure_hash.sigma0_32")
+              (AUTO-REWRITE "secure_hash.maj32")
+              (AUTO-REWRITE "secure_hash.sigma1_32")
+              (AUTO-REWRITE "integer_bv_ops.u32and")
+              (AUTO-REWRITE "integer_bv_ops.u32not")
+              (AUTO-REWRITE "secure_hash.ch32")
+              (AUTO-REWRITE "secure_hash.k32")
+              (AUTO-REWRITE "secure_hash.shs32_rounds")
+              (AUTO-REWRITE "secure_hash.small_sigma1_32")
+              (AUTO-REWRITE "integer_bv_ops.u32xor")
+              (AUTO-REWRITE "crypto_words.ror32")
+              (AUTO-REWRITE "secure_hash.small_sigma0_32")
+              (AUTO-REWRITE "secure_hash.shs32_extend")
+              (AUTO-REWRITE "secure_hash.shs32_compress")
+              (AUTO-REWRITE "integer_bv_ops.u32or")
+              (AUTO-REWRITE "crypto_words.load_be32")
+              (AUTO-REWRITE "sha2_stream.read32")
+              (AUTO-REWRITE "sha2_stream.block32")
+              (AUTO-REWRITE "sha2_stream.put_byte")
+              (AUTO-REWRITE "sha2_stream.put_from")
+              (AUTO-REWRITE "sha2_stream.stream_add")
+              (AUTO-REWRITE "secure_hash.iv256") (AUTO-REWRITE "integers.odd?")
+              (AUTO-REWRITE "secure_hash.iv512")
+              (AUTO-REWRITE "sha2_stream.stream_start")
+              (AUTO-REWRITE "sha2_stream.block_width")
+              (AUTO-REWRITE "slh_wots.compressed_address")
+              (AUTO-REWRITE "crypto_buffers.fill_octets")
+              (AUTO-REWRITE "keccak.absorb_bit")
+              (AUTO-REWRITE "integertypes.u8rshift")
+              (AUTO-REWRITE "keccak.absorb_low")
+              (AUTO-REWRITE "keccak.round_constant")
+              (AUTO-REWRITE "keccak.chi_step") (AUTO-REWRITE "keccak.chi")
+              (AUTO-REWRITE "keccak.rho_pi") (AUTO-REWRITE "keccak.column")
+              (AUTO-REWRITE "keccak.theta_lane")
+              (AUTO-REWRITE "keccak.rho_pi_step")
+              (AUTO-REWRITE "bv_bitwise.OR")
+              (AUTO-REWRITE "integer_bv_ops.u64or")
+              (AUTO-REWRITE "crypto_words.ror64")
+              (AUTO-REWRITE "crypto_words.rol64")
+              (AUTO-REWRITE "keccak.rho_offset")
+              (AUTO-REWRITE "keccak.pi_source")
+              (AUTO-REWRITE "keccak.rho_pi_lane")
+              (AUTO-REWRITE "bv_bitwise.AND")
+              (AUTO-REWRITE "integer_bv_ops.u64and")
+              (AUTO-REWRITE "bv_bitwise.NOT")
+              (AUTO-REWRITE "integer_bv_ops.u64not")
+              (AUTO-REWRITE "keccak.row_of")
+              (AUTO-REWRITE "keccak.row_neighbor")
+              (AUTO-REWRITE "keccak.chi_lane")
+              (AUTO-REWRITE "keccak.map_lanes")
+              (AUTO-REWRITE "keccak.theta_step") (AUTO-REWRITE "keccak.theta")
+              (AUTO-REWRITE "keccak.rnd") (AUTO-REWRITE "keccak.permute_from")
+              (AUTO-REWRITE "keccak.permute") (AUTO-REWRITE "notequal./=")
+              (AUTO-REWRITE "xor_def.XOR") (AUTO-REWRITE "bv_bitwise.XOR")
+              (AUTO-REWRITE "bit.b2n") (AUTO-REWRITE "bv.^")
+              (AUTO-REWRITE "bv_nat.bv2nat_rec") (AUTO-REWRITE "bv_nat.bv2nat")
+              (AUTO-REWRITE "integer_bv_ops.u64xor")
+              (AUTO-REWRITE "keccak.flip_bits")
+              (AUTO-REWRITE "keccak.absorb_byte")
+              (AUTO-REWRITE "keccak.absorb_from")
+              (AUTO-REWRITE "keccak.absorb") (AUTO-REWRITE "keccak.start")
+              (AUTO-REWRITE "integertypes.u32rshift")
+              (AUTO-REWRITE "crypto_words.be_byte32")
+              (AUTO-REWRITE "integertypes.u64rshift")
+              (AUTO-REWRITE "integertypes.u64lshift")
+              (AUTO-REWRITE "crypto_words.be_byte64")
+              (AUTO-REWRITE "slh_wots.addr_byte")
+              (AUTO-REWRITE "slh_wots.addr_octets")
+              (AUTO-REWRITE "slh_wots.domain_for")
+              (AUTO-REWRITE "slh_wots.domain")
+              (AUTO-REWRITE "slh_wots.hash_pair")
+              (AUTO-REWRITE "slh_wots.addr")
+              (AUTO-REWRITE "integertypes.u32plus")
+              (AUTO-REWRITE "integertypes.u32lshift")
+              (AUTO-REWRITE "slh_sign.xmss_node")
+              (AUTO-REWRITE "integers.even?")
+              (AUTO-REWRITE "slh_verify.xmss_height")
+              (AUTO-REWRITE "slh_sign.origin")
+              (AUTO-REWRITE "integertypes.max32")
+              (AUTO-REWRITE "integertypes.u32minus") (AUTO-REWRITE "exp2.exp2")
+              (AUTO-REWRITE "slh_verify.shape")
+              (AUTO-REWRITE "slh_verify.layers")
+              (AUTO-REWRITE "slh_sign.keygen_internal") (POSTPONE))))
+           (APPLY
+            (RERUN
+             (""
+              (SIMPLIFY * T T :REWRITE-FLAG NIL :FLUSH? NIL :CASES-REWRITE? NIL
+                        :TYPE-CONSTRAINTS? T :IGNORE-PROVER-OUTPUT? NIL
+                        :LET-REDUCE? T :QUANT-SIMP? NIL :IMPLICIT-TYPEPREDS?
+                        NIL :IGNORE-TYPEPREDS? NIL)))))))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| |crypto_prelude|)
+    (|node_bytes| CONST-DECL "[profile -> node_size]" |slh_verify| NIL)
+    (|node_size| TYPE-EQ-DECL NIL |slh_wots| NIL)
+    (|profile| TYPE-EQ-DECL NIL |slh_verify| NIL)
+    (|origin| CONST-DECL "posn" |slh_sign| NIL)
+    (|join_octets| CONST-DECL
+     "[d: [a: bytestring, {s: bytestring | s`length + a`length < exp2(28)}] -> octets_of(d`1`length + d`2`length)]"
+     |crypto_buffers| |crypto_prelude|)
+    (|keygen_internal| CONST-DECL
+     "[[p: profile, octets_of(node_bytes(p)), octets_of(node_bytes(p)), octets_of(node_bytes(p))] -> keys]"
+     |slh_sign| NIL))
+   SHOSTAK)
+  (|generated_key_width-1| NIL 4004540321 ("" (POSTPONE) NIL NIL) NIL SHOSTAK))
+ (|pure_correct_TCC1| 0
+  (|pure_correct_TCC1-0| "" 4004540400
+   (""
+    (APPLY
+     (RERUN
+      (""
+       (APPLY
+        (RERUN
+         ("" (SKOLEM 1 ("p!1" "x!1" "y!1" "z!1" "opt!1" "c!1" "k!1"))
+          (POSTPONE))))
+       (APPLY (RERUN ("" (FLATTEN-DISJUNCT NIL NIL) (POSTPONE)))) (POSTPONE))))
+    (("" (REPLACE -1)
+      ((""
+        (APPLY
+         (RERUN
+          (""
+           (SIMPLIFY * T T :REWRITE-FLAG NIL :FLUSH? NIL :CASES-REWRITE? NIL
+                     :TYPE-CONSTRAINTS? T :IGNORE-PROVER-OUTPUT? NIL
+                     :LET-REDUCE? T :QUANT-SIMP? NIL :IMPLICIT-TYPEPREDS? NIL
+                     :IGNORE-TYPEPREDS? NIL))))
+        NIL NIL))
+      NIL))
+    NIL)
+   ((|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|generated_key_width| FORMULA-DECL NIL |slh_claims| NIL))
+   SHOSTAK
+   (|pure_correct| SUBTYPE "slh_claims.k`sk" "private_key(slh_claims.p)"
+    (12 35 12 39)))
+  (|pure_correct_TCC1-1| NIL 4004540400 ("" (SUBTYPE-TCC)) NIL SHOSTAK
+   (|pure_correct| SUBTYPE "slh_claims.k`sk" "private_key(slh_claims.p)"
+    (12 35 12 39)))))
+

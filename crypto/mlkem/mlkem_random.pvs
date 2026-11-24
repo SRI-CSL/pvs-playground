@@ -1,0 +1,20 @@
+% FIPS 203, Algorithms 19 and 20. A caller assigns a fresh stream to each
+% operation and supplies an approved RBG at the selected parameter set's strength.
+mlkem_random: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING mlkem, crypto_prelude@crypto_seeds
+
+  keygen(k: rank,s: stream_id): keys =
+    LET d=prng_seed32(s,0) IN
+    IF NOT d`ok THEN no_keys ELSE
+      LET z=prng_seed32(s,32) IN
+      IF z`ok THEN keygen_internal(k,d`value,z`value) ELSE no_keys ENDIF ENDIF
+
+  encaps(k: rank,ek: bytestring,s: stream_id): encapsulation =
+    IF NOT valid_ek(k,ek) THEN no_encapsulation ELSE
+      LET m=prng_seed32(s,0) IN
+      IF m`ok THEN encaps_internal(k,ek,m`value) ELSE no_encapsulation ENDIF ENDIF
+  failed_first_draw: LEMMA FORALL (k: rank,s: stream_id):
+    NOT prng_seed32(s,0)`ok IMPLIES keygen(k,s)=no_keys
+END mlkem_random

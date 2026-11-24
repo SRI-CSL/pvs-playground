@@ -1,0 +1,33 @@
+% SP 800-208 functional signature and one-time-index properties.
+hbs_claims: THEORY
+BEGIN
+  IMPORTING hss_sign,xmss_sign
+  lms_sign_verify: THEOREM FORALL(s:suite,h:height_code,w:width_code,id:identifier,
+                                  seed,c:octets_of(digest_len(s)),q:uint32,m:message_input):
+    LET sig=sign_reserved(s,h,w,id,seed,c,q,m) IN q<leaves(h) IMPLIES
+      sig`ok AND verify_lms(public_key(s,h,w,id,seed),sig`value,m)
+  hss_sign_verify: THEOREM FORALL(s:suite,cfg:configs,n:subrange(1,8),kg,kgcert,child,cert:streams,
+                                  stream:stream_id,m:message_input):
+    LET k=keygen_hss(s,cfg,n,kg,kgcert),sig=sign_hss(k`state,m,child,cert,stream)
+    IN k`ok AND sig`ok IMPLIES verify_hss(pub_hss(k`state),sig`value,m)
+  % Each currently installed key matches its seed and every subordinate key
+  % is certified by the preceding level. This describes later signing states.
+  certified(k:hierarchy):bool =
+    FORALL(i:below(k`levels)): LET t=k`trees(i),p=k`params(i),n=digest_len(k`s) IN
+      t`pk`length=24+n AND t`seed`length=n AND
+      (t`seed`length=n IMPLIES t`pk=public_key(k`s,p`h,p`w,t`id,t`seed)) AND
+      (i>0 AND t`pk`length<=56 IMPLIES verify_lms(k`trees(i-1)`pk,t`certificate,t`pk))
+  hss_later_signatures: THEOREM FORALL(k:hierarchy,m:message_input,child,cert:streams,stream:stream_id):
+    LET v=sign_hss(k,m,child,cert,stream) IN certified(k) AND v`ok IMPLIES
+       certified(v`state) AND pub_hss(v`state)=pub_hss(k) AND verify_hss(pub_hss(k),v`value,m)
+  hss_consumes_live_leaf: THEOREM FORALL(k:hierarchy,m:message_input,child,cert:streams,stream:stream_id):
+    LET i:below(8)=k`levels-1,v=sign_hss(k,m,child,cert,stream)
+    IN v`ok AND k`trees(i)`next<leaves(k`params(i)`h) IMPLIES
+       v`state`trees(i)`next=k`trees(i)`next+1
+  xmss_sign_verify: THEOREM FORALL(multi:bool,oid:uint32,stream:stream_id,m:message_input,idx:uint64):
+    LET k=generate_xmss(multi,oid,stream),v=issue_xmss(k WITH [`next:=idx],m) IN
+    k`ok AND idx<u64lshift(1,params(multi,oid)`total) IMPLIES v`sig`ok AND
+      verify_xmss(multi,k`pk,v`sig`value,m) AND v`state`next=idx+1
+  xmss_no_index_reuse: THEOREM FORALL(k:key_state,m:message_input):
+    LET v=issue_xmss(k,m) IN v`sig`ok IMPLIES v`state`next=k`next+1 AND v`state`next>k`next
+END hbs_claims

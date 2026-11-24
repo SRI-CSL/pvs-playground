@@ -1,0 +1,46 @@
+% SP 800-56C Rev. 2, sections 4, 5 and 7. Z is the agreed byte encoding of
+% the shared secret (or hybrid shared secret); FixedInfo is supplied by the scheme.
+establishment_kdf: THEORY
+BEGIN
+  IMPORTING prf_kdf
+
+  secret: TYPE = {z: fixed_data | z`length > 0}
+  info_for(z: secret): TYPE = {x: bytestring | z`length + x`length + 212 < maxsize}
+  derived_length: TYPE = {n: index | n > 0}
+  hmac_salt(h: hash_id, salt: bytestring): bytestring =
+    IF salt`length = 0 THEN fill_octets(block_bytes(h), 0) ELSE salt ENDIF
+
+  % Section 4.1 options 1 and 2, with the mandated four-byte counter.
+  one_step(h: hash_id, keyed: bool, salt: bytestring, z: secret, info: info_for(z),
+           n: derived_length): result =
+    LET f: keyed_function(hash_bytes(h)) =
+          IF keyed THEN bind_hmac(h,hmac_salt(h,salt))
+          ELSE LAMBDA (x: prf_data): hash_message(h,x) ENDIF
+    IN derive(hash_bytes(h),f,counter_mode,4,join_octets(z,info),fill_octets(0,0),n)
+
+  % Section 4.1 option 3, Table 3. The default salt leaves room for the
+  % encoding prefix in a single KMAC key block.
+  kmac_salt(s: strength, salt: bytestring): bytestring =
+    IF salt`length > 0 THEN salt ELSE fill_octets(IF s=128 THEN 164 ELSE 132 ENDIF,0) ENDIF
+  kdf_label: octets_of(3) = (# length := 3, seq := [: 0x4b, 0x44, 0x46 :] #)
+  k_output: TYPE = {w: mac_size | w=20 OR w=28 OR w=32 OR w=48 OR w=64}
+  kmac_block(s: strength, salt, x: bytestring, n: derived_length): octets_of(n) =
+    output(kmac(s,octets(kmac_salt(s,salt)),octets(x),octets(kdf_label),8*n),n)
+  one_step_kmac(s: strength, salt: bytestring, z: secret, info: info_for(z),
+                w: k_output, n: derived_length): result =
+    LET f: keyed_function(w) = LAMBDA (x: prf_data): kmac_block(s,salt,x,w)
+    IN derive(w,f,counter_mode,4,join_octets(z,info),fill_octets(0,0),n)
+  % When H_outputBits = L, only a single evaluation with counter = 1 is required.
+  one_step_kmac_l(s: strength, salt: bytestring, z: secret, info: info_for(z),
+                  n: derived_length): octets_of(n) =
+    kmac_block(s,salt,join_octets(encode_counter(1,4),join_octets(z,info)),n)
+
+  % Section 5.1. A zero-length salt argument selects the default. Same-hash
+  % expansion is enforced by the common h argument to both stages.
+  extract_hmac(h: hash_id, salt: {x: bytestring | x`length <= block_bytes(h)},
+               z: secret): octets_of(hash_bytes(h)) = hmac(h,hmac_salt(h,salt),z)
+  two_step(h: hash_id, salt: {x: bytestring | x`length <= block_bytes(h)}, z: secret,
+           mode: kdf_mode, r: counter_bytes, fixed: fixed_data, iv: prior_block,
+           n: derived_length): result =
+    kbkdf(h,extract_hmac(h,salt,z),mode,r,fixed,iv,n)
+END establishment_kdf

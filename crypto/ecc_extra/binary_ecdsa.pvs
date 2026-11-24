@@ -1,0 +1,16 @@
+% FIPS 186-5 section 6.4.2. Process a supplied digest MSB-first.
+binary_ecdsa: THEORY
+BEGIN
+  IMPORTING binary_curve
+  digest_from(c: curve,h: bytestring,total: {v:uint16 | v<=8*h`length},
+              i: upto(total),acc: element(c)): RECURSIVE element(c) =
+    IF i=total THEN acc ELSE
+      LET b=h`seq(ndiv(i,8)), bit=u8and(u8rshift(b,7-nrem(i,8)),1),
+          dbl=add_mod(acc,acc,subgroup(c)),
+          next=IF bit=1 THEN add_mod(dbl,one(c),subgroup(c)) ELSE dbl ENDIF IN
+        digest_from(c,h,total,i+1,next)
+    ENDIF MEASURE total-i
+  verify_digest(c: curve,q: point(c),h: bytestring,r,s: element(c)): bool =
+    LET t: uint16=IF 8*h`length<order_bits(c) THEN 8*h`length ELSE order_bits(c) ENDIF IN
+      verify(c,q,digest_from(c,h,t,0,zero(c)),r,s)
+END binary_ecdsa

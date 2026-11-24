@@ -1,0 +1,59 @@
+% SP 800-22 §§2.9 and 2.10. Discard the final incomplete block.
+sts_complexity: THEORY
+BEGIN
+  IMPORTING sts_counts
+  block_width:TYPE=subrange(6,16)
+  expectations:ARRAY[below(11)->fp]=[: ratio(52177052,10000000),ratio(61962507,10000000),
+    ratio(71836656,10000000),ratio(81764248,10000000),ratio(91723243,10000000),ratio(10170032,1000000),
+    ratio(11168765,1000000),ratio(12168070,1000000),ratio(13167693,1000000),ratio(14167488,1000000),ratio(15167379,1000000) :]
+  variances:ARRAY[below(11)->fp]=[:ratio(2954,1000),ratio(3125,1000),ratio(3238,1000),ratio(3311,1000),
+    ratio(3356,1000),ratio(3384,1000),ratio(3401,1000),ratio(3410,1000),ratio(3416,1000),ratio(3419,1000),ratio(3421,1000):]
+  recurrence_sum(x:bitstream,L:block_width,size:pos_uint32,q,N:uint32,i:upto(N),t:count_table(size),acc:fp):
+      RECURSIVE fp =
+    IF i=N THEN acc ELSE LET j=word(x,u32times(i,L),L,0) IN
+      IF j>=size THEN acc ELSE
+        LET last=t(j),term=IF i<q THEN fl(0) ELSE log_two(fl(u32minus(i+1,last))) ENDIF IN
+          recurrence_sum(x,L,size,q,N,i+1,t WITH [(j):=i+1],fp_add(acc,term)) ENDIF ENDIF MEASURE N-i
+  universal_with_q(x:bitstream,L:block_width,q:pos_uint32):observation =
+    LET size:pos_uint32=u32lshift(1,L),N=u32div(x`n,L) IN
+    IF N<=q THEN omitted ELSE LET K=N-q,
+      c=fp_add(fp_sub(ratio(7,10),ratio(8,10*L)),
+          fp_div(fp_mul(fp_add(fl(4),ratio(32,L)),fp_pow(fl(K),fp_sub(fl(0),ratio(3,L)))),fl(15))),
+      sigma=fp_mul(c,fp_sqrt(fp_div(variances(L-6),fl(K)))),
+      phi=fp_div(recurrence_sum(x,L,size,q,N,0,LAMBDA(j:below(size)):0,fl(0)),fl(K)) IN
+      observed(gaussian_tail(fp_div(fp_sub(phi,expectations(L-6)),sigma))) ENDIF
+  universal(x:bitstream,L:block_width):observation=
+    LET size:pos_uint32=u32lshift(1,L) IN IF u32div(x`n,L)<1010*size THEN omitted ELSE
+      universal_with_q(x,L,10*size) ENDIF
+  coeff(m:pos_uint32):TYPE=ARRAY[upto(m)->bool]
+  discrepancy(x:bitstream,base,pos:uint32,m:pos_uint32,c:coeff(m),i:upto(m),d:bool):RECURSIVE bool =
+    IF i=0 THEN d ELSE LET z=c(i) AND i<=pos AND bit(x,u32plus(base,u32minus(pos,i)))=1 IN
+      discrepancy(x,base,pos,m,c,i-1,IF z THEN NOT d ELSE d ENDIF) ENDIF MEASURE i
+  adjust(m:pos_uint32,c,b:coeff(m),shift:pos_uint32,j:upto(m)):RECURSIVE coeff(m) =
+    IF j<shift THEN c ELSE
+      adjust(m,IF b(j-shift) THEN c WITH [(j):=NOT c(j)] ELSE c ENDIF,b,shift,j-1) ENDIF MEASURE j
+  bm(x:bitstream,base:uint32,m:pos_uint32,i,L,last1:upto(m),c,b:coeff(m)):RECURSIVE upto(m) =
+    IF i=m THEN L ELSE LET d=discrepancy(x,base,i,m,c,L,bit(x,u32plus(base,i))=1) IN
+      IF NOT d OR last1>i THEN bm(x,base,m,i+1,L,last1,c,b) ELSE
+        LET updated=adjust(m,c,b,i+1-last1,m) IN
+        IF 2*L<=i THEN bm(x,base,m,i+1,i+1-L,i+1,updated,c)
+        ELSE bm(x,base,m,i+1,L,last1,updated,b) ENDIF ENDIF ENDIF MEASURE m-i
+  complexity_bins(x:bitstream,m:pos_uint32,N:uint32,i:upto(N),meanval:fp,b:bins):RECURSIVE bins =
+    IF i=N THEN b ELSE LET unit:coeff(m)=LAMBDA(j:upto(m)):j=0,
+      L=bm(x,u32times(i,m),m,0,0,0,unit,unit),
+      delta=IF u32rem(m,2)=0 THEN fp_sub(fl(L),meanval) ELSE fp_sub(meanval,fl(L)) ENDIF,
+      T=fp_add(delta,ratio(2,9)),
+      j:below(7)=IF fp_lt(ratio(5,2),T) THEN 6 ELSIF fp_lt(ratio(3,2),T) THEN 5
+        ELSIF fp_lt(ratio(1,2),T) THEN 4 ELSIF fp_lt(fp_sub(fl(0),ratio(1,2)),T) THEN 3
+        ELSIF fp_lt(fp_sub(fl(0),ratio(3,2)),T) THEN 2 ELSIF fp_lt(fp_sub(fl(0),ratio(5,2)),T) THEN 1 ELSE 0 ENDIF IN
+        complexity_bins(x,m,N,i+1,meanval,b WITH [(j):=u32plus(b(j),1)]) ENDIF MEASURE N-i
+  linear_complexity(x:bitstream,m:subrange(1,6000)):observation =
+    LET N=u32div(x`n,m),first=IF u32rem(m,2)=0 THEN ratio(8,36) ELSE ratio(10,36) ENDIF,
+        correction=fp_mul(fp_add(ratio(m,3),ratio(2,9)),fp_pow(ratio(1,2),fl(m))),
+        meanval=fp_sub(fp_add(ratio(m,2),first),correction),
+        p:probs=[:ratio(10417,1000000),ratio(1,32),ratio(1,8),ratio(1,2),ratio(1,4),ratio(1,16),ratio(20833,1000000):] IN
+      IF N=0 THEN omitted ELSE observed(chi_tail(6,cat_chi(complexity_bins(x,m,N,0,meanval,empty_bins),p,N,7,fl(0)))) ENDIF
+  constant_zero_complexity: THEOREM FORALL(x:bitstream,m:pos_uint32):
+    (FORALL(i:below(x`n)): NOT x`bits(i)) IMPLIES
+      bm(x,0,m,0,0,0,LAMBDA(j:upto(m)):j=0,LAMBDA(j:upto(m)):j=0)=0
+END sts_complexity

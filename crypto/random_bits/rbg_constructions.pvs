@@ -1,0 +1,61 @@
+% SP 800-90C §§4–6. HMAC_DRBG/SHA-256 at s=256. Entropy-provider octets
+% represent conditioned full-entropy output. Device validation and unique,
+% fresh acquisitions are obligations of the external provider.
+rbg_constructions: THEORY
+BEGIN
+  hmac: LIBRARY = "../hmac"
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING hmac@hmac_drbg,crypto_prelude@crypto_random_buffers,crypto_prelude@crypto_xor
+  personal: TYPE = {b:bytestring | b`length+48<=material_bound}
+  seed48: TYPE = octets_of(48)
+  activated: TYPE = [# ready:bool, internal:state #]
+  % An unsuccessful acquisition has no live state. The zero state below
+  % carries the failure through the total PVS interface.
+  inactive: activated = (# ready:=FALSE,internal:=(# algorithm:=h_sha256,key:=fill_octets(32,0),
+                                    v:=fill_octets(32,0),requests:=1 #) #)
+  start_seed(seed:seed48,p:personal): activated =
+    (# ready:=TRUE,internal:=instantiate(h_sha256,seed,fill_octets(0,0),p) #)
+  % A source-side reseed, where required for RBG1, precedes publication of
+  % the PRNG snapshot. Use an independent source for each instantiation.
+  instantiate_rbg1(s:stream_id,p:personal): activated =
+    LET a=acquire(48,s,0) IN IF a`ok THEN start_seed(a`value,p) ELSE inactive ENDIF
+  instantiate_rbg2(s:stream_id,p:personal): activated =
+    LET a=entropy_bytes(48,s,0) IN IF a`ok THEN start_seed(a`value,p) ELSE inactive ENDIF
+  stopped(s:state): result = (# success:=FALSE,current:=s,data:=fill_octets(0,0) #)
+  pseudorandom(a:activated,n:request_bits,extra:material): result =
+    IF a`ready THEN generate(a`internal,n,extra) ELSE stopped(a`internal) ENDIF
+  reseed_input: TYPE = {a:bytestring | a`length+40<=material_bound}
+  prediction_resistant(a:activated,n:request_bits,extra:reseed_input,s:stream_id): result =
+    IF NOT a`ready THEN stopped(a`internal) ELSE LET x=entropy_bytes(32,s,0) IN
+      IF x`ok THEN reseed_and_generate(a`internal,x`value,extra,n) ELSE stopped(a`internal) ENDIF ENDIF
+  octet_count(n:request_bits): index = u32rshift(n+7,3)
+  prefix_last(x:bytestring,n:request_bits):octets_of(x`length) =
+    LET rest=u32rem(n,8) IN IF rest=0 OR x`length=0 THEN x ELSE
+      x WITH [`seq(x`length-1):=u8and(x`seq(x`length-1),u8lshift(255,8-rest))] ENDIF
+  % §6.4.1.2. Both sources must successfully provide the requested output.
+  rbg3_xor(a:activated,n:request_bits,extra:material,s:stream_id):result =
+    IF NOT a`ready THEN stopped(a`internal) ELSE
+      LET es=entropy_bytes(octet_count(n),s,0) IN
+        IF NOT es`ok THEN stopped(a`internal) ELSE
+          LET d=generate(a`internal,n,extra) IN
+            IF NOT d`success OR d`data`length/=es`value`length THEN stopped(d`current) ELSE
+              LET x=mixed(d`data,es`value) IN
+                d WITH [data:=prefix_last(x,n)] ENDIF
+        ENDIF
+    ENDIF
+  % §6.5.1.2 Method A. Allocate 40 physical-source octets per 32 output
+  % octets. The first generate step consumes the optional additional input.
+  rs_blocks(a:state,n:request_bits,extra:reseed_input,s:stream_id,out:octets_of(octet_count(n)),
+            i:upto(out`length),pos:uint32): RECURSIVE result =
+    IF i=out`length THEN (# success:=TRUE,current:=a,data:=prefix_last(out,n) #) ELSE
+      LET e=entropy_bytes(40,s,pos) IN IF NOT e`ok THEN stopped(a) ELSE
+        LET next=reseed(a,e`value,extra), r=generate(next,256,extra) IN
+          IF NOT r`success THEN stopped(r`current) ELSE
+            LET after:index=IF i+32>=out`length THEN out`length ELSE i+32 ENDIF IN
+              rs_blocks(r`current,n,fill_octets(0,0),s,copy_octets(out,i,r`data,0),after,u32plus(pos,40))
+          ENDIF ENDIF ENDIF MEASURE out`length-i
+  rbg3_rs(a:activated,n:request_bits,extra:reseed_input,s:stream_id):result =
+    IF a`ready THEN rs_blocks(a`internal,n,extra,s,fill_octets(octet_count(n),0),0,0) ELSE stopped(a`internal) ENDIF
+  inactive_no_output: LEMMA FORALL(n:request_bits,x:material):
+    NOT pseudorandom(inactive,n,x)`success AND pseudorandom(inactive,n,x)`data`length=0
+END rbg_constructions

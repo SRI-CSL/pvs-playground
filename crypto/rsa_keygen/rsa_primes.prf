@@ -1,0 +1,622 @@
+(|rsa_primes|
+ (|admissible_e_TCC1| 0
+  (|admissible_e_TCC1-1| NIL 4004537769
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|admissible_e| SUBTYPE "0" "below(rsa_primes.e`length)" (13 43 13 44))))
+ (|admissible_e_TCC2| 0
+  (|admissible_e_TCC2-1| NIL 4004537769
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|admissible_e| SUBTYPE "(number_fields.-)(rsa_primes.e`length, 1)"
+    "below(rsa_primes.e`length)" (13 65 13 75))))
+ (|above_threshold_TCC1| 0
+  (|above_threshold_TCC1-1| NIL 4004537769
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|above_threshold| SUBTYPE "rsa_primes.prime_width(rsa_primes.p)"
+    "limb_count" (15 50 15 64))))
+ (|above_threshold_TCC2| 0
+  (|above_threshold_TCC2-1| NIL 4004537769
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|above_threshold| SUBTYPE
+    "number_fields.*(2, rsa_primes.prime_width(rsa_primes.p))" "limb_count"
+    (16 26 16 42))))
+ (|above_threshold_TCC3| 0
+  (|above_threshold_TCC3-1| NIL 4004537769
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|above_threshold| SUBTYPE "(number_fields.-)(rsa_primes.width, 1)"
+    "below(rsa_primes.sq`len)" (17 22 17 29))))
+ (|distant_TCC1| 0
+  (|distant_TCC1-1| NIL 4004537769
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|distant| SUBTYPE "rsa_primes.x" "words_of(rsa_primes.y`len)"
+    (20 70 20 71))))
+ (|distant_TCC2| 0
+  (|distant_TCC2-1| NIL 4004537769
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|distant| SUBTYPE
+    "(number_fields.-)(number_fields.*(32, rsa_primes.x`len), 100)"
+    "{i: integertypes.uint16 | reals.<(i, number_fields.*(32, crypto_limbs.zero_words(rsa_primes.x`len)`len))}"
+    (21 42 21 54))))
+ (|distant_TCC3| 0
+  (|distant_TCC3-1| NIL 4004537769
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|distant| SUBTYPE "rsa_primes.limit" "words_of(rsa_primes.delta`len)"
+    (22 24 22 29))))
+ (|odd_candidate_TCC1| 0
+  (|odd_candidate_TCC1-1| NIL 4004537770
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|odd_candidate| SUBTYPE "0" "below(rsa_primes.x`len)" (25 31 25 32))))
+ (|odd_candidate_TCC2| 0
+  (|odd_candidate_TCC2-1| NIL 4004537770
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|odd_candidate| SUBTYPE "modulo_arithmetic.nrem(rsa_primes.x`word(0), 8)"
+    "uint8" (25 19 25 36))))
+ (|odd_candidate_TCC3| 0
+  (|odd_candidate_TCC3-1| NIL 4004537770
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|odd_candidate| SUBTYPE
+    "modulo_arithmetic.nrem((number_fields.-)((number_fields.+)(rsa_primes.r, 8), rsa_primes.low), 8)"
+    "uint8" (26 59 26 74))))
+ (|odd_candidate_TCC4| 0
+  (|odd_candidate_TCC4-1| NIL 4004537770
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|odd_candidate| SUBTYPE "0"
+    "below(crypto_limbs.zero_words(rsa_primes.x`len)`len)" (27 40 27 41))))
+ (|odd_candidate_TCC5| 0
+  (|odd_candidate_TCC5-1| NIL 4004537770
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|odd_candidate| SUBTYPE "rsa_primes.d" "words_of(rsa_primes.x`len)"
+    (28 20 28 21))))
+ (|odd_candidate_TCC6| 0
+  (|odd_candidate_TCC6-1| NIL 4004537770
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|odd_candidate| SUBTYPE "0" "upto(rsa_primes.x`len)" (28 40 28 41))))
+ (|rem_small_TCC1| 0
+  (|rem_small_TCC1-1| NIL 4004537770
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|rem_small| SUBTYPE "(number_fields.-)(rsa_primes.i, 1)"
+    "upto(rsa_primes.a`len)" (35 20 35 23))))
+ (|rem_small_TCC2| 0
+  (|rem_small_TCC2-1| NIL 4004537770
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|rem_small| SUBTYPE "rsa_primes.b" "{uy64 | integertypes.uy64 /= 0}"
+    (35 33 35 34))))
+ (|rem_small_TCC3| 0
+  (|rem_small_TCC3-1| NIL 4004537770
+   (""
+    (THEN (SKOSIMP*) (EXPAND "u64rem")
+     (GRIND :DEFS NIL :REWRITES ("exp2") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|rem_small| SUBTYPE "integertypes.u64rem(rsa_primes.n, rsa_primes.b)"
+    "uint32" (35 24 35 35))))
+ (|rem_small_TCC4| 0
+  (|rem_small_TCC4-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|rem_small| TERMINATION
+    "rsa_primes.rem_small(rsa_primes.a, rsa_primes.b, (number_fields.-)(rsa_primes.i, 1), integertypes.u64rem(rsa_primes.n, rsa_primes.b))"
+    "NIL" (35 6 35 36))))
+ (|rem_small_TCC5| 0
+  (|rem_small_TCC5-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|rem_small| SUBTYPE "(number_fields.-)(rsa_primes.i, 1)"
+    "below(rsa_primes.a`len)" (34 58 34 61))))
+ (|trial_div_TCC1| 0
+  (|trial_div_TCC1-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|trial_div| SUBTYPE "(number_fields.-)(12, rsa_primes.i)" "naturalnumber"
+    (37 102 37 106))))
+ (|trial_div_TCC2| 0
+  (|trial_div_TCC2-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK (|trial_div| SUBTYPE "rsa_primes.i" "below(12)" (37 52 37 53))))
+ (|trial_div_TCC3| 0
+  (|trial_div_TCC3-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|trial_div| SUBTYPE "rsa_primes.a`len" "upto(rsa_primes.a`len)"
+    (37 55 37 60))))
+ (|trial_div_TCC4| 0
+  (|trial_div_TCC4-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|trial_div| SUBTYPE "(number_fields.+)(rsa_primes.i, 1)" "upto(12)"
+    (37 83 37 86))))
+ (|trial_div_TCC5| 0
+  (|trial_div_TCC5-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|trial_div| TERMINATION
+    "rsa_primes.trial_div(rsa_primes.a, (number_fields.+)(rsa_primes.i, 1))"
+    "NIL" (37 71 37 87))))
+ (|squares_TCC1| 0
+  (|squares_TCC1-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|squares| SUBTYPE "rsa_primes.n" "words_of(rsa_primes.z`len)"
+    (40 38 40 39))))
+ (|squares_TCC2| 0
+  (|squares_TCC2-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|squares| SUBTYPE
+    "crypto_limbs.mul_mod(rsa_primes.z, rsa_primes.z, rsa_primes.n)"
+    "words_of(rsa_primes.n`len)" (40 26 40 40))))
+ (|squares_TCC3| 0
+  (|squares_TCC3-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|squares| SUBTYPE "(number_fields.-)(rsa_primes.remaining, 1)" "uint16"
+    (40 41 40 52))))
+ (|squares_TCC4| 0
+  (|squares_TCC4-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|squares| TERMINATION
+    "rsa_primes.squares(rsa_primes.n, rsa_primes.minus_one, crypto_limbs.mul_mod(rsa_primes.z, rsa_primes.z, rsa_primes.n), (number_fields.-)(rsa_primes.remaining, 1))"
+    "NIL" (40 6 40 53))))
+ (|miller_rabin_pass_TCC1| 0
+  (|miller_rabin_pass_TCC1-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|miller_rabin_pass| SUBTYPE "0"
+    "{j: integertypes.uint16 | reals.<=(j, number_fields.*(32, rsa_primes.wm1`len))}"
+    (42 65 42 66))))
+ (|miller_rabin_pass_TCC2| 0
+  (|miller_rabin_pass_TCC2-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|miller_rabin_pass| SUBTYPE "rsa_primes.base"
+    "words_of(rsa_primes.one`len)" (43 41 43 45))))
+ (|miller_rabin_pass_TCC3| 0
+  (|miller_rabin_pass_TCC3-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|miller_rabin_pass| SUBTYPE "rsa_primes.wm1"
+    "words_of(rsa_primes.base`len)" (43 64 43 67))))
+ (|miller_rabin_pass_TCC4| 0
+  (|miller_rabin_pass_TCC4-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|miller_rabin_pass| SUBTYPE "rsa_primes.n" "words_of(rsa_primes.base`len)"
+    (44 44 44 45))))
+ (|miller_rabin_pass_TCC5| 0
+  (|miller_rabin_pass_TCC5-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|miller_rabin_pass| SUBTYPE "rsa_primes.z" "words_of(rsa_primes.n`len)"
+    (45 32 45 33))))
+ (|miller_rabin_pass_TCC6| 0
+  (|miller_rabin_pass_TCC6-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|miller_rabin_pass| SUBTYPE "(number_fields.-)(rsa_primes.a, 1)" "uint16"
+    (45 34 45 37))))
+ (|witnesses_TCC1| 0
+  (|witnesses_TCC1-1| NIL 4004537772
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|witnesses| SUBTYPE "(number_fields.-)(4294967295, rsa_primes.off)"
+    "naturalnumber" (58 12 58 26))))
+ (|witnesses_TCC2| 0
+  (|witnesses_TCC2-1| NIL 4004537773
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|witnesses| SUBTYPE
+    "(number_fields.+)(rsa_primes.off, number_fields.*(4, rsa_primes.n`len))"
+    "uint32" (52 48 52 59))))
+ (|witnesses_TCC3| 0
+  (|witnesses_TCC3-1| NIL 4004537773
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|witnesses| SUBTYPE "rsa_primes.b" "words_of(rsa_primes.one`len)"
+    (55 24 55 25))))
+ (|witnesses_TCC4| 0
+  (|witnesses_TCC4-1| NIL 4004537773
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|witnesses| SUBTYPE "crypto_limbs.sub_words(rsa_primes.n, rsa_primes.one)"
+    "words_of(rsa_primes.b`len)" (55 41 55 57))))
+ (|witnesses_TCC5| 0
+  (|witnesses_TCC5-1| NIL 4004537773
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|witnesses| TERMINATION
+    "rsa_primes.witnesses(rsa_primes.n, rsa_primes.remaining, rsa_primes.s, rsa_primes.next)"
+    "NIL" (55 64 55 93))))
+ (|witnesses_TCC6| 0
+  (|witnesses_TCC6-1| NIL 4004537774
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|witnesses| SUBTYPE "(number_fields.-)(rsa_primes.remaining, 1)" "upto(5)"
+    (56 54 56 65))))
+ (|witnesses_TCC7| 0
+  (|witnesses_TCC7-1| NIL 4004537774
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|witnesses| TERMINATION
+    "rsa_primes.witnesses(rsa_primes.n, (number_fields.-)(rsa_primes.remaining, 1), rsa_primes.s, rsa_primes.next)"
+    "NIL" (56 42 56 73))))
+ (|witnesses_TCC8| 0
+  (|witnesses_TCC8-1| NIL 4004537774
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|witnesses| SUBTYPE "number_fields.*(4, rsa_primes.n`len)" "index"
+    (52 20 52 27))))
+ (|draw_prime_TCC1| 0
+  (|draw_prime_TCC1-1| NIL 4004537774
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE "number_fields.*(640, rsa_primes.n)" "uint32"
+    (63 55 63 60))))
+ (|draw_prime_TCC2| 0
+  (|draw_prime_TCC2-1| NIL 4004537774
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE "number_fields.*(320, rsa_primes.n)" "uint32"
+    (63 66 63 71))))
+ (|draw_prime_TCC3| 0
+  (|draw_prime_TCC3-1| NIL 4004537775
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE "rsa_primes.n" "limb_count" (64 63 64 64))))
+ (|draw_prime_TCC4| 0
+  (|draw_prime_TCC4-1| NIL 4004537775
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE "rsa_primes.unavailable(rsa_primes.n, rsa_primes.off)"
+    "found(rsa_primes.prime_width(rsa_primes.p))" (64 51 64 69))))
+ (|draw_prime_TCC5| 0
+  (|draw_prime_TCC5-1| NIL 4004537775
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE "number_fields.*(4, rsa_primes.n)" "index"
+    (65 20 65 23))))
+ (|draw_prime_TCC6| 0
+  (|draw_prime_TCC6-1| NIL 4004537775
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE
+    "(number_fields.+)(rsa_primes.off, number_fields.*(4, rsa_primes.n))"
+    "uint32" (65 44 65 51))))
+ (|draw_prime_TCC7| 0
+  (|draw_prime_TCC7-1| NIL 4004537775
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE "rsa_primes.n" "limb_count" (65 81 65 82))))
+ (|draw_prime_TCC8| 0
+  (|draw_prime_TCC8-1| NIL 4004537775
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE
+    "rsa_primes.unavailable(rsa_primes.n, rsa_primes.next)"
+    "found(rsa_primes.prime_width(rsa_primes.p))" (66 26 66 45))))
+ (|draw_prime_TCC9| 0
+  (|draw_prime_TCC9-1| NIL 4004537775
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE "rsa_primes.x"
+    "words_of(rsa_primes.prime_width(rsa_primes.p))" (67 65 67 66))))
+ (|draw_prime_TCC10| 0
+  (|draw_prime_TCC10-1| NIL 4004537775
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE "rsa_primes.previous" "words_of(rsa_primes.x`len)"
+    (67 97 67 105))))
+ (|draw_prime_TCC11| 0
+  (|draw_prime_TCC11-1| NIL 4004537775
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| TERMINATION
+    "rsa_primes.draw_prime(rsa_primes.p, rsa_primes.e, rsa_primes.previous, rsa_primes.second, rsa_primes.r, rsa_primes.high_assurance, rsa_primes.s, rsa_primes.next, rsa_primes.failures)"
+    "NIL" (68 15 68 79))))
+ (|draw_prime_TCC12| 0
+  (|draw_prime_TCC12-1| NIL 4004537776
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE "crypto_limbs.one_words(rsa_primes.n)"
+    "words_of(rsa_primes.x`len)" (69 58 69 70))))
+ (|draw_prime_TCC13| 0
+  (|draw_prime_TCC13-1| NIL 4004537776
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE "rsa_primes.e"
+    "words_of(crypto_limbs.sub_words(rsa_primes.x, crypto_limbs.one_words(rsa_primes.n))`len)"
+    (69 72 69 73))))
+ (|draw_prime_TCC14| 0
+  (|draw_prime_TCC14-1| NIL 4004537776
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE "(number_fields.+)(rsa_primes.failures, 1)" "uint32"
+    (70 65 70 75))))
+ (|draw_prime_TCC15| 0
+  (|draw_prime_TCC15-1| NIL 4004537776
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| TERMINATION
+    "rsa_primes.draw_prime(rsa_primes.p, rsa_primes.e, rsa_primes.previous, rsa_primes.second, rsa_primes.r, rsa_primes.high_assurance, rsa_primes.s, rsa_primes.next, (number_fields.+)(rsa_primes.failures, 1))"
+    "NIL" (70 10 70 76))))
+ (|draw_prime_TCC16| 0
+  (|draw_prime_TCC16-1| NIL 4004537776
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE
+    "rsa_primes.rounds(rsa_primes.p, rsa_primes.high_assurance)" "upto(5)"
+    (71 34 71 58))))
+ (|draw_prime_TCC17| 0
+  (|draw_prime_TCC17-1| NIL 4004537776
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE
+    "rsa_primes.unavailable(rsa_primes.n, rsa_primes.next)"
+    "found(rsa_primes.prime_width(rsa_primes.p))" (72 48 72 67))))
+ (|draw_prime_TCC18| 0
+  (|draw_prime_TCC18-1| NIL 4004537776
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| SUBTYPE "(number_fields.+)(rsa_primes.failures, 1)" "uint32"
+    (74 75 74 85))))
+ (|draw_prime_TCC19| 0
+  (|draw_prime_TCC19-1| NIL 4004537776
+   (""
+    (THEN (SKOSIMP*) (ASSERT)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|draw_prime| TERMINATION
+    "rsa_primes.draw_prime(rsa_primes.p, rsa_primes.e, rsa_primes.previous, rsa_primes.second, rsa_primes.r, rsa_primes.high_assurance, rsa_primes.s, rsa_primes.test`next, (number_fields.+)(rsa_primes.failures, 1))"
+    "NIL" (74 15 74 86))))
+ (|no_rounds_remain| 0
+  (|no_rounds_remain-1| NIL 4004537776
+   ("" (THEN (SKOSIMP*) (EXPAND "witnesses") (ASSERT)) NIL NIL) NIL SHOSTAK))
+ (|accepted_witness_range_TCC1| 0
+  (|accepted_witness_range_TCC1-1| NIL 4004539010
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL)
+   ((|one_words| CONST-DECL "words_of(n)" |crypto_limbs| |crypto_prelude|)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|))
+   "shostak"
+   (|accepted_witness_range| SUBTYPE "rsa_primes.b"
+    "words_of(crypto_limbs.one_words(rsa_primes.n`len)`len)" (78 84 78 85))))
+ (|accepted_witness_range_TCC2| 0
+  (|accepted_witness_range_TCC2-1| NIL 4004539011
+   (""
+    (THEN (SKOSIMP* T) (ALL-TYPEPREDS)
+     (GRIND :DEFS NIL :REWRITES ("exp2" "maxsize") :IF-MATCH NIL))
+    NIL)
+   ((|sub_words| CONST-DECL "words_of(a`len)" |crypto_limbs| |crypto_prelude|)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|one_words| CONST-DECL "words_of(n)" |crypto_limbs| |crypto_prelude|)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| |crypto_prelude|))
+   "shostak"
+   (|accepted_witness_range| SUBTYPE
+    "crypto_limbs.sub_words(rsa_primes.n, crypto_limbs.one_words(rsa_primes.n`len))"
+    "words_of(rsa_primes.b`len)" (79 21 79 50))))
+ (|accepted_witness_range| 0
+  (|accepted_witness_range-1| NIL 4004538965
+   (""
+    (THEN (SKOSIMP*) (EXPAND "miller_rabin_pass")
+     (GRIND :DEFS NIL :IF-MATCH NIL))
+    NIL NIL)
+   NIL SHOSTAK)))
+

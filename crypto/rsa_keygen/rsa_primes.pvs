@@ -1,0 +1,80 @@
+% FIPS 186-5, A.1.1/A.1.3 and B.3.1. Table B.1 prime sizes.
+rsa_primes: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_integer_ops, crypto_prelude@crypto_random_buffers
+  strength_profile: TYPE = below(3)
+  prime_width(p: strength_profile): subrange(32,64) = IF p=0 THEN 32 ELSIF p=1 THEN 48 ELSE 64 ENDIF
+  rounds(p: strength_profile,high_assurance: bool): subrange(2,5) =
+    IF high_assurance THEN IF p=0 THEN 5 ELSE 4 ENDIF
+    ELSE IF p=0 THEN 4 ELSIF p=1 THEN 3 ELSE 2 ENDIF ENDIF
+  residue: TYPE = {v:uint8 | v=0 OR v=1 OR v=3 OR v=5 OR v=7}
+  admissible_e(e: bytestring): bool =
+    e`length>=3 AND e`length<=32 AND e`seq(0)/=0 AND u8and(e`seq(e`length-1),1)=1
+  % Full products compare p^2 >= 2^(2*plen-1), the exact square-root bound.
+  above_threshold(p: strength_profile,x: words_of(prime_width(p))): bool =
+    LET width: limb_count=2*prime_width(p),sq=product_words(x,x,width)
+    IN u32and(sq`word(width-1),0x80000000)/=0
+  distant(x: limbs,y: words_of(x`len)): bool =
+    IF 32*x`len<=100 THEN FALSE ELSE
+      LET delta=IF ge_words(x,y) THEN sub_words(x,y) ELSE sub_words(y,x) ENDIF,
+          limit=set_one(zero_words(x`len),32*x`len-100)
+      IN ge_words(delta,limit) AND delta/=limit ENDIF
+  % Add the least nonnegative correction to obtain the optional mod-8 residue.
+  odd_candidate(x: limbs,r: residue): carry_result(x`len) =
+    LET low: uint8=nrem(x`word(0),8),adjust: uint8=
+        IF r=0 THEN IF is_even(x) THEN 1 ELSE 0 ENDIF ELSE nrem(r+8-low,8) ENDIF,
+        d=zero_words(x`len) WITH [`word(0):=adjust]
+    IN add_prefix(x,d,zero_words(x`len),0,FALSE)
+  % Optional trial division disposes of small factors before random-base tests.
+  small_factor(i: below(12)): subrange(3,41) =
+    COND i=0 -> 3,i=1 -> 5,i=2 -> 7,i=3 -> 11,i=4 -> 13,i=5 -> 17,
+         i=6 -> 19,i=7 -> 23,i=8 -> 29,i=9 -> 31,i=10 -> 37,ELSE -> 41 ENDCOND
+  rem_small(a: limbs,b: subrange(3,41),i: upto(a`len),r: uint32): RECURSIVE uint32 =
+    IF i=0 THEN r ELSE LET n=u64or(u64lshift(r,32),a`word(i-1)) IN
+      rem_small(a,b,i-1,u64rem(n,b)) ENDIF MEASURE i
+  trial_div(a: limbs,i: upto(12)): RECURSIVE bool =
+    IF i=12 THEN TRUE ELSE rem_small(a,small_factor(i),a`len,0)/=0 AND trial_div(a,i+1) ENDIF MEASURE 12-i
+  squares(n: limbs,minus_one,z: words_of(n`len),remaining: uint16): RECURSIVE bool =
+    IF z=minus_one THEN TRUE ELSIF remaining=0 OR z=one_words(n`len) THEN FALSE ELSE
+      squares(n,minus_one,mul_mod(z,z,n),remaining-1) ENDIF MEASURE remaining
+  miller_rabin_pass(n: limbs,base: words_of(n`len)): bool =
+    LET one=one_words(n`len),wm1=sub_words(n,one),a=trailing(wm1,0) IN
+    IF is_even(n) OR a=0 OR ge_words(one,base) OR ge_words(base,wm1) THEN FALSE ELSE
+      LET z=mont_power(base,odd_part(wm1,a),n)
+      IN z=one OR squares(n,wm1,z,a-1) ENDIF
+  primality: TYPE = [# ok,probable: bool,next: uint32 #]
+  % An invalid base draws again. The offset strictly increases on every draw;
+  % exhaustion of the provider or its address space produces a distinct failure.
+  witnesses(n: limbs,remaining: upto(5),s: stream_id,off: uint32): RECURSIVE primality =
+    IF remaining=0 THEN (# ok:=TRUE,probable:=TRUE,next:=off #)
+    ELSIF off>4294967295-4*n`len THEN (# ok:=FALSE,probable:=FALSE,next:=off #) ELSE
+      LET m=acquire(4*n`len,s,off),next: uint32=off+4*n`len IN
+      IF NOT m`ok THEN (# ok:=FALSE,probable:=FALSE,next:=next #) ELSE
+        LET b=from_bytes(n`len,m`value,TRUE),one=one_words(n`len) IN
+        IF ge_words(one,b) OR ge_words(b,sub_words(n,one)) THEN witnesses(n,remaining,s,next)
+        ELSIF miller_rabin_pass(n,b) THEN witnesses(n,remaining-1,s,next)
+        ELSE (# ok:=TRUE,probable:=FALSE,next:=next #) ENDIF ENDIF ENDIF
+    MEASURE 4294967295-off
+  found(n: limb_count): TYPE = [# ok: bool,prime: words_of(n),next: uint32 #]
+  unavailable(n: limb_count,off: uint32): found(n) = (# ok:=FALSE,prime:=zero_words(n),next:=off #)
+  draw_prime(p: strength_profile,e,previous: words_of(prime_width(p)),second: bool,r: residue,
+             high_assurance: bool,s: stream_id,off,failures: uint32): RECURSIVE found(prime_width(p)) =
+    LET n=prime_width(p),budget: uint32=IF second THEN 640*n ELSE 320*n ENDIF IN
+    IF failures>=budget OR off>4294967295-4*n THEN unavailable(n,off) ELSE
+      LET m=acquire(4*n,s,off),next: uint32=off+4*n,raw=odd_candidate(from_bytes(n,m`value,TRUE),r)
+      IN IF NOT m`ok THEN unavailable(n,next) ELSE
+        LET x=raw`value IN IF raw`carry OR NOT above_threshold(p,x) OR (second AND NOT distant(x,previous))
+          THEN draw_prime(p,e,previous,second,r,high_assurance,s,next,failures)
+        ELSIF NOT trial_div(x,0) OR gcd_words(sub_words(x,one_words(n)),e)/=one_words(n) THEN
+          draw_prime(p,e,previous,second,r,high_assurance,s,next,failures+1)
+        ELSE LET test=witnesses(x,rounds(p,high_assurance),s,next) IN
+          IF NOT test`ok OR test`next<next THEN unavailable(n,next)
+          ELSIF test`probable THEN (# ok:=TRUE,prime:=x,next:=test`next #)
+          ELSE draw_prime(p,e,previous,second,r,high_assurance,s,test`next,failures+1) ENDIF ENDIF ENDIF ENDIF
+    MEASURE 4294967295-off
+  no_rounds_remain: LEMMA FORALL (n:limbs,s:stream_id,off:uint32): witnesses(n,0,s,off)`probable
+  accepted_witness_range: LEMMA FORALL(n:limbs,b:words_of(n`len)):
+    miller_rabin_pass(n,b) IMPLIES NOT is_even(n) AND NOT ge_words(one_words(n`len),b) AND
+      NOT ge_words(b,sub_words(n,one_words(n`len)))
+END rsa_primes

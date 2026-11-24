@@ -1,0 +1,515 @@
+% Secure Hash Standard, FIPS 180-4 (August 2015).
+% https://doi.org/10.6028/NIST.FIPS.180-4
+secure_hash: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_words
+
+  % Sections 5.1 and 5.2. The input consists of whole bytes followed by
+  % the high 'used' bits of 'tail'. Low unused bits have no significance.
+  terminal_byte(tail: uint8, used: below(8)): uint8 =
+    IF used = 0 THEN 0x80
+    ELSE u8or(u8lshift(u8rshift(tail, 8 - used), 8 - used),
+              u8rshift(0x80, used))
+    ENDIF
+
+  % Section 5.1. There is always one byte containing the padding bit.
+  % The final field takes 8 bytes for 512-bit blocks and 16 for 1024-bit blocks.
+  padded_blocks(m: bytestring, wide: bool): uint32 =
+    IF wide THEN u32rshift(m`length + 144, 7)
+    ELSE u32rshift(m`length + 72, 6) ENDIF
+
+  padded_byte(m: bytestring, tail: uint8, used: below(8),
+              pos, stop: uint32): uint8 =
+    IF pos < m`length THEN m`seq(pos)
+    ELSIF pos = m`length THEN terminal_byte(tail, used)
+    ELSIF pos < stop AND stop - pos <= 8 THEN
+      be_byte64(8 * m`length + used, 8 - (stop - pos))
+    ELSE 0 ENDIF
+
+  % Section 5.2. Parse big-endian words without allocating the padded message.
+  padded32(m: bytestring, tail: uint8, used: below(8),
+           pos, stop: uint32): uint32 =
+    load_be32(padded_byte(m, tail, used, pos, stop),
+              padded_byte(m, tail, used, u32plus(pos, 1), stop),
+              padded_byte(m, tail, used, u32plus(pos, 2), stop),
+              padded_byte(m, tail, used, u32plus(pos, 3), stop))
+
+  padded64(m: bytestring, tail: uint8, used: below(8),
+           pos, stop: uint32): uint64 =
+    load_be64(padded32(m, tail, used, pos, stop),
+              padded32(m, tail, used, u32plus(pos, 4), stop))
+
+  % Section 4.1. The subscript denotes the word width.
+
+  ch32(x, y, z: uint32): uint32 =
+    u32xor(u32and(x, y), u32and(u32not(x), z))
+
+  maj32(x, y, z: uint32): uint32 =
+    u32xor(u32xor(u32and(x, y), u32and(x, z)), u32and(y, z))
+
+  sigma0_32(x: uint32): uint32 =
+    u32xor(u32xor(ror32(x, 2), ror32(x, 13)), ror32(x, 22))
+
+  sigma1_32(x: uint32): uint32 =
+    u32xor(u32xor(ror32(x, 6), ror32(x, 11)), ror32(x, 25))
+
+  small_sigma0_32(x: uint32): uint32 =
+    u32xor(u32xor(ror32(x, 7), ror32(x, 18)), u32rshift(x, 3))
+
+  small_sigma1_32(x: uint32): uint32 =
+    u32xor(u32xor(ror32(x, 17), ror32(x, 19)), u32rshift(x, 10))
+
+  ch64(x, y, z: uint64): uint64 =
+    u64xor(u64and(x, y), u64and(u64not(x), z))
+
+  maj64(x, y, z: uint64): uint64 =
+    u64xor(u64xor(u64and(x, y), u64and(x, z)), u64and(y, z))
+
+  sigma0_64(x: uint64): uint64 =
+    u64xor(u64xor(ror64(x, 28), ror64(x, 34)), ror64(x, 39))
+
+  sigma1_64(x: uint64): uint64 =
+    u64xor(u64xor(ror64(x, 14), ror64(x, 18)), ror64(x, 41))
+
+  small_sigma0_64(x: uint64): uint64 =
+    u64xor(u64xor(ror64(x, 1), ror64(x, 8)), u64rshift(x, 7))
+
+  small_sigma1_64(x: uint64): uint64 =
+    u64xor(u64xor(ror64(x, 19), ror64(x, 61)), u64rshift(x, 6))
+
+  % FIPS 180-4 section 4.2.2, first 32 fractional cube-root bits.
+
+  k32(i: below(64)): uint32 =
+    COND
+      i = 0 -> 0x428a2f98,
+      i = 1 -> 0x71374491,
+      i = 2 -> 0xb5c0fbcf,
+      i = 3 -> 0xe9b5dba5,
+      i = 4 -> 0x3956c25b,
+      i = 5 -> 0x59f111f1,
+      i = 6 -> 0x923f82a4,
+      i = 7 -> 0xab1c5ed5,
+      i = 8 -> 0xd807aa98,
+      i = 9 -> 0x12835b01,
+      i = 10 -> 0x243185be,
+      i = 11 -> 0x550c7dc3,
+      i = 12 -> 0x72be5d74,
+      i = 13 -> 0x80deb1fe,
+      i = 14 -> 0x9bdc06a7,
+      i = 15 -> 0xc19bf174,
+      i = 16 -> 0xe49b69c1,
+      i = 17 -> 0xefbe4786,
+      i = 18 -> 0x0fc19dc6,
+      i = 19 -> 0x240ca1cc,
+      i = 20 -> 0x2de92c6f,
+      i = 21 -> 0x4a7484aa,
+      i = 22 -> 0x5cb0a9dc,
+      i = 23 -> 0x76f988da,
+      i = 24 -> 0x983e5152,
+      i = 25 -> 0xa831c66d,
+      i = 26 -> 0xb00327c8,
+      i = 27 -> 0xbf597fc7,
+      i = 28 -> 0xc6e00bf3,
+      i = 29 -> 0xd5a79147,
+      i = 30 -> 0x06ca6351,
+      i = 31 -> 0x14292967,
+      i = 32 -> 0x27b70a85,
+      i = 33 -> 0x2e1b2138,
+      i = 34 -> 0x4d2c6dfc,
+      i = 35 -> 0x53380d13,
+      i = 36 -> 0x650a7354,
+      i = 37 -> 0x766a0abb,
+      i = 38 -> 0x81c2c92e,
+      i = 39 -> 0x92722c85,
+      i = 40 -> 0xa2bfe8a1,
+      i = 41 -> 0xa81a664b,
+      i = 42 -> 0xc24b8b70,
+      i = 43 -> 0xc76c51a3,
+      i = 44 -> 0xd192e819,
+      i = 45 -> 0xd6990624,
+      i = 46 -> 0xf40e3585,
+      i = 47 -> 0x106aa070,
+      i = 48 -> 0x19a4c116,
+      i = 49 -> 0x1e376c08,
+      i = 50 -> 0x2748774c,
+      i = 51 -> 0x34b0bcb5,
+      i = 52 -> 0x391c0cb3,
+      i = 53 -> 0x4ed8aa4a,
+      i = 54 -> 0x5b9cca4f,
+      i = 55 -> 0x682e6ff3,
+      i = 56 -> 0x748f82ee,
+      i = 57 -> 0x78a5636f,
+      i = 58 -> 0x84c87814,
+      i = 59 -> 0x8cc70208,
+      i = 60 -> 0x90befffa,
+      i = 61 -> 0xa4506ceb,
+      i = 62 -> 0xbef9a3f7,
+      ELSE -> 0xc67178f2
+    ENDCOND
+  % FIPS 180-4 section 4.2.3, first 64 fractional cube-root bits.
+
+  k64(i: below(80)): uint64 =
+    COND
+      i = 0 -> 0x428a2f98d728ae22,
+      i = 1 -> 0x7137449123ef65cd,
+      i = 2 -> 0xb5c0fbcfec4d3b2f,
+      i = 3 -> 0xe9b5dba58189dbbc,
+      i = 4 -> 0x3956c25bf348b538,
+      i = 5 -> 0x59f111f1b605d019,
+      i = 6 -> 0x923f82a4af194f9b,
+      i = 7 -> 0xab1c5ed5da6d8118,
+      i = 8 -> 0xd807aa98a3030242,
+      i = 9 -> 0x12835b0145706fbe,
+      i = 10 -> 0x243185be4ee4b28c,
+      i = 11 -> 0x550c7dc3d5ffb4e2,
+      i = 12 -> 0x72be5d74f27b896f,
+      i = 13 -> 0x80deb1fe3b1696b1,
+      i = 14 -> 0x9bdc06a725c71235,
+      i = 15 -> 0xc19bf174cf692694,
+      i = 16 -> 0xe49b69c19ef14ad2,
+      i = 17 -> 0xefbe4786384f25e3,
+      i = 18 -> 0x0fc19dc68b8cd5b5,
+      i = 19 -> 0x240ca1cc77ac9c65,
+      i = 20 -> 0x2de92c6f592b0275,
+      i = 21 -> 0x4a7484aa6ea6e483,
+      i = 22 -> 0x5cb0a9dcbd41fbd4,
+      i = 23 -> 0x76f988da831153b5,
+      i = 24 -> 0x983e5152ee66dfab,
+      i = 25 -> 0xa831c66d2db43210,
+      i = 26 -> 0xb00327c898fb213f,
+      i = 27 -> 0xbf597fc7beef0ee4,
+      i = 28 -> 0xc6e00bf33da88fc2,
+      i = 29 -> 0xd5a79147930aa725,
+      i = 30 -> 0x06ca6351e003826f,
+      i = 31 -> 0x142929670a0e6e70,
+      i = 32 -> 0x27b70a8546d22ffc,
+      i = 33 -> 0x2e1b21385c26c926,
+      i = 34 -> 0x4d2c6dfc5ac42aed,
+      i = 35 -> 0x53380d139d95b3df,
+      i = 36 -> 0x650a73548baf63de,
+      i = 37 -> 0x766a0abb3c77b2a8,
+      i = 38 -> 0x81c2c92e47edaee6,
+      i = 39 -> 0x92722c851482353b,
+      i = 40 -> 0xa2bfe8a14cf10364,
+      i = 41 -> 0xa81a664bbc423001,
+      i = 42 -> 0xc24b8b70d0f89791,
+      i = 43 -> 0xc76c51a30654be30,
+      i = 44 -> 0xd192e819d6ef5218,
+      i = 45 -> 0xd69906245565a910,
+      i = 46 -> 0xf40e35855771202a,
+      i = 47 -> 0x106aa07032bbd1b8,
+      i = 48 -> 0x19a4c116b8d2d0c8,
+      i = 49 -> 0x1e376c085141ab53,
+      i = 50 -> 0x2748774cdf8eeb99,
+      i = 51 -> 0x34b0bcb5e19b48a8,
+      i = 52 -> 0x391c0cb3c5c95a63,
+      i = 53 -> 0x4ed8aa4ae3418acb,
+      i = 54 -> 0x5b9cca4f7763e373,
+      i = 55 -> 0x682e6ff3d6b2b8a3,
+      i = 56 -> 0x748f82ee5defb2fc,
+      i = 57 -> 0x78a5636f43172f60,
+      i = 58 -> 0x84c87814a1f0ab72,
+      i = 59 -> 0x8cc702081a6439ec,
+      i = 60 -> 0x90befffa23631e28,
+      i = 61 -> 0xa4506cebde82bde9,
+      i = 62 -> 0xbef9a3f7b2c67915,
+      i = 63 -> 0xc67178f2e372532b,
+      i = 64 -> 0xca273eceea26619c,
+      i = 65 -> 0xd186b8c721c0c207,
+      i = 66 -> 0xeada7dd6cde0eb1e,
+      i = 67 -> 0xf57d4f7fee6ed178,
+      i = 68 -> 0x06f067aa72176fba,
+      i = 69 -> 0x0a637dc5a2c898a6,
+      i = 70 -> 0x113f9804bef90dae,
+      i = 71 -> 0x1b710b35131c471b,
+      i = 72 -> 0x28db77f523047d84,
+      i = 73 -> 0x32caab7b40c72493,
+      i = 74 -> 0x3c9ebe0a15c9bebc,
+      i = 75 -> 0x431d67c49c100d4c,
+      i = 76 -> 0x4cc5d4becb3e42b6,
+      i = 77 -> 0x597f299cfc657e2a,
+      i = 78 -> 0x5fcb6fab3ad6faec,
+      ELSE -> 0x6c44198c4a475817
+    ENDCOND
+  % Section 5.3, initial chaining value for SHA-1.
+
+  iv1: ARRAY[below(5) -> uint32] = LAMBDA (i: below(5)):
+    COND
+      i = 0 -> 0x67452301,
+      i = 1 -> 0xefcdab89,
+      i = 2 -> 0x98badcfe,
+      i = 3 -> 0x10325476,
+      ELSE -> 0xc3d2e1f0
+    ENDCOND
+  % Section 5.3, initial chaining value for SHA-224.
+
+  iv224: ARRAY[below(8) -> uint32] = LAMBDA (i: below(8)):
+    COND
+      i = 0 -> 0xc1059ed8,
+      i = 1 -> 0x367cd507,
+      i = 2 -> 0x3070dd17,
+      i = 3 -> 0xf70e5939,
+      i = 4 -> 0xffc00b31,
+      i = 5 -> 0x68581511,
+      i = 6 -> 0x64f98fa7,
+      ELSE -> 0xbefa4fa4
+    ENDCOND
+  % Section 5.3, initial chaining value for SHA-256.
+
+  iv256: ARRAY[below(8) -> uint32] = LAMBDA (i: below(8)):
+    COND
+      i = 0 -> 0x6a09e667,
+      i = 1 -> 0xbb67ae85,
+      i = 2 -> 0x3c6ef372,
+      i = 3 -> 0xa54ff53a,
+      i = 4 -> 0x510e527f,
+      i = 5 -> 0x9b05688c,
+      i = 6 -> 0x1f83d9ab,
+      ELSE -> 0x5be0cd19
+    ENDCOND
+  % Section 5.3, initial chaining value for SHA-384.
+
+  iv384: ARRAY[below(8) -> uint64] = LAMBDA (i: below(8)):
+    COND
+      i = 0 -> 0xcbbb9d5dc1059ed8,
+      i = 1 -> 0x629a292a367cd507,
+      i = 2 -> 0x9159015a3070dd17,
+      i = 3 -> 0x152fecd8f70e5939,
+      i = 4 -> 0x67332667ffc00b31,
+      i = 5 -> 0x8eb44a8768581511,
+      i = 6 -> 0xdb0c2e0d64f98fa7,
+      ELSE -> 0x47b5481dbefa4fa4
+    ENDCOND
+  % Section 5.3, initial chaining value for SHA-512.
+
+  iv512: ARRAY[below(8) -> uint64] = LAMBDA (i: below(8)):
+    COND
+      i = 0 -> 0x6a09e667f3bcc908,
+      i = 1 -> 0xbb67ae8584caa73b,
+      i = 2 -> 0x3c6ef372fe94f82b,
+      i = 3 -> 0xa54ff53a5f1d36f1,
+      i = 4 -> 0x510e527fade682d1,
+      i = 5 -> 0x9b05688c2b3e6c1f,
+      i = 6 -> 0x1f83d9abfb41bd6b,
+      ELSE -> 0x5be0cd19137e2179
+    ENDCOND
+  % Section 5.3, initial chaining value for SHA-512/224.
+
+  iv512_224: ARRAY[below(8) -> uint64] = LAMBDA (i: below(8)):
+    COND
+      i = 0 -> 0x8c3d37c819544da2,
+      i = 1 -> 0x73e1996689dcd4d6,
+      i = 2 -> 0x1dfab7ae32ff9c82,
+      i = 3 -> 0x679dd514582f9fcf,
+      i = 4 -> 0x0f6d2b697bd44da8,
+      i = 5 -> 0x77e36f7304c48942,
+      i = 6 -> 0x3f9d85a86a1d36c8,
+      ELSE -> 0x1112e6ad91d692a1
+    ENDCOND
+  % Section 5.3, initial chaining value for SHA-512/256.
+
+  iv512_256: ARRAY[below(8) -> uint64] = LAMBDA (i: below(8)):
+    COND
+      i = 0 -> 0x22312194fc2bf72c,
+      i = 1 -> 0x9f555fa3c84c64c2,
+      i = 2 -> 0x2393b86b6f53b151,
+      i = 3 -> 0x963877195940eabd,
+      i = 4 -> 0x96283ee2a88effe3,
+      i = 5 -> 0xbe5e1e2553863992,
+      i = 6 -> 0x2b0199fc2c85b8aa,
+      ELSE -> 0x0eb72ddc81c52ca2
+    ENDCOND
+  % FIPS 180-4 section 6.1.2, schedule, rounds and feed-forward.
+  sha1_state: TYPE = ARRAY[below(5) -> uint32]
+  sha1_schedule: TYPE = ARRAY[below(80) -> uint32]
+
+  sha1_extend(v: sha1_schedule, i: subrange(16, 80)): RECURSIVE sha1_schedule =
+    IF i = 80 THEN v
+    ELSE LET next_word = rol32(u32xor(u32xor(v(i - 3), v(i - 8)),
+                                  u32xor(v(i - 14), v(i - 16))), 1)
+         IN sha1_extend(v WITH [(i) := next_word], i + 1)
+    ENDIF
+    MEASURE 80 - i
+
+  sha1_f(i: below(80), b, c, d: uint32): uint32 =
+    IF i < 20 THEN ch32(b, c, d)
+    ELSIF i < 40 OR i >= 60 THEN u32xor(u32xor(b, c), d)
+    ELSE maj32(b, c, d) ENDIF
+
+  sha1_k(i: below(80)): uint32 =
+    IF i < 20 THEN 0x5a827999 ELSIF i < 40 THEN 0x6ed9eba1
+    ELSIF i < 60 THEN 0x8f1bbcdc ELSE 0xca62c1d6 ENDIF
+
+  sha1_rounds(v: sha1_schedule, a: sha1_state, i: upto(80)): RECURSIVE sha1_state =
+    IF i = 80 THEN a
+    ELSE LET temp = u32plus(u32plus(rol32(a(0), 5), sha1_f(i, a(1), a(2), a(3))),
+                            u32plus(a(4), u32plus(v(i), sha1_k(i)))),
+             next = a WITH [(0) := temp, (1) := a(0), (2) := rol32(a(1), 30),
+                            (3) := a(2), (4) := a(3)]
+         IN sha1_rounds(v, next, i + 1)
+    ENDIF
+    MEASURE 80 - i
+
+  sha1_compress(h: sha1_state, block: ARRAY[below(16) -> uint32]): sha1_state =
+    LET seed: sha1_schedule = LAMBDA (i: below(80)): IF i < 16 THEN block(i) ELSE 0 ENDIF,
+        work = sha1_rounds(sha1_extend(seed, 16), h, 0)
+    IN LAMBDA (i: below(5)): u32plus(h(i), work(i))
+
+  sha1_blocks(m: bytestring, tail: uint8, used: below(8), h: sha1_state,
+                i, count: uint32): RECURSIVE sha1_state =
+    IF i >= count THEN h
+    ELSE LET offset = u32lshift(i, 6), stop = u32lshift(count, 6),
+             block: ARRAY[below(16) -> uint32] = LAMBDA (j: below(16)):
+               padded32(m, tail, used, u32plus(offset, 4 * j), stop)
+         IN sha1_blocks(m, tail, used, sha1_compress(h, block), i + 1, count)
+    ENDIF
+    MEASURE IF i >= count THEN 0 ELSE count - i ENDIF
+
+  % FIPS 180-4 section 6.2.2, schedule, rounds and feed-forward.
+  shs32_state: TYPE = ARRAY[below(8) -> uint32]
+  shs32_schedule: TYPE = ARRAY[below(64) -> uint32]
+
+  shs32_extend(v: shs32_schedule, i: subrange(16, 64)): RECURSIVE shs32_schedule =
+    IF i = 64 THEN v
+    ELSE LET next_word = u32plus(u32plus(small_sigma1_32(v(i - 2)), v(i - 7)),
+                         u32plus(small_sigma0_32(v(i - 15)), v(i - 16)))
+         IN shs32_extend(v WITH [(i) := next_word], i + 1)
+    ENDIF
+    MEASURE 64 - i
+
+  shs32_rounds(v: shs32_schedule, a: shs32_state, i: upto(64)): RECURSIVE shs32_state =
+    IF i = 64 THEN a
+    ELSE LET t1 = u32plus(u32plus(a(7), sigma1_32(a(4))),
+                         u32plus(ch32(a(4), a(5), a(6)), u32plus(k32(i), v(i)))),
+             t2 = u32plus(sigma0_32(a(0)), maj32(a(0), a(1), a(2))),
+             next = a WITH [(0) := u32plus(t1, t2), (1) := a(0), (2) := a(1),
+                            (3) := a(2), (4) := u32plus(a(3), t1),
+                            (5) := a(4), (6) := a(5), (7) := a(6)]
+         IN shs32_rounds(v, next, i + 1)
+    ENDIF
+    MEASURE 64 - i
+
+  shs32_compress(h: shs32_state, block: ARRAY[below(16) -> uint32]): shs32_state =
+    LET seed: shs32_schedule = LAMBDA (i: below(64)): IF i < 16 THEN block(i) ELSE 0 ENDIF,
+        work = shs32_rounds(shs32_extend(seed, 16), h, 0)
+    IN LAMBDA (i: below(8)): u32plus(h(i), work(i))
+
+  shs32_blocks(m: bytestring, tail: uint8, used: below(8), h: shs32_state,
+                i, count: uint32): RECURSIVE shs32_state =
+    IF i >= count THEN h
+    ELSE LET offset = u32lshift(i, 6), stop = u32lshift(count, 6),
+             block: ARRAY[below(16) -> uint32] = LAMBDA (j: below(16)):
+               padded32(m, tail, used, u32plus(offset, 4 * j), stop)
+         IN shs32_blocks(m, tail, used, shs32_compress(h, block), i + 1, count)
+    ENDIF
+    MEASURE IF i >= count THEN 0 ELSE count - i ENDIF
+
+  % FIPS 180-4 section 6.4.2, schedule, rounds and feed-forward.
+  shs64_state: TYPE = ARRAY[below(8) -> uint64]
+  shs64_schedule: TYPE = ARRAY[below(80) -> uint64]
+
+  shs64_extend(v: shs64_schedule, i: subrange(16, 80)): RECURSIVE shs64_schedule =
+    IF i = 80 THEN v
+    ELSE LET next_word = u64plus(u64plus(small_sigma1_64(v(i - 2)), v(i - 7)),
+                         u64plus(small_sigma0_64(v(i - 15)), v(i - 16)))
+         IN shs64_extend(v WITH [(i) := next_word], i + 1)
+    ENDIF
+    MEASURE 80 - i
+
+  shs64_rounds(v: shs64_schedule, a: shs64_state, i: upto(80)): RECURSIVE shs64_state =
+    IF i = 80 THEN a
+    ELSE LET t1 = u64plus(u64plus(a(7), sigma1_64(a(4))),
+                         u64plus(ch64(a(4), a(5), a(6)), u64plus(k64(i), v(i)))),
+             t2 = u64plus(sigma0_64(a(0)), maj64(a(0), a(1), a(2))),
+             next = a WITH [(0) := u64plus(t1, t2), (1) := a(0), (2) := a(1),
+                            (3) := a(2), (4) := u64plus(a(3), t1),
+                            (5) := a(4), (6) := a(5), (7) := a(6)]
+         IN shs64_rounds(v, next, i + 1)
+    ENDIF
+    MEASURE 80 - i
+
+  shs64_compress(h: shs64_state, block: ARRAY[below(16) -> uint64]): shs64_state =
+    LET seed: shs64_schedule = LAMBDA (i: below(80)): IF i < 16 THEN block(i) ELSE 0 ENDIF,
+        work = shs64_rounds(shs64_extend(seed, 16), h, 0)
+    IN LAMBDA (i: below(8)): u64plus(h(i), work(i))
+
+  shs64_blocks(m: bytestring, tail: uint8, used: below(8), h: shs64_state,
+                i, count: uint32): RECURSIVE shs64_state =
+    IF i >= count THEN h
+    ELSE LET offset = u32lshift(i, 7), stop = u32lshift(count, 7),
+             block: ARRAY[below(16) -> uint64] = LAMBDA (j: below(16)):
+               padded64(m, tail, used, u32plus(offset, 8 * j), stop)
+         IN shs64_blocks(m, tail, used, shs64_compress(h, block), i + 1, count)
+    ENDIF
+    MEASURE IF i >= count THEN 0 ELSE count - i ENDIF
+
+  digest_bytes(n: uint8): TYPE = {d: bytestring | d`length = n}
+
+  % Sections 6.1--6.7, SHA-1 final big-endian digest.
+  sha1_bits(m: bytestring, tail: uint8, used: below(8)): digest_bytes(20) =
+    LET h = sha1_blocks(m, tail, used, iv1, 0, padded_blocks(m, FALSE))
+    IN (# length := 20, seq := LAMBDA (i: below(20)):
+            be_byte32(h(u8rshift(i, 2)), u8rem(i, 4)) #)
+
+  sha1(m: bytestring): digest_bytes(20) = sha1_bits(m, 0, 0)
+
+  % Sections 6.1--6.7, SHA-224 final big-endian digest.
+  sha224_bits(m: bytestring, tail: uint8, used: below(8)): digest_bytes(28) =
+    LET h = shs32_blocks(m, tail, used, iv224, 0, padded_blocks(m, FALSE))
+    IN (# length := 28, seq := LAMBDA (i: below(28)):
+            be_byte32(h(u8rshift(i, 2)), u8rem(i, 4)) #)
+
+  sha224(m: bytestring): digest_bytes(28) = sha224_bits(m, 0, 0)
+
+  % Sections 6.1--6.7, SHA-256 final big-endian digest.
+  sha256_bits(m: bytestring, tail: uint8, used: below(8)): digest_bytes(32) =
+    LET h = shs32_blocks(m, tail, used, iv256, 0, padded_blocks(m, FALSE))
+    IN (# length := 32, seq := LAMBDA (i: below(32)):
+            be_byte32(h(u8rshift(i, 2)), u8rem(i, 4)) #)
+
+  sha256(m: bytestring): digest_bytes(32) = sha256_bits(m, 0, 0)
+
+  % Sections 6.1--6.7, SHA-384 final big-endian digest.
+  sha384_bits(m: bytestring, tail: uint8, used: below(8)): digest_bytes(48) =
+    LET h = shs64_blocks(m, tail, used, iv384, 0, padded_blocks(m, TRUE))
+    IN (# length := 48, seq := LAMBDA (i: below(48)):
+            be_byte64(h(u8rshift(i, 3)), u8rem(i, 8)) #)
+
+  sha384(m: bytestring): digest_bytes(48) = sha384_bits(m, 0, 0)
+
+  % Sections 6.1--6.7, SHA-512 final big-endian digest.
+  sha512_bits(m: bytestring, tail: uint8, used: below(8)): digest_bytes(64) =
+    LET h = shs64_blocks(m, tail, used, iv512, 0, padded_blocks(m, TRUE))
+    IN (# length := 64, seq := LAMBDA (i: below(64)):
+            be_byte64(h(u8rshift(i, 3)), u8rem(i, 8)) #)
+
+  sha512(m: bytestring): digest_bytes(64) = sha512_bits(m, 0, 0)
+
+  % Sections 6.1--6.7, SHA-512/224 final big-endian digest.
+  sha512_224_bits(m: bytestring, tail: uint8, used: below(8)): digest_bytes(28) =
+    LET h = shs64_blocks(m, tail, used, iv512_224, 0, padded_blocks(m, TRUE))
+    IN (# length := 28, seq := LAMBDA (i: below(28)):
+            be_byte64(h(u8rshift(i, 3)), u8rem(i, 8)) #)
+
+  sha512_224(m: bytestring): digest_bytes(28) = sha512_224_bits(m, 0, 0)
+
+  % Sections 6.1--6.7, SHA-512/256 final big-endian digest.
+  sha512_256_bits(m: bytestring, tail: uint8, used: below(8)): digest_bytes(32) =
+    LET h = shs64_blocks(m, tail, used, iv512_256, 0, padded_blocks(m, TRUE))
+    IN (# length := 32, seq := LAMBDA (i: below(32)):
+            be_byte64(h(u8rshift(i, 3)), u8rem(i, 8)) #)
+
+  sha512_256(m: bytestring): digest_bytes(32) = sha512_256_bits(m, 0, 0)
+
+  % Section 5.1, enough room for the delimiter and length field, and
+  % removing one block would leave insufficient room for those fields.
+  pad_length_512: LEMMA FORALL (m: bytestring):
+    LET n = padded_blocks(m, FALSE) IN
+    m`length + 9 <= 64 * n AND 64 * n <= m`length + 72
+
+  pad_length_1024: LEMMA FORALL (m: bytestring):
+    LET n = padded_blocks(m, TRUE) IN
+    m`length + 17 <= 128 * n AND 128 * n <= m`length + 144
+
+END secure_hash

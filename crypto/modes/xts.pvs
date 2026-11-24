@@ -1,0 +1,63 @@
+% SP 800-38E sections 3--5, IEEE 1619-2007. Each operation transforms one
+% data unit in the standard order (final complete block, then partial block).
+xts: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING aes_modes, crypto_prelude@crypto_block_io, crypto_prelude@crypto_bit_splice
+
+  xts_key: DATATYPE
+  BEGIN
+    xts128(data128, tweak128: block): xts128?
+    xts256(data256, tweak256: key256): xts256?
+  END xts_key
+
+  data_key(k: xts_key): mode_key =
+    CASES k OF xts128(a,b): mk128(a), xts256(a,b): mk256(a) ENDCASES
+  tweak_key(k: xts_key): mode_key =
+    CASES k OF xts128(a,b): mk128(b), xts256(a,b): mk256(b) ENDCASES
+
+  % XTS encodes the field element little endian, with reduction by x^128+x^7+x^2+x+1.
+  alpha(t: block): block = LAMBDA (i: below(16)):
+    LET carry: uint8 = IF i=0 THEN (IF t(15)>=128 THEN 0x87 ELSE 0 ENDIF)
+                       ELSE u8rshift(t(i-1),7) ENDIF
+    IN u8xor(u8lshift(t(i),1),carry)
+
+  xex(k: mode_key,t,x: block, inverse: bool): block =
+    LET b = byvXOR(x,t) IN
+      byvXOR(t,IF inverse THEN ecb_decrypt(k,b) ELSE ecb_encrypt(k,b) ENDIF)
+
+  % The buffer holds the already transformed prefix and the unprocessed suffix.
+  % Start with base=0 and left equal to the data unit length in bits.
+  transform(k: mode_key,t: block,x: bytestring,base: upto(x`length),
+            left: uint32,inverse: bool): RECURSIVE octets_of(x`length) =
+    LET full = read_block(x,base) IN
+      IF left >= 256 AND base+16 < x`length THEN
+        transform(k,alpha(t),write_block(x,base,xex(k,t,full,inverse)),base+16,left-128,inverse)
+      ELSIF left > 128 AND left < 256 AND base+16 < x`length THEN
+        LET n: below(128) = left-128,
+            partial = read_block(x,base+16),
+            t2 = alpha(t),
+            first = xex(k,IF inverse THEN t2 ELSE t ENDIF,full,inverse),
+            last = xex(k,IF inverse THEN t ELSE t2 ENDIF,splice(partial,first,n),inverse)
+        IN write_block(write_block(x,base,last),base+16,take_bits(first,n))
+      ELSE write_block(x,base,xex(k,t,full,inverse)) ENDIF
+    MEASURE left
+
+  % SP 800-38E caps each data unit at 2^20 blocks. Partially used final
+  % octets use the high-order bits, consistent with the XTSVS test encoding.
+  unit_bits: TYPE = {b:uint32 | 128 <= b AND b <= 134217728}
+  unit_octets(n: unit_bits): index = u32div(n+7,8)
+  % CMVP IG C.I requires distinct key halves. Generate both independently.
+  distinct_halves?(k: xts_key): bool =
+    CASES k OF xts128(a,b): a /= b, xts256(a,b): a /= b ENDCASES
+  valid_key: TYPE = (distinct_halves?)
+  encrypt(k: valid_key,t: block,n:unit_bits,x:octets_of(unit_octets(n))): octets_of(unit_octets(n)) =
+    transform(data_key(k),ecb_encrypt(tweak_key(k),t),x,0,n,FALSE)
+  decrypt(k: valid_key,t: block,n:unit_bits,x:octets_of(unit_octets(n))): octets_of(unit_octets(n)) =
+    transform(data_key(k),ecb_encrypt(tweak_key(k),t),x,0,n,TRUE)
+
+  encrypt_length: LEMMA FORALL(k:valid_key,t:block,n:unit_bits,x:octets_of(unit_octets(n))):
+    encrypt(k,t,n,x)`length = x`length
+  decrypt_length: LEMMA FORALL(k:valid_key,t:block,n:unit_bits,x:octets_of(unit_octets(n))):
+    decrypt(k,t,n,x)`length = x`length
+END xts

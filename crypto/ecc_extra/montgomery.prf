@@ -1,0 +1,1539 @@
+(|montgomery|
+ (|wire_TCC1| 0
+  (|wire_TCC1-1| NIL 4004537385
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|wire| SUBTYPE "montgomery.nbytes(montgomery.wide)" "index"
+    (11 37 11 49))))
+ (|small_TCC1| 0
+  (|small_TCC1-1| NIL 4004537386
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|small| SUBTYPE "0"
+    "below(crypto_limbs.zero_words(montgomery.width(montgomery.wide))`len)"
+    (12 78 12 79))))
+ (|small_TCC2| 0
+  (|small_TCC2-1| NIL 4004537386
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|small| SUBTYPE
+    "crypto_limbs.zero_words(montgomery.width(montgomery.wide)) WITH [`word(0) := montgomery.v]"
+    "fe(montgomery.wide)" (12 42 12 84))))
+ (|prime_TCC1| 0
+  (|prime_TCC1-1| NIL 4004537386
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|prime| SUBTYPE
+    "[: 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF :]"
+    "ARRAY[below(14) -> uint32]" (14 35 17 39))))
+ (|prime_TCC2| 0
+  (|prime_TCC2-1| NIL 4004537387
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)) SHOSTAK
+   (|prime| SUBTYPE
+    "(# len := 14, word := [: 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF :] #)"
+    "fe(montgomery.wide)" (14 17 17 42))))
+ (|prime_TCC3| 0
+  (|prime_TCC3-1| NIL 4004537387
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|prime| SUBTYPE
+    "[: 0xFFFFFFED, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x7FFFFFFF :]"
+    "ARRAY[below(8) -> uint32]" (18 26 19 63))))
+ (|prime_TCC4| 0
+  (|prime_TCC4-1| NIL 4004537387
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)) SHOSTAK
+   (|prime| SUBTYPE
+    "(# len := 8, word := [: 0xFFFFFFED, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x7FFFFFFF :] #)"
+    "fe(montgomery.wide)" (18 9 19 66))))
+ (|order_TCC1| 0
+  (|order_TCC1-1| NIL 4004537388
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|order| SUBTYPE
+    "[: 0xAB5844F3, 0x2378C292, 0x8DC58F55, 0x216CC272, 0xAED63690, 0xC44EDB49, 0x7CCA23E9, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x3FFFFFFF :]"
+    "ARRAY[below(14) -> uint32]" (21 35 24 39))))
+ (|order_TCC2| 0
+  (|order_TCC2-1| NIL 4004537388
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|order| SUBTYPE
+    "[: 0x5CF5D3ED, 0x5812631A, 0xA2F79CD6, 0x14DEF9DE, 0x0, 0x0, 0x0, 0x10000000 :]"
+    "ARRAY[below(8) -> uint32]" (25 26 26 63))))
+ (|ed_scale_TCC1| 0
+  (|ed_scale_TCC1-1| NIL 4004537389
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|ed_scale| SUBTYPE
+    "[: 0x8AAE4E6C, 0x2C85DE1E, 0x54419CA5, 0xC066F7ED, 0xFADDBDA4, 0x734CDE9, 0x2D182975, 0xC945AF01, 0x4B71AA96, 0x43E34F71, 0x5F44D541, 0x77ED1AE4, 0xD649EED0, 0x45B2C5F7 :]"
+    "ARRAY[below(14) -> uint32]" (28 35 31 39))))
+ (|ed_scale_TCC2| 0
+  (|ed_scale_TCC2-1| NIL 4004537389
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|ed_scale| SUBTYPE
+    "[: 0xBA81E7, 0x3391FB55, 0xB482E57D, 0x3A5E2C2E, 0xFC03B081, 0x2D84F723, 0x9F5FF944, 0x70D9120B :]"
+    "ARRAY[below(8) -> uint32]" (32 26 33 63))))
+ (|w_shift_TCC1| 0
+  (|w_shift_TCC1-1| NIL 4004537390
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|w_shift| SUBTYPE
+    "[: 0xCB8C, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xAAAAAAAA, 0xAAAAAAAA, 0xAAAAAAAA, 0xAAAAAAAA, 0xAAAAAAAA, 0xAAAAAAAA, 0xAAAAAAAA :]"
+    "ARRAY[below(14) -> uint32]" (35 35 38 39))))
+ (|w_shift_TCC2| 0
+  (|w_shift_TCC2-1| NIL 4004537390
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   SHOSTAK
+   (|w_shift| SUBTYPE
+    "[: 0xAAAD2451, 0xAAAAAAAA, 0xAAAAAAAA, 0xAAAAAAAA, 0xAAAAAAAA, 0xAAAAAAAA, 0xAAAAAAAA, 0x2AAAAAAA :]"
+    "ARRAY[below(8) -> uint32]" (39 26 40 63))))
+ (|inverse_TCC1| 0
+  (|inverse_TCC1-1| NIL 4004537390
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|inverse| SUBTYPE "montgomery.small(montgomery.w, 2)"
+    "words_of(montgomery.prime(montgomery.w)`len)" (41 66 41 76))))
+ (|inverse_TCC2| 0
+  (|inverse_TCC2-1| NIL 4004537390
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|inverse| SUBTYPE "montgomery.prime(montgomery.w)"
+    "words_of(montgomery.x`len)" (41 78 41 86))))
+ (|inverse_TCC3| 0
+  (|inverse_TCC3-1| NIL 4004537390
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|inverse| SUBTYPE
+    "crypto_limbs.pow_mod(montgomery.x, crypto_limbs.sub_words(montgomery.prime(montgomery.w), montgomery.small(montgomery.w, 2)), montgomery.prime(montgomery.w))"
+    "fe(montgomery.w)" (41 37 41 87))))
+ (|step_TCC1| 0
+  (|step_TCC1-1| NIL 4004537390
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.r`p`z" "words_of(montgomery.r`p`x`len)"
+    (46 36 46 41))))
+ (|step_TCC2| 0
+  (|step_TCC2-1| NIL 4004537390
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.r`p`x`len)"
+    (46 42 46 43))))
+ (|step_TCC3| 0
+  (|step_TCC3-1| NIL 4004537390
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.a`len)" (46 61 46 62))))
+ (|step_TCC4| 0
+  (|step_TCC4-1| NIL 4004537390
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.b`len)" (47 49 47 50))))
+ (|step_TCC5| 0
+  (|step_TCC5-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|step| SUBTYPE "montgomery.bb" "words_of(montgomery.aa`len)"
+    (47 66 47 68))))
+ (|step_TCC6| 0
+  (|step_TCC6-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.aa`len)"
+    (47 69 47 70))))
+ (|step_TCC7| 0
+  (|step_TCC7-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.r`q`z" "words_of(montgomery.r`q`x`len)"
+    (48 24 48 29))))
+ (|step_TCC8| 0
+  (|step_TCC8-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.r`q`x`len)"
+    (48 30 48 31))))
+ (|step_TCC9| 0
+  (|step_TCC9-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.d`len)" (49 23 49 24))))
+ (|step_TCC10| 0
+  (|step_TCC10-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.c`len)" (49 42 49 43))))
+ (|step_TCC11| 0
+  (|step_TCC11-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|step| SUBTYPE "montgomery.cb" "words_of(montgomery.da`len)"
+    (49 62 49 64))))
+ (|step_TCC12| 0
+  (|step_TCC12-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.da`len)"
+    (49 65 49 66))))
+ (|step_TCC13| 0
+  (|step_TCC13-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE
+    "crypto_limbs.mul_mod(montgomery.aa, montgomery.bb, montgomery.m)"
+    "fe(montgomery.w)" (51 18 51 34))))
+ (|step_TCC14| 0
+  (|step_TCC14-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.a24`len)"
+    (51 74 51 75))))
+ (|step_TCC15| 0
+  (|step_TCC15-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE
+    "crypto_limbs.mul_mod(montgomery.a24, montgomery.e, montgomery.m)"
+    "words_of(montgomery.aa`len)" (51 60 51 76))))
+ (|step_TCC16| 0
+  (|step_TCC16-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.e`len)" (51 80 51 81))))
+ (|step_TCC17| 0
+  (|step_TCC17-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE
+    "crypto_limbs.mul_mod(montgomery.e, crypto_limbs.add_mod(montgomery.aa, crypto_limbs.mul_mod(montgomery.a24, montgomery.e, montgomery.m), montgomery.m), montgomery.m)"
+    "fe(montgomery.w)" (51 39 51 82))))
+ (|step_TCC18| 0
+  (|step_TCC18-1| NIL 4004537391
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.plus`len)"
+    (52 36 52 37))))
+ (|step_TCC19| 0
+  (|step_TCC19-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE
+    "crypto_limbs.mul_mod(montgomery.plus, montgomery.plus, montgomery.m)"
+    "fe(montgomery.w)" (52 18 52 38))))
+ (|step_TCC20| 0
+  (|step_TCC20-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.minus`len)"
+    (52 73 52 74))))
+ (|step_TCC21| 0
+  (|step_TCC21-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|step| SUBTYPE "montgomery.m" "words_of(montgomery.u`len)" (52 76 52 77))))
+ (|step_TCC22| 0
+  (|step_TCC22-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|step| SUBTYPE
+    "crypto_limbs.mul_mod(montgomery.u, crypto_limbs.mul_mod(montgomery.minus, montgomery.minus, montgomery.m), montgomery.m)"
+    "fe(montgomery.w)" (52 43 52 78))))
+ (|ladder_from_TCC1| 0
+  (|ladder_from_TCC1-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|minus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|ladder_from| SUBTYPE "(number_fields.-)(montgomery.i, 1)"
+    "{j: integertypes.uint16 | reals.<=(j, number_fields.*(32, montgomery.width(montgomery.w)))}"
+    (58 31 58 34))))
+ (|ladder_from_TCC2| 0
+  (|ladder_from_TCC2-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)) SHOSTAK
+   (|ladder_from| TERMINATION
+    "montgomery.ladder_from(montgomery.w, montgomery.u, montgomery.k, montgomery.next, (number_fields.-)(montgomery.i, 1))"
+    "NIL" (58 8 58 35))))
+ (|ladder_from_TCC3| 0
+  (|ladder_from_TCC3-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|minus_u16_i16| APPLICATION-JUDGEMENT "int32" |integertypes| NIL)
+    (|minus_i32_u32| APPLICATION-JUDGEMENT "int64" |integertypes| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (* CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|uint16| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (- CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|ladder_from| SUBTYPE "(number_fields.-)(montgomery.i, 1)"
+    "{j: integertypes.uint16 | reals.<(j, number_fields.*(32, montgomery.k`len))}"
+    (57 23 57 26))))
+ (|ladder_TCC1| 0
+  (|ladder_TCC1-1| NIL 4004537392
+   (""
+    (THEN (SKOSIMP*) (HIDE -) (EXPAND "width") (EXPAND "bits")
+     (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|bits| CONST-DECL "[bool -> subrange(255, 448)]" |montgomery| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|times_u8_u8| APPLICATION-JUDGEMENT "uint16" |integertypes| NIL)
+    (|int_times_even_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|real_le_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL))
+   SHOSTAK
+   (|ladder| SUBTYPE "montgomery.bits(montgomery.w)"
+    "{j: integertypes.uint16 | reals.<=(j, number_fields.*(32, montgomery.width(montgomery.w)))}"
+    (63 26 63 33))))
+ (|clamp_TCC1| 0
+  (|clamp_TCC1-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|wire| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|nbytes| CONST-DECL "[bool -> subrange(32, 56)]" |montgomery| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|clamp| SUBTYPE "montgomery.j" "below(montgomery.k`length)"
+    (68 19 68 20))))
+ (|clamp_TCC2| 0
+  (|clamp_TCC2-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|wire| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|nbytes| CONST-DECL "[bool -> subrange(32, 56)]" |montgomery| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK (|clamp| SUBTYPE "0" "below(montgomery.k`length)" (67 19 67 20))))
+ (|clamp_TCC3| 0
+  (|clamp_TCC3-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|clamp| SUBTYPE
+    "montgomery.k WITH [`seq(0) := integer_bv_ops.u8and(montgomery.k`seq(0), IF montgomery.w THEN 252 ELSE 248 ENDIF), `seq(montgomery.j) := IF montgomery.w THEN integer_bv_ops.u8or(montgomery.k`seq(montgomery.j), 128) ELSE integer_bv_ops.u8or(integer_bv_ops.u8and(montgomery.k`seq(montgomery.j), 127), 64) ENDIF]"
+    "wire(montgomery.w)" (67 6 68 92))))
+ (|decode_u_TCC1| 0
+  (|decode_u_TCC1-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|wire| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|nbytes| CONST-DECL "[bool -> subrange(32, 56)]" |montgomery| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|decode_u| SUBTYPE "31" "below(montgomery.u`length)" (70 40 70 42))))
+ (|decode_u_TCC2| 0
+  (|decode_u_TCC2-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|decode_u| SUBTYPE "montgomery.m" "words_of(montgomery.raw`len)"
+    (72 22 72 23))))
+ (|decode_u_TCC3| 0
+  (|decode_u_TCC3-1| NIL 4004537392
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|words_of| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|wire| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|nbytes| CONST-DECL "[bool -> subrange(32, 56)]" |montgomery| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|decode_u| SUBTYPE "crypto_limbs.sub_words(montgomery.raw, montgomery.m)"
+    "fe(montgomery.w)" (72 30 72 46))))
+ (|x_scalar_TCC1| 0
+  (|x_scalar_TCC1-1| NIL 4004537393
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|wire| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|nbytes| CONST-DECL "[bool -> subrange(32, 56)]" |montgomery| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|x_scalar| SUBTYPE "montgomery.prime(montgomery.w)"
+    "words_of(montgomery.r`x`len)" (75 42 75 50))))
+ (|x25519_TCC1| 0
+  (|x25519_TCC1-1| NIL 4004537393
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|nbytes| CONST-DECL "[bool -> subrange(32, 56)]" |montgomery| NIL))
+   SHOSTAK
+   (|x25519| SUBTYPE "montgomery.k" "wire(booleans.FALSE)" (76 61 76 62))))
+ (|x25519_TCC2| 0
+  (|x25519_TCC2-1| NIL 4004537393
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|nbytes| CONST-DECL "[bool -> subrange(32, 56)]" |montgomery| NIL))
+   SHOSTAK
+   (|x25519| SUBTYPE "montgomery.u" "wire(booleans.FALSE)" (76 63 76 64))))
+ (|x25519_TCC3| 0
+  (|x25519_TCC3-1| NIL 4004537393
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "x_scalar(FALSE,k!1,u!1)") (EXPAND "nbytes")
+     (ASSERT))
+    NIL NIL)
+   ((|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| NIL)
+    (FALSE CONST-DECL "bool" |booleans| NIL)
+    (|x_scalar| CONST-DECL "[d: [w: bool, wire(w), wire(w)] -> wire(d`1)]"
+     |montgomery| NIL)
+    (|wire| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|nbytes| CONST-DECL "[bool -> subrange(32, 56)]" |montgomery| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|x25519| SUBTYPE
+    "montgomery.x_scalar(booleans.FALSE, montgomery.k, montgomery.u)"
+    "octets_of(32)" (76 46 76 65))))
+ (|x448_TCC1| 0
+  (|x448_TCC1-1| NIL 4004537393
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|nbytes| CONST-DECL "[bool -> subrange(32, 56)]" |montgomery| NIL))
+   SHOSTAK
+   (|x448| SUBTYPE "montgomery.k" "wire(booleans.TRUE)" (77 58 77 59))))
+ (|x448_TCC2| 0
+  (|x448_TCC2-1| NIL 4004537393
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|nbytes| CONST-DECL "[bool -> subrange(32, 56)]" |montgomery| NIL))
+   SHOSTAK
+   (|x448| SUBTYPE "montgomery.u" "wire(booleans.TRUE)" (77 60 77 61))))
+ (|x448_TCC3| 0
+  (|x448_TCC3-1| NIL 4004537393
+   (""
+    (THEN (SKOSIMP*) (TYPEPRED "x_scalar(TRUE,k!1,u!1)") (EXPAND "nbytes")
+     (ASSERT))
+    NIL NIL)
+   ((|octets_of| TYPE-EQ-DECL NIL |crypto_buffers| NIL)
+    (TRUE CONST-DECL "bool" |booleans| NIL)
+    (|x_scalar| CONST-DECL "[d: [w: bool, wire(w), wire(w)] -> wire(d`1)]"
+     |montgomery| NIL)
+    (|wire| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|nbytes| CONST-DECL "[bool -> subrange(32, 56)]" |montgomery| NIL)
+    (|subrange| TYPE-EQ-DECL NIL |integers| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|bytestring| TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|byte| NONEMPTY-TYPE-EQ-DECL NIL |bytestrings| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|index| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|x448| SUBTYPE
+    "montgomery.x_scalar(booleans.TRUE, montgomery.k, montgomery.u)"
+    "octets_of(56)" (77 44 77 62))))
+ (|partial_valid_TCC1| 0
+  (|partial_valid_TCC1-1| NIL 4004537393
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|partial_valid| SUBTYPE "montgomery.m" "words_of(montgomery.x`len)"
+    (85 40 85 41))))
+ (|partial_valid_TCC2| 0
+  (|partial_valid_TCC2-1| NIL 4004537393
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|partial_valid| SUBTYPE "montgomery.m" "words_of(montgomery.y`len)"
+    (85 62 85 63))))
+ (|partial_valid_TCC3| 0
+  (|partial_valid_TCC3-1| NIL 4004537393
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   NIL SHOSTAK
+   (|partial_valid| SUBTYPE "montgomery.m" "words_of(montgomery.a`len)"
+    (86 74 86 75))))
+ (|partial_valid_TCC4| 0
+  (|partial_valid_TCC4-1| NIL 4004537393
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|partial_valid| SUBTYPE
+    "crypto_limbs.mul_mod(montgomery.a, montgomery.x, montgomery.m)"
+    "words_of(crypto_limbs.mul_mod(montgomery.x, montgomery.x, montgomery.m)`len)"
+    (86 62 86 76))))
+ (|partial_valid_TCC5| 0
+  (|partial_valid_TCC5-1| NIL 4004537393
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|partial_valid| SUBTYPE "montgomery.m"
+    "words_of(crypto_limbs.mul_mod(montgomery.x, montgomery.x, montgomery.m)`len)"
+    (86 77 86 78))))
+ (|partial_valid_TCC6| 0
+  (|partial_valid_TCC6-1| NIL 4004537393
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|partial_valid| SUBTYPE "montgomery.small(montgomery.w, 1)"
+    "words_of(crypto_limbs.add_mod(crypto_limbs.mul_mod(montgomery.x, montgomery.x, montgomery.m), crypto_limbs.mul_mod(montgomery.a, montgomery.x, montgomery.m), montgomery.m)`len)"
+    (86 80 86 90))))
+ (|partial_valid_TCC7| 0
+  (|partial_valid_TCC7-1| NIL 4004537393
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL NIL)
+   ((|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|width| CONST-DECL "[bool -> limb_count]" |montgomery| NIL)
+    (<= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (AND CONST-DECL "[[bool, bool] -> bool]" |booleans| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|limbs| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (|uint32| TYPE-EQ-DECL NIL |integertypes| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|limb_count| TYPE-EQ-DECL NIL |crypto_limbs| NIL)
+    (= CONST-DECL "[[T, T] -> boolean]" |equalities| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   SHOSTAK
+   (|partial_valid| SUBTYPE "montgomery.m"
+    "words_of(crypto_limbs.add_mod(crypto_limbs.mul_mod(montgomery.x, montgomery.x, montgomery.m), crypto_limbs.mul_mod(montgomery.a, montgomery.x, montgomery.m), montgomery.m)`len)"
+    (86 91 86 92))))
+ (|swap_involution| 0
+  (|swap_involution-0| "" 4004537728
+   (""
+    (APPLY
+     (RERUN
+      ("" (APPLY (RERUN ("" (SKOLEM 1 ("w!1" "r!1" "b!1")) (POSTPONE))))
+       (POSTPONE))))
+    (("" (CASE "b!1")
+      (("1"
+        (APPLY
+         (RERUN
+          ("1" (APPLY (RERUN ("1" (EXPAND "swap") (POSTPONE)))) (POSTPONE))))
+        (("1"
+          (APPLY
+           (RERUN
+            ("1"
+             (SIMPLIFY * T T :REWRITE-FLAG NIL :FLUSH? NIL :CASES-REWRITE? NIL
+                       :TYPE-CONSTRAINTS? T :IGNORE-PROVER-OUTPUT? NIL
+                       :LET-REDUCE? T :QUANT-SIMP? NIL :IMPLICIT-TYPEPREDS? NIL
+                       :IGNORE-TYPEPREDS? NIL)
+             (POSTPONE))))
+          (("1"
+            (APPLY
+             (RERUN
+              ("1" (EXTENSIONALITY "[# p: coord(w!1), q: coord(w!1) #]")
+               (APPLY
+                (RERUN
+                 ("1"
+                  (INSTANTIATE -1
+                   (("(# p := r!1`p, q := r!1`q #)" !TYPE
+                     "[# p: coord(w!1), q: coord(w!1) #]")
+                    ("r!1" !TYPE "pair(w!1)"))
+                   NIL)
+                  (PROPAX)))))))
+            NIL NIL))
+          NIL))
+        NIL)
+       ("2"
+        (APPLY
+         (RERUN
+          ("2" (APPLY (RERUN ("2" (EXPAND "swap") (POSTPONE)))) (POSTPONE))))
+        (("2"
+          (APPLY
+           (RERUN
+            ("2"
+             (SIMPLIFY * T T :REWRITE-FLAG NIL :FLUSH? NIL :CASES-REWRITE? NIL
+                       :TYPE-CONSTRAINTS? T :IGNORE-PROVER-OUTPUT? NIL
+                       :LET-REDUCE? T :QUANT-SIMP? NIL :IMPLICIT-TYPEPREDS? NIL
+                       :IGNORE-TYPEPREDS? NIL))))
+          NIL NIL))
+        NIL))
+      NIL))
+    NIL)
+   ((|swap| CONST-DECL "[d: [w: bool, pair(w), bool] -> pair(d`1)]"
+     |montgomery| NIL)
+    (|fe| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|coord| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|pair| TYPE-EQ-DECL NIL |montgomery| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL))
+   SHOSTAK)
+  (|swap_involution-1| NIL 4004537393
+   ("" (THEN (SKOSIMP*) (CASE "b!1") (EXPAND* "swap") (ASSERT)) NIL NIL) NIL
+   SHOSTAK))
+ (|invalid_infinity| 0
+  (|invalid_infinity-1| NIL 4004537393
+   ("" (THEN (SKOSIMP*) (EXPAND "partial_valid") (EXPAND "infinity") (ASSERT))
+    NIL NIL)
+   ((|partial_valid| CONST-DECL "[[w: bool, affine(w)] -> bool]" |montgomery|
+     NIL)
+    (|infinity| CONST-DECL "[w: bool -> affine(w)]" |montgomery| NIL))
+   SHOSTAK)))
+

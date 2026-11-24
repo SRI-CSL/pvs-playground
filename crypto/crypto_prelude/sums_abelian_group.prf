@@ -1,0 +1,529 @@
+(|sums_abelian_group|
+ (|IMP_sums_def_TCC1| 0
+  (|IMP_sums_def_TCC1-1| NIL 3998068630
+   (""
+    (THEN (LEMMA "sums_abelian_group.abel_group")
+     (GRIND :DEFS NIL :REWRITES
+      ("field?" "division_ring?" "ring_with_one?" "ring?" "abelian_group?")))
+    NIL NIL)
+   ((|zero| FORMAL-CONST-DECL "T" |sums_abelian_group| NIL)
+    (+ FORMAL-CONST-DECL "[[T, T] -> T]" |sums_abelian_group| NIL)
+    (T FORMAL-TYPE-DECL NIL |sums_abelian_group| NIL)
+    (|abelian_group?| CONST-DECL "[set[T] -> bool]" |group_def| |algebra|)
+    (|abel_group| FORMULA-DECL NIL |sums_abelian_group| NIL))
+   NIL
+   (|IMP_sums_def| ASSUMING
+    "sums_def[sums_abelian_group.T, sums_abelian_group.+, sums_abelian_group.zero].sums_def"
+    "group: ASSUMPTION group_def[sums_def.T, sums_def.+, sums_def.zero].group?(sets[sums_def.T].fullset)"
+    (8 14 8 34))))
+ (|IMP_abelian_group_TCC1| 0
+  (|IMP_abelian_group_TCC1-1| NIL 3998068630
+   (""
+    (THEN (LEMMA "sums_abelian_group.abel_group")
+     (GRIND :DEFS NIL :REWRITES
+      ("field?" "division_ring?" "ring_with_one?" "ring?" "abelian_group?")))
+    NIL NIL)
+   ((|abel_group| FORMULA-DECL NIL |sums_abelian_group| NIL)) NIL
+   (|IMP_abelian_group| ASSUMING
+    "algebra@abelian_group[sums_abelian_group.T, sums_abelian_group.+, sums_abelian_group.zero].abelian_group"
+    "fullset_is_abelian_group: ASSUMPTION group_def[abelian_group.T, abelian_group.*, abelian_group.one].abelian_group?(sets[abelian_group.T].fullset)"
+    (9 14 9 47))))
+ (|sum_f_rev_TCC1| 0
+  (|sum_f_rev_TCC1-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL) NIL NIL
+   (|sum_f_rev| SUBTYPE
+    "(number_fields.-)((number_fields.-)(sums_abelian_group.n, 1), sums_abelian_group.k)"
+    "below(sums_abelian_group.n)" (13 67 13 76))))
+ (|sum_f_rev| 0
+  (|sum_f_rev-legacy| NIL 3866029903
+   ("" (INDUCT "n")
+    (("1" (GRIND) NIL NIL)
+     ("2" (SKOLEM + "n")
+      (("2" (GROUND)
+        (("2" (SKEEP)
+          (("2" (USE "sum_f_add_indexn")
+            (("2" (REPLACE -1 :HIDE? T)
+              (("2" (GROUND)
+                (("2" (LEMMA "sum_f_add_index0")
+                  (("2" (INST -1 "n" "LAMBDA (k: below(n + 1)): X(n - k)")
+                    (("2" (REPLACE -1 :DIR RL :HIDE? T)
+                      (("2" (GROUND)
+                        (("2" (INST?)
+                          (("2" (REPLACE -1 :HIDE? T)
+                            (("2" (GROUND)
+                              (("2" (USE "abel_group")
+                                (("2" (EXPAND "abelian_group?")
+                                  (("2" (GROUND)
+                                    (("2" (EXPAND "commutative?")
+                                      (("2" (EXPAND "restrict")
+                                        (("2" (INST?)
+                                          (("1" (GRIND) NIL NIL)
+                                           ("2" (GRIND) NIL NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|sum_sign_factor| 0
+  (|sum_sign_factor-legacy| NIL 3864927817
+   ("" (INDUCT "n")
+    (("1" (SKEEP)
+      (("1" (EXPAND "sum")
+        (("1" (GROUND)
+          (("1" (USE ABEL_GROUP)
+            (("1" (EXPAND "abelian_group?")
+              (("1" (EXPAND "group?")
+                (("1" (EXPAND "monoid?")
+                  (("1" (EXPAND "monad?")
+                    (("1" (GROUND)
+                      (("1" (EXPAND "identity?")
+                        (("1" (INST?)
+                          (("1" (GROUND)
+                            (("1" (EXPAND "restrict") (("1" (PROPAX) NIL NIL))
+                              NIL))
+                            NIL)
+                           ("2" (EXPAND "fullset") (("2" (PROPAX) NIL NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL)
+     ("2" (SKOLEM + "n")
+      (("2" (GROUND)
+        (("2" (SKEEP)
+          (("2" (INST?)
+            (("2" (EXPAND "sum" +)
+              (("2" (USE "abel_group")
+                (("2" (EXPAND "abelian_group?")
+                  (("2" (EXPAND "group?")
+                    (("2" (EXPAND "monoid?")
+                      (("2" (GROUND)
+                        (("2" (HIDE -1 -3)
+                          (("2" (EXPAND "associative?")
+                            (("2" (EXPAND "commutative?")
+                              (("2" (EXPAND "restrict")
+                                (("2" (INST-CP -1 "A(n)" "sum(B, n)" "B(n)")
+                                  (("1"
+                                    (INST-CP -1 "sum(A, n)" "A(n)"
+                                     "sum(B, n) + B(n)")
+                                    (("1" (REPLACE -2 :HIDE? T)
+                                      (("1" (REPLACE -2 :DIR RL :HIDE? T)
+                                        (("1" (INST -2 "A(n)" "sum(B, n)")
+                                          (("1" (REPLACE -2 :HIDE? T)
+                                            (("1"
+                                              (INST-CP -1 "sum(B, n)" "A(n)"
+                                               "B(n)")
+                                              (("1" (REPLACE -2 :HIDE? T)
+                                                (("1"
+                                                  (INST -1 "sum(A, n)"
+                                                   "sum(B, n)" "A(n) + B(n)")
+                                                  (("1"
+                                                    (REPLACE -1 :DIR RL :HIDE?
+                                                             T)
+                                                    (("1" (REPLACE -1)
+                                                      (("1" (PROPAX) NIL NIL))
+                                                      NIL))
+                                                    NIL)
+                                                   ("2" (HIDE -1 2)
+                                                    (("2" (EXPAND "fullset")
+                                                      (("2" (PROPAX) NIL NIL))
+                                                      NIL))
+                                                    NIL)
+                                                   ("3" (EXPAND "fullset")
+                                                    (("3" (PROPAX) NIL NIL))
+                                                    NIL)
+                                                   ("4" (EXPAND "fullset")
+                                                    (("4" (PROPAX) NIL NIL))
+                                                    NIL))
+                                                  NIL))
+                                                NIL)
+                                               ("2" (EXPAND "fullset")
+                                                (("2" (PROPAX) NIL NIL)) NIL)
+                                               ("3" (EXPAND "fullset")
+                                                (("3" (PROPAX) NIL NIL)) NIL)
+                                               ("4" (EXPAND "fullset")
+                                                (("4" (PROPAX) NIL NIL)) NIL))
+                                              NIL))
+                                            NIL)
+                                           ("2" (EXPAND "fullset")
+                                            (("2" (PROPAX) NIL NIL)) NIL)
+                                           ("3" (EXPAND "fullset")
+                                            (("3" (PROPAX) NIL NIL)) NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL)
+                                     ("2" (EXPAND "fullset")
+                                      (("2" (PROPAX) NIL NIL)) NIL)
+                                     ("3" (EXPAND "fullset")
+                                      (("3" (PROPAX) NIL NIL)) NIL)
+                                     ("4" (EXPAND "fullset")
+                                      (("4" (PROPAX) NIL NIL)) NIL))
+                                    NIL)
+                                   ("2" (EXPAND "fullset")
+                                    (("2" (PROPAX) NIL NIL)) NIL)
+                                   ("3" (EXPAND "fullset")
+                                    (("3" (PROPAX) NIL NIL)) NIL)
+                                   ("4" (EXPAND "fullset")
+                                    (("4" (PROPAX) NIL NIL)) NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|sum_f_sign_factor| 0
+  (|sum_f_sign_factor-legacy| NIL 3864927846
+   ("" (SKEEP)
+    (("" (EXPAND "sum_f")
+      ((""
+        (CASE
+            "pad(n)(LAMBDA (k: below(n)): A(k) + B(k)) = LAMBDA (k: nat): pad(n)(A)(k) + pad(n)(B)(k)")
+        (("1" (REPLACE -1 :HIDE? T) (("1" (USE "sum_sign_factor") NIL NIL))
+          NIL)
+         ("2" (HIDE 2)
+          (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+            (("2" (EXPAND "pad")
+              (("2" (CASE "x!1 < n")
+                (("1" (REDUCE) NIL NIL)
+                 ("2" (REDUCE)
+                  (("2" (HIDE 1)
+                    (("2" (USE "abel_group")
+                      (("2" (EXPAND "abelian_group?")
+                        (("2" (EXPAND "group?")
+                          (("2" (EXPAND "monoid?")
+                            (("2" (EXPAND "monad?")
+                              (("2" (GROUND)
+                                (("2" (EXPAND "identity?")
+                                  (("2" (INST?)
+                                    (("1" (EXPAND "restrict")
+                                      (("1" (PROPAX) NIL NIL)) NIL)
+                                     ("2" (EXPAND "fullset")
+                                      (("2" (PROPAX) NIL NIL)) NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|sum_invert| 0
+  (|sum_invert-legacy| NIL 3865013438
+   ("" (INDUCT "m")
+    (("1" (GRIND)
+      (("1" (USE "sum_zero") (("1" (REPLACE -1) (("1" (PROPAX) NIL NIL)) NIL))
+        NIL))
+      NIL)
+     ("2" (SKOLEM + "m")
+      (("2" (GROUND)
+        (("2" (EXPAND "sum" 1 (1 4))
+          (("2" (SKEEP)
+            (("2" (INST?)
+              (("2" (REPLACE -1) (("2" (USE "sum_sign_factor") NIL NIL)) NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|sum_f_invert| 0
+  (|sum_f_invert-legacy| NIL 3864927931
+   ("" (SKEEP)
+    (("" (EXPAND "sum_f")
+      (("" (EXPAND "pad")
+        ((""
+          (CASE-REPLACE "(LAMBDA (i_1: nat):
+              IF i_1 < m
+                THEN sum(LAMBDA (i: nat):
+                           IF i < n THEN A(i_1)(i) ELSE zero ENDIF,
+                         n)
+              ELSE zero
+              ENDIF) = (LAMBDA (i_1: nat):
+              sum(LAMBDA(i: nat):
+                IF i_1 < m THEN
+                  IF i < n THEN A(i_1)(i) ELSE zero ENDIF
+                ELSE zero ENDIF, n))")
+          (("1"
+            (CASE-REPLACE "(LAMBDA (i_1: nat):
+                 IF i_1 < n
+                   THEN sum(LAMBDA (i: nat):
+                              IF i < m THEN A(i)(i_1) ELSE zero ENDIF,
+                            m)
+                 ELSE zero
+                 ENDIF) = (LAMBDA (i_1: nat):
+                 sum(LAMBDA(i: nat):
+                   IF i_1 < n THEN
+                     IF i < m THEN A(i)(i_1) ELSE zero ENDIF
+                   ELSE zero ENDIF, m))")
+            (("1" (HIDE-ALL-BUT 1)
+              (("1" (LEMMA "sum_invert")
+                (("1" (INST -1 _ "m" "n")
+                  (("1"
+                    (INST -1
+                     "LAMBDA (i_1: nat): LAMBDA (i: nat): IF i_1 < m THEN IF i < n THEN A(i_1)(i) ELSE zero ENDIF ELSE zero ENDIF")
+                    (("1" (REPLACE -1 :HIDE? T)
+                      (("1"
+                        (CASE-REPLACE "(LAMBDA (l: nat):
+                  sum(LAMBDA (k: nat):
+                        IF k < m THEN IF l < n THEN A(k)(l) ELSE zero ENDIF
+                        ELSE zero
+                        ENDIF,
+                      m)) = (LAMBDA (i_1: nat):
+                    sum(LAMBDA (i: nat):
+                          IF i_1 < n THEN IF i < m THEN A(i)(i_1) ELSE zero ENDIF
+                          ELSE zero
+                          ENDIF,
+                        m))")
+                        (("1" (HIDE 2)
+                          (("1" (APPLY-EXTENSIONALITY :HIDE? T)
+                            (("1"
+                              (CASE-REPLACE "(LAMBDA (k: nat):
+                  IF k < m THEN IF x!1 < n THEN A(k)(x!1) ELSE zero ENDIF
+                  ELSE zero
+                  ENDIF) = (LAMBDA (i: nat):
+                   IF x!1 < n THEN IF i < m THEN A(i)(x!1) ELSE zero ENDIF
+                   ELSE zero
+                   ENDIF)")
+                              (("1" (HIDE 2)
+                                (("1" (APPLY-EXTENSIONALITY :HIDE? T)
+                                  (("1" (GRIND) NIL NIL)) NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL)
+             ("2" (HIDE 2)
+              (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+                (("2" (CASE "x!1 < n")
+                  (("1" (REDUCE) NIL NIL)
+                   ("2" (REDUCE)
+                    (("2" (HIDE -1 1)
+                      (("2" (USE "sum_zero")
+                        (("2" (REPLACE -1) (("2" (PROPAX) NIL NIL)) NIL)) NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL)
+           ("2" (HIDE 2)
+            (("2" (APPLY-EXTENSIONALITY :HIDE? T)
+              (("2" (CASE "x!1 < m")
+                (("1" (REDUCE) NIL NIL)
+                 ("2" (REDUCE)
+                  (("2" (HIDE 1)
+                    (("2" (USE "sum_zero")
+                      (("2" (REPLACE -1) (("2" (PROPAX) NIL NIL)) NIL)) NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|triangle_sum_f_invert_TCC1| 0
+  (|triangle_sum_f_invert_TCC1-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL) NIL NIL
+   (|triangle_sum_f_invert| SUBTYPE "sums_abelian_group.l"
+    "below((number_fields.+)((number_fields.+)(1, sums_abelian_group.k), sums_abelian_group.l))"
+    (30 110 30 111))))
+ (|triangle_sum_f_invert_TCC2| 0
+  (|triangle_sum_f_invert_TCC2-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL) NIL NIL
+   (|triangle_sum_f_invert| SUBTYPE
+    "(number_fields.+)(sums_abelian_group.k, sums_abelian_group.l)"
+    "naturalnumbers.below((number_fields.+)(sums_abelian_group.n, 1))"
+    (30 103 30 108))))
+ (|triangle_sum_f_invert_TCC3| 0
+  (|triangle_sum_f_invert_TCC3-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL)
+   ((|real_ge_is_total_order| NAME-JUDGEMENT "(total_order?[real])"
+     |real_props| NIL)
+    (|int_plus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|int_minus_int_is_int| APPLICATION-JUDGEMENT "int" |integers| NIL)
+    (|minus_nzint_is_nzint| APPLICATION-JUDGEMENT "nzint" |integers| NIL)
+    (|posint_plus_nnint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|total_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|pred| TYPE-EQ-DECL NIL |defined_types| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (+ CONST-DECL "[[numfield, numfield] -> numfield]" |number_fields| NIL)
+    (|numfield| NONEMPTY-TYPE-EQ-DECL NIL |number_fields| NIL)
+    (|odd?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nonneg_int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (> CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|posnat| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|even?| CONST-DECL "[int -> bool]" |integers| NIL)
+    (|reflexive?| CONST-DECL "[PRED[[T, T]] -> bool]" |relations| NIL)
+    (|transitive?| CONST-DECL "[PRED[[T, T]] -> bool]" |relations| NIL)
+    (|preorder?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|antisymmetric?| CONST-DECL "[PRED[[T, T]] -> bool]" |relations| NIL)
+    (|partial_order?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|dichotomous?| CONST-DECL "[pred[[T, T]] -> bool]" |orders| NIL)
+    (|posint_times_posint_is_posint| APPLICATION-JUDGEMENT "posint" |integers|
+     NIL)
+    (|even_times_int_is_even| APPLICATION-JUDGEMENT "even_int" |integers| NIL)
+    (NIL APPLICATION-JUDGEMENT "above(n)" |exp2| NIL)
+    (|real_gt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL))
+   NIL
+   (|triangle_sum_f_invert| SUBTYPE
+    "(number_fields.+)((number_fields.-)(sums_abelian_group.n, sums_abelian_group.l), 1)"
+    "nat" (30 60 30 69))))
+ (|triangle_sum_f_invert| 0
+  (|triangle_sum_f_invert-legacy| NIL 3865351852
+   ("" (INDUCT "n")
+    (("1" (GRIND) NIL NIL)
+     ("2" (SKOLEM + "n")
+      (("2" (GROUND)
+        (("2" (SKEEP)
+          (("2" (EXPAND "sum_f" 1 (1 4))
+            (("2" (EXPAND "sum")
+              (("2" (EXPAND "pad" 1 (2 4))
+                (("2" (USE "sum_f_sign_factor")
+                  (("2" (REPLACE -1 :DIR RL :HIDE? T)
+                    (("2" (EXPAND "sum_f" 1 3)
+                      (("2" (EXPAND "sum" 1 2)
+                        (("2" (EXPAND "pad" 1 4)
+                          (("2" (EXPAND "sum" 1 4)
+                            (("2" (LEMMA "sum_sum_f_equiv")
+                              (("2"
+                                (INST -1 "1 + n" "pad(2 + n)
+                 (LAMBDA (k: below(2 + n)):
+                    sum_f(1 + k)(LAMBDA (l: below(1 + k)): A(k)(l)))"
+                                 "LAMBDA (k: below(n + 1)): sum_f(1 + k)(LAMBDA (l: below(1 + k)): A(k)(l))")
+                                (("2" (GROUND)
+                                  (("1" (REPLACE -1 :HIDE? T)
+                                    (("1" (LEMMA "sum_sum_f_equiv")
+                                      (("1"
+                                        (INST -1 "1 + n" "pad(2 + n)
+                    (LAMBDA (l: below(2 + n)):
+                       sum(pad(2 - l + n)
+                              (LAMBDA (k: below(2 - l + n)): A(k + l)(l)),
+                           1 - l + n))"
+                                         "LAMBDA (l: below(n + 1)): sum_f(1 - l + n)(LAMBDA (k: below(1 - l + n)): A(k + l)(l))")
+                                        (("1" (GROUND)
+                                          (("1" (REPLACE -1 :HIDE? T)
+                                            (("1"
+                                              (INST -1
+                                               "LAMBDA (k: below(1 + n)): LAMBDA (l: below(1 + k)): A(k)(l)")
+                                              (("1" (REPLACE -1 :HIDE? T)
+                                                (("1" (PROPAX) NIL NIL)) NIL))
+                                              NIL))
+                                            NIL)
+                                           ("2" (HIDE -1 2)
+                                            (("2" (SKOLEM + "l")
+                                              (("2" (EXPAND "pad")
+                                                (("2" (LEMMA "sum_sum_f_equiv")
+                                                  (("2"
+                                                    (INST -1 "1 - l + n"
+                                                     "LAMBDA (i: nat):
+                    IF i < 2 - l + n THEN A(i + l)(l) ELSE zero ENDIF"
+                                                     "LAMBDA (k: below(1 - l + n)): A(k + l)(l)")
+                                                    (("1" (GROUND) NIL NIL)
+                                                     ("2" (HIDE 2)
+                                                      (("2" (GRIND) NIL NIL))
+                                                      NIL))
+                                                    NIL))
+                                                  NIL))
+                                                NIL))
+                                              NIL))
+                                            NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL)
+                                   ("2" (HIDE 2)
+                                    (("2" (SKOLEM + "k")
+                                      (("2" (EXPAND "pad")
+                                        (("2" (PROPAX) NIL NIL)) NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK)))

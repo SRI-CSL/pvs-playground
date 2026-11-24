@@ -1,0 +1,251 @@
+(|sums_def|
+ (|IMP_group_TCC1| 0
+  (|IMP_group_TCC1-1| NIL 3998068630
+   (""
+    (THEN (LEMMA "sums_def.group")
+     (GRIND :DEFS NIL :REWRITES
+      ("field?" "division_ring?" "ring_with_one?" "ring?" "abelian_group?")))
+    NIL NIL)
+   ((|group| FORMULA-DECL NIL |sums_def| NIL)) NIL
+   (|IMP_group| ASSUMING
+    "algebra@group[sums_def.T, sums_def.+, sums_def.zero].group"
+    "fullset_is_group: ASSUMPTION group_def[group.T, group.*, group.one].group?(sets[group.T].fullset)"
+    (8 14 8 39))))
+ (|sum_TCC1| 0
+  (|sum_TCC1-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL) NIL NIL
+   (|sum| SUBTYPE "(number_fields.-)(sums_def.n, 1)" "nat" (14 26 14 29))))
+ (|sum_TCC2| 0
+  (|sum_TCC2-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL) NIL NIL
+   (|sum| TERMINATION
+    "sums_def.sum(sums_def.X, (number_fields.-)(sums_def.n, 1))" "NIL"
+    (14 19 14 30))))
+ (|sum_equiv| 0
+  (|sum_equiv-legacy| NIL 3865081379
+   ("" (INDUCT "n")
+    (("1" (GRIND) NIL NIL)
+     ("2" (SKOLEM + "n")
+      (("2" (GROUND)
+        (("2" (SKEEP)
+          (("2" (EXPAND "sum" +)
+            (("2" (INST-CP -2 "n")
+              (("2" (REPLACE -3 :HIDE? T)
+                (("2" (INST?)
+                  (("2" (INST -1 "Y")
+                    (("2" (GROUND) (("2" (LAZY-GRIND) NIL NIL)) NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|sum_sum_f_equiv| 0
+  (|sum_sum_f_equiv-legacy| NIL 3865081840
+   ("" (SKEEP)
+    (("" (EXPAND "sum_f")
+      (("" (USE "sum_equiv")
+        (("" (GROUND)
+          (("" (SKEEP) (("" (EXPAND "pad") (("" (INST?) NIL NIL)) NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|sum_f_add_indexn_TCC1| 0
+  (|sum_f_add_indexn_TCC1-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL) NIL NIL
+   (|sum_f_add_indexn| SUBTYPE "sums_def.k"
+    "below((number_fields.+)(1, sums_def.n))" (31 71 31 72))))
+ (|sum_f_add_indexn_TCC2| 0
+  (|sum_f_add_indexn_TCC2-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL) NIL NIL
+   (|sum_f_add_indexn| SUBTYPE "sums_def.n"
+    "below((number_fields.+)(1, sums_def.n))" (31 79 31 80))))
+ (|sum_f_add_indexn| 0
+  (|sum_f_add_indexn-legacy| NIL 3865354347
+   ("" (SKEEP)
+    (("" (EXPAND "sum_f")
+      (("" (EXPAND "sum" 1 1)
+        (("" (EXPAND "pad" 1 2)
+          (("" (LEMMA "sum_equiv")
+            ((""
+              (INST -1 "n" "pad(1 + n)(X)"
+               "pad(n)(LAMBDA (k: below(n)): X(k))")
+              (("" (GROUND)
+                (("" (HIDE 2)
+                  (("" (SKEEP)
+                    (("" (EXPAND "pad") (("" (PROPAX) NIL NIL)) NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|sum_add_index0| 0
+  (|sum_add_index0-legacy| NIL 3865082393
+   ("" (INDUCT "n")
+    (("1" (GRIND) NIL NIL)
+     ("2" (SKOLEM + "n")
+      (("2" (GROUND)
+        (("2" (SKEEP)
+          (("2" (EXPAND "sum" +)
+            (("2" (INST?)
+              (("2" (REPLACE -1 :DIR RL :HIDE? T)
+                (("2" (USE "group")
+                  (("2" (EXPAND "group?")
+                    (("2" (EXPAND "monoid?")
+                      (("2" (GROUND) (("2" (GRIND) NIL NIL)) NIL)) NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|sum_f_add_index0_TCC1| 0
+  (|sum_f_add_index0_TCC1-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL) NIL NIL
+   (|sum_f_add_index0| SUBTYPE "0" "below((number_fields.+)(1, sums_def.n))"
+    (37 19 37 20))))
+ (|sum_f_add_index0_TCC2| 0
+  (|sum_f_add_index0_TCC2-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL) NIL NIL
+   (|sum_f_add_index0| SUBTYPE "(number_fields.+)(sums_def.k, 1)"
+    "below((number_fields.+)(1, sums_def.n))" (37 57 37 62))))
+ (|sum_f_add_index0| 0
+  (|sum_f_add_index0-legacy| NIL 3865086258
+   ("" (SKEEP)
+    (("" (EXPAND "sum_f")
+      (("" (USE "sum_add_index0")
+        (("" (EXPAND "pad")
+          ((""
+            (CASE-REPLACE
+             "(LAMBDA (k: nat): IF 1 + k < 1 + n THEN X(1 + k) ELSE zero ENDIF) = (LAMBDA (i: nat): IF i < n THEN X(1 + i) ELSE zero ENDIF)")
+            (("1" (HIDE 2)
+              (("1" (APPLY-EXTENSIONALITY :HIDE? T)
+                (("1" (HIDE -1) (("1" (GRIND) NIL NIL)) NIL)
+                 ("2" (HIDE -1) (("2" (GRIND) NIL NIL)) NIL))
+                NIL))
+              NIL)
+             ("2" (HIDE -1 2) (("2" (GRIND) NIL NIL)) NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|sum_zero| 0
+  (|sum_zero-legacy| NIL 3864927713
+   ("" (INDUCT "n")
+    (("1" (EXPAND "sum") (("1" (PROPAX) NIL NIL)) NIL)
+     ("2" (SKOLEM + "n")
+      (("2" (GROUND)
+        (("2" (EXPAND "sum" +)
+          (("2" (REPLACE -1 :HIDE? T)
+            (("2" (USE "group") (("2" (GRIND) NIL NIL)) NIL)) NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|sum_f_zero| 0
+  (|sum_f_zero-legacy| NIL 3864927748
+   ("" (SKEEP)
+    (("" (EXPAND "sum_f")
+      (("" (EXPAND "pad") (("" (USE "sum_zero") NIL NIL)) NIL)) NIL))
+    NIL)
+   NIL SHOSTAK))
+ (|sum_f_cut_TCC1| 0
+  (|sum_f_cut_TCC1-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL) NIL NIL
+   (|sum_f_cut| SUBTYPE "sums_def.k" "below(sums_def.n)" (43 130 43 131))))
+ (|sum_f_cut_TCC2| 0
+  (|sum_f_cut_TCC2-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL) NIL NIL
+   (|sum_f_cut| SUBTYPE "(number_fields.+)(sums_def.k, sums_def.m)"
+    "below(sums_def.n)" (43 177 43 182))))
+ (|sum_f_cut_TCC3| 0
+  (|sum_f_cut_TCC3-1| NIL 3998068630
+   ("" (THEN (SKOSIMP*) (ALL-TYPEPREDS) (GRIND)) NIL NIL) NIL NIL
+   (|sum_f_cut| SUBTYPE "(number_fields.-)(sums_def.n, sums_def.m)" "nat"
+    (43 142 43 147))))
+ (|sum_f_cut| 0
+  (|sum_f_cut-legacy| NIL 3865360853
+   ("" (SKEEP)
+    (("" (INDUCT "m")
+      (("1" (GROUND)
+        (("1" (SKEEP)
+          (("1" (EXPAND "sum_f" 1 2)
+            (("1" (EXPAND "sum")
+              (("1" (GROUND)
+                (("1" (USE "functions[below(n), T].eta")
+                  (("1" (REPLACE -1 :HIDE? T) (("1" (PROPAX) NIL NIL)) NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL)
+       ("2" (SKOLEM + "m")
+        (("2" (GROUND)
+          (("2" (SKEEP)
+            (("2" (LEMMA "sum_f_add_indexn")
+              (("2" (INST -1 "m" _)
+                (("2" (INST?)
+                  (("2" (REPLACE -1 :HIDE? T)
+                    (("2" (LEMMA "sum_f_add_index0")
+                      (("2" (INST -1 "-1 -m + n" _)
+                        (("2" (INST -1 "LAMBDA (k: below(- m + n)): X(k + m)")
+                          (("1" (GROUND)
+                            (("1" (USE "assoc")
+                              (("1" (REPLACE -1 :DIR RL :HIDE? T)
+                                (("1" (REPLACE -1 :HIDE? T)
+                                  (("1" (INST?)
+                                    (("1"
+                                      (CASE-REPLACE
+                                       "(LAMBDA (k: below(m)): X(k)) = (LAMBDA (k_1: below(m)): X(k_1))")
+                                      (("1" (GROUND)
+                                        (("1" (REPLACE -3 :HIDE? T)
+                                          (("1"
+                                            (CASE-REPLACE
+                                             "(LAMBDA (k: below(n - m)): X(k + m)) = (LAMBDA (k: below(-m + n)): X(k + m))")
+                                            (("1" (HIDE 2)
+                                              (("1"
+                                                (APPLY-EXTENSIONALITY :HIDE? T)
+                                                (("1" (GRIND) NIL NIL)) NIL))
+                                              NIL)
+                                             ("2" (HIDE 2)
+                                              (("2" (GRIND) NIL NIL)) NIL))
+                                            NIL))
+                                          NIL))
+                                        NIL))
+                                      NIL))
+                                    NIL))
+                                  NIL))
+                                NIL))
+                              NIL))
+                            NIL)
+                           ("2" (GRIND) NIL NIL))
+                          NIL))
+                        NIL))
+                      NIL))
+                    NIL))
+                  NIL))
+                NIL))
+              NIL))
+            NIL))
+          NIL))
+        NIL))
+      NIL))
+    NIL)
+   NIL SHOSTAK)))

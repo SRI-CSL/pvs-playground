@@ -1,0 +1,167 @@
+% FIPS 186-5 sections 7.3--7.8; SP 800-186 section 3.2.3.1.
+% Explicit extended Edwards coordinates follow RFC 8032 section 5.1.4.
+ed25519: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  sha2: LIBRARY = "../sha2"
+  IMPORTING crypto_prelude@crypto_u256, crypto_prelude@crypto_buffers, sha2@secure_hash
+
+  % SP 800-186 section 3.2.3.1. Little-endian 32-bit limbs.
+  prime: u256 = [: 0xffffffed, 0xffffffff, 0xffffffff, 0xffffffff,
+                  0xffffffff, 0xffffffff, 0xffffffff, 0x7fffffff :]
+  order: u256 = [: 0x5cf5d3ed, 0x5812631a, 0xa2f79cd6, 0x14def9de,
+                  0x00000000, 0x00000000, 0x00000000, 0x10000000 :]
+  curve_d: u256 = [: 0x135978a3, 0x75eb4dca, 0x4141d8ab, 0x00700a4d,
+                  0x7779e898, 0x8cc74079, 0x2b6ffe73, 0x52036cee :]
+  sqrt_minus_one: u256 = [: 0x4a0ea0b0, 0xc4ee1b27, 0xad2fe478, 0x2f431806,
+                  0x3dfbd7a7, 0x2b4d0099, 0x4fc1df0b, 0x2b832480 :]
+  inverse_exponent: u256 = [: 0xffffffeb, 0xffffffff, 0xffffffff, 0xffffffff,
+                  0xffffffff, 0xffffffff, 0xffffffff, 0x7fffffff :]
+  root_exponent: u256 = [: 0xfffffffe, 0xffffffff, 0xffffffff, 0xffffffff,
+                  0xffffffff, 0xffffffff, 0xffffffff, 0x0fffffff :]
+  base_x: u256 = [: 0x8f25d51a, 0xc9562d60, 0x9525a7b2, 0x692cc760,
+                  0xfdd6dc5c, 0xc0a4e231, 0xcd6e53fe, 0x216936d3 :]
+  base_y: u256 = [: 0x66666658, 0x66666666, 0x66666666, 0x66666666,
+                  0x66666666, 0x66666666, 0x66666666, 0x66666666 :]
+
+  fe_plus(a, b: u256): u256 = mod_add(a, b, prime)
+  fe_minus(a, b: u256): u256 = mod_sub(a, b, prime)
+  fe_times(a, b: u256): u256 = mod_mul(a, b, prime)
+
+  point: TYPE = [# x, y, z, t: u256 #]
+  affine(x, y: u256): point = (# x := x, y := y, z := one256, t := fe_times(x, y) #)
+  neutral: point = (# x := zero256, y := one256, z := one256, t := zero256 #)
+  base: point = affine(base_x, base_y)
+
+  % RFC 8032 section 5.1.4, complete addition in extended coordinates.
+  add_point(p, q: point): point =
+    LET a = fe_times(fe_minus(p`y, p`x), fe_minus(q`y, q`x)),
+        b = fe_times(fe_plus(p`y, p`x), fe_plus(q`y, q`x)),
+        tt = fe_times(p`t, q`t), c = fe_times(fe_plus(curve_d, curve_d), tt),
+        zz = fe_times(p`z, q`z), d = fe_plus(zz, zz),
+        e = fe_minus(b, a), f = fe_minus(d, c), g = fe_plus(d, c), h = fe_plus(b, a)
+    IN (# x := fe_times(e, f), y := fe_times(g, h), z := fe_times(f, g), t := fe_times(e, h) #)
+
+  scale_from(p: point, scalar: u256, acc: point, n: upto(256)): RECURSIVE point =
+    IF n = 0 THEN acc
+    ELSE LET dbl = add_point(acc, acc),
+             next = IF bit256(scalar, n - 1) THEN add_point(dbl, p) ELSE dbl ENDIF
+         IN scale_from(p, scalar, next, n - 1)
+    ENDIF MEASURE n
+  scale(p: point, scalar: u256): point = scale_from(p, scalar, neutral, 256)
+
+  equal_point(p, q: point): bool =
+    fe_times(p`x, q`z) = fe_times(q`x, p`z) AND
+    fe_times(p`y, q`z) = fe_times(q`y, p`z)
+
+  % Sections 7.2--7.4, little-endian octet encoding and y/sign compression.
+  scalar_bytes: TYPE = octets_of(32)
+  signature: TYPE = octets_of(64)
+  little_word(b: scalar_bytes, i: below(8)): uint32 =
+    LET j: below(32) = 4 * i IN
+      load_be32(b`seq(j + 3), b`seq(j + 2), b`seq(j + 1), b`seq(j))
+  % Visit exactly the eight limbs of the encoded value.
+  read_limbs(b: scalar_bytes, i: upto(8), acc: u256): RECURSIVE u256 =
+    IF i = 8 THEN acc
+    ELSE read_limbs(b, i + 1, acc WITH [(i) := little_word(b, i)]) ENDIF
+    MEASURE 8 - i
+  read_scalar(b: scalar_bytes): u256 = read_limbs(b, 0, zero256)
+  write_scalar(x: u256): scalar_bytes =
+    (# length := 32, seq := LAMBDA (i: below(32)):
+         be_byte32(x(ndiv(i, 4)), 3 - nrem(i, 4)) #)
+  half(b: signature, upper: bool): scalar_bytes =
+    (# length := 32, seq := LAMBDA (i: below(32)): IF upper THEN b`seq(i + 32) ELSE b`seq(i) ENDIF #)
+
+  encode_point(p: point): scalar_bytes =
+    LET inv = mod_pow(p`z, inverse_exponent, prime),
+        y = fe_times(p`y, inv), x = fe_times(p`x, inv),
+        b = write_scalar(y)
+    IN IF bit256(x, 0) THEN b WITH [`seq(31) := u8or(b`seq(31), 0x80)] ELSE b ENDIF
+
+  decoded: TYPE = [# valid: bool, p: point #]
+  decode_point(b: scalar_bytes): decoded =
+    LET sign = b`seq(31) >= 128,
+        y = read_scalar(b WITH [`seq(31) := u8and(b`seq(31), 0x7f)])
+    IN IF ge256(y, prime) THEN (# valid := FALSE, p := neutral #)
+       ELSE LET yy = fe_times(y, y), u = fe_minus(yy, one256),
+                v = fe_plus(fe_times(curve_d, yy), one256),
+                xx = fe_times(u, mod_pow(v, inverse_exponent, prime)),
+                root = mod_pow(xx, root_exponent, prime),
+                x = IF fe_times(root, root) = xx THEN root ELSE fe_times(root, sqrt_minus_one) ENDIF
+            IN IF v = zero256 OR fe_times(x, x) /= xx OR (x = zero256 AND sign) THEN
+                 (# valid := FALSE, p := neutral #)
+               ELSE (# valid := TRUE, p := affine(IF bit256(x, 0) = sign THEN x ELSE fe_minus(zero256, x) ENDIF, y) #)
+               ENDIF
+       ENDIF
+
+  % Section 7.4. The private seed is the 32-byte RBG result. Prune the
+  % low half of H(seed); the high half is used only for the deterministic nonce.
+  secret_scalar(h: signature): u256 =
+    LET b = half(h, FALSE),
+        clamped = b WITH [`seq(0) := u8and(b`seq(0), 0xf8),
+                          `seq(31) := u8or(u8and(b`seq(31), 0x3f), 0x40)]
+    IN read_scalar(clamped)
+  public_key(seed: scalar_bytes): scalar_bytes =
+    encode_point(scale(base, secret_scalar(sha512(seed))))
+
+  % Reduce a 512-bit little-endian digest modulo the prime subgroup order.
+  reduce_digest(h: signature, n: upto(512), acc: u256): RECURSIVE u256 =
+    IF n = 0 THEN acc
+    ELSE LET i: below(512) = n - 1, b = h`seq(ndiv(i, 8)),
+             bit = u8and(u8rshift(b, nrem(i, 8)), 1),
+             dbl = mod_add(acc, acc, order)
+         IN reduce_digest(h, i, IF bit = 1 THEN mod_add(dbl, one256, order) ELSE dbl ENDIF)
+    ENDIF MEASURE n
+  hash_scalar(m: bytestring): u256 = reduce_digest(sha512(m), 512, zero256)
+
+  % Sections 7.6--7.8. Ed25519ph prefixes both hashes with dom2(1, context).
+  context_bytes: TYPE = {ctx: bytestring | ctx`length <= 255}
+  domain_bytes: TYPE = {d: bytestring | d`length <= 289}
+  dom_label: octets_of(32) =
+    (# length := 32, seq := [: 0x53, 0x69, 0x67, 0x45, 0x64, 0x32, 0x35, 0x35,
+      0x31, 0x39, 0x20, 0x6e, 0x6f, 0x20, 0x45, 0x64,
+      0x32, 0x35, 0x35, 0x31, 0x39, 0x20, 0x63, 0x6f,
+      0x6c, 0x6c, 0x69, 0x73, 0x69, 0x6f, 0x6e, 0x73 :] #)
+  prehash_domain(ctx: context_bytes): octets_of(34 + ctx`length) =
+    LET prefix: octets_of(34) =
+          (# length := 34, seq := LAMBDA (i: below(34)):
+               IF i < 32 THEN dom_label`seq(i) ELSIF i = 32 THEN 1 ELSE ctx`length ENDIF #)
+    IN join_octets(prefix, ctx)
+
+  message: TYPE = {m: bytestring | m`length + 64 < maxsize}
+  prefixed_message(d: domain_bytes): TYPE = {m: bytestring | d`length + m`length + 64 < maxsize}
+  sign_core(seed: scalar_bytes, d: domain_bytes, m: prefixed_message(d)): signature =
+    LET h = sha512(seed), s = secret_scalar(h), q = encode_point(scale(base, s)),
+        r = hash_scalar(join_octets(d, join_octets(half(h, TRUE), m))),
+        rb = encode_point(scale(base, r)),
+        k = hash_scalar(join_octets(d, join_octets(join_octets(rb, q), m))),
+        response = mod_add(r, mod_mul(k, s, order), order)
+    IN join_octets(rb, write_scalar(response))
+
+  sign(seed: scalar_bytes, m: message): signature =
+    sign_core(seed, fill_octets(0, 0), m)
+  sign_ph(seed: scalar_bytes, m: bytestring, ctx: context_bytes): signature =
+    sign_core(seed, prehash_domain(ctx), sha512(m))
+
+  % A valid verification key is a nonidentity point in the prime-order
+  % subgroup (SP 800-186, Appendix D.1.3). Use the uncofactored equation
+  % permitted by FIPS 186-5 section 7.7.
+  valid_decoded_key(p: point): bool =
+    NOT equal_point(p, neutral) AND equal_point(scale(p, order), neutral)
+  verify_core(q: scalar_bytes, d: domain_bytes, m: prefixed_message(d), sig: signature): bool =
+    LET rb = half(sig, FALSE), s = read_scalar(half(sig, TRUE)),
+        a = decode_point(q), r = decode_point(rb)
+    IN IF ge256(s, order) OR NOT a`valid OR NOT r`valid THEN FALSE
+       ELSIF NOT valid_decoded_key(a`p) THEN FALSE
+       ELSE LET k = hash_scalar(join_octets(d, join_octets(join_octets(rb, q), m)))
+            IN equal_point(scale(base, s), add_point(r`p, scale(a`p, k)))
+       ENDIF
+
+  verify(q: scalar_bytes, m: message, sig: signature): bool =
+    verify_core(q, fill_octets(0, 0), m, sig)
+  verify_ph(q: scalar_bytes, m: bytestring, sig: signature, ctx: context_bytes): bool =
+    verify_core(q, prehash_domain(ctx), sha512(m), sig)
+
+  noncanonical_response_rejected: LEMMA FORALL (q: scalar_bytes, m: message, sig: signature):
+    ge256(read_scalar(half(sig, TRUE)), order) IMPLIES NOT verify(q, m, sig)
+END ed25519

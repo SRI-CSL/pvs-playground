@@ -1,0 +1,50 @@
+% Montgomery arithmetic for odd moduli, radix 2^32. The two extra carries
+% of the integrated product are stored separately from the fixed limb array.
+crypto_montgomery: THEORY
+BEGIN
+  IMPORTING crypto_limbs
+  lo32(x: uint64): uint32 = u64rem(x,4294967296)
+  hi32(x: uint64): uint32 = u64rshift(x,32)
+  % Newton lifting doubles the number of correct low inverse bits per step.
+  inverse_step(x,v:uint32): uint32 = u32times(v,u32minus(2,u32times(x,v)))
+  neg_inverse(x:uint32): uint32 =
+    LET v=inverse_step(x,1),w=inverse_step(x,v),y=inverse_step(x,w),
+        z=inverse_step(x,y) IN u32minus(0,inverse_step(x,z))
+  row(n:limb_count): TYPE = [# value:words_of(n),carry:uint32 #]
+  accumulate(x:limbs,d:uint32,t:words_of(x`len),j:upto(x`len),c:uint32):
+      RECURSIVE row(x`len) =
+    IF j=x`len THEN (# value:=t,carry:=c #) ELSE
+      LET product=u64times(x`word(j),d), v=u64plus(product,u64plus(t`word(j),c)) IN
+        accumulate(x,d,t WITH [`word(j):=lo32(v)],j+1,hi32(v))
+    ENDIF MEASURE x`len-j
+  shift_word(t:limbs,top:uint32): words_of(t`len) =
+    (# len:=t`len,word:=LAMBDA (i:below(t`len)):
+       IF i+1=t`len THEN top ELSE t`word(i+1) ENDIF #)
+  multiply_rows(a:limbs,b,m,t:words_of(a`len),n0,high:uint32,i:upto(a`len)):
+      RECURSIVE words_of(a`len) =
+    IF i=a`len THEN IF high/=0 OR ge_words(t,m) THEN sub_words(t,m) ELSE t ENDIF ELSE
+      LET x=accumulate(a,b`word(i),t,0,0), factor=u32times(x`value`word(0),n0),
+          y=accumulate(m,factor,x`value,0,0), sum=u64plus(high,u64plus(x`carry,y`carry)) IN
+        multiply_rows(a,b,m,shift_word(y`value,lo32(sum)),n0,hi32(sum),i+1)
+    ENDIF MEASURE a`len-i
+  mont_mul(a:limbs,b,m:words_of(a`len),n0:uint32): words_of(a`len) =
+    multiply_rows(a,b,m,zero_words(a`len),n0,0,0)
+  % For 0<=a<m, repeated doubling gives a*R modulo m for R=2^(32*len).
+  to_domain(a:limbs,m:words_of(a`len),count:uint16): RECURSIVE words_of(a`len) =
+    IF count=0 THEN a ELSE to_domain(add_mod(a,a,m),m,count-1) ENDIF MEASURE count
+  square_multiply(a:limbs,e:limbs,m,acc:words_of(a`len),n0:uint32,
+                  count:{i:uint16 | i<=32*e`len}): RECURSIVE words_of(a`len) =
+    IF count=0 THEN acc ELSE
+      LET s=mont_mul(acc,acc,m,n0),
+          t=IF bit_word(e,count-1) THEN mont_mul(s,a,m,n0) ELSE s ENDIF IN
+        square_multiply(a,e,m,t,n0,count-1)
+    ENDIF MEASURE count
+  significant_bits(e:limbs,n:{i:uint16 | i<=32*e`len}): RECURSIVE {i:uint16 | i<=n} =
+    IF n=0 OR bit_word(e,n-1) THEN n ELSE significant_bits(e,n-1) ENDIF MEASURE n
+  % Public RSA/ECC callers check canonical input and an odd modulus > 1.
+  mont_power(a,e:limbs,m:words_of(a`len)): words_of(a`len) =
+    LET ticks:uint16=32*a`len,n0=neg_inverse(m`word(0)),one=one_words(a`len),
+        t=square_multiply(to_domain(a,m,ticks),e,m,to_domain(one,m,ticks),n0,significant_bits(e,32*e`len)) IN
+      mont_mul(t,one,m,n0)
+  zero_rows: LEMMA FORALL (a:limbs,m:words_of(a`len)): to_domain(a,m,0)=a
+END crypto_montgomery

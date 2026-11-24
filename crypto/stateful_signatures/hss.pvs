@@ -1,0 +1,29 @@
+% SP 800-208 section 4, RFC 8554 section 6.3. HSS has 1 through 8 layers.
+hss: THEORY
+BEGIN
+  IMPORTING lms
+  parse_result: TYPE = [# ok: bool,s: suite,h: height_code,w: width_code #]
+  parameters(pk: bytestring): parse_result =
+    LET l=read_word(pk,0),o=read_word(pk,4) IN
+    IF l<5 OR l>24 OR o<1 OR o>16 THEN (# ok:=FALSE,s:=0,h:=0,w:=0 #)
+    ELSE LET s: suite=u8div(l-5,5), h: height_code=nrem(l-5,5),w: width_code=nrem(o-1,4)
+    IN (# ok:=o=ots_code(s,w),s:=s,h:=h,w:=w #) ENDIF
+  % A parent signs the complete encoded LMS public key of the next level.
+  % All levels use the same hash function including its output length.
+  verify_links(s: suite,pk,sig: bytestring,m: message_input,pos: upto(160000),left: upto(7)):
+      RECURSIVE bool =
+    LET p=parameters(pk),n=digest_len(s),len=sig_length(s,p`h,p`w),
+        following: uint32=pos+len, after: uint32=following+24+n IN
+    IF NOT p`ok OR p`s/=s OR len>20000 OR following>sig`length THEN FALSE ELSE
+      LET one=part(sig,pos,len) IN
+      IF left=0 THEN following=sig`length AND verify_params(s,p`h,p`w,pk,one,m)
+      ELSIF after>sig`length OR after>160000 THEN FALSE ELSE
+        LET child=part(sig,following,24+n) IN
+          verify_params(s,p`h,p`w,pk,one,child) AND verify_links(s,child,sig,m,after,left-1)
+      ENDIF ENDIF MEASURE left
+  verify_hss(pub,sig: bytestring,m: message_input): bool =
+    LET levels=read_word(pub,0),links=read_word(sig,0) IN
+    IF levels<1 OR levels>8 OR links/=levels-1 OR pub`length<4 OR pub`length>60 THEN FALSE ELSE
+      LET pk=part(pub,4,pub`length-4),p=parameters(pk)
+      IN p`ok AND pk`length=24+digest_len(p`s) AND verify_links(p`s,pk,sig,m,4,links) ENDIF
+END hss

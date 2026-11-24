@@ -1,0 +1,96 @@
+% FIPS 186-5 B.10, A.1.2 and A.1.4. The 64 big-endian words are
+% floor(sqrt(2)*2^2047). Prefixes give the same floor at lower widths.
+rsa_provable: THEORY
+BEGIN
+  IMPORTING shawe_taylor,rsa_keygen
+  sqrt_prefix(i:below(64)): uint32 =
+    COND
+      i=0 -> 0xb504f333, i=1 -> 0xf9de6484, i=2 -> 0x597d89b3, i=3 -> 0x754abe9f,
+      i=4 -> 0x1d6f60ba, i=5 -> 0x893ba84c, i=6 -> 0xed17ac85, i=7 -> 0x83339915,
+      i=8 -> 0x4afc8304, i=9 -> 0x3ab8a2c3, i=10 -> 0xa8b1fe6f, i=11 -> 0xdc83db39,
+      i=12 -> 0x0f74a85e, i=13 -> 0x439c7b4a, i=14 -> 0x78048736, i=15 -> 0x3dfa2768,
+      i=16 -> 0xd2202e87, i=17 -> 0x42af1f4e, i=18 -> 0x53059c60, i=19 -> 0x11bc337b,
+      i=20 -> 0xcab1bc91, i=21 -> 0x1688458a, i=22 -> 0x460abc72, i=23 -> 0x2f7c4e33,
+      i=24 -> 0xc6d5a8a3, i=25 -> 0x8bb7e9dc, i=26 -> 0xcb2a6343, i=27 -> 0x31f3c84d,
+      i=28 -> 0xf52f120f, i=29 -> 0x836e582e, i=30 -> 0xeaa4a089, i=31 -> 0x9040ca4a,
+      i=32 -> 0x81394ab6, i=33 -> 0xd8fd0efd, i=34 -> 0xf4d3a02c, i=35 -> 0xebc93e0c,
+      i=36 -> 0x4264dabc, i=37 -> 0xd528b651, i=38 -> 0xb8cf341b, i=39 -> 0x6f8236c7,
+      i=40 -> 0x0104dc01, i=41 -> 0xfe32352f, i=42 -> 0x332a5e9f, i=43 -> 0x7bda1ebf,
+      i=44 -> 0xf6a1be3f, i=45 -> 0xca221307, i=46 -> 0xdea06241, i=47 -> 0xf7aa81c2,
+      i=48 -> 0xc1fcbdde, i=49 -> 0xa2f7dc33, i=50 -> 0x18838a2e, i=51 -> 0xaff5f3b2,
+      i=52 -> 0xd24f4a76, i=53 -> 0x3facb882, i=54 -> 0xfdfe170f, i=55 -> 0xd3b1f780,
+      i=56 -> 0xf9acce41, i=57 -> 0x797f2805, i=58 -> 0xc246785e, i=59 -> 0x92957023,
+      i=60 -> 0x5fcf8f7b, i=61 -> 0xca3ea33b, i=62 -> 0x4d7c60a5, ELSE -> 0xe633e3e1 ENDCOND
+  factor_bits(p:strength_profile): st_bits = 32*prime_width(p)
+  sqrt_floor(p:strength_profile): words_of(st_width(factor_bits(p))) =
+    LET n=prime_width(p),w=st_width(factor_bits(p)) IN
+    (# len:=w,word:=LAMBDA(i:below(w)): IF i<n THEN sqrt_prefix(n-1-i) ELSE 0 ENDIF #)
+  aux_min(p:strength_profile): subrange(140,200) = IF p=0 THEN 140 ELSIF p=1 THEN 170 ELSE 200 ENDIF
+  aux_max(p:strength_profile,proven:bool): subrange(494,2030) =
+    IF proven THEN IF p=0 THEN 494 ELSIF p=1 THEN 750 ELSE 1005 ENDIF
+    ELSE IF p=0 THEN 1007 ELSIF p=1 THEN 1518 ELSE 2030 ENDIF ENDIF
+  aux_size: TYPE = subrange(1,2048)
+  lengths: TYPE = [# a,b,c,d:aux_size #]
+  pair_allowed(p:strength_profile,l,r:aux_size,proven:bool,mod8:residue): bool =
+    l>aux_min(p) AND r>aux_min(p) AND l+r<=aux_max(p,proven)-(IF mod8=0 THEN 0 ELSE 3 ENDIF)
+  min_seed(p:strength_profile): subrange(28,32) = IF p=0 THEN 28 ELSE 32 ENDIF
+  auxiliary(h:fixed_hash,sz:aux_size,s:seed_string,n:limb_count): st_result(n) =
+    IF sz=1 THEN (# ok:=TRUE,value:=one_words(n),seed:=s,counter:=0 #) ELSE
+      LET r=st_prime(h,sz,s) IN (# ok:=r`ok,value:=resize_words(r`value,n),seed:=r`seed,counter:=r`counter #)
+    ENDIF
+  % With n=st_width(bits), all accepted B.10 products fit, including the
+  % overflowing candidate used solely for the wrap to the lower bound.
+  seek_provable(p:strength_profile,h:fixed_hash,s:seed_string,
+                r0,r1,r2,y,t,start,e:words_of(st_width(factor_bits(p))),count:upto(10240)):
+      RECURSIVE st_result(st_width(factor_bits(p))) =
+    LET bits=factor_bits(p),n=st_width(bits),nb=blocks(h,bits),limit=set_one(zero_words(n),bits),
+        k=double_words(product_words(sub_words(product_words(t,r2,n),y),r1,n)),
+        v=increment(product_words(k,r0,n),1),wrap=ge_words(v,limit),
+        tt=IF wrap THEN start ELSE t ENDIF,
+        exponent=IF wrap THEN double_words(product_words(sub_words(product_words(start,r2,n),y),r1,n)) ELSE k ENDIF,
+        cand=IF wrap THEN increment(product_words(exponent,r0,n),1) ELSE v ENDIF,
+        coprime=gcd_words(sub_words(cand,one_words(n)),e)=one_words(n),
+        sn=IF coprime THEN seed_plus(s,nb) ELSE s ENDIF
+    IN IF coprime AND certificate(h,s,nb,cand,exponent,r0) THEN
+         (# ok:=TRUE,value:=cand,seed:=sn,counter:=count+1 #)
+       ELSIF count+1>=5*bits THEN st_fail(n,s) ELSE
+         seek_provable(p,h,sn,r0,r1,r2,y,increment(tt,1),start,e,count+1) ENDIF MEASURE 10240-count
+  construct_provable(p:strength_profile,h:fixed_hash,s:seed_string,e:bytestring,l,r:aux_size):
+      st_result(st_width(factor_bits(p))) =
+    LET bits=factor_bits(p),n=st_width(bits) IN
+    IF NOT admissible_e(e) OR NOT ((l=1 AND r=1) OR pair_allowed(p,l,r,TRUE,0)) THEN st_fail(n,s) ELSE
+      LET u=auxiliary(h,l,s,n),v=auxiliary(h,r,u`seed,n),z=st_prime(h,u16div(bits+1,2)+1,v`seed),
+          r0=resize_words(z`value,n),uv=product_words(r0,u`value,n),r2=v`value,
+          y=IF r=1 THEN one_words(n) ELSE invert_mod_odd(divide_words(uv,r2)`r,r2) ENDIF
+      IN IF NOT u`ok OR NOT v`ok OR NOT z`ok OR y=zero_words(n) THEN st_fail(n,s) ELSE
+        LET nb=blocks(h,bits),low=sqrt_floor(p),limit=set_one(zero_words(n),bits),
+            x=plus_words(low,hash_residue(h,z`seed,nb,sub_words(limit,low))),step=double_words(uv),
+            yp=product_words(y,step,n),den=product_words(step,r2,n),
+            t=ceiling_divide(plus_words(yp,x),den),base=ceiling_divide(plus_words(yp,low),den)
+        IN seek_provable(p,h,seed_plus(z`seed,nb),r0,u`value,r2,y,t,base,from_bytes(n,e,TRUE),0)
+        ENDIF ENDIF
+  % Retry the q construction when the factors are close. A caller can set a
+  % resource bound on successive q constructions and obtain an explicit failure.
+  provable_pair(p:strength_profile,h:fixed_hash,s:seed_string,e:bytestring,sz:lengths,
+                first:words_of(prime_width(p)),have_first:bool,attempts:uint32): RECURSIVE key =
+    IF attempts=0 THEN no_key ELSE
+      LET n=prime_width(p),a=construct_provable(p,h,s,e,IF have_first THEN sz`c ELSE sz`a ENDIF,
+                                                       IF have_first THEN sz`d ELSE sz`b ENDIF),
+          x=resize_words(a`value,n) IN
+      IF NOT a`ok THEN no_key ELSIF NOT have_first THEN provable_pair(p,h,a`seed,e,sz,x,TRUE,attempts-1)
+      ELSIF NOT distant(first,x) THEN provable_pair(p,h,a`seed,e,sz,first,TRUE,attempts-1)
+      ELSE LET k=derive_from_factors(p,e,first,x) IN IF k`ok THEN k ELSE
+        provable_pair(p,h,a`seed,e,sz,zero_words(n),FALSE,attempts-1) ENDIF ENDIF ENDIF
+    MEASURE attempts
+  admissible_lengths(p:strength_profile,sz:lengths): bool =
+    (sz`a=1 AND sz`b=1 AND sz`c=1 AND sz`d=1) OR
+    (pair_allowed(p,sz`a,sz`b,TRUE,0) AND pair_allowed(p,sz`c,sz`d,TRUE,0))
+  from_provable_seed(p:strength_profile,h:fixed_hash,e,s:bytestring,sz:lengths): key =
+    IF s`length<min_seed(p) OR s`length>4096 OR NOT admissible_e(e) OR NOT admissible_lengths(p,sz)
+    THEN no_key ELSE provable_pair(p,h,s,e,sz,zero_words(prime_width(p)),FALSE,4294967295) ENDIF
+  generate_provable(p:strength_profile,h:fixed_hash,e:bytestring,sz:lengths,stream:stream_id): key =
+    LET s=acquire(min_seed(p),stream,0) IN
+    IF s`ok THEN from_provable_seed(p,h,e,s`value,sz) ELSE no_key ENDIF
+  exhausted_pair: LEMMA FORALL(p:strength_profile,h:fixed_hash,s:seed_string,e:bytestring,sz:lengths,
+                                f:words_of(prime_width(p)),b:bool): NOT provable_pair(p,h,s,e,sz,f,b,0)`ok
+END rsa_provable

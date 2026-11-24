@@ -1,0 +1,461 @@
+(|montgomery_examples|
+ (|k0_TCC1| 0
+  (|k0_TCC1-1| NIL 4004537598
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|k0| SUBTYPE
+    "[: 0xA5, 0x46, 0xE3, 0x6B, 0xF0, 0x52, 0x7C, 0x9D, 0x3B, 0x16, 0x15, 0x4B, 0x82, 0x46, 0x5E, 0xDD, 0x62, 0x14, 0x4C, 0xA, 0xC1, 0xFC, 0x5A, 0x18, 0x50, 0x6A, 0x22, 0x44, 0xBA, 0x44, 0x9A, 0xC4 :]"
+    "ARRAY[below(32) -> byte]" (5 42 6 86))))
+ (|u0_TCC1| 0
+  (|u0_TCC1-1| NIL 4004537598
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|u0| SUBTYPE
+    "[: 0xE6, 0xDB, 0x68, 0x67, 0x58, 0x30, 0x30, 0xDB, 0x35, 0x94, 0xC1, 0xA4, 0x24, 0xB1, 0x5F, 0x7C, 0x72, 0x66, 0x24, 0xEC, 0x26, 0xB3, 0x35, 0x3B, 0x10, 0xA9, 0x3, 0xA6, 0xD0, 0xAB, 0x1C, 0x4C :]"
+    "ARRAY[below(32) -> byte]" (7 42 8 86))))
+ (|ans0_TCC1| 0
+  (|ans0_TCC1-1| NIL 4004537598
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|ans0| SUBTYPE
+    "[: 0xC3, 0xDA, 0x55, 0x37, 0x9D, 0xE9, 0xC6, 0x90, 0x8E, 0x94, 0xEA, 0x4D, 0xF2, 0x8D, 0x8, 0x4F, 0x32, 0xEC, 0xCF, 0x3, 0x49, 0x1C, 0x71, 0xF7, 0x54, 0xB4, 0x7, 0x55, 0x77, 0xA2, 0x85, 0x52 :]"
+    "ARRAY[below(32) -> byte]" (9 44 10 86))))
+ (|k1_TCC1| 0
+  (|k1_TCC1-1| NIL 4004537598
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|k1| SUBTYPE
+    "[: 0x4B, 0x66, 0xE9, 0xD4, 0xD1, 0xB4, 0x67, 0x3C, 0x5A, 0xD2, 0x26, 0x91, 0x95, 0x7D, 0x6A, 0xF5, 0xC1, 0x1B, 0x64, 0x21, 0xE0, 0xEA, 0x1, 0xD4, 0x2C, 0xA4, 0x16, 0x9E, 0x79, 0x18, 0xBA, 0xD :]"
+    "ARRAY[below(32) -> byte]" (12 42 13 86))))
+ (|u1_TCC1| 0
+  (|u1_TCC1-1| NIL 4004537598
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|u1| SUBTYPE
+    "[: 0xE5, 0x21, 0xF, 0x12, 0x78, 0x68, 0x11, 0xD3, 0xF4, 0xB7, 0x95, 0x9D, 0x5, 0x38, 0xAE, 0x2C, 0x31, 0xDB, 0xE7, 0x10, 0x6F, 0xC0, 0x3C, 0x3E, 0xFC, 0x4C, 0xD5, 0x49, 0xC7, 0x15, 0xA4, 0x93 :]"
+    "ARRAY[below(32) -> byte]" (14 42 15 86))))
+ (|ans1_TCC1| 0
+  (|ans1_TCC1-1| NIL 4004537598
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|ans1| SUBTYPE
+    "[: 0x95, 0xCB, 0xDE, 0x94, 0x76, 0xE8, 0x90, 0x7D, 0x7A, 0xAD, 0xE4, 0x5C, 0xB4, 0xB8, 0x73, 0xF8, 0x8B, 0x59, 0x5A, 0x68, 0x79, 0x9F, 0xA1, 0x52, 0xE6, 0xF8, 0xF7, 0x64, 0x7A, 0xAC, 0x79, 0x57 :]"
+    "ARRAY[below(32) -> byte]" (16 44 17 86))))
+ (|k2_TCC1| 0
+  (|k2_TCC1-1| NIL 4004537599
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|k2| SUBTYPE
+    "[: 0x3D, 0x26, 0x2F, 0xDD, 0xF9, 0xEC, 0x8E, 0x88, 0x49, 0x52, 0x66, 0xFE, 0xA1, 0x9A, 0x34, 0xD2, 0x88, 0x82, 0xAC, 0xEF, 0x4, 0x51, 0x4, 0xD0, 0xD1, 0xAA, 0xE1, 0x21, 0x70, 0xA, 0x77, 0x9C, 0x98, 0x4C, 0x24, 0xF8, 0xCD, 0xD7, 0x8F, 0xBF, 0xF4, 0x49, 0x43, 0xEB, 0xA3, 0x68, 0xF5, 0x4B, 0x29, 0x25, 0x9A, 0x4F, 0x1C, 0x60, 0xA, 0xD3 :]"
+    "ARRAY[below(56) -> byte]" (19 42 22 46))))
+ (|u2_TCC1| 0
+  (|u2_TCC1-1| NIL 4004537599
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|u2| SUBTYPE
+    "[: 0x6, 0xFC, 0xE6, 0x40, 0xFA, 0x34, 0x87, 0xBF, 0xDA, 0x5F, 0x6C, 0xF2, 0xD5, 0x26, 0x3F, 0x8A, 0xAD, 0x88, 0x33, 0x4C, 0xBD, 0x7, 0x43, 0x7F, 0x2, 0xF, 0x8, 0xF9, 0x81, 0x4D, 0xC0, 0x31, 0xDD, 0xBD, 0xC3, 0x8C, 0x19, 0xC6, 0xDA, 0x25, 0x83, 0xFA, 0x54, 0x29, 0xDB, 0x94, 0xAD, 0xA1, 0x8A, 0xA7, 0xA7, 0xFB, 0x4E, 0xF8, 0xA0, 0x86 :]"
+    "ARRAY[below(56) -> byte]" (23 42 26 46))))
+ (|ans2_TCC1| 0
+  (|ans2_TCC1-1| NIL 4004537600
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|ans2| SUBTYPE
+    "[: 0xCE, 0x3E, 0x4F, 0xF9, 0x5A, 0x60, 0xDC, 0x66, 0x97, 0xDA, 0x1D, 0xB1, 0xD8, 0x5E, 0x6A, 0xFB, 0xDF, 0x79, 0xB5, 0xA, 0x24, 0x12, 0xD7, 0x54, 0x6D, 0x5F, 0x23, 0x9F, 0xE1, 0x4F, 0xBA, 0xAD, 0xEB, 0x44, 0x5F, 0xC6, 0x6A, 0x1, 0xB0, 0x77, 0x9D, 0x98, 0x22, 0x39, 0x61, 0x11, 0x1E, 0x21, 0x76, 0x62, 0x82, 0xF7, 0x3D, 0xD9, 0x6B, 0x6F :]"
+    "ARRAY[below(56) -> byte]" (27 44 30 46))))
+ (|k3_TCC1| 0
+  (|k3_TCC1-1| NIL 4004537600
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|k3| SUBTYPE
+    "[: 0x20, 0x3D, 0x49, 0x44, 0x28, 0xB8, 0x39, 0x93, 0x52, 0x66, 0x5D, 0xDC, 0xA4, 0x2F, 0x9D, 0xE8, 0xFE, 0xF6, 0x0, 0x90, 0x8E, 0xD, 0x46, 0x1C, 0xB0, 0x21, 0xF8, 0xC5, 0x38, 0x34, 0x5D, 0xD7, 0x7C, 0x3E, 0x48, 0x6, 0xE2, 0x5F, 0x46, 0xD3, 0x31, 0x5C, 0x44, 0xE0, 0xA5, 0xB4, 0x37, 0x12, 0x82, 0xDD, 0x2C, 0x8D, 0x5B, 0xE3, 0x9, 0x5F :]"
+    "ARRAY[below(56) -> byte]" (32 42 35 46))))
+ (|u3_TCC1| 0
+  (|u3_TCC1-1| NIL 4004537601
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|u3| SUBTYPE
+    "[: 0xF, 0xBC, 0xC2, 0xF9, 0x93, 0xCD, 0x56, 0xD3, 0x30, 0x5B, 0xB, 0x7D, 0x9E, 0x55, 0xD4, 0xC1, 0xA8, 0xFB, 0x5D, 0xBB, 0x52, 0xF8, 0xE9, 0xA1, 0xE9, 0xB6, 0x20, 0x1B, 0x16, 0x5D, 0x1, 0x58, 0x94, 0xE5, 0x6C, 0x4D, 0x35, 0x70, 0xBE, 0xE5, 0x2F, 0xE2, 0x5, 0xE2, 0x8A, 0x78, 0xB9, 0x1C, 0xDF, 0xBD, 0xE7, 0x1C, 0xE8, 0xD1, 0x57, 0xDB :]"
+    "ARRAY[below(56) -> byte]" (36 42 39 46))))
+ (|ans3_TCC1| 0
+  (|ans3_TCC1-1| NIL 4004537601
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|ans3| SUBTYPE
+    "[: 0x88, 0x4A, 0x2, 0x57, 0x62, 0x39, 0xFF, 0x7A, 0x2F, 0x2F, 0x63, 0xB2, 0xDB, 0x6A, 0x9F, 0xF3, 0x70, 0x47, 0xAC, 0x13, 0x56, 0x8E, 0x1E, 0x30, 0xFE, 0x63, 0xC4, 0xA7, 0xAD, 0x1B, 0x3E, 0xE3, 0xA5, 0x70, 0xD, 0xF3, 0x43, 0x21, 0xD6, 0x20, 0x77, 0xE6, 0x36, 0x33, 0xC5, 0x75, 0xC1, 0xC9, 0x54, 0x51, 0x4E, 0x99, 0xDA, 0x7C, 0x17, 0x9D :]"
+    "ARRAY[below(56) -> byte]" (40 44 43 46))))
+ (|v_32_TCC1| 0
+  (|v_32_TCC1-1| NIL 4004537602
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|v_32| SUBTYPE
+    "[: 0xD9, 0xD3, 0xCE, 0x7E, 0xA2, 0xC5, 0xE9, 0x29, 0xB2, 0x61, 0x7C, 0x6D, 0x7E, 0x4D, 0x3D, 0x92, 0x4C, 0xD1, 0x48, 0x77, 0x2C, 0xDD, 0x1E, 0xE0, 0xB4, 0x86, 0xA0, 0xB8, 0xA1, 0x19, 0xAE, 0x20 :]"
+    "ARRAY[below(32) -> byte]" (45 44 46 86))))
+ (|x_32_TCC1| 0
+  (|x_32_TCC1-1| NIL 4004537602
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|x_32| SUBTYPE
+    "[: 0x1A, 0xD5, 0x25, 0x8F, 0x60, 0x2D, 0x56, 0xC9, 0xB2, 0xA7, 0x25, 0x95, 0x60, 0xC7, 0x2C, 0x69, 0x5C, 0xDC, 0xD6, 0xFD, 0x31, 0xE2, 0xA4, 0xC0, 0xFE, 0x53, 0x6E, 0xCD, 0xD3, 0x36, 0x69, 0x21 :]"
+    "ARRAY[below(32) -> byte]" (47 44 48 86))))
+ (|v_56_TCC1| 0
+  (|v_56_TCC1-1| NIL 4004537602
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|v_56| SUBTYPE
+    "[: 0x1A, 0x5B, 0x7B, 0x45, 0x3D, 0x22, 0xD7, 0x6F, 0xF7, 0x7A, 0x67, 0x50, 0xB1, 0xC4, 0x12, 0x13, 0x21, 0xD, 0x43, 0x46, 0x23, 0x7E, 0x2, 0xB8, 0xED, 0xF6, 0xF3, 0x8D, 0xC2, 0x5D, 0xF7, 0x60, 0xD0, 0x45, 0x55, 0xF5, 0x34, 0x5D, 0xAE, 0xCB, 0xCE, 0x6F, 0x32, 0x58, 0x6E, 0xAB, 0x98, 0x6C, 0xF6, 0xB1, 0xF5, 0x95, 0x12, 0x5D, 0x23, 0x7D :]"
+    "ARRAY[below(56) -> byte]" (57 44 60 46))))
+ (|x_56_TCC1| 0
+  (|x_56_TCC1-1| NIL 4004537603
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|x_56| SUBTYPE
+    "[: 0xFC, 0x4, 0x9C, 0x3E, 0x9, 0x13, 0x87, 0x69, 0x11, 0xCD, 0x96, 0x84, 0xF3, 0x32, 0xE7, 0x9D, 0x24, 0x72, 0x69, 0xED, 0x87, 0x77, 0x1F, 0xE2, 0x93, 0xDC, 0x8B, 0x72, 0x7D, 0xA0, 0x25, 0xC, 0x24, 0x69, 0x29, 0xC9, 0x1A, 0x75, 0x28, 0x11, 0xC6, 0x92, 0xC7, 0x16, 0xF4, 0x9D, 0x7C, 0xAE, 0x53, 0x5, 0x40, 0x70, 0x2B, 0xB, 0xA7, 0x79 :]"
+    "ARRAY[below(56) -> byte]" (61 44 64 46))))
+ (|y_56_TCC1| 0
+  (|y_56_TCC1-1| NIL 4004537603
+   ("" (THEN (AUTO-REWRITE "width" "nbytes" "bits" "exp2") (GRIND :DEFS NIL))
+    NIL)
+   ((|exp2| DEF-DECL "[nat -> posnat]" |exp2| NIL)
+    (|real_lt_is_strict_total_order| NAME-JUDGEMENT
+     "(strict_total_order?[real])" |real_props| NIL)
+    (|below| TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (|nat| NONEMPTY-TYPE-EQ-DECL NIL |naturalnumbers| NIL)
+    (>= CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|int| NONEMPTY-TYPE-EQ-DECL NIL |integers| NIL)
+    (|integer_pred| CONST-DECL "[rational -> boolean]" |integers| NIL)
+    (|rational| NONEMPTY-TYPE-FROM-DECL NIL |rationals| NIL)
+    (|rational_pred| CONST-DECL "[real -> boolean]" |rationals| NIL)
+    (< CONST-DECL "[[real, real] -> bool]" |reals| NIL)
+    (|real| NONEMPTY-TYPE-FROM-DECL NIL |reals| NIL)
+    (|real_pred| CONST-DECL "[number_field -> boolean]" |reals| NIL)
+    (|number_field| NONEMPTY-TYPE-FROM-DECL NIL |number_fields| NIL)
+    (|number_field_pred| CONST-DECL "[number -> boolean]" |number_fields| NIL)
+    (|number| NONEMPTY-TYPE-DECL NIL |numbers| NIL)
+    (NOT CONST-DECL "[bool -> bool]" |booleans| NIL)
+    (|bool| NONEMPTY-TYPE-EQ-DECL NIL |booleans| NIL)
+    (|boolean| NONEMPTY-TYPE-DECL NIL |booleans| NIL))
+   "shostak"
+   (|y_56| SUBTYPE
+    "[: 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F :]"
+    "ARRAY[below(56) -> byte]" (65 44 68 46)))))
+

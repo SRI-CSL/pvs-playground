@@ -1,0 +1,5 @@
+dependent_array_bound: THEORY
+BEGIN
+  row(n:index):TYPE=ARRAY[upto(max(n,256))->uint32]
+  zeros(n:index):row(n)=LAMBDA(i:upto(max(n,256))):0
+END dependent_array_bound

@@ -1,0 +1,44 @@
+% SP 800-227 §§4.6.1–4.6.2, equations (9), (10) and (15).
+% This instantiation uses two independently generated ML-KEM key pairs.
+% Each field in the combiner has a 32-bit big-endian octet count.
+composite_kem: THEORY
+BEGIN
+  mlkem_lib: LIBRARY="../mlkem"
+  IMPORTING mlkem_lib@mlkem_random
+  pair:TYPE=[# first,second:bytestring #]
+  ranks:TYPE=[# first,second:rank #]
+  pair_key:TYPE=[# ok:bool,ek,dk:pair #]
+  empty_pair:pair=(# first:=zeros(0),second:=zeros(0) #)
+  no_pair:pair_key=(# ok:=FALSE,ek:=empty_pair,dk:=empty_pair #)
+  pair_gen(p:ranks,s1,s2:stream_id):pair_key =
+    IF s1=s2 THEN no_pair ELSE LET a=keygen(p`first,s1),b=keygen(p`second,s2) IN
+      IF a`ok AND b`ok THEN (# ok:=TRUE,ek:=(# first:=a`ek,second:=b`ek #),
+                                 dk:=(# first:=a`dk,second:=b`dk #) #) ELSE no_pair ENDIF ENDIF
+  absorb_field(s:absorbing,x:bytestring):absorbing =
+    LET n=x`length, a=absorb_byte(s,be_byte32(n,0)), b=absorb_byte(a,be_byte32(n,1)),
+        c=absorb_byte(b,be_byte32(n,2)) IN absorb(absorb_byte(c,be_byte32(n,3)),x)
+  absorb_pair(s:absorbing,p:pair):absorbing = absorb_field(absorb_field(s,p`first),p`second)
+  % The protocol domain must identify this instantiation. Append the two
+  % parameter identifiers inside a separately delimited field.
+  combine(keys,cipher,ek:pair,p:ranks,domain:bytestring):fixed(32) =
+    LET s=absorb_pair(absorb_pair(absorb_pair(start(136),keys),cipher),ek),
+        a=absorb_field(s,domain), b=absorb_byte(a,p`first) IN
+      output(finish_sha3(absorb_byte(b,p`second)),32)
+  sealed_pair:TYPE=[# ok:bool,ct:pair,secret:bytestring #]
+  no_ct:sealed_pair=(# ok:=FALSE,ct:=empty_pair,secret:=zeros(0) #)
+  pair_encaps(p:ranks,ek:pair,s1,s2:stream_id,domain:bytestring):sealed_pair =
+    IF s1=s2 THEN no_ct ELSE LET a=encaps(p`first,ek`first,s1), b=encaps(p`second,ek`second,s2) IN
+      IF a`ok AND b`ok THEN LET ct=(# first:=a`ct,second:=b`ct #), keys=(# first:=a`secret,second:=b`secret #) IN
+        (# ok:=TRUE,ct:=ct,secret:=combine(keys,ct,ek,p,domain) #) ELSE no_ct ENDIF ENDIF
+  pair_decaps(p:ranks,dk,ct:pair,domain:bytestring):sized_result =
+    LET a=decaps(p`first,dk`first,ct`first), b=decaps(p`second,dk`second,ct`second) IN
+      IF a`ok AND b`ok THEN
+        LET ek=(# first:=portion(dk`first,384*p`first,ek_size(p`first)),
+                  second:=portion(dk`second,384*p`second,ek_size(p`second)) #),
+            keys=(# first:=a`value,second:=b`value #) IN
+          (# ok:=TRUE,value:=combine(keys,ct,ek,p,domain) #)
+      ELSE failure ENDIF
+  independent_draws: LEMMA FORALL(p:ranks,s:stream_id): pair_gen(p,s,s)=no_pair
+  combine_agreement: LEMMA FORALL(a,b,c,e:pair,p:ranks,d:bytestring):
+    a`first=b`first AND a`second=b`second IMPLIES combine(a,c,e,p,d)=combine(b,c,e,p,d)
+END composite_kem

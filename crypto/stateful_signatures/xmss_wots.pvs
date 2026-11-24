@@ -1,0 +1,69 @@
+% SP 800-208 §§5–6 and RFC 8391 Algorithms 1–7. All approved sets use w=16.
+xmss_wots: THEORY
+BEGIN
+  prehash: LIBRARY = "../crypto_prelude/prehash"
+  IMPORTING prehash@hbs_hash
+  len_wots(s: suite): subrange(51,67) = IF digest_len(s)=32 THEN 67 ELSE 51 ENDIF
+  padbytes(x: uint64,n: subrange(1,32)): ARRAY[below(n) -> uint8] =
+    LAMBDA (i: below(n)): IF n-i>8 THEN 0 ELSE be_byte64(x,8-(n-i)) ENDIF
+  to_bytes(x: uint64,n: subrange(1,32)): octets_of(n) = (# length:=n,seq:=padbytes(x,n) #)
+  address: TYPE = [# layer: below(12),tree: uint64,kind: below(3),leaf,first,second: uint32 #]
+  encode_address(a: address,km: below(3)): octets_of(32) =
+    LET p=join_octets(join_octets(word(a`layer),to_bytes(a`tree,8)),word(a`kind)),
+        q=join_octets(join_octets(word(a`leaf),word(a`first)),join_octets(word(a`second),word(km)))
+    IN join_octets(p,q)
+  hashkey(s: suite,id: below(5),key: {x: bytestring | x`length<=96},m: message_input):
+      octets_of(digest_len(s)) =
+    LET d=to_bytes(id,IF digest_len(s)=32 THEN 32 ELSE 4 ENDIF)
+    IN hash(s,join_octets(join_octets(d,key),m))
+  prf(s: suite,seed: octets_of(digest_len(s)),a: address,km: below(3)): octets_of(digest_len(s)) =
+    hashkey(s,3,seed,encode_address(a,km))
+  xor_seq(a,b: bytestring,n: subrange(24,32)): ARRAY[below(n) -> uint8] =
+    LAMBDA (i: below(n)): u8xor(get(a,i),get(b,i))
+  xor_n(s: suite,a,b: octets_of(digest_len(s))): octets_of(digest_len(s)) =
+    (# length:=digest_len(s),seq:=xor_seq(a,b,digest_len(s)) #)
+  rand_hash(s: suite,seed: octets_of(digest_len(s)),a: address,left,right: octets_of(digest_len(s))):
+      octets_of(digest_len(s)) =
+    LET k=prf(s,seed,a,0),l=xor_n(s,left,prf(s,seed,a,1)),r=xor_n(s,right,prf(s,seed,a,2))
+    IN hashkey(s,1,k,join_octets(l,r))
+  wchain(s: suite,seed: octets_of(digest_len(s)),a: address,j,stop: below(16),
+         x: octets_of(digest_len(s))): RECURSIVE octets_of(digest_len(s)) =
+    IF j>=stop THEN x ELSE
+      LET b=a WITH [`second:=j],key=prf(s,seed,b,0),m=xor_n(s,x,prf(s,seed,b,1))
+      IN wchain(s,seed,a,j+1,stop,hashkey(s,0,key,m)) ENDIF MEASURE 15-j
+  nibble(m: bytestring,i: below(67)): below(16) =
+    LET b=get(m,u8div(i,2)) IN IF nrem(i,2)=0 THEN u8rshift(b,4) ELSE nrem(b,16) ENDIF
+  sum_nibbles(s: suite,m: octets_of(digest_len(s)),i: upto(64),v: uint16): RECURSIVE uint16 =
+    IF i>=2*digest_len(s) THEN u16lshift(v,4)
+    ELSE sum_nibbles(s,m,i+1,u16plus(v,15-nibble(m,i))) ENDIF MEASURE 64-i
+  wdigits(s: suite,m: octets_of(digest_len(s))): octets_of(digest_len(s)+2) =
+    join_octets(m,short(sum_nibbles(s,m,0,0)))
+  % op = 0 derives public chains, 1 signs, 2 completes signature chains.
+  wots_table(s: suite,secret,seed: octets_of(digest_len(s)),base: address,d,encoded,out: bytestring,
+             op: below(3),i: upto(67)): RECURSIVE octets_of(out`length) =
+    IF i>=len_wots(s) THEN out ELSE LET n=digest_len(s),pos: uint16=i*n,
+      a=base WITH [`kind:=0,`first:=i,`second:=0],
+      x=IF op=2 THEN part(encoded,pos,n)
+        ELSE hashkey(s,4,secret,join_octets(seed,encode_address(a,0))) ENDIF,
+      b=nibble(d,i),start_at: below(16)=IF op=2 THEN b ELSE 0 ENDIF,
+      stop_at: below(16)=IF op=1 THEN b ELSE 15 ENDIF,v=wchain(s,seed,a,start_at,stop_at,x) IN
+      IF pos>out`length THEN out ELSE wots_table(s,secret,seed,base,d,encoded,
+                                               copy_octets(out,pos,v,0),op,i+1) ENDIF ENDIF
+    MEASURE 67-i
+  wots(s: suite,secret,seed: octets_of(digest_len(s)),base: address,d,encoded: bytestring,
+       op: below(3)): octets_of(len_wots(s)*digest_len(s)) =
+    wots_table(s,secret,seed,base,d,encoded,fill_octets(len_wots(s)*digest_len(s),0),op,0)
+  % Algorithm 8. Adjacent pairs are hashed in place. An odd last node is copied.
+  lrow(s: suite,seed: octets_of(digest_len(s)),base: address,b: bytestring,size: subrange(1,67),
+       i: upto(34)): RECURSIVE octets_of(b`length) =
+    IF 2*i>=size THEN b ELSE
+      LET n=digest_len(s),l=part(b,2*i*n,n),dest: uint16=i*n,
+        v=IF 2*i+1=size THEN l ELSE rand_hash(s,seed,base WITH [`second:=i],l,part(b,(2*i+1)*n,n)) ENDIF
+      IN IF dest>b`length THEN b ELSE lrow(s,seed,base,copy_octets(b,dest,v,0),size,i+1) ENDIF ENDIF
+    MEASURE 34-i
+  ltree(s: suite,seed: octets_of(digest_len(s)),base: address,b: bytestring,size: subrange(1,67),
+        level: upto(7)): RECURSIVE octets_of(digest_len(s)) =
+    IF size=1 OR level=7 THEN part(b,0,digest_len(s)) ELSE
+      LET a=base WITH [`kind:=1,`first:=level],row=lrow(s,seed,a,b,size,0)
+      IN ltree(s,seed,base,row,u8div(size+1,2),level+1) ENDIF MEASURE 7-level
+END xmss_wots

@@ -1,0 +1,89 @@
+% FIPS 204, sections 7.1–7.3. Bit packing is low bit first.
+mldsa_encoding: THEORY
+BEGIN
+  sha3: LIBRARY = "../sha3"
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING mldsa_ring, sha3@keccak, crypto_prelude@crypto_buffers
+
+  offset: TYPE = upto(8192)
+  bits: TYPE = subrange(1,23)
+  at(m: bytestring,i: uint32): uint8 = IF i<m`length THEN m`seq(i) ELSE 0 ENDIF
+  slice_array(m: bytestring,base: offset,n: offset): ARRAY[below(n) -> uint8] =
+    LAMBDA (i: below(n)): at(m,base+i)
+  portion(m: bytestring,base: offset,n: offset): octets_of(n) =
+    (# length:=n, seq:=slice_array(m,base,n) #)
+  % Algorithms 16–19. A bias of zero designates SimpleBitPack. With a positive
+  % bias, the digit is b-w and decoding is subtraction in the coefficient field.
+  mask(d: bits): uint32 = u32rshift(0xffffffff,32-d)
+  raw(m: bytestring,base: offset,d: bits,i: below(256)): uint32 =
+    LET bit: uint16=d*i, off: uint16=base+u16div(bit,8),
+        w=u32or(u32or(at(m,off),u32lshift(at(m,off+1),8)),
+                u32or(u32lshift(at(m,off+2),16),u32lshift(at(m,off+3),24)))
+    IN u32and(u32rshift(w,nrem(bit,8)),mask(d))
+  decode_loop(m: bytestring,base: offset,d: bits,bias: coeff,shift: bool,
+              a: poly,i: upto(256)): RECURSIVE poly =
+    IF i=256 THEN a ELSE
+      LET v: coeff=nrem(raw(m,base,d,i),8380417),
+          x=IF bias/=0 THEN subq(bias,v) ELSIF shift THEN mulq(v,8192) ELSE v ENDIF IN
+      decode_loop(m,base,d,bias,shift,a WITH [(i):=x],i+1)
+    ENDIF MEASURE 256-i
+  decode(m: bytestring,base: offset,d: bits,bias: coeff,shift: bool): poly =
+    decode_loop(m,base,d,bias,shift,zero,0)
+  byte_bits(a: poly,d: bits,bias: coeff,j: below(736),b: upto(8),acc: uint8):
+      RECURSIVE uint8 =
+    IF b=8 THEN acc ELSE
+      LET pos: uint16=8*j+b, i: uint16=u16div(pos,d), s: below(23)=nrem(pos,d) IN
+      IF i>=256 THEN acc ELSE
+        LET digit: coeff=IF bias=0 THEN a(i) ELSE subq(bias,a(i)) ENDIF,
+            v: uint8=nrem(u32rshift(digit,s),2)
+        IN byte_bits(a,d,bias,j,b+1,u8or(acc,u8lshift(v,b)))
+      ENDIF ENDIF MEASURE 8-b
+  encode(a: poly,d: bits,bias: coeff,out: bytestring,base: offset,j: upto(736)):
+      RECURSIVE octets_of(out`length) =
+    IF j>=32*d OR base+j>=out`length THEN out ELSE
+      encode(a,d,bias,out WITH [`seq(base+j):=byte_bits(a,d,bias,j,0,0)],base,j+1)
+    ENDIF MEASURE 736-j
+
+  % Appendix C Table 3. Failure discards the entire unfinished polynomial.
+  sampled: TYPE = [# ok: bool, a: poly #]
+  rejected: sampled = (# ok:=FALSE,a:=zero #)
+  rej_A(m: octets_of(894),r: upto(298),i: upto(256),a: poly): RECURSIVE sampled =
+    IF i=256 THEN (# ok:=TRUE,a:=a #) ELSIF r=298 THEN rejected ELSE
+      LET p: uint16=3*r,
+          v: uint32=m`seq(p)+256*m`seq(p+1)+65536*u8and(m`seq(p+2),127) IN
+      IF v<8380417 THEN rej_A(m,r+1,i+1,a WITH [(i):=v])
+      ELSE rej_A(m,r+1,i,a) ENDIF ENDIF MEASURE 298-r
+  matrix_entry(rho: octets_of(32),row,col: below(8)): sampled =
+    LET c=absorb_byte(absorb_byte(absorb(start(168),rho),col),row)
+    IN rej_A(output(finish_shake(c),894),0,0,zero)
+  % Algorithms 15, 31, 33. Test successive low/high nibbles, in that order.
+  rej_small(p: profile,m: octets_of(481),t: upto(962),i: upto(256),a: poly):
+      RECURSIVE sampled =
+    IF i=256 THEN (# ok:=TRUE,a:=a #) ELSIF t=962 THEN rejected ELSE
+      LET v=m`seq(u16div(t,2)), x: uint8=IF nrem(t,2)=0 THEN u8and(v,15) ELSE u8rshift(v,4) ENDIF,
+          e=eta(p), accept=IF e=2 THEN x<15 ELSE x<9 ENDIF IN
+      IF accept THEN LET y: coeff=IF e=2 THEN nrem(x,5) ELSE x ENDIF IN
+        rej_small(p,m,t+1,i+1,a WITH [(i):=subq(e,y)])
+      ELSE rej_small(p,m,t+1,i,a) ENDIF ENDIF MEASURE 962-t
+  nonce_state(seed: bytestring,nonce: uint16): absorbing =
+    absorb_byte(absorb_byte(absorb(start(136),seed),nrem(nonce,256)),u16rshift(nonce,8))
+  sample_small(p: profile,seed: octets_of(64),nonce: uint16): sampled =
+    rej_small(p,output(finish_shake(nonce_state(seed,nonce)),481),0,0,zero)
+  % Algorithm 34. zbits = bitlen(2*gamma1-1).
+  sample_mask(p: profile,seed: octets_of(64),nonce: uint16): poly =
+    decode(output(finish_shake(nonce_state(seed,nonce)),32*zbits(p)),0,zbits(p),gamma1(p),FALSE)
+
+  % Algorithm 29. Eight leading sign octets, followed by rejection indices.
+  ball_loop(m: octets_of(221),next: subrange(8,221),i: upto(256),s: upto(64),a: poly):
+      RECURSIVE sampled =
+    IF i=256 THEN (# ok:=TRUE,a:=a #) ELSIF next=221 OR s=64 THEN rejected ELSE
+      LET j=m`seq(next) IN
+      IF j>i THEN ball_loop(m,next+1,i,s,a) ELSE
+        LET positive=nrem(u8rshift(m`seq(u8div(s,8)),nrem(s,8)),2)=0,
+            sign: coeff=IF positive THEN 1 ELSE 8380416 ENDIF,
+            shifted=a WITH [(i):=a(j)]
+        IN ball_loop(m,next+1,i+1,s+1,shifted WITH [(j):=sign]) ENDIF
+    ENDIF MEASURE 221-next
+  sample_in_ball(p: profile,c: bytestring): sampled =
+    ball_loop(output(finish_shake(absorb(start(136),c)),221),8,256-tau(p),0,zero)
+END mldsa_encoding

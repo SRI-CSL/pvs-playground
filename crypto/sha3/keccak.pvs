@@ -1,0 +1,149 @@
+% FIPS 202 (August 2015), sections 3–6.
+% https://doi.org/10.6028/NIST.FIPS.202
+keccak: THEORY
+BEGIN
+  crypto_prelude: LIBRARY = "../crypto_prelude"
+  IMPORTING crypto_prelude@crypto_words
+
+  % Sections 3.1–3.2. Lane x+5*y holds bit z in its z-th least significant bit.
+  lane_number: TYPE = below(25)
+  lanes: TYPE = ARRAY[lane_number -> uint64]
+  axis: TYPE = below(5)
+  column(a: lanes, x: axis): uint64 =
+    u64xor(a(x), u64xor(a(x+5), u64xor(a(x+10), u64xor(a(x+15), a(x+20)))))
+
+  theta_lane(a: lanes, i: lane_number): uint64 =
+    u64xor(a(i), u64xor(column(a,nrem(i+4,5)), rol64(column(a,nrem(i+1,5)),1)))
+
+  % Table 2, reduced modulo 64, listed in lane order.
+  rho_offset(i: lane_number): below(64) =
+    COND i=0 -> 0, i=1 -> 1, i=2 -> 62, i=3 -> 28, i=4 -> 27,
+         i=5 -> 36, i=6 -> 44, i=7 -> 6, i=8 -> 55, i=9 -> 20,
+         i=10 -> 3, i=11 -> 10, i=12 -> 43, i=13 -> 25, i=14 -> 39,
+         i=15 -> 41, i=16 -> 45, i=17 -> 15, i=18 -> 21, i=19 -> 8,
+         i=20 -> 18, i=21 -> 2, i=22 -> 61, i=23 -> 56, ELSE -> 14 ENDCOND
+
+  % Algorithm 3 gives the source lane of each output lane directly.
+  row_of(i: lane_number): axis = ndiv(i,5)
+  pi_source(i: lane_number): lane_number =
+    nrem(nrem(i,5) + 3*row_of(i), 5) + 5*nrem(i,5)
+  rho_pi_lane(a: lanes, i: lane_number): uint64 =
+    LET s = pi_source(i) IN rol64(a(s), rho_offset(s))
+  row_neighbor(i: lane_number, n: below(3)): lane_number =
+    5*row_of(i) + nrem(i+n,5)
+  chi_lane(a: lanes, i: lane_number): uint64 =
+    u64xor(a(i), u64and(u64not(a(row_neighbor(i,1))), a(row_neighbor(i,2))))
+
+  % Write exactly the 25 lanes at each stage while reading the prior state.
+  step_mapping: TYPE = below(3)
+  theta_step: step_mapping = 0
+  rho_pi_step: step_mapping = 1
+  chi_step: step_mapping = 2
+  map_lanes(step: step_mapping, a, dest: lanes, i: upto(25)): RECURSIVE lanes =
+    IF i=25 THEN dest
+    ELSE LET v = IF step=theta_step THEN theta_lane(a,i)
+                 ELSIF step=rho_pi_step THEN rho_pi_lane(a,i) ELSE chi_lane(a,i) ENDIF
+         IN map_lanes(step,a,dest WITH [(i):=v],i+1)
+    ENDIF MEASURE 25-i
+  theta(a: lanes): lanes = map_lanes(theta_step,a,a,0)
+  rho_pi(a: lanes): lanes = map_lanes(rho_pi_step,a,a,0)
+  chi(a: lanes): lanes = map_lanes(chi_step,a,a,0)
+
+  % Section 3.2.5, Algorithms 5 and 6 evaluated for the 24 rounds, w=64.
+  round_constant(i: below(24)): uint64 =
+    COND
+      i=0  -> 0x0000000000000001, i=1  -> 0x0000000000008082,
+      i=2  -> 0x800000000000808A, i=3  -> 0x8000000080008000,
+      i=4  -> 0x000000000000808B, i=5  -> 0x0000000080000001,
+      i=6  -> 0x8000000080008081, i=7  -> 0x8000000000008009,
+      i=8  -> 0x000000000000008A, i=9  -> 0x0000000000000088,
+      i=10 -> 0x0000000080008009, i=11 -> 0x000000008000000A,
+      i=12 -> 0x000000008000808B, i=13 -> 0x800000000000008B,
+      i=14 -> 0x8000000000008089, i=15 -> 0x8000000000008003,
+      i=16 -> 0x8000000000008002, i=17 -> 0x8000000000000080,
+      i=18 -> 0x000000000000800A, i=19 -> 0x800000008000000A,
+      i=20 -> 0x8000000080008081, i=21 -> 0x8000000000008080,
+      i=22 -> 0x0000000080000001, ELSE -> 0x8000000080008008
+    ENDCOND
+
+  rnd(a: lanes, i: below(24)): lanes =
+    LET b = chi(rho_pi(theta(a))) IN b WITH [(0) := u64xor(b(0), round_constant(i))]
+  permute_from(a: lanes, i: upto(24)): RECURSIVE lanes =
+    IF i=24 THEN a ELSE permute_from(rnd(a,i), i+1) ENDIF MEASURE 24-i
+  permute(a: lanes): lanes = permute_from(a,0)
+
+  % Algorithm 8, streaming interface. Rates given in octets and position in bits.
+  rate_bytes: TYPE = subrange(1,200)
+  absorbing: TYPE = [# rate: rate_bytes, a: lanes, pos: {p: uint16 | p<8*rate} #]
+  squeezing: TYPE = [# rate: rate_bytes, a: lanes, pos: {p: uint8 | p<rate} #]
+  start(r: rate_bytes): absorbing =
+    (# rate := r, a := LAMBDA (i: lane_number): 0, pos := 0 #)
+
+  flip_bits(a: lanes, pos: below(1600), value: uint8): lanes =
+    LET i: lane_number = ndiv(pos,64), shift: below(64) = nrem(pos,64)
+    IN a WITH [(i) := u64xor(a(i), u64lshift(value,shift))]
+
+  absorb_bit(c: absorbing, v: bool): absorbing =
+    LET a = IF v THEN flip_bits(c`a,c`pos,1) ELSE c`a ENDIF IN
+    IF c`pos+1=8*c`rate THEN (# rate:=c`rate, a:=permute(a), pos:=0 #)
+    ELSE (# rate:=c`rate, a:=a, pos:=c`pos+1 #) ENDIF
+
+  % Appendix B packs the first bit into the least significant bit of its octet.
+  absorb_low(c: absorbing, v: uint8, bits: upto(8)): RECURSIVE absorbing =
+    IF bits=0 THEN c
+    ELSE absorb_low(absorb_bit(c,nrem(v,2)=1), u8rshift(v,1), bits-1)
+    ENDIF MEASURE bits
+
+  absorb_byte(c: absorbing, v: uint8): absorbing =
+    IF nrem(c`pos,8)/=0 THEN absorb_low(c,v,8)
+    ELSE LET a = flip_bits(c`a,c`pos,v) IN
+      IF c`pos+8 >= 8*c`rate THEN (# rate:=c`rate, a:=permute(a), pos:=0 #)
+      ELSE (# rate:=c`rate, a:=a, pos:=c`pos+8 #) ENDIF ENDIF
+
+  absorb_from(c: absorbing, m: bytestring, i: upto(m`length)): RECURSIVE absorbing =
+    IF i=m`length THEN c ELSE absorb_from(absorb_byte(c,m`seq(i)),m,i+1)
+    ENDIF MEASURE m`length-i
+  absorb(c: absorbing, m: bytestring): absorbing = absorb_from(c,m,0)
+
+  % Algorithm 9. The leading pad bit can itself finish a rate block.
+  pad(c: absorbing): squeezing =
+    LET d = absorb_bit(c,TRUE), a = flip_bits(d`a,8*d`rate-1,1) IN
+      (# rate:=d`rate, a:=permute(a), pos:=0 #)
+  % Sections 6.1–6.3 and SP 800-185 section 3.3 (domain suffix 00).
+  finish_sha3(c: absorbing): squeezing = pad(absorb_low(c,2,2))
+  finish_shake(c: absorbing): squeezing = pad(absorb_low(c,15,4))
+  finish_rawshake(c: absorbing): squeezing = pad(absorb_low(c,3,2))
+  finish_cshake(c: absorbing): squeezing = pad(absorb_low(c,0,2))
+
+  digest_byte(c: squeezing): uint8 =
+    LET i: lane_number = ndiv(c`pos,8), j: below(8) = nrem(c`pos,8)
+    IN be_byte64(c`a(i),7-j)
+  advance(c: squeezing): squeezing =
+    IF c`pos+1=c`rate THEN (# rate:=c`rate, a:=permute(c`a), pos:=0 #)
+    ELSE (# rate:=c`rate, a:=c`a, pos:=c`pos+1 #) ENDIF
+
+  % Extract n octets once each; callers may stream indefinitely with advance.
+  fill_output(c: squeezing, out: bytestring, i: upto(out`length)):
+      RECURSIVE {v: bytestring | v`length=out`length} =
+    IF i=out`length THEN out
+    ELSE fill_output(advance(c),out WITH [`seq(i):=digest_byte(c)],i+1)
+    ENDIF MEASURE out`length-i
+  blank(n: index): ARRAY[below(n) -> uint8] = LAMBDA (i: below(n)): 0
+  output(c: squeezing, n: index): {v: bytestring | v`length=n} =
+    fill_output(c,(# length:=n, seq:=blank(n) #),0)
+
+  % FIPS 202 sections 6.1–6.2. The streaming API also accepts non-octet inputs
+  % via absorb_low and permits output truncation to the requested bit length.
+  sha3_224(m: bytestring): {v: bytestring | v`length=28} = output(finish_sha3(absorb(start(144),m)),28)
+  sha3_256(m: bytestring): {v: bytestring | v`length=32} = output(finish_sha3(absorb(start(136),m)),32)
+  sha3_384(m: bytestring): {v: bytestring | v`length=48} = output(finish_sha3(absorb(start(104),m)),48)
+  sha3_512(m: bytestring): {v: bytestring | v`length=64} = output(finish_sha3(absorb(start(72),m)),64)
+  shake128(m: bytestring,n: index): bytestring = output(finish_shake(absorb(start(168),m)),n)
+  shake256(m: bytestring,n: index): bytestring = output(finish_shake(absorb(start(136),m)),n)
+
+  % Section 4, Algorithm 8. Starting a fresh rate block resets its position.
+  advance_at_boundary: LEMMA FORALL (c: squeezing): c`pos+1=c`rate IMPLIES
+    advance(c)`pos=0 AND advance(c)`a=permute(c`a)
+  advance_inside_block: LEMMA FORALL (c: squeezing): c`pos+1<c`rate IMPLIES
+    advance(c)`pos=c`pos+1 AND advance(c)`a=c`a
+END keccak

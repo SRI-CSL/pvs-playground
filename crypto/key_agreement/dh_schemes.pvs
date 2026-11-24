@@ -1,0 +1,57 @@
+% SP 800-56A Rev. 3 §6. Both participants use the same domain/curve.
+dh_schemes: THEORY
+BEGIN
+  IMPORTING ff_agreement,ec_mqv
+  scheme: TYPE = below(7)
+  full_unified: scheme=0        % dhHybrid1 / Full Unified
+  ephemeral_unified: scheme=1  % dhEphem / Ephemeral Unified
+  one_pass_unified: scheme=2   % dhHybridOneFlow / One-Pass Unified
+  one_pass_dh: scheme=3        % dhOneFlow / One-Pass DH
+  static_unified: scheme=4     % dhStatic / Static Unified
+  full_mqv: scheme=5           % MQV2 / Full MQV
+  one_pass_mqv: scheme=6       % MQV1 / One-Pass MQV
+
+  % Native spelling of the Prelude byte-buffer limit in executable guards.
+  octet_limit: uint32 = 0x10000000
+  limit_is_maxsize: LEMMA octet_limit=maxsize
+  AUTO_REWRITE limit_is_maxsize
+
+  hybrid(s:scheme):bool = s=full_unified OR s=one_pass_unified
+  one_flow(s:scheme):bool = s=one_pass_unified OR s=one_pass_dh
+  local_static(s:scheme,u:bool):bool = s=static_unified OR (one_flow(s) AND NOT u)
+  remote_static(s:scheme,u:bool):bool = s=static_unified OR (one_flow(s) AND u)
+  secret_pair(stat,ephem:ff_agreement.result):ff_agreement.result =
+    IF stat`ok AND ephem`ok AND stat`z`length+ephem`z`length<octet_limit THEN
+      (# ok:=TRUE,z:=join_octets(ephem`z,stat`z) #)
+    ELSE fail ENDIF
+  % ds/de are local static/ephemeral private values; qs/qe are the peer's
+  % public values. Only the inputs prescribed for the participant's role are used.
+  ff_participant(s:scheme,u:bool,d:domain,ds,de,qs,qe:integer_of(d)):ff_agreement.result =
+    IF s=full_mqv THEN ff_agreement.mqv(d,ds,de,qs,qe)
+    ELSIF s=one_pass_mqv THEN
+      IF u THEN ff_agreement.mqv(d,ds,de,qs,qs) ELSE ff_agreement.mqv(d,ds,ds,qs,qe) ENDIF
+    ELSE LET own=IF local_static(s,u) THEN ds ELSE de ENDIF,
+             peer=IF remote_static(s,u) THEN qs ELSE qe ENDIF IN
+      IF hybrid(s) THEN
+        LET zs=dh(d,ds,qs) IN IF zs`ok THEN secret_pair(zs,dh(d,own,peer)) ELSE fail ENDIF
+      ELSE dh(d,own,peer) ENDIF
+    ENDIF
+  ec_secret(v:secret_result):ff_agreement.result =
+    IF v`valid THEN (# ok:=TRUE,z:=v`value #) ELSE fail ENDIF
+  ec_participant(s:scheme,u:bool,c:curve,ds,de:scalar(c),qs,qe:affine(c)):ff_agreement.result =
+    IF s=full_mqv THEN ec_secret(ec_mqv.mqv(c,ds,de,qs,qe))
+    ELSIF s=one_pass_mqv THEN
+      IF u THEN ec_secret(ec_mqv.mqv(c,ds,de,qs,qs)) ELSE ec_secret(ec_mqv.mqv(c,ds,ds,qs,qe)) ENDIF
+    ELSE LET own=IF local_static(s,u) THEN ds ELSE de ENDIF,
+             peer=IF remote_static(s,u) THEN qs ELSE qe ENDIF IN
+      IF hybrid(s) THEN
+        LET zs=ec_secret(cdh(c,ds,qs)) IN
+          IF zs`ok THEN secret_pair(zs,ec_secret(cdh(c,own,peer))) ELSE fail ENDIF
+      ELSE ec_secret(cdh(c,own,peer)) ENDIF
+    ENDIF
+
+  failed_component: LEMMA FORALL(a,b:ff_agreement.result):
+    (NOT a`ok OR NOT b`ok) IMPLIES secret_pair(a,b)=fail
+  one_flow_reciprocal: LEMMA FORALL(s:scheme,u:bool):
+    local_static(s,u)=remote_static(s,NOT u)
+END dh_schemes

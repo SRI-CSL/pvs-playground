@@ -1,0 +1,50 @@
+% SP 800-208 section 4, Tables 1-8 and IANA's LMS/LM-OTS registries.
+lms_hash: THEORY
+BEGIN
+  prehash: LIBRARY = "../crypto_prelude/prehash"
+  IMPORTING prehash@hbs_hash
+  width_code: TYPE = below(4)
+  height_code: TYPE = below(5)
+  lms_code(s: suite,h: height_code): uint8 = 5+5*s+h
+  ots_code(s: suite,w: width_code): uint8 = 1+4*s+w
+  height(h: height_code): subrange(5,25) = 5+5*h
+  leaves(h: height_code): subrange(32,33554432) =
+    COND h=0 -> 32,h=1 -> 1024,h=2 -> 32768,h=3 -> 1048576,ELSE -> 33554432 ENDCOND
+  width(w: width_code): subrange(1,8) = COND w=0 -> 1,w=1 -> 2,w=2 -> 4,ELSE -> 8 ENDCOND
+  digit_max(w: width_code): uint8 = COND w=0 -> 1,w=1 -> 3,w=2 -> 15,ELSE -> 255 ENDCOND
+  chains(s: suite,w: width_code): subrange(26,265) =
+    IF digest_len(s)=32 THEN COND w=0 -> 265,w=1 -> 133,w=2 -> 67,ELSE -> 34 ENDCOND
+    ELSE COND w=0 -> 200,w=1 -> 101,w=2 -> 51,ELSE -> 26 ENDCOND ENDIF
+  checksum_shift(s: suite,w: width_code): below(16) =
+    IF digest_len(s)=32 THEN COND w=0 -> 7,w=1 -> 6,w=2 -> 4,ELSE -> 0 ENDCOND
+    ELSE COND w=0 -> 8,w=1 -> 6,w=2 -> 4,ELSE -> 0 ENDCOND ENDIF
+  prefix(id: identifier,q: uint32,domain: uint16): octets_of(22) =
+    join_octets(join_octets(id,word(q)),short(domain))
+  node_hash(s: suite,id: identifier,r: uint32,l,u: octets_of(digest_len(s))): octets_of(digest_len(s)) =
+    hash(s,join_octets(join_octets(prefix(id,r,0x8383),l),u))
+  leaf_hash(s: suite,id: identifier,r: uint32,k: octets_of(digest_len(s))): octets_of(digest_len(s)) =
+    hash(s,join_octets(prefix(id,r,0x8282),k))
+  % RFC 8554 uses D_LEAF = 0x8282, D_INTR = 0x8383, D_PBLC = 0x8080 and D_MESG = 0x8181.
+  read_hash(s: suite,id: identifier,q: uint32,c: octets_of(digest_len(s)),m: message_input): octets_of(digest_len(s)) =
+    hash(s,join_octets(join_octets(prefix(id,q,0x8181),c),m))
+  coefficient(x: bytestring,i: upto(265),w: width_code): uint8 =
+    COND w=0 -> u8and(u8rshift(get(x,u16div(i,8)),7-nrem(i,8)),1),
+         w=1 -> u8and(u8rshift(get(x,u16div(i,4)),6-2*nrem(i,4)),3),
+         w=2 -> u8and(u8rshift(get(x,u16div(i,2)),4-4*nrem(i,2)),15),
+         ELSE -> get(x,i) ENDCOND
+  checksum(s: suite,w: width_code,d: octets_of(digest_len(s)),j: upto(256),acc: uint16):
+      RECURSIVE uint16 =
+    IF j>=u16div(8*digest_len(s),width(w)) THEN u16lshift(acc,checksum_shift(s,w))
+    ELSE checksum(s,w,d,j+1,u16plus(acc,u16minus(digit_max(w),coefficient(d,j,w))))
+    ENDIF MEASURE 256-j
+  digits(s: suite,w: width_code,d: octets_of(digest_len(s))): octets_of(digest_len(s)+2) =
+    join_octets(d,short(checksum(s,w,d,0,0)))
+  chain(s: suite,id: identifier,q: uint32,i: below(265),j,stop: uint8,x: octets_of(digest_len(s))):
+      RECURSIVE octets_of(digest_len(s)) =
+    IF j>=stop THEN x ELSE
+      LET a=join_octets(join_octets(prefix(id,q,i),byte1(j)),x)
+      IN chain(s,id,q,i,j+1,stop,hash(s,a)) ENDIF MEASURE 255-j
+  % RFC 8554 Appendix A recommends this domain-separated expansion of a seed.
+  secret_element(s: suite,id: identifier,q: uint32,i: below(265),seed: octets_of(digest_len(s))):
+      octets_of(digest_len(s)) = hash(s,join_octets(join_octets(prefix(id,q,i),byte1(255)),seed))
+END lms_hash
