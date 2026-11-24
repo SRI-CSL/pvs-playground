@@ -19,7 +19,7 @@ The site reads these files directly. Moving a folder together with its contents 
 
 ## Crypto pages
 
-The `crypto/` subtree uses a dark monospace theme and a terminal-style navigation header. Its folder pages render their READMEs as the page content. Write the crypto landing page in [crypto/README.md](../crypto/README.md), and use ordinary relative Markdown links to choose which topics and specs appear there.
+The `crypto/` subtree uses a dark monospace theme and a terminal-style navigation header. Its folder pages show their immediate subfolders and files above the README. Write the crypto landing page in [crypto/README.md](../crypto/README.md), and use ordinary relative Markdown links to choose which topics and specs appear there.
 
 ## Render prose from PVS comments
 

@@ -17,18 +17,16 @@ eleventyExcludeFromCollections: true
 {% endif %}
 {% include "breadcrumbs.njk" %}
 <h1>{{ title }}{% if theme != "crypto" %}/{% endif %}</h1>
-{% if theme != "crypto" %}
-  <ul class="entries">
-    {% for folder in directory.folders %}
-      <li><a href="{{ folder.url }}">{{ folder.name }}/</a></li>
-    {% endfor %}
-    {% for file in directory.files %}
-      <li><a href="{{ file.url }}">{{ file.name }}</a></li>
-    {% endfor %}
-  </ul>
-{% endif %}
+<ul class="entries{% if theme == "crypto" %} crypto-entries{% endif %}">
+  {% for folder in directory.folders %}
+    <li><a href="{{ folder.url }}">{{ folder.name }}/</a></li>
+  {% endfor %}
+  {% for file in directory.files %}
+    <li><a href="{{ file.url }}">{{ file.name }}</a></li>
+  {% endfor %}
+</ul>
 {% if directory.readme %}
-  <div class="prose{% if theme != "crypto" %} readme{% endif %}">
+  <div class="prose readme">
     {% repositoryProse directory.readme %}
   </div>
 {% endif %}

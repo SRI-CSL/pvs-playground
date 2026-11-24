@@ -178,3 +178,28 @@ pre code { font: inherit; }
 .theme-crypto .prose h2 { margin-top: 2rem; font-size: 1.25rem; }
 .theme-crypto .prose :not(pre) > code { padding: 0.1rem 0.3rem; background: #14271b; color: var(--link); border-radius: 0.2rem; }
 .theme-crypto .code-line:target { background: #234130; }
+
+.crypto-entries {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 0.4rem 0.8rem;
+  padding: 0;
+  list-style: none;
+}
+
+.crypto-entries li { min-width: 0; }
+
+.crypto-entries a {
+  display: block;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.2rem;
+  background: var(--code-background);
+  text-decoration: none;
+}
+
+.crypto-entries a:hover {
+  border-color: #507d5f;
+  background: #182d20;
+  text-decoration: underline;
+}
