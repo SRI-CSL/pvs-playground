@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build:crypto": "python3 scripts/build_crypto.py",
-    "test": "node --test lib/*.test.js",
+    "test": "node --test lib/*.test.js && python3 scripts/test_nist_vectors.py",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "prebuild": "npm run clean",
     "build": "eleventy --quiet",

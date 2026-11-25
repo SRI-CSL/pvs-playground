@@ -4,11 +4,12 @@
     <label>Examples
       <select class="runner-suite">
         {% for runner in runners %}
-        <option value="{{ runner.index }}" data-expected="{{ runner.expected | dump }}" data-source="{{ runner.sourceUrl | url }}" data-c="{{ runner.codeUrl | url }}">{{ runner.label }}</option>
+        <option value="{{ runner.index }}" data-expected="{{ runner.expected | dump }}" data-source="{{ runner.sourceUrl | url }}" data-c="{{ runner.codeUrl | url }}" data-nist="{{ runner.nist | dump }}">{{ runner.label }}</option>
         {% endfor %}
       </select>
     </label>
     <button type="button" class="runner-run">Run</button>
+    <button type="button" class="runner-nist"{% if not runners[0].nistCount %} hidden{% endif %}>Run NIST vectors</button>
     <button type="button" class="runner-stop" hidden>Stop</button>
     <span class="runner-status" role="status" aria-live="polite"></span>
   </div>
@@ -18,6 +19,22 @@
     <a class="runner-c" href="{{ runners[0].codeUrl }}">Generated C</a>
   </div>
   {% endif %}
+  {% for runner in runners %}
+  {% if runner.nistCount %}
+  <details class="runner-nist-details" data-suite="{{ runner.index }}"{% if not loop.first %} hidden{% endif %}>
+    <summary>NIST vectors · {{ runner.nistCount }} cases</summary>
+    {% for set in runner.nistSets %}
+    <div class="nist-set">
+      <a href="{{ set.source }}">{{ set.label }}</a> · {{ set.count }} cases
+      <p>{{ set.scope }}</p>
+      <ul>{% for file in set.files %}<li><a href="{{ file.archive }}">{{ file.name }}</a> · {{ file.count }} cases</li>{% endfor %}</ul>
+      {% if set.excludedCount %}<details><summary>Excluded vector groups</summary><ul>{% for reason, count in set.excluded %}<li>{{ reason }} · {{ count }} cases</li>{% endfor %}</ul></details>{% endif %}
+    </div>
+    {% endfor %}
+    <a href="/c/nist_bridge.c/">C adapter</a>
+  </details>
+  {% endif %}
+  {% endfor %}
   <pre class="runner-output" tabindex="0" aria-label="Program output" hidden></pre>
 </section>
 {% endif %}

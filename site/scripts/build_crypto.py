@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import tarfile
 import zipfile
+from nist_vectors import prepare_nist
 
 SITE = Path(__file__).resolve().parents[1]
 GMP_VERSION = "6.3.0"
@@ -93,6 +94,7 @@ def main():
         suites = [suite for suite in suites if suite["theory"] in args.suite]
         if {suite["theory"] for suite in suites} != set(args.suite):
             parser.error("Unknown suite")
+    nist_sets = prepare_nist(suites, cache, output)
     env = {**os.environ, "PVS_LIBRARY_PATH": str(stage), "PVS_LOG_DIR": str(stage)}
     helper = find(crypto, "replay-generate.lisp")
     mains = []
@@ -134,10 +136,12 @@ def main():
              "-include", find(crypto, "crypto_bits_compat.h")]
     for path in includes:
         flags += ["-I", path]
+    nist_flags = ["-DNIST_" + name.upper().replace("-", "_") for name in sorted(nist_sets)]
+    flags += nist_flags
     objects = cache / "objects"
     shutil.rmtree(objects, ignore_errors=True)
     objects.mkdir()
-    sources = sorted(stage.rglob("*_c.c")) + sorted((runtime / "src").glob("*.c"))
+    sources = sorted(stage.rglob("*_c.c")) + sorted((runtime / "src").glob("*.c")) + [SITE / "scripts/nist_bridge.c"]
     compiled = []
     for index, source in enumerate(sources + mains):
         obj = objects / f"{index}.o"
@@ -150,7 +154,7 @@ def main():
                         "\n".join(f"case {i}: return example_{i}();" for i in range(len(suites))) +
                         "\ndefault: return 2; } }\n")
     run([*flags, dispatch, *compiled, gmp / "lib/libgmp.a", "--no-entry", "-sMODULARIZE=1", "-sEXPORT_ES6=1",
-         "-sENVIRONMENT=web,worker,node", "-sEXPORTED_FUNCTIONS=['_run_example']", "-sALLOW_MEMORY_GROWTH=1",
+         "-sENVIRONMENT=web,worker,node", "-sEXPORTED_FUNCTIONS=['_run_example','_nist_eval']", "-sEXPORTED_RUNTIME_METHODS=['ccall']", "-sALLOW_MEMORY_GROWTH=1",
          "-sMAXIMUM_MEMORY=536870912", "-sSTACK_SIZE=8388608", "-sASSERTIONS=1", "-o", output / "crypto.mjs"])
     # Hash names prevent a new JS loader from picking up a cached older Wasm binary.
     digest = hashlib.sha256((output / "crypto.wasm").read_bytes() + (output / "crypto.mjs").read_bytes()).hexdigest()[:16]
@@ -160,7 +164,7 @@ def main():
     (output / module).write_text(loader)
     (output / "crypto.wasm").rename(output / wasm)
     (output / "crypto.mjs").unlink()
-    manifest = {"module": module, "suites": suites, "emscripten": emcc_version, "inputs": inputs,
+    manifest = {"module": module, "suites": suites, "emscripten": emcc_version, "inputs": inputs, "nist": nist_sets,
                 "revision": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repository, text=True).strip()}
     generator = subprocess.run(["git", "-C", pvs.parent, "rev-parse", "HEAD"], text=True, capture_output=True)
     manifest["pvsRevision"] = generator.stdout.strip() if generator.returncode == 0 else os.environ.get("PVS_REF")
@@ -181,6 +185,9 @@ def main():
         archive.write(dispatch, "dispatch.c")
         archive.write(SITE / "scripts/rebuild_crypto.sh", "rebuild.sh")
         archive.write(SITE / "scripts/pvs2c-compat.lisp", "generator-compat.lisp")
+        archive.write(SITE / "scripts/nist_bridge.c", "nist_bridge.c")
+        archive.writestr("nist-flags.json", json.dumps(nist_flags))
+        archive.write(SITE / "nist-sources.json", "nist-sources.json")
         archive.writestr("manifest.json", json.dumps(manifest, indent=2))
         archive.write(pvs.parent / "LICENSE", "PVS-LICENSE")
     run(["python3", SITE / "scripts/export_crypto_sources.py", output])

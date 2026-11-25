@@ -16,7 +16,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 40
+    timeout-minutes: 60
     env:
       PVS_REF: 3931c4b5040800d7036bdc9ca26e81e68659b292
       EMSDK_REF: a7c808831a666cc903fedb906c171a718cd97341
@@ -63,6 +63,11 @@ jobs:
             site/.wasm-cache/gmp-*.tar.xz
             site/.wasm-cache/gmp-wasm-*
           key: pages-gmp-${{ runner.os }}-${{ runner.arch }}-${{ env.EMSCRIPTEN_VERSION }}-6.3.0-1
+      - name: Cache NIST vector archives
+        uses: actions/cache@v4
+        with:
+          path: site/.wasm-cache/nist
+          key: pages-nist-${{ hashFiles('site/nist-sources.json') }}
       - name: Build and check crypto WebAssembly
         run: |
           source "$GITHUB_WORKSPACE/.site-tools/emsdk/emsdk_env.sh"

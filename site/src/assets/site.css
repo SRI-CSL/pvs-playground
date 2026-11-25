@@ -224,3 +224,8 @@ pre code { font: inherit; }
 .hljs-string, .hljs-char { color: var(--string); }
 .hljs-number, .hljs-literal { color: var(--operator); }
 .hljs-title, .hljs-built_in, .hljs-meta { color: var(--link); }
+.runner-nist-details { margin-top: .75rem; font-size: .8rem; }
+.runner-nist-details summary { cursor: pointer; color: var(--muted); }
+.nist-set { margin: 1rem 0; }
+.nist-set p { margin: .35rem 0; color: var(--muted); }
+.nist-set ul { padding-left: 1.4rem; overflow-wrap: anywhere; }

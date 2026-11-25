@@ -53,6 +53,12 @@ PVS specs and Markdown have generated pages. Other files are served directly. Ge
 
 The runner executes the existing PVS `_TEST_` declarations as PVS2C-generated C compiled to WebAssembly. It appears on the crypto landing page, the relevant folders, and the example specifications. Each Run starts a fresh worker; Stop terminates it. A run passes only when every expected test prints `true`, with no missing, duplicate, or extra results.
 
+**Run NIST vectors** loads independent NIST CAVP response data or pinned NIST ACVP sample prompts and expected results. A small [C adapter](scripts/nist_bridge.c) calls the generated algorithm entry points with each vector's inputs; JavaScript compares the returned bytes or verification result with NIST's expected output. Expected results are not passed into the C adapter. The controls report progress and identify mismatches by response file and case ID, with expected and actual output. Stop also works during these longer runs.
+
+Expand **NIST vectors** to see the case count, files, NIST source links and scope. AES uses all twelve ECB KAT files. SHA-1/SHA-2 use bit-oriented ShortMsg, LongMsg and Monte Carlo response files. SHA-3 uses byte-oriented ShortMsg, LongMsg and Monte Carlo files; SHAKE also includes VariableOut files. HMAC uses every HMAC.rsp case. DRBGs include no-reseed, reseed and prediction-resistance response files. KBKDF uses all matching HMAC/AES-CMAC cases for the counter positions implemented by the PVS interface. EdDSA uses all published ACVP sample cases for the matching curve, including seeded public-key derivation, signing and verification; PBKDF2 uses the complete published ACVP sample. Excluded algorithms and counter positions are listed explicitly. The geometric curve examples do not have a configured corresponding NIST vector set.
+
+[nist-sources.json](nist-sources.json) pins download URLs and SHA-256 checksums; [nist_vectors.py](scripts/nist_vectors.py) preserves and normalizes their records. The build checks every configured NIST case as well as the PVS examples before publication. The browser fetches only the vector files needed for the selected example and verifies their checksums. Add a profile ID to a theory's `nist` list in [crypto-runners.json](crypto-runners.json) to associate it with that vector set.
+
 Install Python 3.12+, PVS with its generated PVS2C Prelude, and [Emscripten 4.0.23](https://emscripten.org/docs/getting_started/downloads.html). Activate the SDK, then run:
 
 ~~~sh

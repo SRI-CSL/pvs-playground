@@ -1,0 +1,86 @@
+{
+  "KAT_AES.zip": {
+    "url": "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/aes/KAT_AES.zip",
+    "sha256": "a203b16c9246b2ebae31dee5de21a606be80cf78ceabaca37150236fa098eb60"
+  },
+  "shabittestvectors.zip": {
+    "url": "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/shs/shabittestvectors.zip",
+    "sha256": "cd7b9f11680c6e0ccdbe13b28403f2017b5ff48789152162461e0a24fb4c5d45"
+  },
+  "sha-3bytetestvectors.zip": {
+    "url": "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/sha3/sha-3bytetestvectors.zip",
+    "sha256": "cd07701af2e47f5cc889d642528b4bf11f8b6eb55797c7307a96828ed8d8fc8c"
+  },
+  "shakebytetestvectors.zip": {
+    "url": "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/sha3/shakebytetestvectors.zip",
+    "sha256": "debfebc3157b3ceea002b84ca38476420389a3bf7e97dc5f53ea4689a16de4c7"
+  },
+  "hmactestvectors.zip": {
+    "url": "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/mac/hmactestvectors.zip",
+    "sha256": "418c3837d38f249d6668146bd0090db24dd3c02d2e6797e3de33860a387ae4bd"
+  },
+  "drbgtestvectors.zip": {
+    "url": "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/drbg/drbgtestvectors.zip",
+    "sha256": "5f7e5658ebd5b4e6785a7b12fa32333511d2acc2f2d9c5ae1ffa16b699377769"
+  },
+  "CounterMode.zip": {
+    "url": "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/KBKDF800-108/CounterMode.zip",
+    "sha256": "7252501f27bf108be6eb8f1c8451879a1883dce14853aec48cf23613d62b58d0"
+  },
+  "FeedbackModenocounter.zip": {
+    "url": "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/KBKDF800-108/FeedbackModenocounter.zip",
+    "sha256": "8a1dd1e5493c189dc00b1f84a3a38baa687888076616de3486ab5629a725c945"
+  },
+  "FeedbackModewzeroiv.zip": {
+    "url": "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/KBKDF800-108/FeedbackModewzeroiv.zip",
+    "sha256": "27bcaf910f869897d3421b78a744d8166a2b5e87264bfe94b2fbde8715797497"
+  },
+  "FeedbackModeNOzeroiv.zip": {
+    "url": "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/KBKDF800-108/FeedbackModeNOzeroiv.zip",
+    "sha256": "af7a0a720b7f6d44e025dd7cfef6ccbf3b112426118e6a56bf082962637abbe5"
+  },
+  "PipelineModeWOCounter.zip": {
+    "url": "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/KBKDF800-108/PipelineModeWOCounter.zip",
+    "sha256": "42f3f4754238ed4c6d77cfc2de047c1a0e4f98b46fdd4590e92595241144c1e9"
+  },
+  "PipelineModewithCounter.zip": {
+    "url": "https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/KBKDF800-108/PipelineModewithCounter.zip",
+    "sha256": "4477c54537e1c91b1230c41ae7ddad46d93e53d922cbd8b647954b3ec071b632"
+  },
+  "EDDSA-KeyGen-1.0-prompt.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/EDDSA-KeyGen-1.0/prompt.json",
+    "sha256": "3be9030a9289d9101efa9170312341efbc6cb05fbf54d8b31a4c4aff16fc5115"
+  },
+  "EDDSA-KeyGen-1.0-expectedResults.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/EDDSA-KeyGen-1.0/expectedResults.json",
+    "sha256": "59732ffcbb0105c66796f15d32e07b3037461f1f7a8a4a5650ee65619971efaa"
+  },
+  "EDDSA-SigGen-1.0-prompt.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/EDDSA-SigGen-1.0/prompt.json",
+    "sha256": "f6943a4ca604c4a3b0bd6033ccbca2fc65c32bc04e369be2fd1dd03f7d7fd41a"
+  },
+  "EDDSA-SigGen-1.0-expectedResults.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/EDDSA-SigGen-1.0/expectedResults.json",
+    "sha256": "bcc1e382b80220b5337d047993ff4ad02545d8f9f61c8c97a8a01bb76c543e5b"
+  },
+  "EDDSA-SigGen-1.0-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/EDDSA-SigGen-1.0/internalProjection.json",
+    "sha256": "794d58fb39f08de4f852d63cb98b95c39bcc38ea42c7d42d09e92c15dadd5d81"
+  },
+  "EDDSA-SigVer-1.0-prompt.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/EDDSA-SigVer-1.0/prompt.json",
+    "sha256": "c8c9f272dbe43a11b8e857b816c8c8cbec7400a7543392e1c17d4af95508facf"
+  },
+  "EDDSA-SigVer-1.0-expectedResults.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/EDDSA-SigVer-1.0/expectedResults.json",
+    "sha256": "5c7c03694a71f8236d9bd35409822313dbc4ed1bbe6ca76766729e217927c407"
+  },
+  "PBKDF-1.0-prompt.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/PBKDF-1.0/prompt.json",
+    "sha256": "97c6a5a81a7c7820adf992c90e76409c8cf656283d0a95eae514315c2872210c"
+  },
+  "PBKDF-1.0-expectedResults.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/PBKDF-1.0/expectedResults.json",
+    "sha256": "7899e596e743ba3bf32ee1daa5ec47ae0264e159d28ef97c10d3e04f11b02a9f"
+  }
+}

@@ -33,6 +33,12 @@ export function loadCryptoRunners(directory, catalog, required = false, reposito
     if (!file?.isPvs) throw new Error(`Rebuild the crypto runner for ${suite.source}`);
     suite.sourceUrl = file.url;
     suite.folder = posix.dirname(file.path);
+    suite.nistSets = (suite.nist ?? []).map((id) => {
+      const set = manifest.nist?.[id];
+      if (!set) throw new Error(`Missing NIST vector set: ${id}`);
+      return { ...set, excludedCount: Object.values(set.excluded).reduce((sum, count) => sum + count, 0) };
+    });
+    suite.nistCount = suite.nistSets.reduce((sum, set) => sum + set.count, 0);
   }
   const codePaths = JSON.parse(readFileSync(join(directory, "code.json"), "utf8"));
   const cryptoRoot = catalog.root.folders.find((folder) => folder.theme === "crypto");
