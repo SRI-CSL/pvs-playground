@@ -14,8 +14,16 @@ eleventyExcludeFromCollections: true
 {% include "breadcrumbs.njk" %}
 <div class="source-heading">
   <h1>{{ title }}</h1>
-  {% if source.isPvs %}<a href="{{ source.rawUrl }}">Raw source</a>{% endif %}
+  {% if source.isPvs %}
+  <div class="source-links">
+    {% set generated = source.path | generatedFor %}
+    {% if generated %}<a href="{{ generated.url }}">Generated C</a>{% endif %}
+    <a href="{{ source.rawUrl }}">Raw source</a>
+  </div>
+  {% endif %}
 </div>
+{% set runners = source.path | runnersFor(true) %}
+{% include "crypto-runner.njk" %}
 {% if source.isPvs %}
   {% if source.prose %}
     <div class="prose">

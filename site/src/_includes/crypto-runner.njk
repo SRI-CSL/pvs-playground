@@ -1,0 +1,23 @@
+{% if runners.length %}
+<section class="crypto-runner" aria-label="Run examples" data-module="{{ ('/assets/crypto/' + cryptoRunners.module) | url }}">
+  <div class="runner-controls">
+    <label>Examples
+      <select class="runner-suite">
+        {% for runner in runners %}
+        <option value="{{ runner.index }}" data-expected="{{ runner.expected | dump }}" data-source="{{ runner.sourceUrl | url }}" data-c="{{ runner.codeUrl | url }}">{{ runner.label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="button" class="runner-run">Run</button>
+    <button type="button" class="runner-stop" hidden>Stop</button>
+    <span class="runner-status" role="status" aria-live="polite"></span>
+  </div>
+  {% if page.url != runners[0].sourceUrl %}
+  <div class="runner-links">
+    <a class="runner-source" href="{{ runners[0].sourceUrl }}">PVS source</a>
+    <a class="runner-c" href="{{ runners[0].codeUrl }}">Generated C</a>
+  </div>
+  {% endif %}
+  <pre class="runner-output" tabindex="0" aria-label="Program output" hidden></pre>
+</section>
+{% endif %}

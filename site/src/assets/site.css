@@ -203,3 +203,24 @@ pre code { font: inherit; }
   background: #182d20;
   text-decoration: underline;
 }
+
+.crypto-runner { margin: 0 0 1.5rem; padding: 1rem; border: 1px solid var(--border); border-radius: .25rem; }
+.runner-controls { display: flex; flex-wrap: wrap; align-items: end; gap: .65rem; }
+.runner-controls label { display: grid; gap: .35rem; min-width: 0; font-size: .8rem; }
+.runner-controls select, .runner-controls button { min-height: 2.5rem; padding: .4rem .7rem; border: 1px solid var(--border); border-radius: .2rem; background: var(--code-background); color: var(--text); font: inherit; max-width: 100%; }
+.runner-controls button { cursor: pointer; color: var(--link); }
+.runner-controls button:hover { border-color: var(--link); }
+.runner-controls button:disabled { cursor: wait; opacity: .55; }
+.runner-status { align-self: center; font-size: .85rem; }
+.runner-links { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: .7rem; font-size: .75rem; }
+.runner-output { margin-top: 1rem; max-height: 24rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+[hidden] { display: none !important; }
+.source-links, .c-navigation { display: flex; flex-wrap: wrap; gap: .5rem 1rem; font-size: .875rem; }
+.c-navigation { margin-bottom: 1rem; }
+.c-navigation:empty { display: none; }
+.rebuild-sources { display: inline-block; margin-top: 1rem; font-size: .75rem; }
+.hljs-keyword, .hljs-type { color: var(--keyword); }
+.hljs-comment { color: var(--muted); }
+.hljs-string, .hljs-char { color: var(--string); }
+.hljs-number, .hljs-literal { color: var(--operator); }
+.hljs-title, .hljs-built_in, .hljs-meta { color: var(--link); }

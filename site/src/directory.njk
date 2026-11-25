@@ -17,6 +17,8 @@ eleventyExcludeFromCollections: true
 {% endif %}
 {% include "breadcrumbs.njk" %}
 <h1>{{ title }}{% if theme != "crypto" %}/{% endif %}</h1>
+{% set runners = directory.path | runnersFor %}
+{% include "crypto-runner.njk" %}
 <ul class="entries{% if theme == "crypto" %} crypto-entries{% endif %}">
   {% for folder in directory.folders %}
     <li><a href="{{ folder.url }}">{{ folder.name }}/</a></li>

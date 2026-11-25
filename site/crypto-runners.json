@@ -1,0 +1,17 @@
+[
+  { "theory": "aes_fips197_tests", "label": "AES", "generator": "aes" },
+  { "theory": "secure_hash_examples", "label": "SHA-1 / SHA-2" },
+  { "theory": "keccak_examples", "label": "SHA-3 / SHAKE" },
+  { "theory": "hmac_examples", "label": "HMAC" },
+  { "theory": "drbg_reseed_examples", "label": "HMAC DRBG reseeding" },
+  { "theory": "hash_drbg_examples", "label": "Hash DRBG" },
+  { "theory": "ctr_drbg_examples", "label": "CTR DRBG", "generator": "aes" },
+  { "theory": "password_kdf_examples", "label": "PBKDF2" },
+  { "theory": "prf_kdf_examples", "label": "PRF KDF" },
+  { "theory": "cmac_kdf_examples", "label": "CMAC KDF", "generator": "aes" },
+  { "theory": "ed25519_examples", "label": "Ed25519" },
+  { "theory": "ed448_examples", "label": "Ed448" },
+  { "theory": "montgomery_examples", "label": "Montgomery curves" },
+  { "theory": "isogeny_examples", "label": "Edwards isogenies" },
+  { "theory": "binary_encoding_examples", "label": "Binary curve encoding" }
+]

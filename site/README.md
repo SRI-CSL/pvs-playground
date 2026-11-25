@@ -49,6 +49,23 @@ PVS specs and Markdown have generated pages. Other files are served directly. Ge
 
 `npm --prefix site run build` writes the static site to `site/dist/`. Push to `main` to deploy automatically. The [GitHub Pages workflow](../.github/workflows/pages.yml) can also be run manually. The URL is [sri-csl.github.io/pvs-playground](https://sri-csl.github.io/pvs-playground/). [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
 
-## Future PVS2C browser demos
+## Run crypto examples
 
-Compile the generated C, runtime dependencies, and a wrapper with Emscripten. Put the [modularized JS and its .wasm file](https://emscripten.org/docs/compiling/Modularized-Output.html) beside the demo's source files. The build serves those files from the repository, and a script in the demo's Markdown can load the module using that generated file URL.
+The runner executes the existing PVS `_TEST_` declarations as PVS2C-generated C compiled to WebAssembly. It appears on the crypto landing page, the relevant folders, and the example specifications. Each Run starts a fresh worker; Stop terminates it. A run passes only when every expected test prints `true`, with no missing, duplicate, or extra results.
+
+Install Python 3.12+, PVS with its generated PVS2C Prelude, and [Emscripten 4.0.23](https://emscripten.org/docs/getting_started/downloads.html). Activate the SDK, then run:
+
+~~~sh
+PVS_BIN="$HOME/git/PVS/pvs" npm --prefix site run build:crypto
+npm --prefix site run dev -- --port=8765
+~~~
+
+The first build downloads checksum-verified GMP 6.3.0 and compiles it for WebAssembly. Subsequent builds reuse that library. The application is typechecked and regenerated in a disposable context; source and proof files stay untouched. The build runs every compiled suite under Node before writing its manifest. This checks executable examples; it does not replay proofs.
+
+Add a theory and label to [crypto-runners.json](crypto-runners.json) to expose another example suite. The build finds theories by filename and derives their page links from their repository location. No content copy is maintained. Use `--crypto-root` if discovery is ambiguous, or `--suite THEORY` for a smaller local build. `PVS_BIN`, `PVS2C_RUNTIME`, `--cache`, and `--output` override tool and build locations. `CRYPTO_WASM_DIR` tells Eleventy where to read a custom output directory.
+
+[build_crypto.py](scripts/build_crypto.py) owns generation and compilation; [runner.js](src/assets/runner.js) owns the controls; [runner-worker.js](src/assets/runner-worker.js) loads the [modularized Emscripten module](https://emscripten.org/docs/compiling/Modularized-Output.html). Generated assets and caches are ignored by Git. Run `build:crypto` again after changing crypto specifications, then restart the preview. Ordinary Markdown prose and style edits only need the site build.
+
+**Generated C** opens a highlighted code view in the browser. The implementation, header, test driver and included headers link to one another; compiled PVS specifications also have a direct C link. **Rebuild sources** on the C view provides the full generated C and PVS, runtime sources, exact GMP source and licenses, and a rebuild script. [pvs2c-compat.lisp](scripts/pvs2c-compat.lisp) handles two generator issues: resolving named types for nested array lambdas, and retaining theory parameters in scalar array update definitions. It is loaded only in the isolated generation process.
+
+The Pages workflow prepares pinned PVS and Emscripten toolchains, builds and checks the runner, then builds the site. A failed runner build prevents publication. That workflow must be pushed to take effect; a local build does not deploy.

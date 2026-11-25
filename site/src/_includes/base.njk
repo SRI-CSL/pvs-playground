@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% if title %}{{ title }} · {% endif %}{{ site.name }}</title>
   <link rel="stylesheet" href="/assets/site.css">
+  {% if theme == "crypto" and cryptoRunners %}<script type="module" src="/assets/runner.js"></script>{% endif %}
 </head>
 <body>
   <main>

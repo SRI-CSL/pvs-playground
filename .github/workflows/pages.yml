@@ -15,7 +15,12 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      PVS_REF: 3931c4b5040800d7036bdc9ca26e81e68659b292
+      EMSDK_REF: a7c808831a666cc903fedb906c171a718cd97341
+      EMSCRIPTEN_VERSION: 4.0.23
     defaults:
       run:
         working-directory: site
@@ -28,13 +33,49 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: site/package-lock.json
+      - name: Install PVS build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential emacs-nox libgmp-dev sbcl
+      - name: Cache PVS and Emscripten
+        uses: actions/cache@v4
+        with:
+          path: |
+            .site-tools
+            ~/quicklisp
+          key: pages-tools-${{ runner.os }}-${{ runner.arch }}-${{ env.PVS_REF }}-${{ env.EMSDK_REF }}-${{ env.EMSCRIPTEN_VERSION }}-1
+      - name: Prepare PVS
+        run: bash scripts/prepare_pvs.sh "$GITHUB_WORKSPACE/.site-tools/PVS" "$PVS_REF"
+      - name: Prepare Emscripten
+        run: |
+          sdk="$GITHUB_WORKSPACE/.site-tools/emsdk"
+          if [ ! -d "$sdk/.git" ]; then
+            git init "$sdk"
+            git -C "$sdk" fetch --depth 1 https://github.com/emscripten-core/emsdk.git "$EMSDK_REF"
+            git -C "$sdk" checkout --detach FETCH_HEAD
+          fi
+          "$sdk/emsdk" install "$EMSCRIPTEN_VERSION"
+          "$sdk/emsdk" activate "$EMSCRIPTEN_VERSION"
+      - name: Cache WebAssembly GMP
+        uses: actions/cache@v4
+        with:
+          path: |
+            site/.wasm-cache/gmp-*.tar.xz
+            site/.wasm-cache/gmp-wasm-*
+          key: pages-gmp-${{ runner.os }}-${{ runner.arch }}-${{ env.EMSCRIPTEN_VERSION }}-6.3.0-1
+      - name: Build and check crypto WebAssembly
+        run: |
+          source "$GITHUB_WORKSPACE/.site-tools/emsdk/emsdk_env.sh"
+          PVS_BIN="$GITHUB_WORKSPACE/.site-tools/PVS/pvs" npm run build:crypto
       - name: Configure Pages
         id: pages
         uses: actions/configure-pages@v5
       - run: npm ci
+      - run: npm test
       - run: npm run build
         env:
           PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          REQUIRE_CRYPTO_RUNNERS: "1"
       - uses: actions/upload-pages-artifact@v4
         with:
           path: site/dist

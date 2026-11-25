@@ -1,0 +1,23 @@
+---
+layout: base.njk
+theme: crypto
+pagination:
+  data: generatedCFiles
+  size: 1
+  alias: code
+permalink: "{{ code.output }}"
+eleventyComputed:
+  title: "{{ code.name }}"
+eleventyExcludeFromCollections: true
+---
+{% set breadcrumbs = code.breadcrumbs %}
+{% include "breadcrumbs.njk" %}
+<div class="source-heading">
+  <h1>{{ code.name }}</h1>
+  {% if code.pvs %}<a href="{{ code.pvs.url }}">PVS source</a>{% endif %}
+</div>
+<nav class="c-navigation" aria-label="Related C files">
+  {% for other in code.links %}<a href="{{ other.url }}">{{ other.name }}</a>{% endfor %}
+</nav>
+<pre class="c-source"><code>{% generatedC code %}</code></pre>
+<a class="rebuild-sources" href="/assets/crypto/sources.zip">Rebuild sources</a>

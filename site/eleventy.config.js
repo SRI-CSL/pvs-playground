@@ -2,10 +2,11 @@ import { HtmlBasePlugin, IdAttributePlugin } from "@11ty/eleventy";
 import MarkdownIt from "markdown-it";
 import { execFileSync } from "node:child_process";
 import { copyFileSync, mkdirSync, readFileSync, rmSync } from "node:fs";
-import { dirname, join, relative } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { discoverRepository, encodePath, repositoryLink, resolveSource } from "./lib/catalog.js";
 import { highlightPvs } from "./lib/pvs.js";
 import { renderLiteratePvs } from "./lib/literate.js";
+import { highlightC, loadCryptoRunners, runnersFor } from "./lib/crypto-runners.js";
 
 const repositoryRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
   cwd: import.meta.dirname,
@@ -29,6 +30,9 @@ const github = {
 export default function (config) {
   const loadCatalog = () => discoverRepository(repositoryRoot, import.meta.dirname, github);
   let catalog = loadCatalog();
+  const runnerDirectory = resolve(import.meta.dirname, process.env.CRYPTO_WASM_DIR || ".wasm");
+  const loadRunners = () => loadCryptoRunners(runnerDirectory, catalog, process.env.REQUIRE_CRYPTO_RUNNERS === "1", repositoryRoot);
+  let cryptoRunners = loadRunners();
   const markdown = createMarkdown(true);
   const commentMarkdown = createMarkdown(false);
 
@@ -37,6 +41,7 @@ export default function (config) {
   config.addPlugin(HtmlBasePlugin);
   config.addPlugin(IdAttributePlugin);
   config.addPassthroughCopy("src/assets");
+  if (cryptoRunners) config.addPassthroughCopy({ [runnerDirectory]: "assets/crypto" });
   config.addPassthroughCopy({ "lib/pvs-LICENSE.txt": "assets/pvs-LICENSE.txt" });
   config.setChokidarConfig({ usePolling: true, interval: 350 });
   config.addWatchTarget(watchRoot + "/");
@@ -48,8 +53,9 @@ export default function (config) {
 
   config.on("eleventy.before", ({ directories, outputMode }) => {
     catalog = loadCatalog();
+    cryptoRunners = loadRunners();
     if (outputMode !== "fs") return;
-    for (const name of ["browse", "source", "files"]) {
+    for (const name of ["browse", "source", "files", "c"]) {
       rmSync(join(directories.output, name), { recursive: true, force: true });
     }
     for (const file of catalog.files.values()) {
@@ -59,6 +65,11 @@ export default function (config) {
     }
   });
   config.addGlobalData("catalog", () => catalog);
+  config.addGlobalData("cryptoRunners", () => cryptoRunners);
+  config.addGlobalData("generatedCFiles", () => cryptoRunners?.code ?? []);
+  config.addFilter("runnersFor", (path, source) => runnersFor(cryptoRunners, path, source));
+  config.addFilter("generatedFor", (path) => cryptoRunners?.code.find((code) => code.pvs?.path === path && code.name.endsWith("_c.c")));
+  config.addShortcode("generatedC", (file) => highlightC(readFileSync(join(runnerDirectory, "code", file.path), "utf8")));
   config.addGlobalData("cryptoFolder", () => catalog.root.folders.find((folder) => folder.name.toLowerCase() === "crypto"));
   config.setNunjucksEnvironmentOptions({ autoescape: true });
   function createMarkdown(html) {
