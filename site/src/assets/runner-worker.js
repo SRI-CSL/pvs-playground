@@ -1,6 +1,7 @@
 // Each run has a fresh Wasm instance; terminating this worker also frees its memory.
 import { checkResults } from "./runner-results.js";
 import { runNist } from "./nist-runner.js";
+import { checkDriver, setDriverInput, loadChecked } from "./driver-runner.js";
 
 self.onmessage = async ({ data }) => {
   try {
@@ -15,13 +16,12 @@ self.onmessage = async ({ data }) => {
         return manifest.sets[id];
       });
       self.postMessage({ type: "running" });
-      const result = await runNist({ sets, createModule,
+      const result = await runNist({ sets, createModule: async (options, set) => {
+        const factory = set.module ? (await import(new URL(set.module, data.module))).default : createModule;
+        return factory(options);
+      },
         loadFile: async (file) => {
-          const response = await fetch(new URL(file.path, base));
-          if (!response.ok) throw new Error(`NIST vectors: HTTP ${response.status}`);
-          const bytes = await response.arrayBuffer();
-          const digest = [...new Uint8Array(await crypto.subtle.digest("SHA-256", bytes))].map((n) => n.toString(16).padStart(2, "0")).join("");
-          if (digest !== file.sha256) throw new Error(`NIST data checksum differs: ${file.name}`);
+          const bytes = await loadChecked(file, base);
           return JSON.parse(new TextDecoder().decode(bytes));
         },
         report: (event) => self.postMessage(event),
@@ -36,10 +36,11 @@ self.onmessage = async ({ data }) => {
       self.postMessage({ type: "output", line });
     };
     const module = await createModule({ print, printErr: print });
+    if (data.driver) setDriverInput(module, data.fixture ? await loadChecked(data.fixture, data.module) : undefined);
     self.postMessage({ type: "running" });
     const code = module._run_example(data.index);
-    const passed = checkResults(lines, data.expected, code);
-    self.postMessage({ type: "done", passed, count: data.expected.length, code });
+    const passed = (data.driver ? checkDriver : checkResults)(lines, data.expected, code);
+    self.postMessage({ type: "done", passed, count: data.expected.length, code, driver: data.driver });
   } catch (error) {
     self.postMessage({ type: "error", message: error.message || String(error) });
   }

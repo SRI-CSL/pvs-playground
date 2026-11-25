@@ -43,7 +43,8 @@ jobs:
           path: |
             .site-tools
             ~/quicklisp
-          key: pages-tools-${{ runner.os }}-${{ runner.arch }}-${{ env.PVS_REF }}-${{ env.EMSDK_REF }}-${{ env.EMSCRIPTEN_VERSION }}-1
+          key: pages-tools-${{ runner.os }}-${{ runner.arch }}-${{ env.PVS_REF }}-${{ env.EMSDK_REF }}-${{ env.EMSCRIPTEN_VERSION }}-2
+          restore-keys: pages-tools-${{ runner.os }}-${{ runner.arch }}-${{ env.PVS_REF }}-${{ env.EMSDK_REF }}-${{ env.EMSCRIPTEN_VERSION }}-1
       - name: Prepare PVS
         run: bash scripts/prepare_pvs.sh "$GITHUB_WORKSPACE/.site-tools/PVS" "$PVS_REF"
       - name: Prepare Emscripten

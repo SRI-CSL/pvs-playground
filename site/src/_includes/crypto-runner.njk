@@ -4,7 +4,7 @@
     <label>Examples
       <select class="runner-suite">
         {% for runner in runners %}
-        <option value="{{ runner.index }}" data-expected="{{ runner.expected | dump }}" data-source="{{ runner.sourceUrl | url }}" data-c="{{ runner.codeUrl | url }}" data-nist="{{ runner.nist | dump }}">{{ runner.label }}</option>
+        <option value="{{ runner.index }}" data-module="{{ ('/assets/crypto/' + (runner.module or cryptoRunners.module)) | url }}" data-driver="{{ runner.driver }}" data-fixture="{{ (runner.fixture or null) | dump }}" data-expected="{{ runner.expected | dump }}" data-source="{{ runner.sourceUrl | url }}" data-c="{{ runner.codeUrl | url }}" data-nist="{{ runner.nist | dump }}">{{ runner.label }}</option>
         {% endfor %}
       </select>
     </label>
@@ -31,7 +31,7 @@
       {% if set.excludedCount %}<details><summary>Excluded vector groups</summary><ul>{% for reason, count in set.excluded %}<li>{{ reason }} · {{ count }} cases</li>{% endfor %}</ul></details>{% endif %}
     </div>
     {% endfor %}
-    <a href="/c/nist_bridge.c/">C adapter</a>
+    <a href="{{ runner.adapterUrl }}">C adapter</a>
   </details>
   {% endif %}
   {% endfor %}

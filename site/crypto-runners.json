@@ -102,5 +102,212 @@
     "theory": "binary_encoding_examples",
     "label": "Binary curve encoding",
     "nist": []
+  },
+  {
+    "theory": "ascon_options",
+    "label": "Ascon",
+    "driver": "ascon",
+    "nist": [
+      "ascon"
+    ]
+  },
+  {
+    "theory": "ecdsa_extra_bits",
+    "label": "ECDSA / ECDH",
+    "driver": "ec-signing",
+    "nist": [
+      "ecdsa",
+      "ecdh"
+    ]
+  },
+  {
+    "theory": "mlkem_random",
+    "label": "ML-KEM",
+    "driver": "mlkem",
+    "nist": [
+      "mlkem"
+    ]
+  },
+  {
+    "theory": "mldsa_random",
+    "label": "ML-DSA",
+    "driver": "mldsa",
+    "nist": [
+      "mldsa"
+    ]
+  },
+  {
+    "theory": "rsa_encoding",
+    "label": "RSA signatures",
+    "driver": "rsa",
+    "nist": [
+      "rsa"
+    ]
+  },
+  {
+    "theory": "rsa_random",
+    "label": "RSA private operations",
+    "driver": "rsa-private",
+    "nist": []
+  },
+  {
+    "theory": "rsa_kas",
+    "label": "RSA key establishment",
+    "driver": "rsa-kas",
+    "nist": []
+  },
+  {
+    "theory": "rsa_keygen",
+    "label": "RSA key generation",
+    "driver": "rsa-keygen",
+    "nist": [
+      "rsa-keygen"
+    ]
+  },
+  {
+    "theory": "rsa_provable",
+    "label": "RSA provable primes",
+    "driver": "rsa-provable",
+    "nist": []
+  },
+  {
+    "theory": "rsa_auxiliary",
+    "label": "RSA auxiliary primes",
+    "driver": "rsa-auxiliary",
+    "nist": []
+  },
+  {
+    "theory": "slh_verify",
+    "label": "SLH-DSA SHAKE verification",
+    "driver": "slh_verify",
+    "nist": [
+      "slh-verify"
+    ]
+  },
+  {
+    "theory": "slh_prehash",
+    "label": "HashSLH-DSA SHAKE",
+    "driver": "slh_hash",
+    "nist": [
+      "slh-hash"
+    ]
+  },
+  {
+    "theory": "slh_verify",
+    "label": "SLH-DSA SHA2 verification",
+    "driver": "slh_sha2_verify",
+    "nist": [
+      "slh-sha2-verify"
+    ]
+  },
+  {
+    "theory": "slh_prehash",
+    "label": "HashSLH-DSA SHA2",
+    "driver": "slh_sha2_hash",
+    "nist": [
+      "slh-sha2-hash"
+    ]
+  },
+  {
+    "theory": "slh_sign",
+    "label": "SLH-DSA SHAKE signing",
+    "driver": "slh_sign",
+    "nist": []
+  },
+  {
+    "theory": "slh_sign",
+    "label": "SLH-DSA SHA2 signing",
+    "driver": "slh_sha2_sign",
+    "nist": []
+  },
+  {
+    "theory": "hss_sign",
+    "label": "LMS / HSS",
+    "driver": "lms",
+    "nist": [
+      "lms"
+    ]
+  },
+  {
+    "theory": "xmss_sign",
+    "label": "XMSS",
+    "driver": "xmss",
+    "nist": []
+  },
+  {
+    "theory": "dsa_verify",
+    "label": "DH / MQV / DSA",
+    "driver": "key-agreement",
+    "nist": [
+      "ecdh"
+    ]
+  },
+  {
+    "theory": "dh_derivation",
+    "label": "Key agreement derivation",
+    "driver": "dh-schemes",
+    "nist": []
+  },
+  {
+    "theory": "kem_confirmation",
+    "label": "Composite KEM",
+    "driver": "kem",
+    "nist": []
+  },
+  {
+    "theory": "key_generation",
+    "label": "Key generation",
+    "driver": "key-generation",
+    "nist": []
+  },
+  {
+    "theory": "aes_modes",
+    "label": "AES modes / CMAC",
+    "driver": "modes",
+    "nist": [
+      "aes-modes"
+    ]
+  },
+  {
+    "theory": "gcm",
+    "label": "GCM / GMAC",
+    "driver": "gcm",
+    "nist": []
+  },
+  {
+    "theory": "ccm",
+    "label": "CCM",
+    "driver": "ccm",
+    "nist": []
+  },
+  {
+    "theory": "iv_generation",
+    "label": "IV generation",
+    "driver": "iv-generation",
+    "nist": []
+  },
+  {
+    "theory": "health_tests",
+    "label": "Random source health tests",
+    "driver": "random",
+    "nist": []
+  },
+  {
+    "theory": "rbg_tree",
+    "label": "RBG constructions",
+    "driver": "rbg",
+    "nist": []
+  },
+  {
+    "theory": "rbg_profiles",
+    "label": "RBG profiles",
+    "driver": "constructions",
+    "nist": []
+  },
+  {
+    "theory": "sts_suite",
+    "label": "Statistical tests",
+    "driver": "sts",
+    "nist": []
   }
 ]

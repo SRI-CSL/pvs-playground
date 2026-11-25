@@ -42,8 +42,10 @@ for (const panel of document.querySelectorAll(".crypto-runner")) {
     panel.setAttribute("aria-busy", "true");
     status.textContent = "Loading…";
     try {
-      worker = new Worker(new URL("./runner-worker.js", import.meta.url), { type: "module" });
+      const active = new Worker(new URL("./runner-worker.js", import.meta.url), { type: "module" });
+      worker = active;
       worker.onmessage = ({ data }) => {
+        if (worker !== active) return;
         if (data.type === "running") status.textContent = "Running…";
         if (data.type === "progress") status.textContent = `${data.passed + data.failed} / ${data.total} checked${data.failed ? ` · ${data.failed} failed` : ""}`;
         if (data.type === "output") {
@@ -51,21 +53,22 @@ for (const panel of document.querySelectorAll(".crypto-runner")) {
           if (characters > 100000) return finish("Output limit exceeded");
           output.textContent += data.line + "\n";
         }
-        if (data.type === "done") finish(data.passed ? `${data.count} passed` : data.mode === "nist" ? `${data.failed} failed / ${data.count} checked` : `Failed (exit ${data.code})`);
+        if (data.type === "done") finish(data.passed ? data.driver ? "Checks passed" : `${data.count} passed` : data.mode === "nist" ? `${data.failed} failed / ${data.count} checked` : `Failed (exit ${data.code})`);
         if (data.type === "error") {
           output.textContent += data.message + "\n";
           finish("Could not run. Try again.");
         }
       };
       worker.onerror = (event) => {
+        if (worker !== active) return;
         output.textContent += (event.message || "Could not load the runner.") + "\n";
         finish("Could not run. Try again.");
       };
       const option = select.selectedOptions[0];
-      worker.postMessage({ module: new URL(panel.dataset.module, location.href).href,
+      worker.postMessage({ module: new URL(option.dataset.module || panel.dataset.module, location.href).href,
         index: Number(option.value), expected: JSON.parse(option.dataset.expected),
-        mode, nist: JSON.parse(option.dataset.nist || "[]") });
-      if (mode !== "nist") timer = setTimeout(() => finish("Timed out after 120 seconds"), 120000);
+        mode, driver: option.dataset.driver, fixture: JSON.parse(option.dataset.fixture || "null"), nist: JSON.parse(option.dataset.nist || "[]") });
+      if (mode !== "nist" && !option.dataset.driver) timer = setTimeout(() => finish("Timed out after 120 seconds"), 120000);
     } catch (error) {
       output.textContent = error.message;
       finish("Could not run. Try again.");

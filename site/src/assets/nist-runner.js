@@ -1,4 +1,18 @@
+import { decodeVector, setDriverInput } from "./driver-runner.js";
+
 export function evaluateVector(module, vector) {
+  if (vector.data !== undefined) {
+    try {
+      if (module.runnerOutput) module.runnerOutput.length = 0;
+      const bytes = decodeVector(vector.data);
+      if (!bytes.length) throw new Error("Empty NIST vector");
+      setDriverInput(module, bytes);
+      const code = module._run_example(0);
+      return { id: vector.id, actual: `exit ${code}` + (code && module.runnerOutput?.length ? "\n" + module.runnerOutput.join("\n") : ""), expected: "exit 0", passed: code === 0 };
+    } catch (error) {
+      return { id: vector.id, actual: error.message, expected: "exit 0", passed: false };
+    }
+  }
   const actual = module.ccall("nist_eval", "string", ["string"], [vector.input]);
   return { id: vector.id, actual, expected: vector.expected, passed: actual === vector.expected };
 }
@@ -14,7 +28,9 @@ export async function runNist({ sets, createModule, loadFile, report = () => {} 
       const vectors = await loadFile(file);
       if (vectors.length !== file.count || !file.count) throw new Error(`NIST case count differs: ${file.name}`);
       // A new instance per response file releases memory and isolates file state.
-      const module = await createModule();
+      const lines = [];
+      const module = await createModule({ print: (line) => lines.push(line), printErr: (line) => lines.push(line) }, set);
+      module.runnerOutput = lines;
       let lastReport = 0;
       for (let index = 0; index < vectors.length; index++) {
         const result = evaluateVector(module, vectors[index]);

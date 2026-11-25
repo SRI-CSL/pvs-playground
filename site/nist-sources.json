@@ -82,5 +82,69 @@
   "PBKDF-1.0-expectedResults.json": {
     "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/PBKDF-1.0/expectedResults.json",
     "sha256": "7899e596e743ba3bf32ee1daa5ec47ae0264e159d28ef97c10d3e04f11b02a9f"
+  },
+  "RSA-SigGen-FIPS186-5-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/RSA-SigGen-FIPS186-5/internalProjection.json",
+    "sha256": "cce5b78db9c68a543c482a4c9a8f7336fcd1c625629322c81b7c8888ba67564b"
+  },
+  "RSA-KeyGen-FIPS186-5-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/RSA-KeyGen-FIPS186-5/internalProjection.json",
+    "sha256": "c60c35ae46078d194f738dbaa730893933044a6b90751fa99a567f172b6d4cf9"
+  },
+  "ML-KEM-keyGen-FIPS203-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/ML-KEM-keyGen-FIPS203/internalProjection.json",
+    "sha256": "d7a62a2c3476957f56dd8d24f9004ea6776ccfe995ffe71a65bb9506dc9c7b1b"
+  },
+  "ML-KEM-encapDecap-FIPS203-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/ML-KEM-encapDecap-FIPS203/internalProjection.json",
+    "sha256": "a556952ce869bb89c3a3196a701dad89647c193a34c86eafb61a9d710d5b810f"
+  },
+  "ML-DSA-keyGen-FIPS204-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/ML-DSA-keyGen-FIPS204/internalProjection.json",
+    "sha256": "e67ee6540d40e11506c3c4e3b1f79fc1cefcd49820db99fc61f87cc8ba463baf"
+  },
+  "ML-DSA-sigGen-FIPS204-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/ML-DSA-sigGen-FIPS204/internalProjection.json",
+    "sha256": "72dcaf5f69853ca267ccd16af9cb40949786aca0fcfbf05d1ebeba132b93af22"
+  },
+  "ML-DSA-sigVer-FIPS204-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/ML-DSA-sigVer-FIPS204/internalProjection.json",
+    "sha256": "47cdd6314c7f746d02421ffcba89d4dbc7bb875ac49e07a029fdfc26fba55437"
+  },
+  "SLH-DSA-sigVer-FIPS205-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/SLH-DSA-sigVer-FIPS205/internalProjection.json",
+    "sha256": "a013fc2104f4ed4799d96d51141f65b965969b2cf10646626a021b6d456ce792"
+  },
+  "LMS-sigVer-1.0-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/LMS-sigVer-1.0/internalProjection.json",
+    "sha256": "298bf08f3dab576483b731dc58a4feab18b93e1e741bc6192133285962cf77dd"
+  },
+  "LMS-sigVer-SP800-208-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/LMS-sigVer-SP800-208/internalProjection.json",
+    "sha256": "015bb30cb60d4fb24bc69d0cb074965c5fd10d1c70b01d09a5914d4947e2dedf"
+  },
+  "Ascon-AEAD128-SP800-232-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/Ascon-AEAD128-SP800-232/internalProjection.json",
+    "sha256": "0c5baffbab9000cd2329c1a2670f4d480e4e184c52e49f9c785f9baebeb15b1b"
+  },
+  "Ascon-Hash256-SP800-232-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/Ascon-Hash256-SP800-232/internalProjection.json",
+    "sha256": "643274a80f256c517c2fbb34fca4eda13b6526d48f6f9387ad22ae6a515d0136"
+  },
+  "Ascon-XOF128-SP800-232-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/Ascon-XOF128-SP800-232/internalProjection.json",
+    "sha256": "66efeb34ae67c8ea01ef2fade03d9c61c3fc46a4a5c0a75cb5bb11627e66a983"
+  },
+  "Ascon-CXOF128-SP800-232-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/Ascon-CXOF128-SP800-232/internalProjection.json",
+    "sha256": "a387c6d9254a312a32c7bd23a23db68ec14fd1d8fe1d2854d07977642bd13db6"
+  },
+  "ECDSA-SigVer-FIPS186-5-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/ECDSA-SigVer-FIPS186-5/internalProjection.json",
+    "sha256": "45f9e9425e68b099d9c029e0e75ec04e9cc5943b60fa24cdb4d5af778f350b63"
+  },
+  "KAS-ECC-CDH-Component-Sp800-56Ar3-internalProjection.json": {
+    "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/KAS-ECC-CDH-Component-Sp800-56Ar3/internalProjection.json",
+    "sha256": "504eb7be10e68a67944e7f786af5af64509f59a010f59b02d6ac38d8477820dc"
   }
 }

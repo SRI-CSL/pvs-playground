@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 import zipfile
+from native_nist import prepare_native_nist
 
 SITE = Path(__file__).resolve().parents[1]
 HASHES = {name: index for index, name in enumerate(
@@ -53,7 +54,7 @@ def case(identifier, query, expected):
     return {"id": str(identifier), "input": query, "expected": expected}
 
 
-def prepare_nist(suites, cache, output):
+def prepare_nist(suites, cache, output, crypto=None, find=None):
     sources = json.loads((SITE / "nist-sources.json").read_text())
     selected = {name for suite in suites for name in suite.get("nist", [])}
     cache = cache / "nist"
@@ -76,13 +77,14 @@ def prepare_nist(suites, cache, output):
 
     def begin(key, label, scope, page):
         if key in selected:
-            sets[key] = {"id": key, "label": label, "scope": scope, "source": PAGES + page,
+            sets[key] = {"id": key, "label": label, "scope": scope, "source": page if page.startswith("https://") else PAGES + page,
                          "files": [], "count": 0, "excluded": {}}
 
     def packet(key, archive, member, rows, excluded=None, extra_sources=()):
         if key not in selected:
             return
         spec = sources[archive]
+        sets[key]["backend"] = "driver" if rows and "data" in rows[0] else "eval"
         data = (json.dumps(rows, separators=(",", ":")) + "\n").encode()
         digest = hashlib.sha256(data).hexdigest()
         name = digest[:20] + ".json"
@@ -107,6 +109,21 @@ def prepare_nist(suites, cache, output):
                     rows.append(case(value(fields, "count"), request("aes", int(enc), value(fields, "key"),
                         value(fields, "plaintext" if enc else "ciphertext")), value(fields, "ciphertext" if enc else "plaintext")))
                 packet("aes", "KAT_AES.zip", name, rows)
+
+    begin("aes-modes", "AESAVS CBC / CFB128 / OFB KAT", "All CBC, CFB128 and OFB known-answer files, encrypt and decrypt, with 128/192/256-bit keys.", "block-ciphers")
+    if "aes-modes" in selected:
+        with zipfile.ZipFile(io.BytesIO(source("KAT_AES.zip"))) as archive:
+            names = sorted(name for name in archive.namelist() if re.fullmatch(r"(CBC|CFB128|OFB)(GFSbox|KeySbox|VarKey|VarTxt)(128|192|256)\.rsp", name))
+            if len(names) != 36:
+                raise ValueError("Expected all 36 AES mode KAT files")
+            for name in names:
+                rows = []
+                mode = re.match(r"CBC|CFB128|OFB", name)[0]
+                for options, fields in records(archive.read(name).decode("ascii")):
+                    enc = options["section"] == "ENCRYPT"
+                    rows.append(case(value(fields, "count"), request("aes-modes", mode, int(enc), value(fields, "key"), value(fields, "iv"),
+                                     value(fields, "plaintext" if enc else "ciphertext")), value(fields, "ciphertext" if enc else "plaintext")))
+                packet("aes-modes", "KAT_AES.zip", name, rows)
 
     for key, filename, label in [("sha", "shabittestvectors.zip", "SHAVS bit-oriented"),
                                 ("sha3", "sha-3bytetestvectors.zip", "SHA3VS byte-oriented"),
@@ -241,6 +258,8 @@ def prepare_nist(suites, cache, output):
             packet(key, prompt_name, name + "/prompt.json", rows,
                    extra_sources=[expected_name] + ([internal_name] if mode == "SigGen" else []))
 
+    if crypto:
+        prepare_native_nist(selected, source, begin, packet, crypto, find, cache)
     if set(sets) != selected or any(not entry["count"] for entry in sets.values()):
         raise ValueError("Unknown or empty NIST suite")
     (directory / "manifest.json").write_text(json.dumps({"sets": sets}, indent=2) + "\n")
